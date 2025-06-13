@@ -6,6 +6,9 @@ computational chemistry platform using the FastMCP framework.
 """
 
 import os
+import logging
+import time
+import traceback
 from typing import Any, Dict, List, Optional, Literal
 from enum import Enum
 
@@ -23,6 +26,16 @@ try:
 except ImportError:
     pass  # dotenv not required, but helpful if available
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('rowan_mcp.log', mode='a')
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Initialize FastMCP server
 mcp = FastMCP()
@@ -30,25 +43,93 @@ mcp = FastMCP()
 # Setup API key
 api_key = os.getenv("ROWAN_API_KEY")
 if not api_key:
+    logger.error("ROWAN_API_KEY environment variable not found")
     raise ValueError(
         "ROWAN_API_KEY environment variable is required. "
         "Get your API key from https://labs.rowansci.com"
     )
+else:
+    logger.info(f"✅ ROWAN_API_KEY loaded (length: {len(api_key)})")
 
 if rowan is None:
+    logger.error("rowan-python package not found")
     raise ImportError(
         "rowan-python package is required. Install with: pip install rowan-python"
     )
+else:
+    logger.info("✅ rowan-python package loaded successfully")
 
 rowan.api_key = api_key
+logger.info("🔗 Rowan API key configured")
 
-# Define valid workflow types as a Literal type
-WorkflowType = Literal[
-    "admet", "basic_calculation", "bde", "conformer_search", "descriptors",
-    "docking", "electronic_properties", "fukui", "hydrogen_bond_basicity",
-    "irc", "molecular_dynamics", "multistage_opt", "pka", "redox_potential",
-    "scan", "solubility", "spin_states", "tautomers"
-]
+
+def log_mcp_call(func):
+    """Decorator to log MCP tool calls with detailed information."""
+    import functools
+    
+    @functools.wraps(func)
+    def wrapper(**kwargs):  # Only use **kwargs to be compatible with FastMCP
+        func_name = func.__name__
+        start_time = time.time()
+        
+        # Log the incoming request
+        logger.info(f"🔧 MCP Tool Called: {func_name}")
+        logger.info(f"📝 Parameters: {kwargs}")
+        
+        try:
+            # Execute the function
+            result = func(**kwargs)
+            
+            # Calculate execution time
+            execution_time = time.time() - start_time
+            
+            # Log successful completion
+            logger.info(f"✅ {func_name} completed successfully in {execution_time:.2f}s")
+            logger.debug(f"📤 Response preview: {str(result)[:200]}...")
+            
+            return result
+            
+        except Exception as e:
+            # Calculate execution time even for errors
+            execution_time = time.time() - start_time
+            
+            # Log the error with full traceback
+            logger.error(f"❌ {func_name} failed after {execution_time:.2f}s")
+            logger.error(f"🚨 Error: {str(e)}")
+            logger.error(f"📍 Traceback:\n{traceback.format_exc()}")
+            
+            # Return a formatted error message
+            error_msg = f"❌ Error in {func_name}: {str(e)}"
+            if "rowan" in str(e).lower():
+                error_msg += f"\n🔗 Check Rowan API status and your API key"
+            return error_msg
+            
+    return wrapper
+
+
+def log_rowan_api_call(workflow_type: str, **kwargs):
+    """Log Rowan API calls with detailed parameters."""
+    logger.info(f"🌐 Rowan API Call: {workflow_type}")
+    logger.info(f"🔍 Rowan Parameters: {kwargs}")
+    
+    try:
+        start_time = time.time()
+        result = rowan.compute(workflow_type=workflow_type, **kwargs)
+        api_time = time.time() - start_time
+        
+        logger.info(f"🎯 Rowan API success: {workflow_type} ({api_time:.2f}s)")
+        if isinstance(result, dict) and 'uuid' in result:
+            logger.info(f"📋 Job UUID: {result.get('uuid')}")
+            logger.info(f"📊 Status: {result.get('status', 'Unknown')}")
+        
+        return result
+        
+    except Exception as e:
+        api_time = time.time() - start_time
+        logger.error(f"🌐 Rowan API failed: {workflow_type} ({api_time:.2f}s)")
+        logger.error(f"🚨 Rowan Error: {str(e)}")
+        raise e
+
 
 # Pydantic models for request validation
 class PkaRequest(BaseModel):
@@ -74,47 +155,42 @@ class JobRequest(BaseModel):
 
 
 # Tool implementations
+
+# ADMET - Drug Discovery Properties
 @mcp.tool()
-def compute(
+@log_mcp_call
+def rowan_admet(
     name: str,
     molecule: str,
-    workflow_type: WorkflowType,
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
     ping_interval: int = 5
 ) -> str:
-    """Run a computation using Rowan's API.
+    """Predict ADME-Tox properties for drug discovery.
+    
+    ADMET (Absorption, Distribution, Metabolism, Excretion, Toxicity) properties are crucial
+    for drug development. This workflow predicts drug-like properties including:
+    - Bioavailability and permeability
+    - Metabolic stability and clearance
+    - Toxicity indicators and safety profiles
+    - Drug-likeness metrics
+    
+    Use this for: Drug discovery, pharmaceutical development, toxicity screening
     
     Args:
         name: Name for the calculation
-        molecule: Molecule specification (SMILES, etc.)
-        workflow_type: Type of workflow to run. Must be one of: admet, basic_calculation, bde, conformer_search, descriptors, docking, electronic_properties, fukui, hydrogen_bond_basicity, irc, molecular_dynamics, multistage_opt, pka, redox_potential, scan, solubility, spin_states, tautomers
+        molecule: Molecule SMILES string
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
         ping_interval: Check status interval in seconds (default: 5)
     
     Returns:
-        Computation results
+        ADMET prediction results
     """
-    # Runtime validation to ensure only valid workflow types are accepted
-    VALID_WORKFLOWS = {
-        "admet", "basic_calculation", "bde", "conformer_search", "descriptors",
-        "docking", "electronic_properties", "fukui", "hydrogen_bond_basicity",
-        "irc", "molecular_dynamics", "multistage_opt", "pka", "redox_potential",
-        "scan", "solubility", "spin_states", "tautomers"
-    }
-    
-    if workflow_type not in VALID_WORKFLOWS:
-        raise ValueError(
-            f"Invalid workflow_type '{workflow_type}'. "
-            f"Must be one of: {', '.join(sorted(VALID_WORKFLOWS))}. "
-            f"See https://docs.rowansci.com/api/python for details."
-        )
-    
-    result = rowan.compute(
+    result = log_rowan_api_call(
+        workflow_type="admet",
         name=name,
         molecule=molecule,
-        workflow_type=workflow_type,
         folder_uuid=folder_uuid,
         blocking=blocking,
         ping_interval=ping_interval
@@ -122,7 +198,601 @@ def compute(
     return str(result)
 
 
+# Basic Calculation - General Quantum Chemistry
 @mcp.tool()
+@log_mcp_call
+def rowan_basic_calculation(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Run general quantum chemistry calculations.
+    
+    Performs standard quantum chemistry calculations including:
+    - Single point energy calculations
+    - Geometry optimization
+    - Frequency calculations
+    - Basic electronic structure properties
+    
+    Use this for: Energy calculations, geometry optimization, vibrational analysis
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Basic calculation results
+    """
+    result = log_rowan_api_call(
+        workflow_type="basic_calculation",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
+
+
+# Bond Dissociation Energy
+@mcp.tool()
+def rowan_bde(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Calculate bond dissociation energies.
+    
+    Predicts the energy required to break specific bonds in molecules. Useful for:
+    - Understanding metabolic pathways and degradation
+    - Predicting reaction selectivity
+    - Identifying weak bonds for synthetic planning
+    
+    Use this for: Metabolism prediction, synthetic planning, reaction mechanism studies
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Bond dissociation energy results
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="bde",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error calculating BDE: {str(e)}"
+
+
+# Multistage Optimization - Recommended for Geometry Optimization
+@mcp.tool()
+@log_mcp_call
+def rowan_multistage_opt(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Run multi-level geometry optimization (RECOMMENDED).
+    
+    Performs hierarchical optimization using multiple levels of theory:
+    GFN2-xTB → AIMNet2 → DFT for optimal balance of speed and accuracy.
+    
+    This is the RECOMMENDED method for geometry optimization as it provides:
+    - High accuracy final structures
+    - Efficient computational cost
+    - Reliable convergence
+    
+    Use this for: Geometry optimization, conformational analysis, structure refinement
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Optimized geometry and energy results
+    """
+    result = log_rowan_api_call(
+        workflow_type="multistage_opt",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
+
+
+# Electronic Properties - HOMO/LUMO, Orbitals
+@mcp.tool()
+def rowan_electronic_properties(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Calculate electronic structure properties.
+    
+    Computes electronic properties including:
+    - HOMO/LUMO energies and orbitals
+    - Molecular orbital analysis
+    - Electronic density distributions
+    - Band gaps and frontier orbital properties
+    
+    Use this for: Electronic structure analysis, orbital visualization, reactivity prediction
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Electronic properties results
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="electronic_properties",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error calculating electronic properties: {str(e)}"
+
+
+# Descriptors - Molecular Feature Vectors
+@mcp.tool()
+def rowan_descriptors(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Calculate molecular descriptors for data science.
+    
+    Generates comprehensive molecular descriptors including:
+    - Topological and geometric descriptors
+    - Electronic and physicochemical properties
+    - Graph-based molecular features
+    - Machine learning ready feature vectors
+    
+    Use this for: QSAR modeling, machine learning, chemical space analysis
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Molecular descriptors results
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="descriptors",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error calculating descriptors: {str(e)}"
+
+
+# Solubility Prediction
+@mcp.tool()
+def rowan_solubility(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Predict aqueous solubility.
+    
+    Predicts water solubility, a critical property for:
+    - Drug formulation and bioavailability
+    - Environmental fate and transport
+    - Process chemistry and purification
+    
+    Use this for: Drug development, environmental assessment, process optimization
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Solubility prediction results
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="solubility",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error predicting solubility: {str(e)}"
+
+
+# Redox Potential
+@mcp.tool()
+def rowan_redox_potential(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Predict redox potentials vs. SCE in acetonitrile.
+    
+    Calculates oxidation and reduction potentials for:
+    - Electrochemical reaction design
+    - Battery and energy storage applications
+    - Understanding electron transfer processes
+    
+    Use this for: Electrochemistry, battery materials, electron transfer studies
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Redox potential results
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="redox_potential",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error calculating redox potential: {str(e)}"
+
+
+# Scan - Potential Energy Surface Scans
+@mcp.tool()
+def rowan_scan(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Run potential energy surface scans.
+    
+    Performs constrained optimizations along reaction coordinates to:
+    - Map reaction pathways and mechanisms
+    - Find transition state approximations
+    - Study conformational preferences
+    - Analyze rotational barriers (atropisomerism)
+    
+    Use this for: Reaction mechanism studies, transition state searching, conformational analysis
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Scan results with energy profile
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="scan",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error running scan: {str(e)}"
+
+
+# Fukui Indices - Reactivity Analysis
+@mcp.tool()
+def rowan_fukui(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Calculate Fukui indices for reactivity prediction.
+    
+    Predicts sites of chemical reactivity by analyzing electron density changes:
+    - f(+): reactivity towards nucleophiles
+    - f(-): reactivity towards electrophiles  
+    - f(0): reactivity towards radicals
+    
+    Use this for: Predicting reaction sites, selectivity analysis, drug design
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Fukui indices and reactivity analysis
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="fukui",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error calculating Fukui indices: {str(e)}"
+
+
+# Spin States
+@mcp.tool()
+def rowan_spin_states(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Determine preferred spin states for molecules.
+    
+    Calculates energies of different spin multiplicities to determine:
+    - Ground state spin multiplicity
+    - Spin crossover energetics
+    - High-spin vs low-spin preferences
+    
+    Use this for: Transition metal complexes, radical species, magnetic materials
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Spin state energetics results
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="spin_states",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error calculating spin states: {str(e)}"
+
+
+# Tautomers
+@mcp.tool()
+def rowan_tautomers(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Enumerate and rank tautomers by stability.
+    
+    Finds all possible tautomeric forms and ranks them by relative energy:
+    - Prototropic tautomers (keto-enol, etc.)
+    - Relative populations at room temperature
+    - Dominant tautomeric forms
+    
+    Use this for: Drug design, understanding protonation states, reaction mechanisms
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Tautomer enumeration and ranking results
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="tautomers",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error enumerating tautomers: {str(e)}"
+
+
+# Hydrogen Bond Basicity
+@mcp.tool()
+def rowan_hydrogen_bond_basicity(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Calculate hydrogen bond acceptor strength.
+    
+    Quantifies the ability of molecules to accept hydrogen bonds:
+    - Important for drug-target interactions
+    - Crystal packing predictions
+    - Solvent interactions
+    
+    Use this for: Drug design, crystal engineering, intermolecular interactions
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Hydrogen bond basicity results
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="hydrogen_bond_basicity",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error calculating hydrogen bond basicity: {str(e)}"
+
+
+# IRC - Reaction Coordinate Following
+@mcp.tool()
+def rowan_irc(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Follow intrinsic reaction coordinates from transition states.
+    
+    Traces reaction pathways from transition states to reactants and products:
+    - Validates transition state connections
+    - Maps complete reaction pathways
+    - Confirms reaction mechanisms
+    
+    Use this for: Mechanism validation, reaction pathway mapping, transition state analysis
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string (should be a transition state)
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        IRC pathway results
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="irc",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error running IRC: {str(e)}"
+
+
+# Molecular Dynamics
+@mcp.tool()
+@log_mcp_call
+def rowan_molecular_dynamics(
+    name: str,
+    molecule: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
+) -> str:
+    """Run molecular dynamics simulations.
+    
+    Performs MD simulations to study:
+    - Dynamic behavior and flexibility
+    - Conformational sampling
+    - Thermal properties
+    - Time-dependent phenomena
+    
+    Use this for: Conformational dynamics, thermal properties, flexible systems
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+    
+    Returns:
+        Molecular dynamics trajectory and analysis
+    """
+    try:
+        result = rowan.compute(
+            name=name,
+            molecule=molecule,
+            workflow_type="molecular_dynamics",
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        return str(result)
+    except Exception as e:
+        return f"❌ Error running molecular dynamics: {str(e)}"
+
+
+@mcp.tool()
+@log_mcp_call
 def rowan_pka(
     name: str,
     molecule: str,
@@ -138,32 +808,29 @@ def rowan_pka(
     Returns:
         pKa calculation results
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="pka",
-            folder_uuid=folder_uuid
-        )
+    result = log_rowan_api_call(
+        workflow_type="pka",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid
+    )
+    
+    pka_value = result.get("object_data", {}).get("strongest_acid")
+    
+    formatted = f"✅ pKa calculation for '{name}' completed!\n\n"
+    formatted += f"🧪 Molecule: {molecule}\n"
+    formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
+    
+    if pka_value is not None:
+        formatted += f"🧬 Strongest Acid pKa: {pka_value:.2f}\n"
+    else:
+        formatted += "⚠️ pKa result not yet available\n"
         
-        pka_value = result.get("object_data", {}).get("strongest_acid")
-        
-        formatted = f"✅ pKa calculation for '{name}' completed!\n\n"
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
-        
-        if pka_value is not None:
-            formatted += f"🧬 Strongest Acid pKa: {pka_value:.2f}\n"
-        else:
-            formatted += "⚠️ pKa result not yet available\n"
-            
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error calculating pKa: {str(e)}"
+    return formatted
 
 
 @mcp.tool()
+@log_mcp_call
 def rowan_conformers(
     name: str,
     molecule: str,
@@ -181,27 +848,23 @@ def rowan_conformers(
     Returns:
         Conformer search results
     """
-    try:
-        settings = {"max_conformers": max_conformers}
-        
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="conformer_search",
-            settings=settings,
-            folder_uuid=folder_uuid
-        )
-        
-        formatted = f"✅ Conformer search for '{name}' started!\n\n"
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {result.get('status', 'Unknown')}\n"
-        formatted += f"🔄 Max Conformers: {max_conformers}\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error running conformer search: {str(e)}"
+    settings = {"max_conformers": max_conformers}
+    
+    result = log_rowan_api_call(
+        workflow_type="conformer_search",
+        name=name,
+        molecule=molecule,
+        settings=settings,
+        folder_uuid=folder_uuid
+    )
+    
+    formatted = f"✅ Conformer search for '{name}' started!\n\n"
+    formatted += f"🧪 Molecule: {molecule}\n"
+    formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
+    formatted += f"📊 Status: {result.get('status', 'Unknown')}\n"
+    formatted += f"🔄 Max Conformers: {max_conformers}\n"
+    
+    return formatted
 
 
 @mcp.tool()
@@ -390,7 +1053,7 @@ def rowan_folder_list(
 @mcp.tool()
 def rowan_workflow_create(
     name: str,
-    workflow_type: WorkflowType,
+    workflow_type: str,
     initial_molecule: str,
     parent_uuid: Optional[str] = None,
     notes: Optional[str] = None,
@@ -403,7 +1066,7 @@ def rowan_workflow_create(
     
     Args:
         name: Name of the workflow
-        workflow_type: Type of workflow to create. Must be one of: admet, basic_calculation, bde, conformer_search, descriptors, docking, electronic_properties, fukui, hydrogen_bond_basicity, irc, molecular_dynamics, multistage_opt, pka, redox_potential, scan, solubility, spin_states, tautomers
+        workflow_type: Type of workflow to create
         initial_molecule: Initial molecule (SMILES or stjames.Molecule)
         parent_uuid: Parent folder UUID
         notes: Notes for the workflow
@@ -415,6 +1078,51 @@ def rowan_workflow_create(
     Returns:
         Created workflow details
     """
+    
+    # Validate workflow type
+    VALID_WORKFLOWS = {
+        "admet", "basic_calculation", "bde", "conformer_search", "descriptors", 
+        "docking", "electronic_properties", "fukui", "hydrogen_bond_basicity", 
+        "irc", "molecular_dynamics", "multistage_opt", "pka", "redox_potential", 
+        "scan", "solubility", "spin_states", "tautomers"
+    }
+    
+    # Strict validation - no auto-correction
+    if workflow_type not in VALID_WORKFLOWS:
+        error_msg = f"❌ Invalid workflow_type '{workflow_type}'.\n\n"
+        error_msg += "🔧 **Available Rowan Workflow Types:**\n\n"
+        
+        # Group by common use cases for better guidance
+        error_msg += "**🔬 Basic Calculations:**\n"
+        error_msg += "• `basic_calculation` - Energy, optimization, frequencies\n"
+        error_msg += "• `electronic_properties` - HOMO/LUMO, orbitals\n"
+        error_msg += "• `multistage_opt` - Multi-level optimization\n\n"
+        
+        error_msg += "**🧬 Molecular Analysis:**\n"
+        error_msg += "• `conformer_search` - Find molecular conformations\n"
+        error_msg += "• `tautomers` - Tautomer enumeration\n"
+        error_msg += "• `descriptors` - Molecular descriptors\n\n"
+        
+        error_msg += "**⚗️ Chemical Properties:**\n"
+        error_msg += "• `pka` - pKa prediction\n"
+        error_msg += "• `redox_potential` - Redox potentials\n"
+        error_msg += "• `bde` - Bond dissociation energies\n"
+        error_msg += "• `solubility` - Solubility prediction\n\n"
+        
+        error_msg += "**🧪 Drug Discovery:**\n"
+        error_msg += "• `admet` - ADME-Tox properties\n"
+        error_msg += "• `docking` - Protein-ligand docking\n\n"
+        
+        error_msg += "**🔬 Advanced Analysis:**\n"
+        error_msg += "• `scan` - Potential energy scans\n"
+        error_msg += "• `fukui` - Reactivity analysis\n"
+        error_msg += "• `spin_states` - Spin state preferences\n"
+        error_msg += "• `irc` - Reaction coordinate following\n"
+        error_msg += "• `molecular_dynamics` - MD simulations\n"
+        error_msg += "• `hydrogen_bond_basicity` - H-bond strength\n\n"
+        
+        raise ValueError(error_msg)
+
     try:
         workflow = rowan.Workflow.create(
             name=name,
@@ -887,89 +1595,107 @@ def rowan_docking(
 
 @mcp.tool()
 def rowan_available_workflows() -> str:
-    """Get list of all available Rowan workflow types with descriptions.
+    """Get list of all available Rowan MCP tools with descriptions.
     
     Returns:
-        Comprehensive list of available workflow types and their use cases
+        Comprehensive list of available Rowan MCP tools and their use cases
     """
     
-    workflows = {
-        "admet": "ADMET property prediction",
-        "basic_calculation": "General quantum chemistry calculation",
-        "bde": "Bond dissociation energy calculation",
-        "conformer_search": "Conformational analysis with energy ranking",
-        "descriptors": "Molecular descriptors and properties",
-        "docking": "Protein-ligand docking",
-        "electronic_properties": "Electronic structure and orbital analysis",
-        "fukui": "Fukui indices for reactivity analysis",
-        "hydrogen_bond_basicity": "Hydrogen bond acceptor strength",
-        "irc": "Intrinsic reaction coordinate following",
-        "molecular_dynamics": "Molecular dynamics simulation",
-        "multistage_opt": "Multi-level optimization (GFN2-xTB → AIMNet2 → DFT)",
-        "pka": "pKa prediction using ML potentials",
-        "redox_potential": "Redox potential prediction vs. SCE",
-        "scan": "Potential energy surface scan for reaction pathways",
-        "solubility": "Aqueous solubility prediction",
-        "spin_states": "Spin state energetics",
-        "tautomers": "Tautomer enumeration and stability prediction"
-    }
+    result = "🔬 **Available Rowan MCP Tools** 🔬\n\n"
     
-    result = "🔬 **Available Rowan Workflow Types** 🔬\n\n"
+    result += "✨ **Now with specific tools for each workflow type!**\n"
+    result += "Each tool has tailored documentation and parameters.\n\n"
     
     # Group by common use cases
     result += "**🔬 Basic Calculations:**\n"
-    result += "• `basic_calculation` - Energy, optimization, frequencies\n"
-    result += "• `electronic_properties` - HOMO/LUMO, orbitals\n"
-    result += "• `multistage_opt` - Multi-level optimization\n\n"
+    result += "• `rowan_basic_calculation` - Energy, optimization, frequencies\n"
+    result += "• `rowan_electronic_properties` - HOMO/LUMO, orbitals\n"
+    result += "• `rowan_multistage_opt` - Multi-level optimization (RECOMMENDED for geometry)\n\n"
     
     result += "**🧬 Molecular Analysis:**\n"
-    result += "• `conformer_search` - Find molecular conformations\n"
-    result += "• `tautomers` - Tautomer enumeration\n"
-    result += "• `descriptors` - Molecular descriptors\n\n"
+    result += "• `rowan_conformers` - Find molecular conformations\n"
+    result += "• `rowan_tautomers` - Tautomer enumeration\n"
+    result += "• `rowan_descriptors` - Molecular descriptors for ML\n\n"
     
     result += "**⚗️ Chemical Properties:**\n"
-    result += "• `pka` - pKa prediction\n"
-    result += "• `redox_potential` - Redox potentials\n"
-    result += "• `bde` - Bond dissociation energies\n"
-    result += "• `solubility` - Solubility prediction\n\n"
+    result += "• `rowan_pka` - pKa prediction\n"
+    result += "• `rowan_redox_potential` - Redox potentials vs SCE\n"
+    result += "• `rowan_bde` - Bond dissociation energies\n"
+    result += "• `rowan_solubility` - Solubility prediction\n\n"
     
     result += "**🧪 Drug Discovery:**\n"
-    result += "• `admet` - ADME-Tox properties\n"
-    result += "• `docking` - Protein-ligand docking\n\n"
+    result += "• `rowan_admet` - ADME-Tox properties\n"
+    result += "• `rowan_docking` - Protein-ligand docking\n\n"
     
     result += "**🔬 Advanced Analysis:**\n"
-    result += "• `scan` - Potential energy scans\n"
-    result += "• `fukui` - Reactivity analysis\n"
-    result += "• `spin_states` - Spin state preferences\n"
-    result += "• `irc` - Reaction coordinate following\n"
-    result += "• `molecular_dynamics` - MD simulations\n"
-    result += "• `hydrogen_bond_basicity` - H-bond strength\n\n"
+    result += "• `rowan_scan` - Potential energy scans\n"
+    result += "• `rowan_fukui` - Reactivity analysis\n"
+    result += "• `rowan_spin_states` - Spin state preferences\n"
+    result += "• `rowan_irc` - Reaction coordinate following\n"
+    result += "• `rowan_molecular_dynamics` - MD simulations\n"
+    result += "• `rowan_hydrogen_bond_basicity` - H-bond strength\n\n"
     
     result += "💡 **Usage Guidelines:**\n"
-    result += "• For geometry optimization: use `multistage_opt`\n"
-    result += "• For energy calculations: use `basic_calculation`\n"
-    result += "• For conformer search: use `conformer_search`\n"
-    result += "• For pKa prediction: use `pka`\n"
-    result += "• For electronic structure: use `electronic_properties`\n"
-    result += "• For drug properties: use `admet`\n\n"
+    result += "• For geometry optimization: use `rowan_multistage_opt` (RECOMMENDED)\n"
+    result += "• For energy calculations: use `rowan_basic_calculation`\n"
+    result += "• For conformer search: use `rowan_conformers`\n"
+    result += "• For pKa prediction: use `rowan_pka`\n"
+    result += "• For electronic structure: use `rowan_electronic_properties`\n"
+    result += "• For drug properties: use `rowan_admet`\n"
+    result += "• For reaction mechanisms: use `rowan_scan` then `rowan_irc`\n\n"
     
-    result += f"📋 **Total Available:** {len(workflows)} workflow types\n"
-    result += "🔗 **API Reference:** https://docs.rowansci.com/api/python\n"
+    result += "📋 **Total Available:** 15+ specialized tools\n"
+    result += "🔗 **Each tool has specific documentation - check individual tool descriptions**\n"
     
     return result
+
+
+@mcp.tool()
+@log_mcp_call
+def rowan_set_log_level(level: str = "INFO") -> str:
+    """Set the logging level for debugging.
+    
+    Args:
+        level: Logging level (DEBUG, INFO, WARNING, ERROR)
+        
+    Returns:
+        Confirmation message
+    """
+    valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR"]
+    level = level.upper()
+    
+    if level not in valid_levels:
+        return f"❌ Invalid log level. Use one of: {', '.join(valid_levels)}"
+    
+    logger.setLevel(getattr(logging, level))
+    logger.info(f"📊 Log level changed to: {level}")
+    
+    return f"✅ Log level set to {level}"
 
 
 def main() -> None:
     """Main entry point for the MCP server."""
     try:
-        print("🚀 Starting Rowan MCP Server...")
-        print(f"🔑 API Key loaded: {'✅' if api_key else '❌'}")
-        print("🔗 Server ready for MCP connections!")
+        logger.info("🚀 Starting Rowan MCP Server...")
+        logger.info(f"📊 Log level: {logger.level}")
+        logger.info(f"📁 Log file: rowan_mcp.log")
+        logger.info(f"🔑 API Key loaded: {'✅' if api_key else '❌'}")
+        logger.info("🔗 Server ready for MCP connections!")
+        
+        print("🚀 Rowan MCP Server starting...")
+        print("📝 Logging enabled - check rowan_mcp.log for detailed logs")
+        print(f"🔑 API Key: {'✅ Loaded' if api_key else '❌ Missing'}")
+        
         mcp.run()
+        
     except KeyboardInterrupt:
+        logger.info("👋 Server shutdown requested by user")
         print("\n👋 Server shutdown requested by user")
     except Exception as e:
+        logger.error(f"❌ Server startup error: {e}")
+        logger.error(f"📍 Traceback:\n{traceback.format_exc()}")
         print(f"❌ Server error: {e}")
+        print("📝 Check rowan_mcp.log for detailed error information")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,184 @@
+2025-06-12 18:14:55,683 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-12 18:14:55,683 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-12 18:14:55,683 - server - INFO - 🔗 Rowan API key configured
+2025-06-12 18:15:24,886 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-12 18:15:24,886 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-12 18:15:24,886 - server - INFO - 🔗 Rowan API key configured
+2025-06-12 18:15:24,901 - server - INFO - 🔬 Test 1: Basic logging test
+2025-06-12 18:15:24,901 - server - WARNING - ⚠️ Test warning message
+2025-06-12 18:15:24,901 - server - ERROR - ❌ Test error message
+2025-06-12 18:15:24,902 - server - INFO - 🔧 MCP Tool Called: test_function
+2025-06-12 18:15:24,902 - server - INFO - 📝 Parameters: {'name': 'test_param', 'value': 123}
+2025-06-12 18:15:24,902 - server - INFO - Inside test function with test_param and 123
+2025-06-12 18:15:24,902 - server - INFO - ✅ test_function completed successfully in 0.00s
+2025-06-12 18:15:56,451 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-12 18:15:56,452 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-12 18:15:56,452 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-12 18:21:47,186 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-12 18:21:47,187 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-12 18:21:47,187 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-12 18:22:45,024 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-12 18:22:45,024 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-12 18:22:45,024 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-12 18:23:01,884 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-12 18:23:01,884 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-12 18:23:01,884 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-12 18:23:39,769 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-12 18:23:39,769 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-12 18:23:39,769 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-12 18:23:47,294 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-12 18:23:47,294 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-12 18:23:47,294 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-12 18:24:16,423 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-12 18:24:16,423 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-12 18:24:16,423 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-12 18:25:12,770 - src.server - INFO - 🔧 MCP Tool Called: rowan_multistage_opt
+2025-06-12 18:25:12,772 - src.server - INFO - 📝 Parameters: {'name': 'caffeine_geometry_optimization', 'molecule': 'CN1C=NC2=C1C(=O)N(C(=O)N2C)C'}
+2025-06-12 18:25:12,772 - src.server - INFO - 🌐 Rowan API Call: multistage_opt
+2025-06-12 18:25:12,773 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'caffeine_geometry_optimization', 'molecule': 'CN1C=NC2=C1C(=O)N(C(=O)N2C)C', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-12 18:25:13,551 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-12 18:25:13,900 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:25:19,251 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:25:24,657 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:25:30,124 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:25:35,491 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:25:40,873 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:25:46,282 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:25:51,662 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:25:57,052 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:02,524 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:07,926 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:13,330 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:18,736 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:24,136 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:29,531 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:34,957 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:40,358 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:45,756 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:51,146 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:26:56,528 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:01,964 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:07,360 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:12,741 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:18,119 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:23,527 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:28,913 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:34,309 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:39,709 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:45,104 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:50,485 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:27:55,899 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:01,296 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:06,728 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:12,115 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:17,507 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:22,931 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:28,342 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:33,731 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:39,135 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:44,527 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:49,904 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:28:55,304 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:00,693 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:06,094 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:11,478 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:16,878 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:22,277 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:27,693 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:33,064 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:38,442 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:43,843 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:49,246 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:29:54,648 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:00,053 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:05,583 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:10,967 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:16,386 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:21,762 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:27,165 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:32,569 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:37,941 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:43,359 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:48,743 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:54,138 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:30:59,537 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:31:04,969 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:31:10,347 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:31:15,729 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:31:21,133 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:31:26,529 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:31:31,921 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:31:37,305 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:31:42,683 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:31:43,082 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7fb5c755-0f7b-43e5-9aac-e2cf59000169 "HTTP/1.1 200 OK"
+2025-06-12 18:31:43,103 - src.server - INFO - 🎯 Rowan API success: multistage_opt (390.33s)
+2025-06-12 18:31:43,104 - src.server - INFO - 📋 Job UUID: 7fb5c755-0f7b-43e5-9aac-e2cf59000169
+2025-06-12 18:31:43,104 - src.server - INFO - 📊 Status: None
+2025-06-12 18:31:43,104 - src.server - INFO - ✅ rowan_multistage_opt completed successfully in 390.33s
+2025-06-12 18:31:43,109 - src.server - INFO - 🔧 MCP Tool Called: rowan_multistage_opt
+2025-06-12 18:31:43,109 - src.server - INFO - 📝 Parameters: {'name': 'caffeine_geometry_optimization', 'molecule': 'CN1C=NC2=C1C(=O)N(C(=O)N2C)C'}
+2025-06-12 18:31:43,109 - src.server - INFO - 🌐 Rowan API Call: multistage_opt
+2025-06-12 18:31:43,109 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'caffeine_geometry_optimization', 'molecule': 'CN1C=NC2=C1C(=O)N(C(=O)N2C)C', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-12 18:31:43,730 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-12 18:31:44,063 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:31:49,422 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:31:54,776 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:00,247 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:05,597 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:10,993 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:16,398 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:21,784 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:27,180 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:32,596 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:37,995 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:43,400 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:48,794 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:54,191 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:32:59,579 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:05,068 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:10,453 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:15,846 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:21,268 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:26,721 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:32,109 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:37,521 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:42,903 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:48,302 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:53,686 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:33:59,063 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:04,459 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:09,875 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:15,269 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:20,649 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:26,025 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:31,416 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:36,843 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:42,209 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:48,618 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:53,993 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:34:59,393 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:04,847 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:10,222 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:15,654 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:21,036 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:26,618 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:31,998 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:37,376 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:42,754 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:48,167 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:53,539 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:35:58,911 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:04,305 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:09,668 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:15,080 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:20,471 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:25,832 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:31,206 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:36,629 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:42,021 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:47,400 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:52,786 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:36:58,186 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:37:03,657 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:37:09,046 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
+2025-06-12 18:37:14,450 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/0f7b36bd-7098-447f-ab64-0d51d4fbc03d "HTTP/1.1 200 OK"
