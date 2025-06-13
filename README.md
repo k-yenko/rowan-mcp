@@ -1,16 +1,16 @@
 # Rowan MCP Server
 
-**Connect AI assistants to powerful chemistry calculations**
+**Connect AI assistants to chemistry calculations**
 
-This tool lets AI assistants (like Claude) run real chemistry calculations through Rowan's platform. Ask your AI to calculate molecular properties, optimize structures, or predict how molecules behave - and get actual scientific results back.
+This tool lets AI assistants (like Claude) run real chemistry calculations through Rowan's platform. Ask your AI to calculate molecular properties, optimize structures, or predict how molecules behave - and get scientific results back.
 
 ## What This Does
 
 🧪 **Chemistry Calculations**: Your AI can run quantum chemistry calculations, optimize molecular structures, and predict chemical properties
 
-🤖 **AI Integration**: Works with any AI assistant that supports MCP (Model Context Protocol) - like Claude Desktop
+🤖 **AI Integration**: Works with any AI assistant that supports MCP
 
-☁️ **Cloud Computing**: Uses Rowan's powerful cloud platform - no need to install complex chemistry software
+☁️ **Cloud Computing**: Uses Rowan's platform - no need to install complex chemistry software
 
 ## Quick Start
 
