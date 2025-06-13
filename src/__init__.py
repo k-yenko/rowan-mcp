@@ -1,0 +1,14 @@
+"""
+Rowan MCP Server - Computational Chemistry Platform Integration
+
+This package provides MCP (Model Context Protocol) server functionality
+for integrating with Rowan's computational chemistry platform.
+"""
+
+__version__ = "1.0.0"
+__author__ = "Rowan MCP Team"
+__description__ = "MCP server for Rowan computational chemistry platform"
+
+from .server import main
+
+__all__ = ["main"] 
