@@ -1,6 +1,8 @@
 # Rowan MCP Server
 
-Connect AI assistants to Rowan's computational chemistry platform via Model Context Protocol (MCP).
+**Connect AI assistants to chemistry calculations**
+
+This tool lets AI assistants (like Claude) run real chemistry calculations through Rowan's platform. Ask your AI to calculate molecular properties, optimize structures, or predict how molecules behave - and get scientific results back.
 
 ## Setup
 
@@ -11,8 +13,47 @@ Connect AI assistants to Rowan's computational chemistry platform via Model Cont
 
 ## AI Assistant Configuration
 
-Add to your Claude Desktop config:
+🤖 **AI Integration**: Works with any AI assistant that supports MCP
 
+☁️ **Cloud Computing**: Uses Rowan's platform - no need to install complex chemistry software
+
+## Quick Start
+
+### 1. Get a Rowan Account
+- Visit [labs.rowansci.com](https://labs.rowansci.com)
+- Create a free account
+- Generate an API key from your account settings
+
+### 2. Install & Setup
+```bash
+# Clone this repository
+git clone <repository-url>
+cd rowan-mcp
+
+# Install dependencies
+uv sync
+
+# Add your API key to .env file
+echo "ROWAN_API_KEY=your_actual_api_key_here" > .env
+```
+
+### 3. Start the Server
+
+**Option A: HTTP Server (Recommended)**
+```bash
+# Start HTTP server on 127.0.0.1:6276/mcp
+uv run python -c "from src.http_server import main; main()"
+```
+
+**Option B: STDIO Mode (Traditional)**
+```bash  
+# For traditional stdio-based MCP clients
+uv run python -m src
+```
+
+### 4. Connect Your AI Assistant
+
+**Option A: HTTP Connection (Modern)**
 ```json
 {
   "mcpServers": {
@@ -93,3 +134,81 @@ rowan_docking(name="inhibitor", protein="1ABC", ligand="CCO")
 - **API Issues**: support@rowansci.com
 - **Documentation**: [docs.rowansci.com](https://docs.rowansci.com)
 - **Tool Help**: Use `rowan_available_workflows()` for complete tool list 
+
+## Enhanced Tutorial Examples
+The `rowan_compute` tool has been enhanced with comprehensive examples based on official Rowan tutorials. It now provides intelligent context and formatting for common calculation types:
+
+### Supported Calculation Types
+- **Optimization & Frequencies**: Geometry optimization with vibrational analysis
+- **Single Point Energy**: Energy calculation at fixed geometry  
+- **Transition State Optimization**: Finding and optimizing transition states
+- **Orbital Calculations**: Electronic structure and molecular orbital analysis
+- **Conformer Search**: Multiple conformer generation and analysis
+- **Potential Energy Scans**: Energy profiles along reaction coordinates
+
+### Tutorial Examples
+Run the comprehensive tutorial examples:
+```bash
+python examples/tutorial_examples.py
+```
+
+This demonstrates real usage patterns from the [official Rowan tutorials](https://docs.rowansci.com/tutorials/), including:
+- Ethane optimization and frequencies (like the official tutorial)
+- Benzene single point energy calculations
+- Methanol geometry optimization
+- Transition state finding
+- Water orbital calculations
+
+## 🧬 Protein-Ligand Docking
+
+The Rowan MCP server includes specialized support for protein-ligand docking calculations. Due to the complexity of protein-ligand systems, there are specific format requirements:
+
+### Supported Protein Formats
+- **PDB ID**: 4-character codes like `1ABC` (recommended)
+- **PDB File Content**: Direct PDB file content
+- **Protein Sequences**: Amino acid sequences (experimental)
+
+### Supported Ligand Formats
+- **SMILES**: Standard chemical notation like `CCO` or `CC(=O)O`
+
+### Usage Examples
+
+```python
+# Using PDB ID (recommended)
+result = rowan_docking(
+    name="HIV-1 protease inhibitor",
+    protein="1HTM",  # HIV-1 protease PDB ID
+    ligand="CC(C)c1nc(cs1)CN(C)C(=O)N[C@H](C(C)C)C(=O)N",
+)
+
+# The tool will automatically try multiple approaches:
+# 1. PDB ID format
+# 2. Ligand-only calculation
+# 3. Combined format
+```
+
+### Troubleshooting SMILES Parsing Errors
+
+If you see errors like:
+```
+SMILES Parse Error: syntax error while parsing: GLP1R:GLP1
+```
+
+This means the system is trying to parse protein names/sequences as chemical SMILES strings. **Solutions:**
+
+1. **Use the dedicated `rowan_docking()` tool** instead of `rowan_compute()` for protein-ligand work
+2. **Use valid PDB IDs** from the Protein Data Bank (https://www.rcsb.org/)
+3. **Ensure ligands are valid SMILES** strings
+
+### Common Mistakes to Avoid
+- ❌ `"glp1r+glp1"` - Not valid SMILES
+- ❌ `"GLP1R:GLP1"` - Protein names, not chemical structures  
+- ❌ `"GLPR1_HUMAN"` - UniProt IDs are not directly supported
+
+- ✅ `"1F0K"` - Valid PDB ID for GLP-1 receptor
+- ✅ `"CCO"` - Valid SMILES for ethanol
+
+---
+
+**Made with ❤️ for the computational chemistry community** 
+>>>>>>> 3d23a74d9a5fe2f085d636431d694194fdef2b5b
