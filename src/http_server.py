@@ -17,7 +17,7 @@ load_dotenv()
 # Import all our Rowan functions
 from .server import (
     # Basic Calculations
-    rowan_admet, rowan_basic_calculation, rowan_multistage_opt, rowan_electronic_properties,
+    rowan_admet, rowan_quantum_chemistry, rowan_qc_guide, rowan_multistage_opt, rowan_electronic_properties,
     
     # Molecular Analysis  
     rowan_conformers, rowan_descriptors, rowan_tautomers,
@@ -32,17 +32,8 @@ from .server import (
     # Drug Discovery
     rowan_docking,
     
-    # Management and Utilities
-    rowan_available_workflows, rowan_set_log_level, rowan_job_status, rowan_job_results,
-    
-    # Folder Management
-    rowan_folder_create, rowan_folder_list, rowan_folder_retrieve, 
-    rowan_folder_update, rowan_folder_delete,
-    
-    # Workflow Management
-    rowan_workflow_create, rowan_workflow_retrieve, rowan_workflow_update,
-    rowan_workflow_stop, rowan_workflow_status, rowan_workflow_is_finished,
-    rowan_workflow_delete, rowan_workflow_list,
+    # Unified Management Tools (NEW - replaces 4 old tools)
+    rowan_folder_management, rowan_workflow_management, rowan_system_management,
     
     # Calculation Management
     rowan_calculation_retrieve,
@@ -55,7 +46,8 @@ from .server import (
 TOOL_FUNCTIONS = {
     # Basic Calculations
     "rowan_admet": rowan_admet.fn if hasattr(rowan_admet, 'fn') else rowan_admet,
-    "rowan_basic_calculation": rowan_basic_calculation.fn if hasattr(rowan_basic_calculation, 'fn') else rowan_basic_calculation,
+    "rowan_quantum_chemistry": rowan_quantum_chemistry.fn if hasattr(rowan_quantum_chemistry, 'fn') else rowan_quantum_chemistry,
+    "rowan_qc_guide": rowan_qc_guide.fn if hasattr(rowan_qc_guide, 'fn') else rowan_qc_guide,
     "rowan_multistage_opt": rowan_multistage_opt.fn if hasattr(rowan_multistage_opt, 'fn') else rowan_multistage_opt,
     "rowan_electronic_properties": rowan_electronic_properties.fn if hasattr(rowan_electronic_properties, 'fn') else rowan_electronic_properties,
     
@@ -81,28 +73,10 @@ TOOL_FUNCTIONS = {
     # Drug Discovery
     "rowan_docking": rowan_docking.fn if hasattr(rowan_docking, 'fn') else rowan_docking,
     
-    # Management and Utilities
-    "rowan_available_workflows": rowan_available_workflows.fn if hasattr(rowan_available_workflows, 'fn') else rowan_available_workflows,
-    "rowan_set_log_level": rowan_set_log_level.fn if hasattr(rowan_set_log_level, 'fn') else rowan_set_log_level,
-    "rowan_job_status": rowan_job_status.fn if hasattr(rowan_job_status, 'fn') else rowan_job_status,
-    "rowan_job_results": rowan_job_results.fn if hasattr(rowan_job_results, 'fn') else rowan_job_results,
-    
-    # Folder Management
-    "rowan_folder_create": rowan_folder_create.fn if hasattr(rowan_folder_create, 'fn') else rowan_folder_create,
-    "rowan_folder_list": rowan_folder_list.fn if hasattr(rowan_folder_list, 'fn') else rowan_folder_list,
-    "rowan_folder_retrieve": rowan_folder_retrieve.fn if hasattr(rowan_folder_retrieve, 'fn') else rowan_folder_retrieve,
-    "rowan_folder_update": rowan_folder_update.fn if hasattr(rowan_folder_update, 'fn') else rowan_folder_update,
-    "rowan_folder_delete": rowan_folder_delete.fn if hasattr(rowan_folder_delete, 'fn') else rowan_folder_delete,
-    
-    # Workflow Management
-    "rowan_workflow_create": rowan_workflow_create.fn if hasattr(rowan_workflow_create, 'fn') else rowan_workflow_create,
-    "rowan_workflow_retrieve": rowan_workflow_retrieve.fn if hasattr(rowan_workflow_retrieve, 'fn') else rowan_workflow_retrieve,
-    "rowan_workflow_update": rowan_workflow_update.fn if hasattr(rowan_workflow_update, 'fn') else rowan_workflow_update,
-    "rowan_workflow_stop": rowan_workflow_stop.fn if hasattr(rowan_workflow_stop, 'fn') else rowan_workflow_stop,
-    "rowan_workflow_status": rowan_workflow_status.fn if hasattr(rowan_workflow_status, 'fn') else rowan_workflow_status,
-    "rowan_workflow_is_finished": rowan_workflow_is_finished.fn if hasattr(rowan_workflow_is_finished, 'fn') else rowan_workflow_is_finished,
-    "rowan_workflow_delete": rowan_workflow_delete.fn if hasattr(rowan_workflow_delete, 'fn') else rowan_workflow_delete,
-    "rowan_workflow_list": rowan_workflow_list.fn if hasattr(rowan_workflow_list, 'fn') else rowan_workflow_list,
+    # Unified Management Tools (NEW - consolidated from 4 old tools)
+    "rowan_folder_management": rowan_folder_management.fn if hasattr(rowan_folder_management, 'fn') else rowan_folder_management,
+    "rowan_workflow_management": rowan_workflow_management.fn if hasattr(rowan_workflow_management, 'fn') else rowan_workflow_management,
+    "rowan_system_management": rowan_system_management.fn if hasattr(rowan_system_management, 'fn') else rowan_system_management,
     
     # Calculation Management
     "rowan_calculation_retrieve": rowan_calculation_retrieve.fn if hasattr(rowan_calculation_retrieve, 'fn') else rowan_calculation_retrieve,
@@ -285,7 +259,10 @@ def main():
         app,
         host="127.0.0.1",
         port=6276,
-        log_level="info"
+        log_level="info",
+        timeout_keep_alive=300,  # 5 minutes keep-alive
+        timeout_graceful_shutdown=30,  # 30 seconds graceful shutdown
+        # No request timeout limit for long-running calculations
     )
 
 if __name__ == "__main__":

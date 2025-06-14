@@ -112,15 +112,24 @@ def log_rowan_api_call(workflow_type: str, **kwargs):
     logger.info(f"🌐 Rowan API Call: {workflow_type}")
     logger.info(f"🔍 Rowan Parameters: {kwargs}")
     
+    # Special handling for long-running calculations
+    if workflow_type == "multistage_opt":
+        ping_interval = kwargs.get('ping_interval', 5)
+        logger.info(f"⏳ Multi-stage optimization may take several minutes...")
+        logger.info(f"🔄 Progress will be checked every {ping_interval} seconds")
+    
     try:
         start_time = time.time()
         result = rowan.compute(workflow_type=workflow_type, **kwargs)
         api_time = time.time() - start_time
         
-        logger.info(f"🎯 Rowan API success: {workflow_type} ({api_time:.2f}s)")
+        logger.info(f"🎯 Rowan API submission successful: {workflow_type} ({api_time:.2f}s)")
         if isinstance(result, dict) and 'uuid' in result:
             logger.info(f"📋 Job UUID: {result.get('uuid')}")
-            logger.info(f"📊 Status: {result.get('status', 'Unknown')}")
+            job_status = result.get('status', result.get('object_status', 'Unknown'))
+            status_names = {0: "Queued", 1: "Running", 2: "Completed", 3: "Failed", 4: "Stopped", 5: "Awaiting Queue"}
+            status_text = status_names.get(job_status, f"Unknown ({job_status})")
+            logger.info(f"📊 Job Status: {status_text} ({job_status})")
         
         return result
         
@@ -154,7 +163,449 @@ class JobRequest(BaseModel):
     job_uuid: str = Field(..., description="UUID of the job")
 
 
+# Quantum Chemistry Constants and Helper Functions
+QC_ENGINES = {
+    "psi4": "Hartree–Fock and density-functional theory",
+    "terachem": "Hartree–Fock and density-functional theory", 
+    "pyscf": "Hartree–Fock and density-functional theory",
+    "xtb": "Semiempirical calculations",
+    "aimnet2": "Machine-learned interatomic potential calculations"
+}
+
+QC_METHODS = {
+    # Hartree-Fock
+    "hf": "Hartree-Fock (unrestricted for open-shell systems)",
+    
+    # Pure Functionals - LDA
+    "lsda": "Local Spin Density Approximation (Slater exchange + VWN correlation)",
+    
+    # Pure Functionals - GGA
+    "pbe": "Perdew-Burke-Ernzerhof (1996) GGA functional",
+    "blyp": "Becke 1988 exchange + Lee-Yang-Parr correlation",
+    "bp86": "Becke 1988 exchange + Perdew 1988 correlation",
+    "b97-d3": "Grimme's 2006 B97 reparameterization with D3 dispersion",
+    
+    # Pure Functionals - Meta-GGA
+    "r2scan": "Furness and Sun's 2020 r2SCAN meta-GGA functional",
+    "tpss": "Tao-Perdew-Staroverov-Scuseria meta-GGA (2003)",
+    "m06l": "Zhao and Truhlar's 2006 local meta-GGA functional",
+    
+    # Hybrid Functionals - Global
+    "pbe0": "PBE0 hybrid functional (25% HF exchange)",
+    "b3lyp": "B3LYP hybrid functional (20% HF exchange)",
+    "b3pw91": "B3PW91 hybrid functional (20% HF exchange)",
+    
+    # Hybrid Functionals - Range-Separated
+    "camb3lyp": "CAM-B3LYP range-separated hybrid (19-65% HF exchange)",
+    "wb97x_d3": "ωB97X-D3 range-separated hybrid with D3 dispersion (20-100% HF exchange)",
+    "wb97x_v": "ωB97X-V with VV10 nonlocal dispersion (17-100% HF exchange)",
+    "wb97m_v": "ωB97M-V meta-GGA with VV10 dispersion (15-100% HF exchange)"
+}
+
+QC_BASIS_SETS = {
+    # Pople's STO-nG minimal basis sets
+    "sto-2g": "STO-2G minimal basis set",
+    "sto-3g": "STO-3G minimal basis set (default if none specified)",
+    "sto-4g": "STO-4G minimal basis set",
+    "sto-5g": "STO-5G minimal basis set",
+    "sto-6g": "STO-6G minimal basis set",
+    
+    # Pople's 6-31 basis sets (double-zeta)
+    "6-31g": "6-31G split-valence double-zeta basis set",
+    "6-31g*": "6-31G(d) - 6-31G with polarization on heavy atoms",
+    "6-31g(d)": "6-31G with d polarization on heavy atoms",
+    "6-31g(d,p)": "6-31G with polarization on all atoms",
+    "6-31+g(d,p)": "6-31G with diffuse and polarization functions",
+    "6-311+g(2d,p)": "6-311+G(2d,p) - larger basis for single-point calculations",
+    
+    # Jensen's pcseg-n basis sets (recommended for DFT)
+    "pcseg-0": "Jensen pcseg-0 minimal basis set",
+    "pcseg-1": "Jensen pcseg-1 double-zeta (better than 6-31G(d))",
+    "pcseg-2": "Jensen pcseg-2 triple-zeta basis set",
+    "pcseg-3": "Jensen pcseg-3 quadruple-zeta basis set",
+    "pcseg-4": "Jensen pcseg-4 quintuple-zeta basis set",
+    "aug-pcseg-1": "Augmented Jensen pcseg-1 double-zeta",
+    "aug-pcseg-2": "Augmented Jensen pcseg-2 triple-zeta",
+    
+    # Dunning's cc-PVNZ basis sets (use seg-opt variants for speed)
+    "cc-pvdz": "Correlation-consistent double-zeta (generally contracted - slow)",
+    "cc-pvtz": "Correlation-consistent triple-zeta (generally contracted - slow)",
+    "cc-pvqz": "Correlation-consistent quadruple-zeta (generally contracted - slow)",
+    "cc-pvdz(seg-opt)": "cc-pVDZ segmented-optimized (RECOMMENDED over cc-pVDZ)",
+    "cc-pvtz(seg-opt)": "cc-pVTZ segmented-optimized (RECOMMENDED over cc-pVTZ)",
+    "cc-pvqz(seg-opt)": "cc-pVQZ segmented-optimized (RECOMMENDED over cc-pVQZ)",
+    
+    # Ahlrichs's def2 basis sets
+    "def2-sv(p)": "Ahlrichs def2-SV(P) split-valence polarized",
+    "def2-svp": "Ahlrichs def2-SVP split-valence polarized",
+    "def2-tzvp": "Ahlrichs def2-TZVP triple-zeta valence polarized",
+    
+    # Truhlar's efficient basis sets
+    "midi!": "MIDI!/MIDIX polarized minimal basis set (very efficient)",
+    "midix": "MIDI!/MIDIX polarized minimal basis set (very efficient)"
+}
+
+QC_TASKS = {
+    "energy": "Single point energy calculation",
+    "optimize": "Geometry optimization",
+    "frequencies": "Vibrational frequency analysis",
+    "frequency": "Vibrational frequency analysis (alias for frequencies)",
+    "forces": "Calculate atomic forces",
+    "dipole": "Electric dipole moment",
+    "charges": "Atomic partial charges",
+    "orbitals": "Molecular orbital analysis",
+    "esp": "Electrostatic potential",
+    "nbo": "Natural bond orbital analysis"
+}
+
+QC_CORRECTIONS = {
+    "d3bj": "Grimme's D3 dispersion correction with Becke-Johnson damping",
+    "d3": "Grimme's D3 dispersion correction (automatically applied for B97-D3, ωB97X-D3)"
+}
+
+def get_qc_guidance() -> str:
+    """Generate comprehensive quantum chemistry guidance."""
+    guidance = "🔬 **Rowan Quantum Chemistry Requirements** 🔬\n\n"
+    
+    guidance += "**📋 Required Parameters:**\n"
+    guidance += "1. **Molecule Identity**: SMILES string (e.g., 'CC(=O)OC1=CC=CC=C1C(=O)O' for aspirin)\n"
+    guidance += "2. **Level of Theory**: Method + Basis Set combination\n"
+    guidance += "3. **Task**: What property to calculate\n"
+    guidance += "4. **Settings**: Optional calculation-specific parameters\n"
+    guidance += "5. **Corrections**: Optional post-hoc corrections (e.g., dispersion)\n\n"
+    
+    guidance += "**⚗️ Available Engines:**\n"
+    for engine, description in QC_ENGINES.items():
+        guidance += f"• **{engine.upper()}**: {description}\n"
+    guidance += "\n"
+    
+    guidance += "**🧮 Methods by Category:**\n"
+    guidance += "**Hartree-Fock:**\n"
+    guidance += f"• **HF**: {QC_METHODS['hf']}\n\n"
+    
+    guidance += "**Pure Functionals (LDA/GGA/Meta-GGA):**\n"
+    pure_methods = ["lsda", "pbe", "blyp", "bp86", "b97-d3", "r2scan", "tpss", "m06l"]
+    for method in pure_methods:
+        guidance += f"• **{method.upper()}**: {QC_METHODS[method]}\n"
+    guidance += "\n"
+    
+    guidance += "**Hybrid Functionals:**\n"
+    hybrid_methods = ["pbe0", "b3lyp", "b3pw91", "camb3lyp", "wb97x_d3", "wb97x_v", "wb97m_v"]
+    for method in hybrid_methods:
+        guidance += f"• **{method.upper()}**: {QC_METHODS[method]}\n"
+    guidance += "\n"
+    
+    guidance += "**📐 Basis Sets by Type:**\n"
+    guidance += "**Recommended for DFT (Jensen pcseg):**\n"
+    guidance += f"• **pcseg-1**: {QC_BASIS_SETS['pcseg-1']}\n"
+    guidance += f"• **pcseg-2**: {QC_BASIS_SETS['pcseg-2']}\n\n"
+    
+    guidance += "**Popular Pople Basis Sets:**\n"
+    guidance += f"• **6-31G***: {QC_BASIS_SETS['6-31g*']}\n"
+    guidance += f"• **6-31G(d,p)**: {QC_BASIS_SETS['6-31g(d,p)']}\n\n"
+    
+    guidance += "**Efficient Options:**\n"
+    guidance += f"• **cc-pVDZ(seg-opt)**: {QC_BASIS_SETS['cc-pvdz(seg-opt)']}\n"
+    guidance += f"• **MIDI!**: {QC_BASIS_SETS['midi!']}\n\n"
+    
+    guidance += "**🎯 Available Tasks:**\n"
+    for task, description in QC_TASKS.items():
+        guidance += f"• **{task}**: {description}\n"
+    guidance += "\n"
+    
+    guidance += "**🔧 Available Corrections:**\n"
+    for correction, description in QC_CORRECTIONS.items():
+        guidance += f"• **{correction}**: {description}\n"
+    guidance += "\n"
+    
+    guidance += "**💡 Rowan Recommendations:**\n"
+    guidance += "• **Smart defaults**: `rowan_quantum_chemistry()` uses B3LYP/pcseg-1 + D3BJ (recommended)\n"
+    guidance += "• **For geometry optimization**: Use `rowan_multistage_opt` (RECOMMENDED)\n"
+    guidance += "• **For general QC**: Use `rowan_quantum_chemistry` (auto-defaults or custom settings)\n"
+    guidance += "• **Best DFT functional**: ωB97M-V (most accurate non-double hybrid)\n"
+    guidance += "• **Best pure functional**: B97-D3 (according to Grimme 2011 benchmark)\n"
+    guidance += "• **Best basis for DFT**: pcseg-1 (better than 6-31G(d) at same cost)\n"
+    guidance += "• **For speed**: Use MIDI! basis set or minimal basis sets\n"
+    guidance += "• **For dispersion**: Use D3BJ correction with most functionals\n"
+    guidance += "• **Avoid**: Generally contracted basis sets (slow), excessive augmentation\n\n"
+    
+    guidance += "**⚠️ Important Notes:**\n"
+    guidance += "• Rowan uses spherical/pure basis functions (5d, 7f, etc.)\n"
+    guidance += "• No effective core potentials (ECPs) currently supported\n"
+    guidance += "• Some functionals have built-in dispersion (B97-D3, ωB97X-D3)\n"
+    guidance += "• Augmentation should be avoided unless absolutely necessary\n\n"
+    
+    guidance += "**🔗 Example SMILES:**\n"
+    guidance += "• Aspirin: `CC(=O)OC1=CC=CC=C1C(=O)O`\n"
+    guidance += "• Water: `O`\n"
+    guidance += "• Methane: `C`\n"
+    guidance += "• Benzene: `c1ccccc1`\n"
+    
+    return guidance
+
 # Tool implementations
+
+# Quantum Chemistry Guidance Tool
+@mcp.tool()
+def rowan_qc_guide() -> str:
+    """Get comprehensive guidance for quantum chemistry calculations in Rowan.
+    
+    Provides detailed information about:
+    - Required parameters for QC calculations
+    - Available engines (Psi4, TeraChem, PySCF, xTB, AIMNet2)
+    - Common methods and basis sets
+    - Available tasks and properties
+    - Best practices and recommendations
+    
+    Use this for: Understanding Rowan's quantum chemistry capabilities
+    
+    Returns:
+        Comprehensive quantum chemistry guidance
+    """
+    return get_qc_guidance()
+
+# Unified Quantum Chemistry Tool
+@mcp.tool()
+@log_mcp_call
+def rowan_quantum_chemistry(
+    name: str,
+    molecule: str,
+    method: Optional[str] = None,
+    basis_set: Optional[str] = None,
+    tasks: Optional[List[str]] = None,
+    corrections: Optional[List[str]] = None,
+    engine: Optional[str] = None,
+    charge: int = 0,
+    multiplicity: int = 1,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5,
+    use_recommended_defaults: bool = True,
+    additional_settings: Optional[Dict[str, Any]] = None
+) -> str:
+    """Run quantum chemistry calculations with intelligent defaults or custom settings.
+    
+    **🔬 Smart Defaults**: When no parameters are specified, uses Rowan's RECOMMENDED settings:
+    - Method: B3LYP (popular, reliable hybrid functional)
+    - Basis Set: pcseg-1 (better than 6-31G(d) at same cost)
+    - Tasks: ["energy", "optimize"] (energy + geometry optimization)
+    - Corrections: ["d3bj"] (dispersion correction for better accuracy)
+    
+    **⚗️ Full Customization**: All parameters can be overridden for advanced users
+    
+    **Available Methods (16 total):**
+    - HF: Hartree-Fock (unrestricted for open-shell)
+    - Pure DFT: LSDA, PBE, BLYP, BP86, B97-D3, r2SCAN, TPSS, M06-L
+    - Hybrid DFT: PBE0, B3LYP, B3PW91, CAM-B3LYP, ωB97X-D3, ωB97X-V, ωB97M-V
+    
+    **Available Basis Sets (29 total):**
+    - Recommended: pcseg-1 (DFT), pcseg-2 (high accuracy)
+    - Popular: 6-31G*, 6-31G(d,p), cc-pVDZ(seg-opt)
+    - Fast: MIDI!, STO-3G
+    
+    **Available Corrections:**
+    - D3BJ: Grimme's D3 dispersion with Becke-Johnson damping
+    
+    Use this for: All quantum chemistry calculations (beginners get good defaults, experts get full control)
+    
+    Args:
+        name: Name for the calculation
+        molecule: Molecule SMILES string (e.g., 'CC(=O)OC1=CC=CC=C1C(=O)O' for aspirin)
+        method: QC method - if None, uses 'b3lyp' (recommended default)
+        basis_set: Basis set - if None, uses 'pcseg-1' (recommended default)
+        tasks: List of tasks - if None, uses ['energy', 'optimize'] (recommended default)
+        corrections: List of corrections - if None, uses ['d3bj'] (recommended default)
+        engine: Computational engine - if None, defaults to 'psi4' (required by Rowan API)
+        charge: Molecular charge (default: 0)
+        multiplicity: Spin multiplicity (default: 1 for singlet)
+        folder_uuid: Optional folder UUID for organization
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+        use_recommended_defaults: If True, uses smart defaults when parameters are None
+        additional_settings: Extra calculation-specific settings
+    
+    Returns:
+        Quantum chemistry calculation results
+    """
+    
+    # Determine if we're using defaults or custom settings
+    using_defaults = (method is None and basis_set is None and 
+                     tasks is None and corrections is None)
+    
+    # Apply intelligent defaults when no parameters specified
+    if use_recommended_defaults and using_defaults:
+        method = "b3lyp"  # Popular, reliable hybrid functional
+        basis_set = "pcseg-1"  # Better than 6-31G(d) at same cost
+        tasks = ["energy", "optimize"]  # Energy + geometry optimization
+        corrections = ["d3bj"]  # Dispersion correction for accuracy
+        if engine is None:  # Only set default if not provided
+            engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
+        default_msg = "Rowan's RECOMMENDED defaults"
+    elif using_defaults:
+        # Fall back to Rowan's system defaults but ensure engine is set
+        if engine is None:  # Only set default if not provided
+            engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
+        default_msg = "Rowan's system defaults (HF/STO-3G)"
+    else:
+        # For custom settings, still ensure engine is set if not provided
+        if engine is None:  # Only set default if not provided
+            engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
+        default_msg = "Custom user settings"
+    
+    # Validate inputs and provide guidance
+    if method and method.lower() not in QC_METHODS:
+        available_methods = ", ".join(QC_METHODS.keys())
+        return f"❌ Invalid method '{method}'. Available methods: {available_methods}\n\n" + get_qc_guidance()
+    
+    if basis_set and basis_set.lower() not in QC_BASIS_SETS:
+        available_basis = ", ".join(QC_BASIS_SETS.keys())
+        return f"❌ Invalid basis set '{basis_set}'. Available basis sets: {available_basis}\n\n" + get_qc_guidance()
+    
+    if tasks:
+        invalid_tasks = [task for task in tasks if task.lower() not in QC_TASKS]
+        if invalid_tasks:
+            available_tasks = ", ".join(QC_TASKS.keys())
+            return f"❌ Invalid tasks {invalid_tasks}. Available tasks: {available_tasks}\n\n" + get_qc_guidance()
+    
+    if engine and engine.lower() not in QC_ENGINES:
+        available_engines = ", ".join(QC_ENGINES.keys())
+        return f"❌ Invalid engine '{engine}'. Available engines: {available_engines}\n\n" + get_qc_guidance()
+    
+    if corrections:
+        invalid_corrections = [corr for corr in corrections if corr.lower() not in QC_CORRECTIONS]
+        if invalid_corrections:
+            available_corrections = ", ".join(QC_CORRECTIONS.keys())
+            return f"❌ Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}\n\n" + get_qc_guidance()
+    
+    # Build settings dictionary
+    settings = additional_settings or {}
+    
+    if method:
+        settings["method"] = method.lower()
+    if basis_set:
+        settings["basis_set"] = basis_set.lower()
+    if tasks:
+        settings["tasks"] = [task.lower() for task in tasks]
+    if corrections:
+        settings["corrections"] = [corr.lower() for corr in corrections]
+    # Always include engine (REQUIRED by Rowan API)
+    if engine:
+        settings["engine"] = engine.lower()
+    if charge != 0:
+        settings["charge"] = charge
+    if multiplicity != 1:
+        settings["multiplicity"] = multiplicity
+    
+    # Log the QC parameters
+    logger.info(f"🔬 Quantum Chemistry Calculation: {name}")
+    logger.info(f"⚙️ Using: {default_msg}")
+    logger.info(f"⚗️ Method: {method or 'system default'}")
+    logger.info(f"📐 Basis Set: {basis_set or 'system default'}")
+    logger.info(f"🎯 Tasks: {tasks or 'system default'}")
+    logger.info(f"🔧 Corrections: {corrections or 'none'}")
+    logger.info(f"🖥️ Engine: {engine or 'auto-selected'}")
+    logger.info(f"⚡ Charge: {charge}, Multiplicity: {multiplicity}")
+    
+    try:
+        # Use basic_calculation workflow with settings
+        result = log_rowan_api_call(
+            workflow_type="basic_calculation",
+            name=name,
+            molecule=molecule,
+            settings=settings if settings else None,
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
+        )
+        
+        # Check actual job status and format accordingly
+        job_status = result.get('status', result.get('object_status', 'Unknown'))
+        status_names = {
+            0: ("⏳", "Queued"),
+            1: ("🔄", "Running"), 
+            2: ("✅", "Completed Successfully"),
+            3: ("❌", "Failed"),
+            4: ("⏹️", "Stopped"),
+            5: ("⏸️", "Awaiting Queue")
+        }
+        
+        status_icon, status_text = status_names.get(job_status, ("❓", f"Unknown ({job_status})"))
+        
+        # Use appropriate header based on actual status
+        if job_status == 2:
+            formatted = f"✅ Quantum chemistry calculation '{name}' completed successfully!\n\n"
+        elif job_status == 3:
+            formatted = f"❌ Quantum chemistry calculation '{name}' failed!\n\n"
+        elif job_status in [0, 1, 5]:
+            formatted = f"🔄 Quantum chemistry calculation '{name}' submitted!\n\n"
+        elif job_status == 4:
+            formatted = f"⏹️ Quantum chemistry calculation '{name}' was stopped!\n\n"
+        else:
+            formatted = f"📊 Quantum chemistry calculation '{name}' status unknown!\n\n"
+            
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {status_icon} {status_text} ({job_status})\n"
+        formatted += f"⚙️ Used: {default_msg}\n"
+        
+        # Show applied settings
+        if method or basis_set or tasks or corrections or engine or charge != 0 or multiplicity != 1:
+            formatted += f"\n⚙️ **Applied Settings:**\n"
+            if method:
+                formatted += f"   Method: {method.upper()} - {QC_METHODS.get(method.lower(), 'Custom method')}\n"
+            if basis_set:
+                formatted += f"   Basis Set: {basis_set} - {QC_BASIS_SETS.get(basis_set.lower(), 'Custom basis')}\n"
+            if tasks:
+                formatted += f"   Tasks: {', '.join(tasks)}\n"
+            if corrections:
+                formatted += f"   Corrections: {', '.join(corrections)} - "
+                formatted += ", ".join([QC_CORRECTIONS.get(corr.lower(), 'Custom correction') for corr in corrections]) + "\n"
+            if engine:
+                formatted += f"   Engine: {engine.upper()} - {QC_ENGINES.get(engine.lower(), 'Custom engine')}\n"
+            if charge != 0 or multiplicity != 1:
+                formatted += f"   Charge: {charge}, Multiplicity: {multiplicity}\n"
+        
+        # Add status-appropriate guidance
+        formatted += f"\n💡 **Next Steps:**\n"
+        if job_status == 2:  # Completed successfully
+            formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to get detailed results\n"
+            formatted += f"• Results should include energies, geometries, and other calculated properties\n"
+        elif job_status == 3:  # Failed
+            formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to see error details\n"
+            formatted += f"• **Troubleshooting tips:**\n"
+            formatted += f"  - Try simpler settings: method='hf', basis_set='sto-3g'\n"
+            formatted += f"  - Use `rowan_multistage_opt()` for geometry optimization (more robust)\n"
+            formatted += f"  - Check if SMILES string is valid\n"
+            formatted += f"  - For difficult molecules, try method='xtb' (semiempirical)\n"
+        elif job_status in [0, 1, 5]:  # Queued/Running/Awaiting
+            formatted += f"• Check status: `rowan_workflow_status('{result.get('uuid', 'UUID')}')`\n"
+            formatted += f"• Wait for completion, then retrieve results\n"
+            formatted += f"• Calculation may take several minutes depending on molecule size\n"
+        elif job_status == 4:  # Stopped
+            formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to see why it was stopped\n"
+            formatted += f"• You can restart with the same or different parameters\n"
+        else:  # Unknown status
+            formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to get more information\n"
+            formatted += f"• Check `rowan_workflow_status('{result.get('uuid', 'UUID')}')` for current status\n"
+            
+        # Add general guidance for successful submissions or unknown states
+        if job_status != 3:  # Don't show alternatives if it failed
+            if using_defaults and use_recommended_defaults:
+                formatted += f"• **For future calculations:** Try different methods/basis sets for different accuracy/speed trade-offs\n"
+        
+        return formatted
+        
+    except Exception as e:
+        error_msg = f"❌ Quantum chemistry calculation submission failed: {str(e)}\n\n"
+        error_msg += "🔧 **This is a submission error, not a calculation failure.**\n"
+        error_msg += "The job never started due to invalid parameters or API issues.\n\n"
+        if "method" in str(e).lower() or "basis" in str(e).lower():
+            error_msg += "💡 **Parameter Error**: Try using recommended defaults by calling with just name and molecule\n"
+            error_msg += "Or check parameter spelling and availability\n\n"
+        elif "engine" in str(e).lower():
+            error_msg += "💡 **Engine Error**: The engine parameter is required. This should be auto-set to 'psi4'\n\n"
+        error_msg += get_qc_guidance()
+        return error_msg
 
 # ADMET - Drug Discovery Properties
 @mcp.tool()
@@ -198,45 +649,7 @@ def rowan_admet(
     return str(result)
 
 
-# Basic Calculation - General Quantum Chemistry
-@mcp.tool()
-@log_mcp_call
-def rowan_basic_calculation(
-    name: str,
-    molecule: str,
-    folder_uuid: Optional[str] = None,
-    blocking: bool = True,
-    ping_interval: int = 5
-) -> str:
-    """Run general quantum chemistry calculations.
-    
-    Performs standard quantum chemistry calculations including:
-    - Single point energy calculations
-    - Geometry optimization
-    - Frequency calculations
-    - Basic electronic structure properties
-    
-    Use this for: Energy calculations, geometry optimization, vibrational analysis
-    
-    Args:
-        name: Name for the calculation
-        molecule: Molecule SMILES string
-        folder_uuid: Optional folder UUID for organization
-        blocking: Whether to wait for completion (default: True)
-        ping_interval: Check status interval in seconds (default: 5)
-    
-    Returns:
-        Basic calculation results
-    """
-    result = log_rowan_api_call(
-        workflow_type="basic_calculation",
-        name=name,
-        molecule=molecule,
-        folder_uuid=folder_uuid,
-        blocking=blocking,
-        ping_interval=ping_interval
-    )
-    return str(result)
+
 
 
 # Bond Dissociation Energy
@@ -289,7 +702,7 @@ def rowan_multistage_opt(
     molecule: str,
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
-    ping_interval: int = 5
+    ping_interval: int = 30
 ) -> str:
     """Run multi-level geometry optimization (RECOMMENDED).
     
@@ -308,11 +721,14 @@ def rowan_multistage_opt(
         molecule: Molecule SMILES string
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
-        ping_interval: Check status interval in seconds (default: 5)
+        ping_interval: Check status interval in seconds (default: 30, longer for multi-stage)
     
     Returns:
         Optimized geometry and energy results
     """
+    logger.info(f"🚀 Starting multistage optimization: {name}")
+    logger.info(f"⏱️  Using ping_interval: {ping_interval}s (longer for multi-stage calculation)")
+    
     result = log_rowan_api_call(
         workflow_type="multistage_opt",
         name=name,
@@ -868,533 +1284,391 @@ def rowan_conformers(
 
 
 @mcp.tool()
-def rowan_folder_create(
-    name: str,
-    description: Optional[str] = None
-) -> str:
-    """Create a new folder for organizing calculations.
-    
-    Args:
-        name: Name of the folder
-        description: Optional description of the folder
-    
-    Returns:
-        Folder creation results
-    """
-    try:
-        folder = rowan.Folder.create(
-            name=name,
-            description=description or ""
-        )
-        
-        formatted = f"✅ Folder '{name}' created successfully!\n\n"
-        formatted += f"📁 UUID: {folder.get('uuid', 'N/A')}\n"
-        formatted += f"📝 Description: {description or 'None'}\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error creating folder: {str(e)}"
-
-
-@mcp.tool()
-def rowan_folder_retrieve(folder_uuid: str) -> str:
-    """Retrieve details of a specific folder.
-    
-    Args:
-        folder_uuid: UUID of the folder to retrieve
-    
-    Returns:
-        Folder details
-    """
-    try:
-        folder = rowan.Folder.retrieve(uuid=folder_uuid)
-        
-        formatted = f"📁 Folder Details:\n\n"
-        formatted += f"📝 Name: {folder.get('name', 'N/A')}\n"
-        formatted += f"🆔 UUID: {folder.get('uuid', 'N/A')}\n"
-        formatted += f"📂 Parent: {folder.get('parent_uuid', 'Root')}\n"
-        formatted += f"⭐ Starred: {'Yes' if folder.get('starred') else 'No'}\n"
-        formatted += f"🌐 Public: {'Yes' if folder.get('public') else 'No'}\n"
-        formatted += f"📅 Created: {folder.get('created_at', 'N/A')}\n"
-        formatted += f"📝 Notes: {folder.get('notes', 'None')}\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error retrieving folder: {str(e)}"
-
-
-@mcp.tool()
-def rowan_folder_update(
-    folder_uuid: str,
+def rowan_folder_management(
+    action: str,
+    folder_uuid: Optional[str] = None,
     name: Optional[str] = None,
+    description: Optional[str] = None,
     parent_uuid: Optional[str] = None,
     notes: Optional[str] = None,
     starred: Optional[bool] = None,
-    public: Optional[bool] = None
-) -> str:
-    """Update folder properties.
-    
-    Args:
-        folder_uuid: UUID of the folder to update
-        name: New name for the folder
-        parent_uuid: New parent folder UUID
-        notes: New notes for the folder
-        starred: Whether to star the folder
-        public: Whether to make the folder public
-    
-    Returns:
-        Updated folder details
-    """
-    try:
-        # Build update parameters
-        update_params = {"uuid": folder_uuid}
-        if name is not None:
-            update_params["name"] = name
-        if parent_uuid is not None:
-            update_params["parent_uuid"] = parent_uuid
-        if notes is not None:
-            update_params["notes"] = notes
-        if starred is not None:
-            update_params["starred"] = starred
-        if public is not None:
-            update_params["public"] = public
-            
-        folder = rowan.Folder.update(**update_params)
-        
-        formatted = f"✅ Folder '{folder.get('name')}' updated successfully!\n\n"
-        formatted += f"📁 UUID: {folder.get('uuid', 'N/A')}\n"
-        formatted += f"📝 Name: {folder.get('name', 'N/A')}\n"
-        formatted += f"⭐ Starred: {'Yes' if folder.get('starred') else 'No'}\n"
-        formatted += f"🌐 Public: {'Yes' if folder.get('public') else 'No'}\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error updating folder: {str(e)}"
-
-
-@mcp.tool()
-def rowan_folder_delete(folder_uuid: str) -> str:
-    """Delete a folder and all its contents.
-    
-    Args:
-        folder_uuid: UUID of the folder to delete
-    
-    Returns:
-        Deletion confirmation
-    """
-    try:
-        rowan.Folder.delete(uuid=folder_uuid)
-        return f"✅ Folder {folder_uuid} deleted successfully."
-        
-    except Exception as e:
-        return f"❌ Error deleting folder: {str(e)}"
-
-
-@mcp.tool()
-def rowan_folder_list(
-    name_contains: Optional[str] = None,
-    parent_uuid: Optional[str] = None,
-    starred: Optional[bool] = None,
     public: Optional[bool] = None,
+    name_contains: Optional[str] = None,
     page: int = 1,
     size: int = 50
 ) -> str:
-    """List available folders with optional filters.
+    """Unified folder management tool for all folder operations.
+    
+    **Available Actions:**
+    - **create**: Create a new folder (requires: name, optional: parent_uuid, notes/description, starred, public)
+    - **retrieve**: Get folder details (requires: folder_uuid)
+    - **update**: Update folder properties (requires: folder_uuid, optional: name, parent_uuid, notes, starred, public)
+    - **delete**: Delete a folder (requires: folder_uuid)
+    - **list**: List folders with filters (optional: name_contains, parent_uuid, starred, public, page, size)
     
     Args:
-        name_contains: Filter folders containing this text in name
-        parent_uuid: Filter by parent folder UUID
-        starred: Filter by starred status
-        public: Filter by public status
-        page: Page number for pagination
-        size: Number of results per page
+        action: Action to perform ('create', 'retrieve', 'update', 'delete', 'list')
+        folder_uuid: UUID of the folder (required for retrieve, update, delete)
+        name: Folder name (required for create, optional for update)
+        description: Folder description (optional for create, legacy parameter - use notes instead)
+        parent_uuid: Parent folder UUID (optional for create/update, if not provided creates in root)
+        notes: Folder notes (optional for create/update)
+        starred: Star the folder (optional for create/update)
+        public: Make folder public (optional for create/update)
+        name_contains: Filter by name containing text (optional for list)
+        page: Page number for pagination (default: 1, for list)
+        size: Results per page (default: 50, for list)
     
     Returns:
-        List of available folders
+        Results of the folder operation
     """
+    
+    action = action.lower()
+    
     try:
-        # Build filter parameters
-        filter_params = {"page": page, "size": size}
-        if name_contains is not None:
-            filter_params["name_contains"] = name_contains
-        if parent_uuid is not None:
-            filter_params["parent_uuid"] = parent_uuid
-        if starred is not None:
-            filter_params["starred"] = starred
-        if public is not None:
-            filter_params["public"] = public
+        if action == "create":
+            if not name:
+                return "❌ Error: 'name' is required for creating a folder"
             
-        result = rowan.Folder.list(**filter_params)
-        folders = result.get("folders", [])
-        num_pages = result.get("num_pages", 1)
-        
-        if not folders:
-            return "📁 No folders found matching criteria."
-        
-        formatted = f"📁 Found {len(folders)} folders (Page {page}/{num_pages}):\n\n"
-        for folder in folders:
-            starred_icon = "⭐" if folder.get('starred') else "📁"
-            public_icon = "🌐" if folder.get('public') else "🔒"
-            formatted += f"{starred_icon} {folder.get('name', 'Unnamed')} {public_icon}\n"
-            formatted += f"   UUID: {folder.get('uuid', 'N/A')}\n"
-            if folder.get('notes'):
-                formatted += f"   Notes: {folder.get('notes')}\n"
-            formatted += "\n"
-        
-        return formatted
-        
+            # Use description as notes if provided, otherwise use notes parameter
+            notes_to_use = description or notes or ""
+            
+            folder = rowan.Folder.create(
+                name=name,
+                parent_uuid=parent_uuid,  # Required by API
+                notes=notes_to_use,       # Use notes instead of description
+                starred=starred or False,
+                public=public or False
+            )
+            
+            formatted = f"✅ Folder '{name}' created successfully!\n\n"
+            formatted += f"📁 UUID: {folder.get('uuid', 'N/A')}\n"
+            formatted += f"📝 Notes: {notes_to_use or 'None'}\n"
+            if parent_uuid:
+                formatted += f"📂 Parent: {parent_uuid}\n"
+            return formatted
+            
+        elif action == "retrieve":
+            if not folder_uuid:
+                return "❌ Error: 'folder_uuid' is required for retrieving a folder"
+            
+            folder = rowan.Folder.retrieve(uuid=folder_uuid)
+            
+            formatted = f"📁 Folder Details:\n\n"
+            formatted += f"📝 Name: {folder.get('name', 'N/A')}\n"
+            formatted += f"🆔 UUID: {folder.get('uuid', 'N/A')}\n"
+            formatted += f"📂 Parent: {folder.get('parent_uuid', 'Root')}\n"
+            formatted += f"⭐ Starred: {'Yes' if folder.get('starred') else 'No'}\n"
+            formatted += f"🌐 Public: {'Yes' if folder.get('public') else 'No'}\n"
+            formatted += f"📅 Created: {folder.get('created_at', 'N/A')}\n"
+            formatted += f"📝 Notes: {folder.get('notes', 'None')}\n"
+            return formatted
+            
+        elif action == "update":
+            if not folder_uuid:
+                return "❌ Error: 'folder_uuid' is required for updating a folder"
+            
+            # Build update parameters
+            update_params = {"uuid": folder_uuid}
+            if name is not None:
+                update_params["name"] = name
+            if parent_uuid is not None:
+                update_params["parent_uuid"] = parent_uuid
+            if notes is not None:
+                update_params["notes"] = notes
+            if starred is not None:
+                update_params["starred"] = starred
+            if public is not None:
+                update_params["public"] = public
+                
+            folder = rowan.Folder.update(**update_params)
+            
+            formatted = f"✅ Folder '{folder.get('name')}' updated successfully!\n\n"
+            formatted += f"📁 UUID: {folder.get('uuid', 'N/A')}\n"
+            formatted += f"📝 Name: {folder.get('name', 'N/A')}\n"
+            formatted += f"⭐ Starred: {'Yes' if folder.get('starred') else 'No'}\n"
+            formatted += f"🌐 Public: {'Yes' if folder.get('public') else 'No'}\n"
+            return formatted
+            
+        elif action == "delete":
+            if not folder_uuid:
+                return "❌ Error: 'folder_uuid' is required for deleting a folder"
+            
+            rowan.Folder.delete(uuid=folder_uuid)
+            return f"✅ Folder {folder_uuid} deleted successfully."
+            
+        elif action == "list":
+            # Build filter parameters
+            filter_params = {"page": page, "size": size}
+            if name_contains is not None:
+                filter_params["name_contains"] = name_contains
+            if parent_uuid is not None:
+                filter_params["parent_uuid"] = parent_uuid
+            if starred is not None:
+                filter_params["starred"] = starred
+            if public is not None:
+                filter_params["public"] = public
+                
+            result = rowan.Folder.list(**filter_params)
+            folders = result.get("folders", [])
+            num_pages = result.get("num_pages", 1)
+            
+            if not folders:
+                return "📁 No folders found matching criteria."
+            
+            formatted = f"📁 Found {len(folders)} folders (Page {page}/{num_pages}):\n\n"
+            for folder in folders:
+                starred_icon = "⭐" if folder.get('starred') else "📁"
+                public_icon = "🌐" if folder.get('public') else "🔒"
+                formatted += f"{starred_icon} {folder.get('name', 'Unnamed')} {public_icon}\n"
+                formatted += f"   UUID: {folder.get('uuid', 'N/A')}\n"
+                if folder.get('notes'):
+                    formatted += f"   Notes: {folder.get('notes')}\n"
+                formatted += "\n"
+            
+            return formatted
+            
+        else:
+            return f"❌ Error: Unknown action '{action}'. Available actions: create, retrieve, update, delete, list"
+            
     except Exception as e:
-        return f"❌ Error listing folders: {str(e)}"
+        return f"❌ Error in folder {action}: {str(e)}"
 
 
 @mcp.tool()
-def rowan_workflow_create(
-    name: str,
-    workflow_type: str,
-    initial_molecule: str,
-    parent_uuid: Optional[str] = None,
-    notes: Optional[str] = None,
-    starred: bool = False,
-    public: bool = False,
-    email_when_complete: bool = False,
-    workflow_data: Optional[Dict[str, Any]] = None
-) -> str:
-    """Create a new workflow.
-    
-    Args:
-        name: Name of the workflow
-        workflow_type: Type of workflow to create
-        initial_molecule: Initial molecule (SMILES or stjames.Molecule)
-        parent_uuid: Parent folder UUID
-        notes: Notes for the workflow
-        starred: Whether to star the workflow
-        public: Whether to make the workflow public
-        email_when_complete: Whether to email when complete
-        workflow_data: Additional workflow-specific data
-    
-    Returns:
-        Created workflow details
-    """
-    
-    # Validate workflow type
-    VALID_WORKFLOWS = {
-        "admet", "basic_calculation", "bde", "conformer_search", "descriptors", 
-        "docking", "electronic_properties", "fukui", "hydrogen_bond_basicity", 
-        "irc", "molecular_dynamics", "multistage_opt", "pka", "redox_potential", 
-        "scan", "solubility", "spin_states", "tautomers"
-    }
-    
-    # Strict validation - no auto-correction
-    if workflow_type not in VALID_WORKFLOWS:
-        error_msg = f"❌ Invalid workflow_type '{workflow_type}'.\n\n"
-        error_msg += "🔧 **Available Rowan Workflow Types:**\n\n"
-        
-        # Group by common use cases for better guidance
-        error_msg += "**🔬 Basic Calculations:**\n"
-        error_msg += "• `basic_calculation` - Energy, optimization, frequencies\n"
-        error_msg += "• `electronic_properties` - HOMO/LUMO, orbitals\n"
-        error_msg += "• `multistage_opt` - Multi-level optimization\n\n"
-        
-        error_msg += "**🧬 Molecular Analysis:**\n"
-        error_msg += "• `conformer_search` - Find molecular conformations\n"
-        error_msg += "• `tautomers` - Tautomer enumeration\n"
-        error_msg += "• `descriptors` - Molecular descriptors\n\n"
-        
-        error_msg += "**⚗️ Chemical Properties:**\n"
-        error_msg += "• `pka` - pKa prediction\n"
-        error_msg += "• `redox_potential` - Redox potentials\n"
-        error_msg += "• `bde` - Bond dissociation energies\n"
-        error_msg += "• `solubility` - Solubility prediction\n\n"
-        
-        error_msg += "**🧪 Drug Discovery:**\n"
-        error_msg += "• `admet` - ADME-Tox properties\n"
-        error_msg += "• `docking` - Protein-ligand docking\n\n"
-        
-        error_msg += "**🔬 Advanced Analysis:**\n"
-        error_msg += "• `scan` - Potential energy scans\n"
-        error_msg += "• `fukui` - Reactivity analysis\n"
-        error_msg += "• `spin_states` - Spin state preferences\n"
-        error_msg += "• `irc` - Reaction coordinate following\n"
-        error_msg += "• `molecular_dynamics` - MD simulations\n"
-        error_msg += "• `hydrogen_bond_basicity` - H-bond strength\n\n"
-        
-        raise ValueError(error_msg)
-
-    try:
-        workflow = rowan.Workflow.create(
-            name=name,
-            workflow_type=workflow_type,
-            initial_molecule=initial_molecule,
-            parent_uuid=parent_uuid,
-            notes=notes or "",
-            starred=starred,
-            public=public,
-            email_when_complete=email_when_complete,
-            workflow_data=workflow_data or {}
-        )
-        
-        formatted = f"✅ Workflow '{name}' created successfully!\n\n"
-        formatted += f"🔬 UUID: {workflow.get('uuid', 'N/A')}\n"
-        formatted += f"⚗️ Type: {workflow_type}\n"
-        formatted += f"📊 Status: {workflow.get('object_status', 'Unknown')}\n"
-        formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error creating workflow: {str(e)}"
-
-
-@mcp.tool()
-def rowan_workflow_retrieve(workflow_uuid: str) -> str:
-    """Retrieve details of a specific workflow.
-    
-    Args:
-        workflow_uuid: UUID of the workflow to retrieve
-    
-    Returns:
-        Workflow details
-    """
-    try:
-        workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
-        
-        formatted = f"🔬 Workflow Details:\n\n"
-        formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
-        formatted += f"🆔 UUID: {workflow.get('uuid', 'N/A')}\n"
-        formatted += f"⚗️ Type: {workflow.get('object_type', 'N/A')}\n"
-        formatted += f"📊 Status: {workflow.get('object_status', 'Unknown')}\n"
-        formatted += f"📂 Parent: {workflow.get('parent_uuid', 'Root')}\n"
-        formatted += f"⭐ Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
-        formatted += f"🌐 Public: {'Yes' if workflow.get('public') else 'No'}\n"
-        formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
-        formatted += f"⏱️ Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
-        formatted += f"💰 Credits: {workflow.get('credits_charged', 0)}\n"
-        formatted += f"📝 Notes: {workflow.get('notes', 'None')}\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error retrieving workflow: {str(e)}"
-
-
-@mcp.tool()
-def rowan_workflow_update(
-    workflow_uuid: str,
+def rowan_workflow_management(
+    action: str,
+    workflow_uuid: Optional[str] = None,
     name: Optional[str] = None,
+    workflow_type: Optional[str] = None,
+    initial_molecule: Optional[str] = None,
     parent_uuid: Optional[str] = None,
     notes: Optional[str] = None,
     starred: Optional[bool] = None,
     public: Optional[bool] = None,
-    email_when_complete: Optional[bool] = None
-) -> str:
-    """Update workflow properties.
-    
-    Args:
-        workflow_uuid: UUID of the workflow to update
-        name: New name for the workflow
-        parent_uuid: New parent folder UUID
-        notes: New notes for the workflow
-        starred: Whether to star the workflow
-        public: Whether to make the workflow public
-        email_when_complete: Whether to email when complete
-    
-    Returns:
-        Updated workflow details
-    """
-    try:
-        # Build update parameters
-        update_params = {"uuid": workflow_uuid}
-        if name is not None:
-            update_params["name"] = name
-        if parent_uuid is not None:
-            update_params["parent_uuid"] = parent_uuid
-        if notes is not None:
-            update_params["notes"] = notes
-        if starred is not None:
-            update_params["starred"] = starred
-        if public is not None:
-            update_params["public"] = public
-        if email_when_complete is not None:
-            update_params["email_when_complete"] = email_when_complete
-            
-        workflow = rowan.Workflow.update(**update_params)
-        
-        formatted = f"✅ Workflow '{workflow.get('name')}' updated successfully!\n\n"
-        formatted += f"🔬 UUID: {workflow.get('uuid', 'N/A')}\n"
-        formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
-        formatted += f"⭐ Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
-        formatted += f"🌐 Public: {'Yes' if workflow.get('public') else 'No'}\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error updating workflow: {str(e)}"
-
-
-@mcp.tool()
-def rowan_workflow_stop(workflow_uuid: str) -> str:
-    """Stop a running workflow.
-    
-    Args:
-        workflow_uuid: UUID of the workflow to stop
-    
-    Returns:
-        Stop confirmation
-    """
-    try:
-        rowan.Workflow.stop(uuid=workflow_uuid)
-        return f"⏹️ Workflow {workflow_uuid} stopped successfully."
-        
-    except Exception as e:
-        return f"❌ Error stopping workflow: {str(e)}"
-
-
-@mcp.tool()
-def rowan_workflow_status(workflow_uuid: str) -> str:
-    """Check the status of a workflow.
-    
-    Args:
-        workflow_uuid: UUID of the workflow to check
-    
-    Returns:
-        Workflow status
-    """
-    try:
-        status = rowan.Workflow.status(uuid=workflow_uuid)
-        
-        status_names = {
-            0: "Queued",
-            1: "Running", 
-            2: "Completed",
-            3: "Failed",
-            4: "Stopped"
-        }
-        
-        status_name = status_names.get(status, f"Unknown ({status})")
-        
-        formatted = f"📊 Workflow Status:\n\n"
-        formatted += f"🆔 UUID: {workflow_uuid}\n"
-        formatted += f"📈 Status: {status_name} ({status})\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error getting workflow status: {str(e)}"
-
-
-@mcp.tool()
-def rowan_workflow_is_finished(workflow_uuid: str) -> str:
-    """Check if a workflow is finished.
-    
-    Args:
-        workflow_uuid: UUID of the workflow to check
-    
-    Returns:
-        Whether the workflow is finished
-    """
-    try:
-        is_finished = rowan.Workflow.is_finished(uuid=workflow_uuid)
-        
-        formatted = f"✅ Workflow Status:\n\n"
-        formatted += f"🆔 UUID: {workflow_uuid}\n"
-        formatted += f"🏁 Finished: {'Yes' if is_finished else 'No'}\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error checking workflow status: {str(e)}"
-
-
-@mcp.tool()
-def rowan_workflow_delete(workflow_uuid: str) -> str:
-    """Delete a workflow.
-    
-    Args:
-        workflow_uuid: UUID of the workflow to delete
-    
-    Returns:
-        Deletion confirmation
-    """
-    try:
-        rowan.Workflow.delete(uuid=workflow_uuid)
-        return f"🗑️ Workflow {workflow_uuid} deleted successfully."
-        
-    except Exception as e:
-        return f"❌ Error deleting workflow: {str(e)}"
-
-
-@mcp.tool()
-def rowan_workflow_list(
+    email_when_complete: Optional[bool] = None,
+    workflow_data: Optional[Dict[str, Any]] = None,
     name_contains: Optional[str] = None,
-    parent_uuid: Optional[str] = None,
-    starred: Optional[bool] = None,
-    public: Optional[bool] = None,
     object_status: Optional[int] = None,
     object_type: Optional[str] = None,
     page: int = 1,
     size: int = 50
 ) -> str:
-    """List workflows with optional filters.
+    """Unified workflow management tool for all workflow operations.
+    
+    **Available Actions:**
+    - **create**: Create a new workflow (requires: name, workflow_type, initial_molecule)
+    - **retrieve**: Get workflow details (requires: workflow_uuid)
+    - **update**: Update workflow properties (requires: workflow_uuid, optional: name, parent_uuid, notes, starred, public, email_when_complete)
+    - **stop**: Stop a running workflow (requires: workflow_uuid)
+    - **status**: Check workflow status (requires: workflow_uuid)
+    - **is_finished**: Check if workflow is finished (requires: workflow_uuid)
+    - **delete**: Delete a workflow (requires: workflow_uuid)
+    - **list**: List workflows with filters (optional: name_contains, parent_uuid, starred, public, object_status, object_type, page, size)
     
     Args:
-        name_contains: Filter workflows containing this text in name
-        parent_uuid: Filter by parent folder UUID
-        starred: Filter by starred status
-        public: Filter by public status
-        object_status: Filter by workflow status (0=queued, 1=running, 2=completed, 3=failed, 4=stopped)
-        object_type: Filter by workflow type
-        page: Page number for pagination
-        size: Number of results per page
+        action: Action to perform ('create', 'retrieve', 'update', 'stop', 'status', 'is_finished', 'delete', 'list')
+        workflow_uuid: UUID of the workflow (required for retrieve, update, stop, status, is_finished, delete)
+        name: Workflow name (required for create, optional for update)
+        workflow_type: Type of workflow (required for create)
+        initial_molecule: Initial molecule SMILES (required for create)
+        parent_uuid: Parent folder UUID (optional for create/update)
+        notes: Workflow notes (optional for create/update)
+        starred: Star the workflow (optional for create/update)
+        public: Make workflow public (optional for create/update)
+        email_when_complete: Email when complete (optional for create/update)
+        workflow_data: Additional workflow data (optional for create)
+        name_contains: Filter by name containing text (optional for list)
+        object_status: Filter by status (0=queued, 1=running, 2=completed, 3=failed, 4=stopped, optional for list)
+        object_type: Filter by workflow type (optional for list)
+        page: Page number for pagination (default: 1, for list)
+        size: Results per page (default: 50, for list)
     
     Returns:
-        List of workflows
+        Results of the workflow operation
     """
+    
+    action = action.lower()
+    
     try:
-        # Build filter parameters
-        filter_params = {"page": page, "size": size}
-        if name_contains is not None:
-            filter_params["name_contains"] = name_contains
-        if parent_uuid is not None:
-            filter_params["parent_uuid"] = parent_uuid
-        if starred is not None:
-            filter_params["starred"] = starred
-        if public is not None:
-            filter_params["public"] = public
-        if object_status is not None:
-            filter_params["object_status"] = object_status
-        if object_type is not None:
-            filter_params["object_type"] = object_type
+        if action == "create":
+            if not all([name, workflow_type, initial_molecule]):
+                return "❌ Error: 'name', 'workflow_type', and 'initial_molecule' are required for creating a workflow"
             
-        result = rowan.Workflow.list(**filter_params)
-        workflows = result.get("workflows", [])
-        num_pages = result.get("num_pages", 1)
-        
-        if not workflows:
-            return "🔬 No workflows found matching criteria."
-        
-        status_names = {0: "⏳", 1: "🔄", 2: "✅", 3: "❌", 4: "⏹️"}
-        
-        formatted = f"🔬 Found {len(workflows)} workflows (Page {page}/{num_pages}):\n\n"
-        for workflow in workflows:
-            status_icon = status_names.get(workflow.get('object_status'), "❓")
-            starred_icon = "⭐" if workflow.get('starred') else ""
-            public_icon = "🌐" if workflow.get('public') else ""
+            # Validate workflow type
+            VALID_WORKFLOWS = {
+                "admet", "basic_calculation", "bde", "conformer_search", "descriptors", 
+                "docking", "electronic_properties", "fukui", "hydrogen_bond_basicity", 
+                "irc", "molecular_dynamics", "multistage_opt", "pka", "redox_potential", 
+                "scan", "solubility", "spin_states", "tautomers"
+            }
             
-            formatted += f"{status_icon} {workflow.get('name', 'Unnamed')} {starred_icon}{public_icon}\n"
-            formatted += f"   Type: {workflow.get('object_type', 'N/A')}\n"
-            formatted += f"   UUID: {workflow.get('uuid', 'N/A')}\n"
-            formatted += f"   Created: {workflow.get('created_at', 'N/A')}\n"
-            if workflow.get('elapsed'):
-                formatted += f"   Duration: {workflow.get('elapsed', 0):.2f}s\n"
-            formatted += "\n"
-        
-        return formatted
-        
+            if workflow_type not in VALID_WORKFLOWS:
+                error_msg = f"❌ Invalid workflow_type '{workflow_type}'.\n\n"
+                error_msg += "🔧 **Available Rowan Workflow Types:**\n"
+                error_msg += f"{', '.join(sorted(VALID_WORKFLOWS))}"
+                return error_msg
+            
+            workflow = rowan.Workflow.create(
+                name=name,
+                workflow_type=workflow_type,
+                initial_molecule=initial_molecule,
+                parent_uuid=parent_uuid,
+                notes=notes or "",
+                starred=starred or False,
+                public=public or False,
+                email_when_complete=email_when_complete or False,
+                workflow_data=workflow_data or {}
+            )
+            
+            formatted = f"✅ Workflow '{name}' created successfully!\n\n"
+            formatted += f"🔬 UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f"⚗️ Type: {workflow_type}\n"
+            formatted += f"📊 Status: {workflow.get('object_status', 'Unknown')}\n"
+            formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
+            return formatted
+            
+        elif action == "retrieve":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for retrieving a workflow"
+            
+            workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
+            
+            formatted = f"🔬 Workflow Details:\n\n"
+            formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
+            formatted += f"🆔 UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f"⚗️ Type: {workflow.get('object_type', 'N/A')}\n"
+            formatted += f"📊 Status: {workflow.get('object_status', 'Unknown')}\n"
+            formatted += f"📂 Parent: {workflow.get('parent_uuid', 'Root')}\n"
+            formatted += f"⭐ Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
+            formatted += f"🌐 Public: {'Yes' if workflow.get('public') else 'No'}\n"
+            formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
+            formatted += f"⏱️ Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
+            formatted += f"💰 Credits: {workflow.get('credits_charged', 0)}\n"
+            formatted += f"📝 Notes: {workflow.get('notes', 'None')}\n"
+            return formatted
+            
+        elif action == "update":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for updating a workflow"
+            
+            # Build update parameters
+            update_params = {"uuid": workflow_uuid}
+            if name is not None:
+                update_params["name"] = name
+            if parent_uuid is not None:
+                update_params["parent_uuid"] = parent_uuid
+            if notes is not None:
+                update_params["notes"] = notes
+            if starred is not None:
+                update_params["starred"] = starred
+            if public is not None:
+                update_params["public"] = public
+            if email_when_complete is not None:
+                update_params["email_when_complete"] = email_when_complete
+                
+            workflow = rowan.Workflow.update(**update_params)
+            
+            formatted = f"✅ Workflow '{workflow.get('name')}' updated successfully!\n\n"
+            formatted += f"🔬 UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
+            formatted += f"⭐ Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
+            formatted += f"🌐 Public: {'Yes' if workflow.get('public') else 'No'}\n"
+            return formatted
+            
+        elif action == "stop":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for stopping a workflow"
+            
+            rowan.Workflow.stop(uuid=workflow_uuid)
+            return f"⏹️ Workflow {workflow_uuid} stopped successfully."
+            
+        elif action == "status":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for checking workflow status"
+            
+            status = rowan.Workflow.status(uuid=workflow_uuid)
+            
+            status_names = {
+                0: "Queued",
+                1: "Running", 
+                2: "Completed",
+                3: "Failed",
+                4: "Stopped",
+                5: "Awaiting Queue"
+            }
+            
+            status_name = status_names.get(status, f"Unknown ({status})")
+            
+            formatted = f"📊 Workflow Status:\n\n"
+            formatted += f"🆔 UUID: {workflow_uuid}\n"
+            formatted += f"📈 Status: {status_name} ({status})\n"
+            return formatted
+            
+        elif action == "is_finished":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for checking if workflow is finished"
+            
+            is_finished = rowan.Workflow.is_finished(uuid=workflow_uuid)
+            
+            formatted = f"✅ Workflow Status:\n\n"
+            formatted += f"🆔 UUID: {workflow_uuid}\n"
+            formatted += f"🏁 Finished: {'Yes' if is_finished else 'No'}\n"
+            return formatted
+            
+        elif action == "delete":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for deleting a workflow"
+            
+            rowan.Workflow.delete(uuid=workflow_uuid)
+            return f"🗑️ Workflow {workflow_uuid} deleted successfully."
+            
+        elif action == "list":
+            # Build filter parameters
+            filter_params = {"page": page, "size": size}
+            if name_contains is not None:
+                filter_params["name_contains"] = name_contains
+            if parent_uuid is not None:
+                filter_params["parent_uuid"] = parent_uuid
+            if starred is not None:
+                filter_params["starred"] = starred
+            if public is not None:
+                filter_params["public"] = public
+            if object_status is not None:
+                filter_params["object_status"] = object_status
+            if object_type is not None:
+                filter_params["object_type"] = object_type
+                
+            result = rowan.Workflow.list(**filter_params)
+            workflows = result.get("workflows", [])
+            num_pages = result.get("num_pages", 1)
+            
+            if not workflows:
+                return "🔬 No workflows found matching criteria."
+            
+            status_names = {0: "⏳", 1: "🔄", 2: "✅", 3: "❌", 4: "⏹️", 5: "⏸️"}
+            
+            formatted = f"🔬 Found {len(workflows)} workflows (Page {page}/{num_pages}):\n\n"
+            for workflow in workflows:
+                status_icon = status_names.get(workflow.get('object_status'), "❓")
+                starred_icon = "⭐" if workflow.get('starred') else ""
+                public_icon = "🌐" if workflow.get('public') else ""
+                
+                formatted += f"{status_icon} {workflow.get('name', 'Unnamed')} {starred_icon}{public_icon}\n"
+                formatted += f"   Type: {workflow.get('object_type', 'N/A')}\n"
+                formatted += f"   UUID: {workflow.get('uuid', 'N/A')}\n"
+                formatted += f"   Created: {workflow.get('created_at', 'N/A')}\n"
+                if workflow.get('elapsed'):
+                    formatted += f"   Duration: {workflow.get('elapsed', 0):.2f}s\n"
+                formatted += "\n"
+            
+            return formatted
+            
+        else:
+            return f"❌ Error: Unknown action '{action}'. Available actions: create, retrieve, update, stop, status, is_finished, delete, list"
+            
     except Exception as e:
-        return f"❌ Error listing workflows: {str(e)}"
+        return f"❌ Error in workflow {action}: {str(e)}"
 
 
 @mcp.tool()
@@ -1433,61 +1707,6 @@ def rowan_calculation_retrieve(calculation_uuid: str) -> str:
         
     except Exception as e:
         return f"❌ Error retrieving calculation: {str(e)}"
-
-
-@mcp.tool()
-def rowan_job_status(job_uuid: str) -> str:
-    """Get status of a specific job.
-    
-    Args:
-        job_uuid: UUID of the job to check
-    
-    Returns:
-        Job status information
-    """
-    try:
-        # Note: Rowan API doesn't have direct job management
-        # Jobs are managed through workflows
-        formatted = f"📊 Job Status for {job_uuid}:\n\n"
-        formatted += f"⚠️ **Important Note:**\n"
-        formatted += f"Rowan manages computations through workflows, not individual jobs.\n"
-        formatted += f"Please use `rowan_workflow_status(workflow_uuid)` instead.\n\n"
-        formatted += f"💡 **To find your workflow:**\n"
-        formatted += f"• Use `rowan_workflow_list()` to see all workflows\n"
-        formatted += f"• Look for workflows with similar names or recent creation times\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error getting job status: {str(e)}"
-
-
-@mcp.tool()
-def rowan_job_results(job_uuid: str) -> str:
-    """Retrieve results from a completed calculation.
-    
-    Args:
-        job_uuid: UUID of the job to get results for
-    
-    Returns:
-        Job results
-    """
-    try:
-        # Note: Rowan API doesn't have direct job management
-        # Results are accessed through workflows
-        formatted = f"📊 Job Results for {job_uuid}:\n\n"
-        formatted += f"⚠️ **Important Note:**\n"
-        formatted += f"Rowan manages results through workflows, not individual jobs.\n"
-        formatted += f"Please use `rowan_workflow_retrieve(workflow_uuid)` instead.\n\n"
-        formatted += f"💡 **To get your results:**\n"
-        formatted += f"1. Use `rowan_workflow_list()` to find your workflow\n"
-        formatted += f"2. Use `rowan_workflow_retrieve(workflow_uuid)` to get details\n"
-        formatted += f"3. Check the `object_data` field for calculation results\n"
-        
-        return formatted
-        
-    except Exception as e:
-        return f"❌ Error getting job results: {str(e)}"
 
 
 @mcp.tool()
@@ -1594,83 +1813,126 @@ def rowan_docking(
 
 
 @mcp.tool()
-def rowan_available_workflows() -> str:
-    """Get list of all available Rowan MCP tools with descriptions.
+def rowan_system_management(
+    action: str,
+    job_uuid: Optional[str] = None,
+    log_level: Optional[str] = None
+) -> str:
+    """Unified system management tool for server utilities and information.
     
-    Returns:
-        Comprehensive list of available Rowan MCP tools and their use cases
-    """
-    
-    result = "🔬 **Available Rowan MCP Tools** 🔬\n\n"
-    
-    result += "✨ **Now with specific tools for each workflow type!**\n"
-    result += "Each tool has tailored documentation and parameters.\n\n"
-    
-    # Group by common use cases
-    result += "**🔬 Basic Calculations:**\n"
-    result += "• `rowan_basic_calculation` - Energy, optimization, frequencies\n"
-    result += "• `rowan_electronic_properties` - HOMO/LUMO, orbitals\n"
-    result += "• `rowan_multistage_opt` - Multi-level optimization (RECOMMENDED for geometry)\n\n"
-    
-    result += "**🧬 Molecular Analysis:**\n"
-    result += "• `rowan_conformers` - Find molecular conformations\n"
-    result += "• `rowan_tautomers` - Tautomer enumeration\n"
-    result += "• `rowan_descriptors` - Molecular descriptors for ML\n\n"
-    
-    result += "**⚗️ Chemical Properties:**\n"
-    result += "• `rowan_pka` - pKa prediction\n"
-    result += "• `rowan_redox_potential` - Redox potentials vs SCE\n"
-    result += "• `rowan_bde` - Bond dissociation energies\n"
-    result += "• `rowan_solubility` - Solubility prediction\n\n"
-    
-    result += "**🧪 Drug Discovery:**\n"
-    result += "• `rowan_admet` - ADME-Tox properties\n"
-    result += "• `rowan_docking` - Protein-ligand docking\n\n"
-    
-    result += "**🔬 Advanced Analysis:**\n"
-    result += "• `rowan_scan` - Potential energy scans\n"
-    result += "• `rowan_fukui` - Reactivity analysis\n"
-    result += "• `rowan_spin_states` - Spin state preferences\n"
-    result += "• `rowan_irc` - Reaction coordinate following\n"
-    result += "• `rowan_molecular_dynamics` - MD simulations\n"
-    result += "• `rowan_hydrogen_bond_basicity` - H-bond strength\n\n"
-    
-    result += "💡 **Usage Guidelines:**\n"
-    result += "• For geometry optimization: use `rowan_multistage_opt` (RECOMMENDED)\n"
-    result += "• For energy calculations: use `rowan_basic_calculation`\n"
-    result += "• For conformer search: use `rowan_conformers`\n"
-    result += "• For pKa prediction: use `rowan_pka`\n"
-    result += "• For electronic structure: use `rowan_electronic_properties`\n"
-    result += "• For drug properties: use `rowan_admet`\n"
-    result += "• For reaction mechanisms: use `rowan_scan` then `rowan_irc`\n\n"
-    
-    result += "📋 **Total Available:** 15+ specialized tools\n"
-    result += "🔗 **Each tool has specific documentation - check individual tool descriptions**\n"
-    
-    return result
-
-
-@mcp.tool()
-@log_mcp_call
-def rowan_set_log_level(level: str = "INFO") -> str:
-    """Set the logging level for debugging.
+    **Available Actions:**
+    - **help**: Get list of all available Rowan MCP tools with descriptions
+    - **set_log_level**: Set logging level for debugging (requires: log_level)
+    - **job_redirect**: Redirect legacy job queries to workflow management (requires: job_uuid)
     
     Args:
-        level: Logging level (DEBUG, INFO, WARNING, ERROR)
-        
+        action: Action to perform ('help', 'set_log_level', 'job_redirect')
+        job_uuid: UUID of the job (required for job_redirect)
+        log_level: Logging level - DEBUG, INFO, WARNING, ERROR (required for set_log_level)
+    
     Returns:
-        Confirmation message
+        Results of the system operation
     """
-    valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR"]
-    level = level.upper()
     
-    if level not in valid_levels:
-        return f"❌ Invalid log level. Use one of: {', '.join(valid_levels)}"
+    action = action.lower()
     
-    logger.setLevel(getattr(logging, level))
-    logger.info(f"📊 Log level changed to: {level}")
-    
-    return f"✅ Log level set to {level}"
+    try:
+        if action == "help":
+            result = "🔬 **Available Rowan MCP Tools** 🔬\n\n"
+            
+            result += "✨ **Now with unified management tools!**\n"
+            result += "Each tool has tailored documentation and parameters.\n\n"
+            
+            # Group by common use cases
+            result += "**🔬 Quantum Chemistry & Basic Calculations:**\n"
+            result += "• `rowan_qc_guide` - Comprehensive quantum chemistry guidance\n"
+            result += "• `rowan_quantum_chemistry` - Unified QC tool (smart defaults + full customization)\n"
+            result += "• `rowan_electronic_properties` - HOMO/LUMO, orbitals\n"
+            result += "• `rowan_multistage_opt` - Multi-level optimization (RECOMMENDED for geometry)\n\n"
+            
+            result += "**🧬 Molecular Analysis:**\n"
+            result += "• `rowan_conformers` - Find molecular conformations\n"
+            result += "• `rowan_tautomers` - Tautomer enumeration\n"
+            result += "• `rowan_descriptors` - Molecular descriptors for ML\n\n"
+            
+            result += "**⚗️ Chemical Properties:**\n"
+            result += "• `rowan_pka` - pKa prediction\n"
+            result += "• `rowan_redox_potential` - Redox potentials vs SCE\n"
+            result += "• `rowan_bde` - Bond dissociation energies\n"
+            result += "• `rowan_solubility` - Solubility prediction\n\n"
+            
+            result += "**🧪 Drug Discovery:**\n"
+            result += "• `rowan_admet` - ADME-Tox properties\n"
+            result += "• `rowan_docking` - Protein-ligand docking\n\n"
+            
+            result += "**🔬 Advanced Analysis:**\n"
+            result += "• `rowan_scan` - Potential energy scans\n"
+            result += "• `rowan_fukui` - Reactivity analysis\n"
+            result += "• `rowan_spin_states` - Spin state preferences\n"
+            result += "• `rowan_irc` - Reaction coordinate following\n"
+            result += "• `rowan_molecular_dynamics` - MD simulations\n"
+            result += "• `rowan_hydrogen_bond_basicity` - H-bond strength\n\n"
+            
+            result += "💡 **Usage Guidelines:**\n"
+            result += "• For geometry optimization: use `rowan_multistage_opt` (RECOMMENDED)\n"
+            result += "• For energy calculations: use `rowan_quantum_chemistry` (smart defaults)\n"
+            result += "• For custom QC settings: use `rowan_quantum_chemistry` with parameters\n"
+            result += "• For conformer search: use `rowan_conformers`\n"
+            result += "• For pKa prediction: use `rowan_pka`\n"
+            result += "• For electronic structure: use `rowan_electronic_properties`\n"
+            result += "• For drug properties: use `rowan_admet`\n"
+            result += "• For reaction mechanisms: use `rowan_scan` then `rowan_irc`\n\n"
+            
+            result += "**🗂️ Management Tools:**\n"
+            result += "• `rowan_folder_management` - Unified folder operations (create, retrieve, update, delete, list)\n"
+            result += "• `rowan_workflow_management` - Unified workflow operations (create, retrieve, update, stop, status, delete, list)\n"
+            result += "• `rowan_system_management` - System utilities (help, set_log_level, job_redirect)\n\n"
+            
+            result += "📋 **Total Available:** 15+ specialized tools + 3 unified management tools\n"
+            result += "🔗 **Each tool has specific documentation - check individual tool descriptions**\n"
+            result += "💡 **Management tools use 'action' parameter to specify operation**\n"
+            
+            return result
+            
+        elif action == "set_log_level":
+            if not log_level:
+                return "❌ Error: 'log_level' is required for set_log_level action"
+            
+            valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR"]
+            log_level = log_level.upper()
+            
+            if log_level not in valid_levels:
+                return f"❌ Invalid log level. Use one of: {', '.join(valid_levels)}"
+            
+            logger.setLevel(getattr(logging, log_level))
+            logger.info(f"📊 Log level changed to: {log_level}")
+            
+            return f"✅ Log level set to {log_level}"
+            
+        elif action == "job_redirect":
+            if not job_uuid:
+                return "❌ Error: 'job_uuid' is required for job_redirect action"
+            
+            formatted = f"📊 Legacy Job Query for {job_uuid}:\n\n"
+            formatted += f"⚠️ **Important Note:**\n"
+            formatted += f"Rowan manages computations through workflows, not individual jobs.\n"
+            formatted += f"The job/results concept is legacy from older versions.\n\n"
+            formatted += f"💡 **To find your workflow:**\n"
+            formatted += f"• Use `rowan_workflow_management(action='list')` to see all workflows\n"
+            formatted += f"• Look for workflows with similar names or recent creation times\n"
+            formatted += f"• Use `rowan_workflow_management(action='status', workflow_uuid='UUID')` to check status\n"
+            formatted += f"• Use `rowan_workflow_management(action='retrieve', workflow_uuid='UUID')` to get results\n\n"
+            formatted += f"🔄 **Migration Guide:**\n"
+            formatted += f"• Old: `rowan_job_status('{job_uuid}')` → New: `rowan_workflow_management(action='status', workflow_uuid='UUID')`\n"
+            formatted += f"• Old: `rowan_job_results('{job_uuid}')` → New: `rowan_workflow_management(action='retrieve', workflow_uuid='UUID')`\n"
+            
+            return formatted
+            
+        else:
+            return f"❌ Error: Unknown action '{action}'. Available actions: help, set_log_level, job_redirect"
+            
+    except Exception as e:
+        return f"❌ Error in system {action}: {str(e)}"
 
 
 def main() -> None:
@@ -1699,12 +1961,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    import sys
-    
-    if len(sys.argv) > 1 and sys.argv[1] == "--http":
-        # HTTP server mode - use dedicated HTTP server
-        from .http_server import main as http_main
-        http_main()
-    else:
-        # Default stdio mode
-        main() 
+    main() 
