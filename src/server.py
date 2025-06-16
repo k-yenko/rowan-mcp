@@ -1238,84 +1238,62 @@ def rowan_fukui(
     logger.info(f"   Input: {molecule}")
     logger.info(f"   Using SMILES: {canonical_smiles}")
     
-    try:
-        result = log_rowan_api_call(
-            workflow_type="fukui",
-            name=name,
-            molecule=canonical_smiles,
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
+    result = log_rowan_api_call(
+        workflow_type="fukui",
+        name=name,
+        molecule=canonical_smiles,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    
+    if blocking:
+        status = result.get('status', result.get('object_status', 'Unknown'))
         
-        if blocking:
-            status = result.get('status', result.get('object_status', 'Unknown'))
-            
-            if status == 2:  # Completed successfully
-                formatted = f"✅ Fukui analysis for '{name}' completed successfully!\n\n"
-            elif status == 3:  # Failed
-                formatted = f"❌ Fukui analysis for '{name}' failed!\n\n"
-            else:
-                formatted = f"⚠️ Fukui analysis for '{name}' finished with status {status}\n\n"
-                
-            formatted += f"🧪 Molecule: {molecule}\n"
-            formatted += f"🔬 SMILES: {canonical_smiles}\n"
-            formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-            formatted += f"📊 Status: {status}\n"
-            
-            # Try to extract Fukui results
-            if isinstance(result, dict) and 'object_data' in result and result['object_data']:
-                data = result['object_data']
-                
-                if 'fukui_plus' in data or 'fukui_minus' in data or 'fukui_zero' in data:
-                    formatted += f"\n⚡ **Fukui Indices Available:**\n"
-                    if 'fukui_plus' in data:
-                        formatted += f"• f(+): Nucleophilic attack sites\n"
-                    if 'fukui_minus' in data:
-                        formatted += f"• f(-): Electrophilic attack sites\n"
-                    if 'fukui_zero' in data:
-                        formatted += f"• f(0): Radical attack sites\n"
-                    
-                    formatted += f"\n💡 **Most Reactive Sites:**\n"
-                    # Would need to analyze the actual data to show top sites
-                    formatted += f"Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed site rankings\n"
-            
-            if status == 2:
-                formatted += f"\n🎯 **Results Available:**\n"
-                formatted += f"• Fukui indices calculated for each atom\n"
-                formatted += f"• Higher values = more reactive sites\n"
-                formatted += f"• f(+) identifies sites attacked by nucleophiles\n"
-                formatted += f"• f(-) identifies sites attacked by electrophiles\n"
-            
-            return formatted
+        if status == 2:  # Completed successfully
+            formatted = f"✅ Fukui analysis for '{name}' completed successfully!\n\n"
+        elif status == 3:  # Failed
+            formatted = f"❌ Fukui analysis for '{name}' failed!\n\n"
         else:
-            formatted = f"🚀 Fukui analysis for '{name}' submitted!\n\n"
-            formatted += f"🧪 Molecule: {molecule}\n"
-            formatted += f"🔬 SMILES: {canonical_smiles}\n"
-            formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-            formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
-            return formatted
+            formatted = f"⚠️ Fukui analysis for '{name}' finished with status {status}\n\n"
             
-    except Exception as e:
-        error_str = str(e).lower()
-        if "500" in error_str or "internal server error" in error_str:
-            formatted = f"❌ Rowan API Server Error (500) for Fukui analysis\n\n"
-            formatted += f"🧪 Molecule: {molecule}\n"
-            formatted += f"🔬 SMILES: {canonical_smiles}\n"
-            formatted += f"🚨 Error: {str(e)}\n\n"
-            formatted += f"💡 **This is a server-side issue. Possible causes:**\n"
-            formatted += f"• Rowan's Fukui workflow may be temporarily unavailable\n"
-            formatted += f"• Server maintenance or high load\n"
-            formatted += f"• The molecule might be too complex for Fukui analysis\n\n"
-            formatted += f"🔧 **Suggested alternatives:**\n"
-            formatted += f"• Try a simpler molecule first (e.g., benzene)\n"
-            formatted += f"• Use rowan_electronic_properties for HOMO/LUMO analysis\n"
-            formatted += f"• Wait a few minutes and try again\n"
-            formatted += f"• Check if other Rowan tools are working\n"
-            return formatted
-        else:
-            # Re-raise other errors
-            raise e
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 SMILES: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {status}\n"
+        
+        # Try to extract Fukui results
+        if isinstance(result, dict) and 'object_data' in result and result['object_data']:
+            data = result['object_data']
+            
+            if 'fukui_plus' in data or 'fukui_minus' in data or 'fukui_zero' in data:
+                formatted += f"\n⚡ **Fukui Indices Available:**\n"
+                if 'fukui_plus' in data:
+                    formatted += f"• f(+): Nucleophilic attack sites\n"
+                if 'fukui_minus' in data:
+                    formatted += f"• f(-): Electrophilic attack sites\n"
+                if 'fukui_zero' in data:
+                    formatted += f"• f(0): Radical attack sites\n"
+                
+                formatted += f"\n💡 **Most Reactive Sites:**\n"
+                # Would need to analyze the actual data to show top sites
+                formatted += f"Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed site rankings\n"
+        
+        if status == 2:
+            formatted += f"\n🎯 **Results Available:**\n"
+            formatted += f"• Fukui indices calculated for each atom\n"
+            formatted += f"• Higher values = more reactive sites\n"
+            formatted += f"• f(+) identifies sites attacked by nucleophiles\n"
+            formatted += f"• f(-) identifies sites attacked by electrophiles\n"
+        
+        return formatted
+    else:
+        formatted = f"🚀 Fukui analysis for '{name}' submitted!\n\n"
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 SMILES: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
+        return formatted
 
 
 # Spin States

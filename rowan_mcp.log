@@ -2884,3 +2884,168 @@ For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/St
 2025-06-15 22:11:32,493 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
 2025-06-15 22:11:37,851 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
 2025-06-15 22:11:43,259 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:11:48,654 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:11:54,047 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:11:59,408 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:04,785 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:10,166 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:15,523 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:20,884 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:26,265 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:31,637 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:37,037 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:42,430 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:47,794 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:53,164 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:12:58,518 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:13:03,870 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:13:09,240 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:13:14,670 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:13:20,046 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:13:25,438 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:13:30,836 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:13:36,223 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:13:36,612 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8b3fb649-a9bd-435c-b4f4-d111bfa2764a "HTTP/1.1 200 OK"
+2025-06-15 22:13:36,614 - src.server - INFO - 🎯 Rowan API submission successful: electronic_properties (135.85s)
+2025-06-15 22:13:36,614 - src.server - INFO - 📋 Job UUID: 8b3fb649-a9bd-435c-b4f4-d111bfa2764a
+2025-06-15 22:13:36,614 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-15 22:14:01,070 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-15 22:14:01,071 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-15 22:14:01,071 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-15 22:14:49,366 - src.server - INFO - 🔧 MCP Tool Called: rowan_fukui
+2025-06-15 22:14:49,380 - src.server - INFO - 📝 Parameters: {'name': 'phenol_reactivity', 'molecule': 'c1ccccc1O'}
+2025-06-15 22:14:49,380 - src.server - WARNING - ⚠️ No SMILES found for 'c1ccccc1O', using as-is
+2025-06-15 22:14:49,381 - src.server - INFO - 🔬 Fukui Analysis Debug:
+2025-06-15 22:14:49,381 - src.server - INFO -    Name: phenol_reactivity
+2025-06-15 22:14:49,381 - src.server - INFO -    Input: c1ccccc1O
+2025-06-15 22:14:49,381 - src.server - INFO -    Using SMILES: c1ccccc1O
+2025-06-15 22:14:49,381 - src.server - INFO - 🌐 Rowan API Call: fukui
+2025-06-15 22:14:49,381 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'phenol_reactivity', 'molecule': 'c1ccccc1O', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-15 22:14:50,058 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 500 Internal Server Error"
+2025-06-15 22:14:50,059 - src.server - ERROR - 🌐 Rowan API failed: fukui (0.68s)
+2025-06-15 22:14:50,059 - src.server - ERROR - 🚨 Rowan Error: Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
+2025-06-15 22:14:50,059 - src.server - ERROR - 📋 Exception Type: HTTPStatusError
+2025-06-15 22:14:50,059 - src.server - ERROR - 📄 Full Exception: HTTPStatusError("Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500")
+2025-06-15 22:14:50,059 - src.server - ERROR - 🔍 Exception Args: ("Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",)
+2025-06-15 22:14:50,065 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 40, in compute
+    result = Workflow.submit(
+             ^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/workflow.py", line 38, in submit
+    response.raise_for_status()
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
+
+2025-06-15 22:14:50,065 - src.server - ERROR - 🌐 HTTP Status: 500
+2025-06-15 22:14:50,065 - src.server - ERROR - 📝 Rowan API Response Text: {"message":"Internal Server Error"}
+2025-06-15 22:14:50,066 - src.server - ERROR - 📋 Response Headers: {'date': 'Mon, 16 Jun 2025 05:14:50 GMT', 'content-type': 'application/json', 'content-length': '35', 'connection': 'keep-alive', 'strict-transport-security': 'max-age=31536000; includeSubDomains'}
+2025-06-15 22:14:50,066 - src.server - ERROR - 🔍 Exception attributes: ['_request', 'response']
+2025-06-15 22:14:50,066 - src.server - INFO - ✅ rowan_fukui completed successfully in 0.70s
+2025-06-15 22:14:54,383 - src.server - INFO - 🌐 Rowan API Call: electronic_properties
+2025-06-15 22:14:54,384 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'phenol_electronic_properties', 'molecule': Molecule(charge=0, multiplicity=1, atoms=[Atom(6, [0.73211, 0.91874, 0.36391]), Atom(6, [-0.60834, 1.30850, 0.37019]), Atom(6, [-1.60189, 0.40547, -0.01207]), Atom(6, [-1.25677, -0.88927, -0.40141]), Atom(6, [0.08186, -1.28068, -0.40839]), Atom(6, [1.06547, -0.37530, -0.02626]), Atom(8, [2.36158, -0.79887, -0.04749]), Atom(1, [1.49389, 1.63102, 0.66346]), Atom(1, [-0.88014, 2.31638, 0.67299]), Atom(1, [-2.64523, 0.71044, -0.00666]), Atom(1, [-2.02900, -1.59337, -0.69924]), Atom(1, [0.35711, -2.28696, -0.71036]), Atom(1, [2.92935, -0.06609, 0.24131])], cell=None, energy=None, scf_iterations=None, scf_completed=None, elapsed=None, homo_lumo_gap=None, gradient=None, stress=None, velocities=None, mulliken_charges=None, mulliken_spin_densities=None, dipole=None, vibrational_modes=None, zero_point_energy=None, thermal_energy_corr=None, thermal_enthalpy_corr=None, thermal_free_energy_corr=None, smiles=None, calculation_index=None), 'folder_uuid': None, 'blocking': True, 'ping_interval': 5, 'method': 'b3lyp', 'basis_set': 'sto-3g', 'tasks': ['energy', 'orbitals']}
+2025-06-15 22:14:54,875 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 22:14:55,222 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/961a4cd9-f9d5-4bd6-b0a0-3f49ad8b699f "HTTP/1.1 200 OK"
+2025-06-15 22:15:00,607 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/961a4cd9-f9d5-4bd6-b0a0-3f49ad8b699f "HTTP/1.1 200 OK"
+2025-06-15 22:15:05,976 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/961a4cd9-f9d5-4bd6-b0a0-3f49ad8b699f "HTTP/1.1 404 Not Found"
+2025-06-15 22:15:05,977 - src.server - ERROR - 🌐 Rowan API failed: electronic_properties (11.59s)
+2025-06-15 22:15:05,977 - src.server - ERROR - 🚨 Rowan Error: Client error '404 Not Found' for url 'https://api.rowansci.com/workflow/961a4cd9-f9d5-4bd6-b0a0-3f49ad8b699f'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2025-06-15 22:15:05,978 - src.server - ERROR - 📋 Exception Type: HTTPStatusError
+2025-06-15 22:15:05,978 - src.server - ERROR - 📄 Full Exception: HTTPStatusError("Client error '404 Not Found' for url 'https://api.rowansci.com/workflow/961a4cd9-f9d5-4bd6-b0a0-3f49ad8b699f'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404")
+2025-06-15 22:15:05,978 - src.server - ERROR - 🔍 Exception Args: ("Client error '404 Not Found' for url 'https://api.rowansci.com/workflow/961a4cd9-f9d5-4bd6-b0a0-3f49ad8b699f'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404",)
+2025-06-15 22:15:05,980 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 50, in compute
+    while not Workflow.is_finished(uuid):
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/workflow.py", line 86, in is_finished
+    status = cls.status(uuid)
+             ^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/workflow.py", line 82, in status
+    return cls.retrieve(uuid)["object_status"]
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/workflow.py", line 45, in retrieve
+    response.raise_for_status()
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Client error '404 Not Found' for url 'https://api.rowansci.com/workflow/961a4cd9-f9d5-4bd6-b0a0-3f49ad8b699f'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+
+2025-06-15 22:15:05,980 - src.server - ERROR - 🌐 HTTP Status: 404
+2025-06-15 22:15:05,981 - src.server - ERROR - 📝 Rowan API Response Text: {"detail":"Resource not found!"}
+2025-06-15 22:15:05,981 - src.server - ERROR - 📋 Response Headers: {'date': 'Mon, 16 Jun 2025 05:15:06 GMT', 'content-type': 'application/json', 'content-length': '32', 'connection': 'keep-alive', 'strict-transport-security': 'max-age=31536000; includeSubDomains'}
+2025-06-15 22:15:05,981 - src.server - ERROR - 🔍 Exception attributes: ['_request', 'response']
+2025-06-15 22:18:24,912 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-15 22:18:24,913 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-15 22:18:24,913 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-15 22:18:44,984 - src.server - INFO - 🔧 MCP Tool Called: rowan_fukui
+2025-06-15 22:18:45,001 - src.server - INFO - 📝 Parameters: {'name': 'phenol_reactivity', 'molecule': 'c1ccc(cc1)O'}
+2025-06-15 22:18:45,001 - src.server - WARNING - ⚠️ No SMILES found for 'c1ccc(cc1)O', using as-is
+2025-06-15 22:18:45,001 - src.server - INFO - 🔬 Fukui Analysis Debug:
+2025-06-15 22:18:45,001 - src.server - INFO -    Name: phenol_reactivity
+2025-06-15 22:18:45,001 - src.server - INFO -    Input: c1ccc(cc1)O
+2025-06-15 22:18:45,001 - src.server - INFO -    Using SMILES: c1ccc(cc1)O
+2025-06-15 22:18:45,001 - src.server - INFO - 🌐 Rowan API Call: fukui
+2025-06-15 22:18:45,002 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'phenol_reactivity', 'molecule': 'c1ccc(cc1)O', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-15 22:18:45,657 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 500 Internal Server Error"
+2025-06-15 22:18:45,659 - src.server - ERROR - 🌐 Rowan API failed: fukui (0.66s)
+2025-06-15 22:18:45,659 - src.server - ERROR - 🚨 Rowan Error: Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
+2025-06-15 22:18:45,659 - src.server - ERROR - 📋 Exception Type: HTTPStatusError
+2025-06-15 22:18:45,660 - src.server - ERROR - 📄 Full Exception: HTTPStatusError("Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500")
+2025-06-15 22:18:45,660 - src.server - ERROR - 🔍 Exception Args: ("Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",)
+2025-06-15 22:18:45,666 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 40, in compute
+    result = Workflow.submit(
+             ^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/workflow.py", line 38, in submit
+    response.raise_for_status()
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
+
+2025-06-15 22:18:45,667 - src.server - ERROR - 🌐 HTTP Status: 500
+2025-06-15 22:18:45,667 - src.server - ERROR - 📝 Rowan API Response Text: {"message":"Internal Server Error"}
+2025-06-15 22:18:45,667 - src.server - ERROR - 📋 Response Headers: {'date': 'Mon, 16 Jun 2025 05:18:45 GMT', 'content-type': 'application/json', 'content-length': '35', 'connection': 'keep-alive', 'strict-transport-security': 'max-age=31536000; includeSubDomains'}
+2025-06-15 22:18:45,667 - src.server - ERROR - 🔍 Exception attributes: ['_request', 'response']
+2025-06-15 22:18:45,667 - src.server - ERROR - ❌ rowan_fukui failed after 0.68s
+2025-06-15 22:18:45,667 - src.server - ERROR - 🚨 Error: Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
+2025-06-15 22:18:45,668 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1241, in rowan_fukui
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 238, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 40, in compute
+    result = Workflow.submit(
+             ^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/workflow.py", line 38, in submit
+    response.raise_for_status()
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
+
