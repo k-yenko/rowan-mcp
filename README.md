@@ -209,6 +209,3 @@ This means the system is trying to parse protein names/sequences as chemical SMI
 - ✅ `"CCO"` - Valid SMILES for ethanol
 
 ---
-
-**Made with ❤️ for the computational chemistry community** 
->>>>>>> 3d23a74d9a5fe2f085d636431d694194fdef2b5b
