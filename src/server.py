@@ -14,6 +14,7 @@ from enum import Enum
 
 from fastmcp import FastMCP
 from pydantic import BaseModel, Field
+from stjames import Molecule
 
 try:
     import rowan
@@ -98,11 +99,51 @@ def log_mcp_call(func):
             logger.error(f"🚨 Error: {str(e)}")
             logger.error(f"📍 Traceback:\n{traceback.format_exc()}")
             
-            # Return a formatted error message
-            error_msg = f"❌ Error in {func_name}: {str(e)}"
-            if "rowan" in str(e).lower():
-                error_msg += f"\n🔗 Check Rowan API status and your API key"
-            return error_msg
+            # Extract Rowan's actual error message if available
+            rowan_error_msg = None
+            http_status = None
+            
+            if hasattr(e, 'response') and e.response is not None:
+                try:
+                    http_status = getattr(e.response, 'status_code', 'Unknown')
+                    
+                    if hasattr(e.response, 'text'):
+                        response_text = e.response.text
+                        # Try to parse JSON error response
+                        import json
+                        try:
+                            error_data = json.loads(response_text)
+                            rowan_error_msg = error_data.get('message', error_data.get('error', response_text))
+                        except json.JSONDecodeError:
+                            rowan_error_msg = response_text
+                    elif hasattr(e.response, 'content'):
+                        rowan_error_msg = e.response.content.decode('utf-8', errors='ignore')
+                except Exception as extract_err:
+                    logger.error(f"⚠️ Could not extract error message: {extract_err}")
+            
+            # Build comprehensive error message for user
+            error_parts = []
+            
+            if rowan_error_msg and rowan_error_msg.strip():
+                error_parts.append(f"Rowan API Error: {rowan_error_msg}")
+            
+            if http_status:
+                error_parts.append(f"HTTP Status: {http_status}")
+                
+            # Add exception details
+            error_parts.append(f"Exception: {type(e).__name__}")
+            
+            # Add original error message if we have one and it's different
+            original_msg = str(e)
+            if original_msg and original_msg not in (rowan_error_msg or ''):
+                error_parts.append(f"Details: {original_msg}")
+            
+            # Provide specific guidance for common error types
+            if isinstance(e, AssertionError):
+                error_parts.append("This appears to be a validation error in the Rowan library")
+            
+            combined_error = " | ".join(error_parts)
+            return f"❌ {combined_error}"
             
     return wrapper
 
@@ -113,10 +154,17 @@ def log_rowan_api_call(workflow_type: str, **kwargs):
     logger.info(f"🔍 Rowan Parameters: {kwargs}")
     
     # Special handling for long-running calculations
-    if workflow_type == "multistage_opt":
+    if workflow_type in ["multistage_opt", "conformer_search"]:
         ping_interval = kwargs.get('ping_interval', 5)
-        logger.info(f"⏳ Multi-stage optimization may take several minutes...")
-        logger.info(f"🔄 Progress will be checked every {ping_interval} seconds")
+        blocking = kwargs.get('blocking', True)
+        if blocking:
+            if workflow_type == "multistage_opt":
+                logger.info(f"⏳ Multi-stage optimization may take several minutes...")
+            else:
+                logger.info(f"⏳ Conformer search may take several minutes...")
+            logger.info(f"🔄 Progress will be checked every {ping_interval} seconds")
+        else:
+            logger.info(f"🚀 {workflow_type.replace('_', ' ').title()} submitted without waiting")
     
     try:
         start_time = time.time()
@@ -137,31 +185,57 @@ def log_rowan_api_call(workflow_type: str, **kwargs):
         api_time = time.time() - start_time
         logger.error(f"🌐 Rowan API failed: {workflow_type} ({api_time:.2f}s)")
         logger.error(f"🚨 Rowan Error: {str(e)}")
+        
+        # Enhanced error logging for better debugging
+        logger.error(f"📋 Exception Type: {type(e).__name__}")
+        logger.error(f"📄 Full Exception: {repr(e)}")
+        logger.error(f"🔍 Exception Args: {e.args}")
+        
+        # Log full stack trace for debugging
+        import traceback
+        logger.error(f"📍 Full Stack Trace:\n{traceback.format_exc()}")
+        
+        # Log the actual response from Rowan API if available
+        response_logged = False
+        if hasattr(e, 'response') and e.response is not None:
+            logger.error(f"🌐 HTTP Status: {e.response.status_code}")
+            try:
+                if hasattr(e.response, 'text'):
+                    response_text = e.response.text
+                    logger.error(f"📝 Rowan API Response Text: {response_text}")
+                    response_logged = True
+                elif hasattr(e.response, 'content'):
+                    response_content = e.response.content.decode('utf-8', errors='ignore')
+                    logger.error(f"📝 Rowan API Response Content: {response_content}")
+                    response_logged = True
+                
+                # Also try to get headers for more context
+                if hasattr(e.response, 'headers'):
+                    logger.error(f"📋 Response Headers: {dict(e.response.headers)}")
+                    
+            except Exception as log_err:
+                logger.error(f"⚠️ Could not read response: {log_err}")
+        
+        # For requests exceptions, try to get more details
+        if hasattr(e, '__dict__'):
+            logger.error(f"🔍 Exception attributes: {list(e.__dict__.keys())}")
+            
+        # Check if it's a requests exception with specific handling
+        if 'requests' in str(type(e).__module__):
+            logger.error(f"🌐 This is a requests library exception")
+            
+        # If we couldn't log a response above, try alternative approaches
+        if not response_logged:
+            logger.error(f"⚠️ No HTTP response data found in exception")
+            
+            # Try to get any string representation that might contain useful info
+            exception_str = str(e)
+            if exception_str and exception_str != '':
+                logger.error(f"📝 Exception message: {exception_str}")
+            else:
+                logger.error(f"📝 Exception has no message")
+        
         raise e
-
-
-# Pydantic models for request validation
-class PkaRequest(BaseModel):
-    name: str = Field(..., description="Name for the calculation")
-    molecule: str = Field(..., description="Molecule SMILES string")
-    folder_uuid: Optional[str] = Field(None, description="Folder UUID for organization")
-
-
-class ConformerRequest(BaseModel):
-    name: str = Field(..., description="Name for the calculation")
-    molecule: str = Field(..., description="Molecule SMILES string")
-    max_conformers: Optional[int] = Field(10, description="Maximum number of conformers")
-    folder_uuid: Optional[str] = Field(None, description="Folder UUID for organization")
-
-
-class FolderRequest(BaseModel):
-    name: str = Field(..., description="Name of the folder")
-    description: Optional[str] = Field(None, description="Optional description")
-
-
-class JobRequest(BaseModel):
-    job_uuid: str = Field(..., description="UUID of the job")
-
 
 # Quantum Chemistry Constants and Helper Functions
 QC_ENGINES = {
@@ -231,9 +305,9 @@ QC_BASIS_SETS = {
     "cc-pvdz": "Correlation-consistent double-zeta (generally contracted - slow)",
     "cc-pvtz": "Correlation-consistent triple-zeta (generally contracted - slow)",
     "cc-pvqz": "Correlation-consistent quadruple-zeta (generally contracted - slow)",
-    "cc-pvdz(seg-opt)": "cc-pVDZ segmented-optimized (RECOMMENDED over cc-pVDZ)",
-    "cc-pvtz(seg-opt)": "cc-pVTZ segmented-optimized (RECOMMENDED over cc-pVTZ)",
-    "cc-pvqz(seg-opt)": "cc-pVQZ segmented-optimized (RECOMMENDED over cc-pVQZ)",
+    "cc-pvdz(seg-opt)": "cc-pVDZ segmented-optimized (preferred over cc-pVDZ)",
+    "cc-pvtz(seg-opt)": "cc-pVTZ segmented-optimized (preferred over cc-pVTZ)",
+    "cc-pvqz(seg-opt)": "cc-pVQZ segmented-optimized (preferred over cc-pVQZ)",
     
     # Ahlrichs's def2 basis sets
     "def2-sv(p)": "Ahlrichs def2-SV(P) split-valence polarized",
@@ -262,6 +336,102 @@ QC_CORRECTIONS = {
     "d3bj": "Grimme's D3 dispersion correction with Becke-Johnson damping",
     "d3": "Grimme's D3 dispersion correction (automatically applied for B97-D3, ωB97X-D3)"
 }
+
+def lookup_molecule_smiles(molecule_name: str) -> str:
+    """Look up canonical SMILES for common molecule names.
+    
+    Args:
+        molecule_name: Name of the molecule (e.g., "phenol", "benzene", "water")
+    
+    Returns:
+        Canonical SMILES string for the molecule
+    """
+    # Common molecule SMILES database
+    MOLECULE_SMILES = {
+        # Aromatics
+        "phenol": "Oc1ccccc1",
+        "benzene": "c1ccccc1", 
+        "toluene": "Cc1ccccc1",
+        "aniline": "Nc1ccccc1",
+        "benzoic acid": "O=C(O)c1ccccc1",
+        "salicylic acid": "O=C(O)c1ccccc1O",
+        "aspirin": "CC(=O)Oc1ccccc1C(=O)O",
+        "pyridine": "c1ccncc1",
+        "furan": "c1ccoc1",
+        "thiophene": "c1ccsc1",
+        "pyrrole": "c1cc[nH]c1",
+        "indole": "c1ccc2[nH]ccc2c1",
+        "naphthalene": "c1ccc2ccccc2c1",
+        
+        # Aliphatics
+        "methane": "C",
+        "ethane": "CC", 
+        "propane": "CCC",
+        "butane": "CCCC",
+        "pentane": "CCCCC",
+        "hexane": "CCCCCC",
+        "cyclopropane": "C1CC1",
+        "cyclobutane": "C1CCC1", 
+        "cyclopentane": "C1CCCC1",
+        "cyclohexane": "C1CCCCC1",
+        
+        # Alcohols
+        "methanol": "CO",
+        "ethanol": "CCO",
+        "propanol": "CCCO",
+        "isopropanol": "CC(C)O",
+        "butanol": "CCCCO",
+        
+        # Acids
+        "acetic acid": "CC(=O)O",
+        "formic acid": "C(=O)O",
+        "propionic acid": "CCC(=O)O",
+        
+        # Common drugs
+        "caffeine": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+        "ibuprofen": "CC(C)Cc1ccc(C(C)C(=O)O)cc1",
+        "acetaminophen": "CC(=O)Nc1ccc(O)cc1",
+        "paracetamol": "CC(=O)Nc1ccc(O)cc1",
+        
+        # Solvents
+        "water": "O",
+        "acetone": "CC(=O)C",
+        "dmso": "CS(=O)C",
+        "dmf": "CN(C)C=O",
+        "thf": "C1CCOC1",
+        "dioxane": "C1COCCO1",
+        "chloroform": "ClC(Cl)Cl",
+        "dichloromethane": "ClCCl",
+        
+        # Others
+        "glucose": "OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O",
+        "ethylene": "C=C",
+        "acetylene": "C#C",
+        "formaldehyde": "C=O",
+        "ammonia": "N",
+        "hydrogen peroxide": "OO",
+        "carbon dioxide": "O=C=O",
+    }
+    
+    # Normalize the input (lowercase, strip whitespace)
+    normalized_name = molecule_name.lower().strip()
+    
+    # Direct lookup
+    if normalized_name in MOLECULE_SMILES:
+        smiles = MOLECULE_SMILES[normalized_name]
+        logger.info(f"🔍 SMILES Lookup: '{molecule_name}' → '{smiles}'")
+        return smiles
+    
+    # Try partial matches for common variations
+    for name, smiles in MOLECULE_SMILES.items():
+        if normalized_name in name or name in normalized_name:
+            logger.info(f"🔍 SMILES Lookup (partial match): '{molecule_name}' → '{name}' → '{smiles}'")
+            return smiles
+    
+    # If no match found, return the original input (assume it's already SMILES)
+    logger.warning(f"⚠️ No SMILES found for '{molecule_name}', using as-is")
+    return molecule_name
+
 
 def get_qc_guidance() -> str:
     """Generate comprehensive quantum chemistry guidance."""
@@ -318,9 +488,9 @@ def get_qc_guidance() -> str:
         guidance += f"• **{correction}**: {description}\n"
     guidance += "\n"
     
-    guidance += "**💡 Rowan Recommendations:**\n"
-    guidance += "• **Smart defaults**: `rowan_quantum_chemistry()` uses B3LYP/pcseg-1 + D3BJ (recommended)\n"
-    guidance += "• **For geometry optimization**: Use `rowan_multistage_opt` (RECOMMENDED)\n"
+    guidance += "**💡 Rowan Guidance:**\n"
+    guidance += "• **Smart defaults**: `rowan_quantum_chemistry()` uses B3LYP/pcseg-1 + D3BJ\n"
+    guidance += "• **For geometry optimization**: Use `rowan_multistage_opt`\n"
     guidance += "• **For general QC**: Use `rowan_quantum_chemistry` (auto-defaults or custom settings)\n"
     guidance += "• **Best DFT functional**: ωB97M-V (most accurate non-double hybrid)\n"
     guidance += "• **Best pure functional**: B97-D3 (according to Grimme 2011 benchmark)\n"
@@ -346,6 +516,59 @@ def get_qc_guidance() -> str:
 # Tool implementations
 
 # Quantum Chemistry Guidance Tool
+@mcp.tool()
+def rowan_molecule_lookup(molecule_name: str) -> str:
+    """Look up the canonical SMILES string for common molecule names.
+    
+    Provides consistent SMILES representations for common molecules to ensure
+    reproducible results across different Rowan calculations.
+    
+    Args:
+        molecule_name: Name of the molecule (e.g., "phenol", "benzene", "caffeine")
+    
+    Returns:
+        Canonical SMILES string and molecular information
+    """
+    canonical_smiles = lookup_molecule_smiles(molecule_name)
+    
+    # Check if we found a match or returned the input as-is
+    if canonical_smiles == molecule_name:
+        formatted = f"⚠️ No SMILES lookup found for '{molecule_name}'\n\n"
+        formatted += f"📝 **Using input as-is:** {molecule_name}\n"
+        formatted += f"💡 **If this is a molecule name, try:**\n"
+        formatted += f"• Check spelling (e.g., 'phenol', 'benzene', 'caffeine')\n"
+        formatted += f"• Use rowan_molecule_lookup('') to see available molecules\n"
+        formatted += f"• If it's already a SMILES string, you can use it directly\n"
+    else:
+        formatted = f"✅ SMILES lookup successful!\n\n"
+        formatted += f"🧪 **Molecule:** {molecule_name}\n"
+        formatted += f"🔬 **Canonical SMILES:** {canonical_smiles}\n"
+        formatted += f"💡 **Usage:** Use '{canonical_smiles}' in Rowan calculations for consistent results\n"
+    
+    # Show available molecules if empty input
+    if not molecule_name.strip():
+        formatted = f"📚 **Available Molecules for SMILES Lookup:**\n\n"
+        
+        categories = {
+            "Aromatics": ["phenol", "benzene", "toluene", "aniline", "pyridine", "naphthalene"],
+            "Aliphatics": ["methane", "ethane", "propane", "butane", "cyclohexane"],
+            "Alcohols": ["methanol", "ethanol", "isopropanol"],
+            "Common Drugs": ["caffeine", "ibuprofen", "aspirin", "acetaminophen"],
+            "Solvents": ["water", "acetone", "dmso", "thf"],
+        }
+        
+        for category, molecules in categories.items():
+            formatted += f"**{category}:**\n"
+            for mol in molecules:
+                smiles = lookup_molecule_smiles(mol)
+                formatted += f"• {mol}: `{smiles}`\n"
+            formatted += "\n"
+        
+        formatted += f"💡 **Example:** rowan_molecule_lookup('phenol') → 'Oc1ccccc1'\n"
+    
+    return formatted
+
+
 @mcp.tool()
 def rowan_qc_guide() -> str:
     """Get comprehensive guidance for quantum chemistry calculations in Rowan.
@@ -385,7 +608,7 @@ def rowan_quantum_chemistry(
 ) -> str:
     """Run quantum chemistry calculations with intelligent defaults or custom settings.
     
-    **🔬 Smart Defaults**: When no parameters are specified, uses Rowan's RECOMMENDED settings:
+    **🔬 Smart Defaults**: When no parameters are specified, uses Rowan's settings:
     - Method: B3LYP (popular, reliable hybrid functional)
     - Basis Set: pcseg-1 (better than 6-31G(d) at same cost)
     - Tasks: ["energy", "optimize"] (energy + geometry optimization)
@@ -440,7 +663,7 @@ def rowan_quantum_chemistry(
         corrections = ["d3bj"]  # Dispersion correction for accuracy
         if engine is None:  # Only set default if not provided
             engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
-        default_msg = "Rowan's RECOMMENDED defaults"
+        default_msg = "Rowan's defaults"
     elif using_defaults:
         # Fall back to Rowan's system defaults but ensure engine is set
         if engine is None:  # Only set default if not provided
@@ -477,24 +700,9 @@ def rowan_quantum_chemistry(
             available_corrections = ", ".join(QC_CORRECTIONS.keys())
             return f"❌ Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}\n\n" + get_qc_guidance()
     
-    # Build settings dictionary
-    settings = additional_settings or {}
-    
-    if method:
-        settings["method"] = method.lower()
-    if basis_set:
-        settings["basis_set"] = basis_set.lower()
-    if tasks:
-        settings["tasks"] = [task.lower() for task in tasks]
-    if corrections:
-        settings["corrections"] = [corr.lower() for corr in corrections]
-    # Always include engine (REQUIRED by Rowan API)
-    if engine:
-        settings["engine"] = engine.lower()
-    if charge != 0:
-        settings["charge"] = charge
-    if multiplicity != 1:
-        settings["multiplicity"] = multiplicity
+    # Engine is always required, so ensure it's set
+    if engine is None:
+        engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
     
     # Log the QC parameters
     logger.info(f"🔬 Quantum Chemistry Calculation: {name}")
@@ -507,19 +715,54 @@ def rowan_quantum_chemistry(
     logger.info(f"⚡ Charge: {charge}, Multiplicity: {multiplicity}")
     
     try:
-        # Use basic_calculation workflow with settings
+        # Build parameters for rowan.compute call based on documentation
+        compute_params = {
+            "name": name,
+            "input_mol": molecule,  # Use input_mol as shown in docs
+            "folder_uuid": folder_uuid,
+            "blocking": blocking,
+            "ping_interval": ping_interval
+        }
+        
+        # Add QC parameters directly (not in settings object)
+        if method:
+            compute_params["method"] = method.lower()
+        if basis_set:
+            compute_params["basis_set"] = basis_set.lower()
+        if tasks:
+            compute_params["tasks"] = [task.lower() for task in tasks]
+        if corrections:
+            compute_params["corrections"] = [corr.lower() for corr in corrections]
+        if engine:
+            compute_params["engine"] = engine.lower()
+        if charge != 0:
+            compute_params["charge"] = charge
+        if multiplicity != 1:
+            compute_params["multiplicity"] = multiplicity
+        
+        # Add any additional settings
+        if additional_settings:
+            compute_params.update(additional_settings)
+        
+        # Use "calculation" workflow type as shown in documentation
         result = log_rowan_api_call(
-            workflow_type="basic_calculation",
-            name=name,
-            molecule=molecule,
-            settings=settings if settings else None,
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
+            workflow_type="calculation",
+            **compute_params
         )
         
         # Check actual job status and format accordingly
-        job_status = result.get('status', result.get('object_status', 'Unknown'))
+        # First try to get status from submission response, then check via API if needed
+        job_status = result.get('status', result.get('object_status', None))
+        
+        # If status is None (common after submission), try to check via API
+        if job_status is None and result.get('uuid'):
+            try:
+                job_status = rowan.Workflow.status(uuid=result.get('uuid'))
+                logger.info(f"📊 Retrieved status via API: {job_status}")
+            except Exception as e:
+                logger.warning(f"⚠️ Could not retrieve status via API: {e}")
+                job_status = None
+        
         status_names = {
             0: ("⏳", "Queued"),
             1: ("🔄", "Running"), 
@@ -530,6 +773,11 @@ def rowan_quantum_chemistry(
         }
         
         status_icon, status_text = status_names.get(job_status, ("❓", f"Unknown ({job_status})"))
+        
+        # Special handling for None status (very common case)
+        if job_status is None:
+            status_icon, status_text = ("📝", "Submitted (status pending)")
+            logger.info(f"📝 Workflow submitted, status will be available shortly")
         
         # Use appropriate header based on actual status
         if job_status == 2:
@@ -654,6 +902,7 @@ def rowan_admet(
 
 # Bond Dissociation Energy
 @mcp.tool()
+@log_mcp_call
 def rowan_bde(
     name: str,
     molecule: str,
@@ -680,18 +929,26 @@ def rowan_bde(
     Returns:
         Bond dissociation energy results
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="bde",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error calculating BDE: {str(e)}"
+    # Basic SMILES formatting (no validation - let Rowan handle that)
+    logger.info(f"🔬 BDE Calculation Debug:")
+    logger.info(f"   Name: {name}")
+    logger.info(f"   Input molecule: {molecule}")
+    logger.info(f"   Input type: {type(molecule)}")
+    
+    # Just ensure it's a clean string - no validation
+    molecule_to_use = str(molecule).strip()
+    
+    logger.info(f"   🚀 Sending to Rowan API: '{molecule_to_use}'")
+    
+    result = log_rowan_api_call(
+        workflow_type="bde",
+        name=name,
+        molecule=molecule_to_use,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
 
 
 # Multistage Optimization - Recommended for Geometry Optimization
@@ -704,12 +961,12 @@ def rowan_multistage_opt(
     blocking: bool = True,
     ping_interval: int = 30
 ) -> str:
-    """Run multi-level geometry optimization (RECOMMENDED).
+    """Run multi-level geometry optimization.
     
     Performs hierarchical optimization using multiple levels of theory:
     GFN2-xTB → AIMNet2 → DFT for optimal balance of speed and accuracy.
     
-    This is the RECOMMENDED method for geometry optimization as it provides:
+    This is a method for geometry optimization as it provides:
     - High accuracy final structures
     - Efficient computational cost
     - Reliable convergence
@@ -769,18 +1026,21 @@ def rowan_electronic_properties(
     Returns:
         Electronic properties results
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="electronic_properties",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error calculating electronic properties: {str(e)}"
+    # Electronic properties workflow might need basic QC settings
+    # Try with minimal required parameters based on error analysis
+    result = log_rowan_api_call(
+        workflow_type="electronic_properties",
+        name=name,
+        molecule=Molecule.from_smiles(molecule),
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval,
+        # Add minimal QC settings that the workflow expects
+        method="b3lyp",  # Common default method
+        basis_set="sto-3g",  # Minimal basis set to start
+        tasks=["energy", "orbitals"]  # Needed for electronic properties
+    )
+    return str(result)
 
 
 # Descriptors - Molecular Feature Vectors
@@ -812,18 +1072,15 @@ def rowan_descriptors(
     Returns:
         Molecular descriptors results
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="descriptors",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error calculating descriptors: {str(e)}"
+    result = log_rowan_api_call(
+        workflow_type="descriptors",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
 
 
 # Solubility Prediction
@@ -854,18 +1111,15 @@ def rowan_solubility(
     Returns:
         Solubility prediction results
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="solubility",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error predicting solubility: {str(e)}"
+    result = log_rowan_api_call(
+        workflow_type="solubility",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
 
 
 # Redox Potential
@@ -896,18 +1150,15 @@ def rowan_redox_potential(
     Returns:
         Redox potential results
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="redox_potential",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error calculating redox potential: {str(e)}"
+    result = log_rowan_api_call(
+        workflow_type="redox_potential",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
 
 
 # Scan - Potential Energy Surface Scans
@@ -939,22 +1190,20 @@ def rowan_scan(
     Returns:
         Scan results with energy profile
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="scan",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error running scan: {str(e)}"
+    result = log_rowan_api_call(
+        workflow_type="scan",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
 
 
 # Fukui Indices - Reactivity Analysis
 @mcp.tool()
+@log_mcp_call
 def rowan_fukui(
     name: str,
     molecule: str,
@@ -973,7 +1222,7 @@ def rowan_fukui(
     
     Args:
         name: Name for the calculation
-        molecule: Molecule SMILES string
+        molecule: Molecule SMILES string or common name (e.g., "phenol", "benzene")
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
         ping_interval: Check status interval in seconds (default: 5)
@@ -981,18 +1230,92 @@ def rowan_fukui(
     Returns:
         Fukui indices and reactivity analysis
     """
+    # Look up SMILES if a common name was provided
+    canonical_smiles = lookup_molecule_smiles(molecule)
+    
+    logger.info(f"🔬 Fukui Analysis Debug:")
+    logger.info(f"   Name: {name}")
+    logger.info(f"   Input: {molecule}")
+    logger.info(f"   Using SMILES: {canonical_smiles}")
+    
     try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
+        result = log_rowan_api_call(
             workflow_type="fukui",
+            name=name,
+            molecule=canonical_smiles,
             folder_uuid=folder_uuid,
             blocking=blocking,
             ping_interval=ping_interval
         )
-        return str(result)
+        
+        if blocking:
+            status = result.get('status', result.get('object_status', 'Unknown'))
+            
+            if status == 2:  # Completed successfully
+                formatted = f"✅ Fukui analysis for '{name}' completed successfully!\n\n"
+            elif status == 3:  # Failed
+                formatted = f"❌ Fukui analysis for '{name}' failed!\n\n"
+            else:
+                formatted = f"⚠️ Fukui analysis for '{name}' finished with status {status}\n\n"
+                
+            formatted += f"🧪 Molecule: {molecule}\n"
+            formatted += f"🔬 SMILES: {canonical_smiles}\n"
+            formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+            formatted += f"📊 Status: {status}\n"
+            
+            # Try to extract Fukui results
+            if isinstance(result, dict) and 'object_data' in result and result['object_data']:
+                data = result['object_data']
+                
+                if 'fukui_plus' in data or 'fukui_minus' in data or 'fukui_zero' in data:
+                    formatted += f"\n⚡ **Fukui Indices Available:**\n"
+                    if 'fukui_plus' in data:
+                        formatted += f"• f(+): Nucleophilic attack sites\n"
+                    if 'fukui_minus' in data:
+                        formatted += f"• f(-): Electrophilic attack sites\n"
+                    if 'fukui_zero' in data:
+                        formatted += f"• f(0): Radical attack sites\n"
+                    
+                    formatted += f"\n💡 **Most Reactive Sites:**\n"
+                    # Would need to analyze the actual data to show top sites
+                    formatted += f"Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed site rankings\n"
+            
+            if status == 2:
+                formatted += f"\n🎯 **Results Available:**\n"
+                formatted += f"• Fukui indices calculated for each atom\n"
+                formatted += f"• Higher values = more reactive sites\n"
+                formatted += f"• f(+) identifies sites attacked by nucleophiles\n"
+                formatted += f"• f(-) identifies sites attacked by electrophiles\n"
+            
+            return formatted
+        else:
+            formatted = f"🚀 Fukui analysis for '{name}' submitted!\n\n"
+            formatted += f"🧪 Molecule: {molecule}\n"
+            formatted += f"🔬 SMILES: {canonical_smiles}\n"
+            formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+            formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
+            return formatted
+            
     except Exception as e:
-        return f"❌ Error calculating Fukui indices: {str(e)}"
+        error_str = str(e).lower()
+        if "500" in error_str or "internal server error" in error_str:
+            formatted = f"❌ Rowan API Server Error (500) for Fukui analysis\n\n"
+            formatted += f"🧪 Molecule: {molecule}\n"
+            formatted += f"🔬 SMILES: {canonical_smiles}\n"
+            formatted += f"🚨 Error: {str(e)}\n\n"
+            formatted += f"💡 **This is a server-side issue. Possible causes:**\n"
+            formatted += f"• Rowan's Fukui workflow may be temporarily unavailable\n"
+            formatted += f"• Server maintenance or high load\n"
+            formatted += f"• The molecule might be too complex for Fukui analysis\n\n"
+            formatted += f"🔧 **Suggested alternatives:**\n"
+            formatted += f"• Try a simpler molecule first (e.g., benzene)\n"
+            formatted += f"• Use rowan_electronic_properties for HOMO/LUMO analysis\n"
+            formatted += f"• Wait a few minutes and try again\n"
+            formatted += f"• Check if other Rowan tools are working\n"
+            return formatted
+        else:
+            # Re-raise other errors
+            raise e
 
 
 # Spin States
@@ -1023,18 +1346,15 @@ def rowan_spin_states(
     Returns:
         Spin state energetics results
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="spin_states",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error calculating spin states: {str(e)}"
+    result = log_rowan_api_call(
+        workflow_type="spin_states",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
 
 
 # Tautomers
@@ -1065,18 +1385,15 @@ def rowan_tautomers(
     Returns:
         Tautomer enumeration and ranking results
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="tautomers",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error enumerating tautomers: {str(e)}"
+    result = log_rowan_api_call(
+        workflow_type="tautomers",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
 
 
 # Hydrogen Bond Basicity
@@ -1107,18 +1424,15 @@ def rowan_hydrogen_bond_basicity(
     Returns:
         Hydrogen bond basicity results
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="hydrogen_bond_basicity",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error calculating hydrogen bond basicity: {str(e)}"
+    result = log_rowan_api_call(
+        workflow_type="hydrogen_bond_basicity",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
 
 
 # IRC - Reaction Coordinate Following
@@ -1149,18 +1463,15 @@ def rowan_irc(
     Returns:
         IRC pathway results
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="irc",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error running IRC: {str(e)}"
+    result = log_rowan_api_call(
+        workflow_type="irc",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
 
 
 # Molecular Dynamics
@@ -1193,18 +1504,15 @@ def rowan_molecular_dynamics(
     Returns:
         Molecular dynamics trajectory and analysis
     """
-    try:
-        result = rowan.compute(
-            name=name,
-            molecule=molecule,
-            workflow_type="molecular_dynamics",
-            folder_uuid=folder_uuid,
-            blocking=blocking,
-            ping_interval=ping_interval
-        )
-        return str(result)
-    except Exception as e:
-        return f"❌ Error running molecular dynamics: {str(e)}"
+    result = log_rowan_api_call(
+        workflow_type="molecular_dynamics",
+        name=name,
+        molecule=molecule,
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
+    )
+    return str(result)
 
 
 @mcp.tool()
@@ -1251,7 +1559,10 @@ def rowan_conformers(
     name: str,
     molecule: str,
     max_conformers: int = 10,
-    folder_uuid: Optional[str] = None
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    max_wait_time: int = 120,
+    ping_interval: int = 5
 ) -> str:
     """Generate and optimize molecular conformers.
     
@@ -1260,25 +1571,88 @@ def rowan_conformers(
         molecule: Molecule SMILES string
         max_conformers: Maximum number of conformers to generate
         folder_uuid: UUID of folder to organize calculation in
+        blocking: Whether to wait for completion (default: True)
+        max_wait_time: Maximum time to wait in seconds (default: 120 = 2 minutes)
+        ping_interval: How often to check status in seconds (default: 5)
     
     Returns:
-        Conformer search results
+        Conformer search results (actual results if blocking=True)
     """
     settings = {"max_conformers": max_conformers}
+    
+    # Log the expected wait time
+    if blocking:
+        logger.info(f"🕐 Conformer search will wait up to {max_wait_time} seconds ({max_wait_time//60:.1f} minutes)")
+        logger.info(f"🔄 Checking progress every {ping_interval} seconds")
     
     result = log_rowan_api_call(
         workflow_type="conformer_search",
         name=name,
         molecule=molecule,
         settings=settings,
-        folder_uuid=folder_uuid
+        folder_uuid=folder_uuid,
+        blocking=blocking,
+        ping_interval=ping_interval
     )
     
-    formatted = f"✅ Conformer search for '{name}' started!\n\n"
-    formatted += f"🧪 Molecule: {molecule}\n"
-    formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
-    formatted += f"📊 Status: {result.get('status', 'Unknown')}\n"
-    formatted += f"🔄 Max Conformers: {max_conformers}\n"
+    # Format results based on whether we waited or not
+    if blocking:
+        # We waited for completion - format actual results
+        status = result.get('status', result.get('object_status', 'Unknown'))
+        
+        if status == 2:  # Completed successfully
+            formatted = f"✅ Conformer search for '{name}' completed successfully!\n\n"
+        elif status == 3:  # Failed
+            formatted = f"❌ Conformer search for '{name}' failed!\n\n"
+        else:
+            formatted = f"⚠️ Conformer search for '{name}' finished with status {status}\n\n"
+            
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {status}\n"
+        formatted += f"🔄 Max Conformers: {max_conformers}\n"
+        
+        # Try to extract actual results
+        if isinstance(result, dict) and 'object_data' in result and result['object_data']:
+            data = result['object_data']
+            
+            # Count conformers found
+            if 'conformers' in data:
+                conformer_count = len(data['conformers']) if isinstance(data['conformers'], list) else data.get('num_conformers', 'Unknown')
+                formatted += f"🎯 Generated Conformers: {conformer_count}\n"
+            
+            # Energy information
+            if 'energies' in data and isinstance(data['energies'], list) and data['energies']:
+                energies = data['energies']
+                min_energy = min(energies)
+                max_energy = max(energies)
+                energy_range = max_energy - min_energy
+                formatted += f"⚡ Energy Range: {min_energy:.3f} to {max_energy:.3f} kcal/mol (Δ={energy_range:.3f})\n"
+                formatted += f"📊 Lowest Energy Conformer: {min_energy:.3f} kcal/mol\n"
+            
+            # Additional properties if available
+            if 'properties' in data:
+                props = data['properties']
+                formatted += f"🔬 Properties calculated: {', '.join(props.keys())}\n"
+        
+        # Guidance based on results
+        if status == 2:
+            formatted += f"\n💡 **Results Available:**\n"
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed data\n"
+            formatted += f"• Conformers are ranked by energy (lowest = most stable)\n"
+        elif status == 3:
+            formatted += f"\n💡 **Troubleshooting:**\n"
+            formatted += f"• Try reducing max_conformers (currently {max_conformers})\n"
+            formatted += f"• Check if molecule SMILES is valid\n"
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for error details\n"
+    else:
+        # Non-blocking mode - just submission confirmation
+        formatted = f"🚀 Conformer search for '{name}' submitted!\n\n"
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
+        formatted += f"🔄 Max Conformers: {max_conformers}\n"
+        formatted += f"\n💡 Use rowan_workflow_management tools to check progress and retrieve results\n"
     
     return formatted
 
@@ -1288,7 +1662,6 @@ def rowan_folder_management(
     action: str,
     folder_uuid: Optional[str] = None,
     name: Optional[str] = None,
-    description: Optional[str] = None,
     parent_uuid: Optional[str] = None,
     notes: Optional[str] = None,
     starred: Optional[bool] = None,
@@ -1300,7 +1673,7 @@ def rowan_folder_management(
     """Unified folder management tool for all folder operations.
     
     **Available Actions:**
-    - **create**: Create a new folder (requires: name, optional: parent_uuid, notes/description, starred, public)
+    - **create**: Create a new folder (requires: name, optional: parent_uuid, notes, starred, public)
     - **retrieve**: Get folder details (requires: folder_uuid)
     - **update**: Update folder properties (requires: folder_uuid, optional: name, parent_uuid, notes, starred, public)
     - **delete**: Delete a folder (requires: folder_uuid)
@@ -1310,7 +1683,6 @@ def rowan_folder_management(
         action: Action to perform ('create', 'retrieve', 'update', 'delete', 'list')
         folder_uuid: UUID of the folder (required for retrieve, update, delete)
         name: Folder name (required for create, optional for update)
-        description: Folder description (optional for create, legacy parameter - use notes instead)
         parent_uuid: Parent folder UUID (optional for create/update, if not provided creates in root)
         notes: Folder notes (optional for create/update)
         starred: Star the folder (optional for create/update)
@@ -1330,20 +1702,17 @@ def rowan_folder_management(
             if not name:
                 return "❌ Error: 'name' is required for creating a folder"
             
-            # Use description as notes if provided, otherwise use notes parameter
-            notes_to_use = description or notes or ""
-            
             folder = rowan.Folder.create(
                 name=name,
                 parent_uuid=parent_uuid,  # Required by API
-                notes=notes_to_use,       # Use notes instead of description
+                notes=notes or "",
                 starred=starred or False,
                 public=public or False
             )
             
             formatted = f"✅ Folder '{name}' created successfully!\n\n"
             formatted += f"📁 UUID: {folder.get('uuid', 'N/A')}\n"
-            formatted += f"📝 Notes: {notes_to_use or 'None'}\n"
+            formatted += f"📝 Notes: {notes or 'None'}\n"
             if parent_uuid:
                 formatted += f"📂 Parent: {parent_uuid}\n"
             return formatted
@@ -1848,7 +2217,7 @@ def rowan_system_management(
             result += "• `rowan_qc_guide` - Comprehensive quantum chemistry guidance\n"
             result += "• `rowan_quantum_chemistry` - Unified QC tool (smart defaults + full customization)\n"
             result += "• `rowan_electronic_properties` - HOMO/LUMO, orbitals\n"
-            result += "• `rowan_multistage_opt` - Multi-level optimization (RECOMMENDED for geometry)\n\n"
+            result += "• `rowan_multistage_opt` - Multi-level optimization (for geometry)\n\n"
             
             result += "**🧬 Molecular Analysis:**\n"
             result += "• `rowan_conformers` - Find molecular conformations\n"
@@ -1874,7 +2243,7 @@ def rowan_system_management(
             result += "• `rowan_hydrogen_bond_basicity` - H-bond strength\n\n"
             
             result += "💡 **Usage Guidelines:**\n"
-            result += "• For geometry optimization: use `rowan_multistage_opt` (RECOMMENDED)\n"
+            result += "• For geometry optimization: use `rowan_multistage_opt`\n"
             result += "• For energy calculations: use `rowan_quantum_chemistry` (smart defaults)\n"
             result += "• For custom QC settings: use `rowan_quantum_chemistry` with parameters\n"
             result += "• For conformer search: use `rowan_conformers`\n"

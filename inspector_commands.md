@@ -15,7 +15,7 @@ npx @modelcontextprotocol/inspector python src/server.py
 ROWAN_API_KEY=your_key_here npx @modelcontextprotocol/inspector python -m src.server
 ```
 
-## Method 4: With UV (if using UV for Python management)
+## Method 4: With UV (if using UV for Python management) *******************
 ```bash
 npx @modelcontextprotocol/inspector uv run python -m src.server
 ```
