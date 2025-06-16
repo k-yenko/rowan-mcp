@@ -1124,9 +1124,13 @@ def rowan_solubility(
 
 # Redox Potential
 @mcp.tool()
+@log_mcp_call
 def rowan_redox_potential(
     name: str,
     molecule: str,
+    reduction: bool = True,
+    oxidation: bool = True,
+    mode: str = "rapid",
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
     ping_interval: int = 5
@@ -1138,27 +1142,126 @@ def rowan_redox_potential(
     - Battery and energy storage applications
     - Understanding electron transfer processes
     
+    **Important**: Only acetonitrile solvent is supported by Rowan's redox workflow.
+    
     Use this for: Electrochemistry, battery materials, electron transfer studies
     
     Args:
         name: Name for the calculation
-        molecule: Molecule SMILES string
+        molecule: Molecule SMILES string or common name (e.g., "phenol", "benzene")
+        reduction: Whether to calculate reduction potential (default: True)
+        oxidation: Whether to calculate oxidation potential (default: True)
+        mode: Calculation accuracy mode - "reckless", "rapid", "careful", "meticulous" (default: "rapid")
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
         ping_interval: Check status interval in seconds (default: 5)
     
     Returns:
-        Redox potential results
+        Redox potential results vs. SCE in acetonitrile
     """
+    # Look up SMILES if a common name was provided
+    canonical_smiles = lookup_molecule_smiles(molecule)
+    
+    # Validate mode
+    valid_modes = ["reckless", "rapid", "careful", "meticulous"]
+    mode_lower = mode.lower()
+    if mode_lower not in valid_modes:
+        return f"❌ Invalid mode '{mode}'. Valid modes: {', '.join(valid_modes)}"
+    
+    # At least one type must be selected
+    if not reduction and not oxidation:
+        return f"❌ At least one of 'reduction' or 'oxidation' must be True"
+    
+    logger.info(f"🔬 Redox Potential Analysis Debug:")
+    logger.info(f"   Name: {name}")
+    logger.info(f"   Input: {molecule}")
+    logger.info(f"   Using SMILES: {canonical_smiles}")
+    logger.info(f"   Mode: {mode_lower}")
+    logger.info(f"   Reduction: {reduction}")
+    logger.info(f"   Oxidation: {oxidation}")
+    logger.info(f"   Solvent: acetonitrile (required)")
+    
+    # Build parameters for Rowan API
+    redox_params = {
+        "name": name,
+        "molecule": canonical_smiles,
+        "reduction": reduction,
+        "oxidation": oxidation,
+        "mode": mode_lower,
+        "solvent": "acetonitrile",  # Required by Rowan
+        "folder_uuid": folder_uuid,
+        "blocking": blocking,
+        "ping_interval": ping_interval
+    }
+    
     result = log_rowan_api_call(
         workflow_type="redox_potential",
-        name=name,
-        molecule=molecule,
-        folder_uuid=folder_uuid,
-        blocking=blocking,
-        ping_interval=ping_interval
+        **redox_params
     )
-    return str(result)
+    
+    if blocking:
+        status = result.get('status', result.get('object_status', 'Unknown'))
+        
+        if status == 2:  # Completed successfully
+            formatted = f"✅ Redox potential analysis for '{name}' completed successfully!\n\n"
+        elif status == 3:  # Failed
+            formatted = f"❌ Redox potential analysis for '{name}' failed!\n\n"
+        else:
+            formatted = f"⚠️ Redox potential analysis for '{name}' finished with status {status}\n\n"
+            
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 SMILES: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {status}\n"
+        formatted += f"⚙️ Mode: {mode_lower.title()}\n"
+        formatted += f"💧 Solvent: Acetonitrile\n"
+        
+        # Show which potentials were calculated
+        calc_types = []
+        if reduction:
+            calc_types.append("Reduction")
+        if oxidation:
+            calc_types.append("Oxidation")
+        formatted += f"⚡ Calculated: {' + '.join(calc_types)} potential(s)\n"
+        
+        # Try to extract redox potential results
+        if isinstance(result, dict) and 'object_data' in result and result['object_data']:
+            data = result['object_data']
+            
+            if reduction and 'reduction_potential' in data and data['reduction_potential'] is not None:
+                formatted += f"🔋 Reduction Potential: {data['reduction_potential']:.3f} V vs. SCE\n"
+            
+            if oxidation and 'oxidation_potential' in data and data['oxidation_potential'] is not None:
+                formatted += f"⚡ Oxidation Potential: {data['oxidation_potential']:.3f} V vs. SCE\n"
+            
+            # Legacy support for older format
+            if 'redox_potential' in data and data['redox_potential'] is not None:
+                redox_type = data.get('redox_type', 'unknown')
+                formatted += f"⚡ {redox_type.title()} Potential: {data['redox_potential']:.3f} V vs. SCE\n"
+        
+        if status == 2:
+            formatted += f"\n🎯 **Results Available:**\n"
+            formatted += f"• Potentials reported vs. SCE (Saturated Calomel Electrode)\n"
+            formatted += f"• Calculated in acetonitrile solvent\n"
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed data\n"
+        
+        return formatted
+    else:
+        formatted = f"🚀 Redox potential analysis for '{name}' submitted!\n\n"
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 SMILES: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
+        formatted += f"⚙️ Mode: {mode_lower.title()}\n"
+        
+        calc_types = []
+        if reduction:
+            calc_types.append("Reduction")
+        if oxidation:
+            calc_types.append("Oxidation")
+        formatted += f"⚡ Will calculate: {' + '.join(calc_types)} potential(s)\n"
+        
+        return formatted
 
 
 # Scan - Potential Energy Surface Scans

@@ -3049,3 +3049,121 @@ Traceback (most recent call last):
 httpx.HTTPStatusError: Server error '500 Internal Server Error' for url 'https://api.rowansci.com/workflow'
 For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
 
+2025-06-15 22:19:50,263 - src.server - INFO - 🔧 MCP Tool Called: rowan_pka
+2025-06-15 22:19:50,263 - src.server - INFO - 📝 Parameters: {'name': 'acetic_acid_pka', 'molecule': 'CC(=O)O'}
+2025-06-15 22:19:50,263 - src.server - INFO - 🌐 Rowan API Call: pka
+2025-06-15 22:19:50,263 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetic_acid_pka', 'molecule': 'CC(=O)O', 'folder_uuid': None}
+2025-06-15 22:19:50,892 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 22:19:51,341 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b57d6f24-c8ec-43c7-b0d7-3bce85f1502c "HTTP/1.1 200 OK"
+2025-06-15 22:19:56,714 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b57d6f24-c8ec-43c7-b0d7-3bce85f1502c "HTTP/1.1 200 OK"
+2025-06-15 22:20:02,165 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b57d6f24-c8ec-43c7-b0d7-3bce85f1502c "HTTP/1.1 200 OK"
+2025-06-15 22:20:07,626 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b57d6f24-c8ec-43c7-b0d7-3bce85f1502c "HTTP/1.1 200 OK"
+2025-06-15 22:20:13,023 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b57d6f24-c8ec-43c7-b0d7-3bce85f1502c "HTTP/1.1 200 OK"
+2025-06-15 22:20:13,440 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b57d6f24-c8ec-43c7-b0d7-3bce85f1502c "HTTP/1.1 200 OK"
+2025-06-15 22:20:13,442 - src.server - INFO - 🎯 Rowan API submission successful: pka (23.18s)
+2025-06-15 22:20:13,442 - src.server - INFO - 📋 Job UUID: b57d6f24-c8ec-43c7-b0d7-3bce85f1502c
+2025-06-15 22:20:13,442 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-15 22:20:13,442 - src.server - INFO - ✅ rowan_pka completed successfully in 23.18s
+2025-06-15 22:21:11,471 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-15 22:21:11,472 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen_Solubility', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-15 22:21:12,174 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 22:21:12,583 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1afdbcd9-b874-4cee-864f-fd4883a7f2f4 "HTTP/1.1 200 OK"
+2025-06-15 22:21:17,990 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1afdbcd9-b874-4cee-864f-fd4883a7f2f4 "HTTP/1.1 200 OK"
+2025-06-15 22:21:23,457 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1afdbcd9-b874-4cee-864f-fd4883a7f2f4 "HTTP/1.1 200 OK"
+2025-06-15 22:21:28,830 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1afdbcd9-b874-4cee-864f-fd4883a7f2f4 "HTTP/1.1 200 OK"
+2025-06-15 22:21:29,191 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1afdbcd9-b874-4cee-864f-fd4883a7f2f4 "HTTP/1.1 200 OK"
+2025-06-15 22:21:29,194 - src.server - INFO - 🎯 Rowan API submission successful: solubility (17.72s)
+2025-06-15 22:21:29,195 - src.server - INFO - 📋 Job UUID: 1afdbcd9-b874-4cee-864f-fd4883a7f2f4
+2025-06-15 22:21:29,195 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-15 22:21:34,090 - src.server - INFO - 🔧 MCP Tool Called: rowan_admet
+2025-06-15 22:21:34,090 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen_ADMET', 'molecule': 'CC(=O)Nc1ccc(O)cc1'}
+2025-06-15 22:21:34,090 - src.server - INFO - 🌐 Rowan API Call: admet
+2025-06-15 22:21:34,090 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen_ADMET', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-15 22:21:34,708 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 22:21:35,052 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49a8bdf7-930f-4928-bc06-4e5d637724dd "HTTP/1.1 200 OK"
+2025-06-15 22:21:40,437 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49a8bdf7-930f-4928-bc06-4e5d637724dd "HTTP/1.1 200 OK"
+2025-06-15 22:21:45,798 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49a8bdf7-930f-4928-bc06-4e5d637724dd "HTTP/1.1 200 OK"
+2025-06-15 22:21:51,175 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49a8bdf7-930f-4928-bc06-4e5d637724dd "HTTP/1.1 200 OK"
+2025-06-15 22:21:51,541 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49a8bdf7-930f-4928-bc06-4e5d637724dd "HTTP/1.1 200 OK"
+2025-06-15 22:21:51,542 - src.server - INFO - 🎯 Rowan API submission successful: admet (17.45s)
+2025-06-15 22:21:51,543 - src.server - INFO - 📋 Job UUID: 49a8bdf7-930f-4928-bc06-4e5d637724dd
+2025-06-15 22:21:51,543 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-15 22:21:51,543 - src.server - INFO - ✅ rowan_admet completed successfully in 17.45s
+2025-06-15 22:38:45,027 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-15 22:38:45,034 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-15 22:38:45,034 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-15 22:39:12,621 - src.server - INFO - 🔧 MCP Tool Called: rowan_redox_potential
+2025-06-15 22:39:12,640 - src.server - INFO - 📝 Parameters: {'name': 'quinone_redox_potential', 'molecule': 'O=C1C=CC(=O)C=C1'}
+2025-06-15 22:39:12,640 - src.server - WARNING - ⚠️ No SMILES found for 'O=C1C=CC(=O)C=C1', using as-is
+2025-06-15 22:39:12,640 - src.server - INFO - 🔬 Redox Potential Analysis Debug:
+2025-06-15 22:39:12,640 - src.server - INFO -    Name: quinone_redox_potential
+2025-06-15 22:39:12,640 - src.server - INFO -    Input: O=C1C=CC(=O)C=C1
+2025-06-15 22:39:12,640 - src.server - INFO -    Using SMILES: O=C1C=CC(=O)C=C1
+2025-06-15 22:39:12,640 - src.server - INFO -    Mode: rapid
+2025-06-15 22:39:12,640 - src.server - INFO -    Reduction: True
+2025-06-15 22:39:12,640 - src.server - INFO -    Oxidation: True
+2025-06-15 22:39:12,640 - src.server - INFO -    Solvent: acetonitrile (required)
+2025-06-15 22:39:12,640 - src.server - INFO - 🌐 Rowan API Call: redox_potential
+2025-06-15 22:39:12,640 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'quinone_redox_potential', 'molecule': 'O=C1C=CC(=O)C=C1', 'reduction': True, 'oxidation': True, 'mode': 'rapid', 'solvent': 'acetonitrile', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-15 22:39:13,300 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 22:39:13,687 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:39:19,081 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:39:24,496 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:39:29,876 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:39:35,288 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:39:40,672 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:39:46,237 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:39:51,599 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:39:56,993 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:02,458 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:07,852 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:13,233 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:18,622 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:24,016 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:29,393 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:34,778 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:40,149 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:45,551 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:50,932 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:40:56,344 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:01,769 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:07,162 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:12,573 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:17,936 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:23,288 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:28,655 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:34,027 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:39,380 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:44,754 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:50,129 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:41:55,476 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:00,879 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:06,254 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:11,658 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:17,043 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:22,424 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:27,797 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:33,188 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:38,549 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:43,897 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:49,257 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:42:54,886 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:01,309 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:06,709 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:12,130 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:17,494 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:23,095 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:28,452 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:34,032 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:39,537 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:45,030 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:50,553 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:43:56,128 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:44:01,721 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:44:07,318 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:44:12,943 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:44:13,550 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e5df2f61-9833-479d-98ae-03c8d398623b "HTTP/1.1 200 OK"
+2025-06-15 22:44:13,802 - src.server - INFO - 🎯 Rowan API submission successful: redox_potential (301.16s)
+2025-06-15 22:44:13,802 - src.server - INFO - 📋 Job UUID: e5df2f61-9833-479d-98ae-03c8d398623b
+2025-06-15 22:44:13,803 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-15 22:44:13,803 - src.server - INFO - ✅ rowan_redox_potential completed successfully in 301.18s
