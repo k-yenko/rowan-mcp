@@ -699,299 +699,299 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
     return formatted
 
 
-@mcp.tool()
-def rowan_qc_guide() -> str:
-    """Get comprehensive guidance for quantum chemistry calculations in Rowan.
-    
-    Provides detailed information about:
-    - Required parameters for QC calculations
-    - Available engines (Psi4, TeraChem, PySCF, xTB, AIMNet2)
-    - Common methods and basis sets
-    - Available tasks and properties
-    - Best practices and recommendations
-    
-    Use this for: Understanding Rowan's quantum chemistry capabilities
-    
-    Returns:
-        Comprehensive quantum chemistry guidance
-    """
-    guidance = get_qc_guidance()
-    return guidance
+# @mcp.tool()
+# def rowan_qc_guide() -> str:
+#     """Get comprehensive guidance for quantum chemistry calculations in Rowan.
+#     
+#     Provides detailed information about:
+#     - Required parameters for QC calculations
+#     - Available engines (Psi4, TeraChem, PySCF, xTB, AIMNet2)
+#     - Common methods and basis sets
+#     - Available tasks and properties
+#     - Best practices and recommendations
+#     
+#     Use this for: Understanding Rowan's quantum chemistry capabilities
+#     
+#     Returns:
+#         Comprehensive quantum chemistry guidance
+#     """
+#     guidance = get_qc_guidance()
+#     return guidance
 
-# Unified Quantum Chemistry Tool
-@mcp.tool()
-@log_mcp_call
-def rowan_quantum_chemistry(
-    name: str,
-    molecule: str,
-    method: Optional[str] = None,
-    basis_set: Optional[str] = None,
-    tasks: Optional[List[str]] = None,
-    corrections: Optional[List[str]] = None,
-    engine: Optional[str] = None,
-    charge: int = 0,
-    multiplicity: int = 1,
-    folder_uuid: Optional[str] = None,
-    blocking: bool = True,
-    ping_interval: int = 5,
-    use_recommended_defaults: bool = True,
-    additional_settings: Optional[Dict[str, Any]] = None
-) -> str:
-    """Run quantum chemistry calculations with intelligent defaults or custom settings.
-    
-    **🔬 Smart Defaults**: When no parameters are specified, uses Rowan's settings:
-    - Method: B3LYP (popular, reliable hybrid functional)
-    - Basis Set: pcseg-1 (better than 6-31G(d) at same cost)
-    - Tasks: ["energy", "optimize"] (energy + geometry optimization)
-    - Corrections: ["d3bj"] (dispersion correction for better accuracy)
-    
-    **⚗️ Full Customization**: All parameters can be overridden for advanced users
-    
-    **Available Methods (16 total):**
-    - HF: Hartree-Fock (unrestricted for open-shell)
-    - Pure DFT: LSDA, PBE, BLYP, BP86, B97-D3, r2SCAN, TPSS, M06-L
-    - Hybrid DFT: PBE0, B3LYP, B3PW91, CAM-B3LYP, ωB97X-D3, ωB97X-V, ωB97M-V
-    
-    **Available Basis Sets (29 total):**
-    - Recommended: pcseg-1 (DFT), pcseg-2 (high accuracy)
-    - Popular: 6-31G*, 6-31G(d,p), cc-pVDZ(seg-opt)
-    - Fast: MIDI!, STO-3G
-    
-    **Available Corrections:**
-    - D3BJ: Grimme's D3 dispersion with Becke-Johnson damping
-    
-    Use this for: All quantum chemistry calculations (beginners get good defaults, experts get full control)
-    
-    Args:
-        name: Name for the calculation
-        molecule: Molecule SMILES string (e.g., 'CC(=O)OC1=CC=CC=C1C(=O)O' for aspirin)
-        method: QC method - if None, uses 'b3lyp' (recommended default)
-        basis_set: Basis set - if None, uses 'pcseg-1' (recommended default)
-        tasks: List of tasks - if None, uses ['energy', 'optimize'] (recommended default)
-        corrections: List of corrections - if None, uses ['d3bj'] (recommended default)
-        engine: Computational engine - if None, defaults to 'psi4' (required by Rowan API)
-        charge: Molecular charge (default: 0)
-        multiplicity: Spin multiplicity (default: 1 for singlet)
-        folder_uuid: Optional folder UUID for organization
-        blocking: Whether to wait for completion (default: True)
-        ping_interval: Check status interval in seconds (default: 5)
-        use_recommended_defaults: If True, uses smart defaults when parameters are None
-        additional_settings: Extra calculation-specific settings
-    
-    Returns:
-        Quantum chemistry calculation results
-    """
-    
-    # Always provide quantum chemistry guidance context first
-    guidance_context = rowan_qc_guide()
-    
-    # Determine if we're using defaults or custom settings
-    using_defaults = (method is None and basis_set is None and 
-                     tasks is None and corrections is None)
-    
-    # Apply intelligent defaults when no parameters specified
-    if use_recommended_defaults and using_defaults:
-        method = "b3lyp"  # Popular, reliable hybrid functional
-        basis_set = "pcseg-1"  # Better than 6-31G(d) at same cost
-        tasks = ["energy", "optimize"]  # Energy + geometry optimization
-        corrections = ["d3bj"]  # Dispersion correction for accuracy
-        if engine is None:  # Only set default if not provided
-            engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
-        default_msg = "Rowan's defaults"
-    elif using_defaults:
-        # Fall back to Rowan's system defaults but ensure engine is set
-        if engine is None:  # Only set default if not provided
-            engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
-        default_msg = "Rowan's system defaults (HF/STO-3G)"
-    else:
-        # For custom settings, still ensure engine is set if not provided
-        if engine is None:  # Only set default if not provided
-            engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
-        default_msg = "Custom user settings"
-    
-    # Validate inputs and provide guidance
-    if method and method.lower() not in QC_METHODS:
-        available_methods = ", ".join(QC_METHODS.keys())
-        return f"❌ Invalid method '{method}'. Available methods: {available_methods}"
-    
-    if basis_set and basis_set.lower() not in QC_BASIS_SETS:
-        available_basis = ", ".join(QC_BASIS_SETS.keys())
-        return f"❌ Invalid basis set '{basis_set}'. Available basis sets: {available_basis}"
-    
-    if tasks:
-        invalid_tasks = [task for task in tasks if task.lower() not in QC_TASKS]
-        if invalid_tasks:
-            available_tasks = ", ".join(QC_TASKS.keys())
-            return f"❌ Invalid tasks {invalid_tasks}. Available tasks: {available_tasks}"
-    
-    if engine and engine.lower() not in QC_ENGINES:
-        available_engines = ", ".join(QC_ENGINES.keys())
-        return f"❌ Invalid engine '{engine}'. Available engines: {available_engines}"
-    
-    if corrections:
-        invalid_corrections = [corr for corr in corrections if corr.lower() not in QC_CORRECTIONS]
-        if invalid_corrections:
-            available_corrections = ", ".join(QC_CORRECTIONS.keys())
-            return f"❌ Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}"
-    
-    # Engine is always required, so ensure it's set
-    if engine is None:
-        engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
-    
-    # Log the QC parameters
-    logger.info(f"🔬 Quantum Chemistry Calculation: {name}")
-    logger.info(f"⚙️ Using: {default_msg}")
-    logger.info(f"⚗️ Method: {method or 'system default'}")
-    logger.info(f"📐 Basis Set: {basis_set or 'system default'}")
-    logger.info(f"🎯 Tasks: {tasks or 'system default'}")
-    logger.info(f"🔧 Corrections: {corrections or 'none'}")
-    logger.info(f"🖥️ Engine: {engine or 'auto-selected'}")
-    logger.info(f"⚡ Charge: {charge}, Multiplicity: {multiplicity}")
-    
-    try:
-        # Build parameters for rowan.compute call based on documentation
-        compute_params = {
-            "name": name,
-            "input_mol": molecule,  # Use input_mol as shown in docs
-            "folder_uuid": folder_uuid,
-            "blocking": blocking,
-            "ping_interval": ping_interval
-        }
-        
-        # Add QC parameters directly (not in settings object)
-        if method:
-            compute_params["method"] = method.lower()
-        if basis_set:
-            compute_params["basis_set"] = basis_set.lower()
-        if tasks:
-            compute_params["tasks"] = [task.lower() for task in tasks]
-        if corrections:
-            compute_params["corrections"] = [corr.lower() for corr in corrections]
-        if engine:
-            compute_params["engine"] = engine.lower()
-        if charge != 0:
-            compute_params["charge"] = charge
-        if multiplicity != 1:
-            compute_params["multiplicity"] = multiplicity
-        
-        # Add any additional settings
-        if additional_settings:
-            compute_params.update(additional_settings)
-        
-        # Use "calculation" workflow type as shown in documentation
-        result = log_rowan_api_call(
-            workflow_type="calculation",
-            **compute_params
-        )
-        
-        # Check actual job status and format accordingly
-        # First try to get status from submission response, then check via API if needed
-        job_status = result.get('status', result.get('object_status', None))
-        
-        # If status is None (common after submission), try to check via API
-        if job_status is None and result.get('uuid'):
-            try:
-                job_status = rowan.Workflow.status(uuid=result.get('uuid'))
-                logger.info(f"📊 Retrieved status via API: {job_status}")
-            except Exception as e:
-                logger.warning(f"⚠️ Could not retrieve status via API: {e}")
-                job_status = None
-        
-        status_names = {
-            0: ("⏳", "Queued"),
-            1: ("🔄", "Running"), 
-            2: ("✅", "Completed Successfully"),
-            3: ("❌", "Failed"),
-            4: ("⏹️", "Stopped"),
-            5: ("⏸️", "Awaiting Queue")
-        }
-        
-        status_icon, status_text = status_names.get(job_status, ("❓", f"Unknown ({job_status})"))
-        
-        # Special handling for None status (very common case)
-        if job_status is None:
-            status_icon, status_text = ("📝", "Submitted (status pending)")
-            logger.info(f"📝 Workflow submitted, status will be available shortly")
-        
-        # Use appropriate header based on actual status
-        if job_status == 2:
-            formatted = f"✅ Quantum chemistry calculation '{name}' completed successfully!\n\n"
-        elif job_status == 3:
-            formatted = f"❌ Quantum chemistry calculation '{name}' failed!\n\n"
-        elif job_status in [0, 1, 5]:
-            formatted = f"🔄 Quantum chemistry calculation '{name}' submitted!\n\n"
-        elif job_status == 4:
-            formatted = f"⏹️ Quantum chemistry calculation '{name}' was stopped!\n\n"
-        else:
-            formatted = f"📊 Quantum chemistry calculation '{name}' status unknown!\n\n"
-            
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {status_icon} {status_text} ({job_status})\n"
-        formatted += f"⚙️ Used: {default_msg}\n"
-        
-        # Show applied settings
-        if method or basis_set or tasks or corrections or engine or charge != 0 or multiplicity != 1:
-            formatted += f"\n⚙️ **Applied Settings:**\n"
-            if method:
-                formatted += f"   Method: {method.upper()} - {QC_METHODS.get(method.lower(), 'Custom method')}\n"
-            if basis_set:
-                formatted += f"   Basis Set: {basis_set} - {QC_BASIS_SETS.get(basis_set.lower(), 'Custom basis')}\n"
-            if tasks:
-                formatted += f"   Tasks: {', '.join(tasks)}\n"
-            if corrections:
-                formatted += f"   Corrections: {', '.join(corrections)} - "
-                formatted += ", ".join([QC_CORRECTIONS.get(corr.lower(), 'Custom correction') for corr in corrections]) + "\n"
-            if engine:
-                formatted += f"   Engine: {engine.upper()} - {QC_ENGINES.get(engine.lower(), 'Custom engine')}\n"
-            if charge != 0 or multiplicity != 1:
-                formatted += f"   Charge: {charge}, Multiplicity: {multiplicity}\n"
-        
-        # Add status-appropriate guidance
-        formatted += f"\n💡 **Next Steps:**\n"
-        if job_status == 2:  # Completed successfully
-            formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to get detailed results\n"
-            formatted += f"• Results should include energies, geometries, and other calculated properties\n"
-        elif job_status == 3:  # Failed
-            formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to see error details\n"
-            formatted += f"• **Troubleshooting tips:**\n"
-            formatted += f"  - Try simpler settings: method='hf', basis_set='sto-3g'\n"
-            formatted += f"  - Use `rowan_multistage_opt()` for geometry optimization (more robust)\n"
-            formatted += f"  - Check if SMILES string is valid\n"
-            formatted += f"  - For difficult molecules, try method='xtb' (semiempirical)\n"
-        elif job_status in [0, 1, 5]:  # Queued/Running/Awaiting
-            formatted += f"• Check status: `rowan_workflow_status('{result.get('uuid', 'UUID')}')`\n"
-            formatted += f"• Wait for completion, then retrieve results\n"
-            formatted += f"• Calculation may take several minutes depending on molecule size\n"
-        elif job_status == 4:  # Stopped
-            formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to see why it was stopped\n"
-            formatted += f"• You can restart with the same or different parameters\n"
-        else:  # Unknown status
-            formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to get more information\n"
-            formatted += f"• Check `rowan_workflow_status('{result.get('uuid', 'UUID')}')` for current status\n"
-            
-        # Add general guidance for successful submissions or unknown states
-        if job_status != 3:  # Don't show alternatives if it failed
-            if using_defaults and use_recommended_defaults:
-                formatted += f"• **For future calculations:** Try different methods/basis sets for different accuracy/speed trade-offs\n"
-        
-        # Prepend guidance context to the result
-        final_result = f"{guidance_context}\n\n" + "="*80 + "\n\n" + formatted
-        return final_result
-        
-    except Exception as e:
-        error_msg = f"❌ Quantum chemistry calculation submission failed: {str(e)}\n\n"
-        error_msg += "🔧 **This is a submission error, not a calculation failure.**\n"
-        error_msg += "The job never started due to invalid parameters or API issues.\n\n"
-        if "method" in str(e).lower() or "basis" in str(e).lower():
-            error_msg += "💡 **Parameter Error**: Try using recommended defaults by calling with just name and molecule\n"
-            error_msg += "Or check parameter spelling and availability\n\n"
-        elif "engine" in str(e).lower():
-            error_msg += "💡 **Engine Error**: The engine parameter is required. This should be auto-set to 'psi4'\n\n"
-        
-        # Prepend guidance context even in error cases
-        final_error_result = f"{guidance_context}\n\n" + "="*80 + "\n\n" + error_msg
-        return final_error_result
+# Unified Quantum Chemistry Tool - COMMENTED OUT FOR NOW
+# @mcp.tool()
+# @log_mcp_call
+# def rowan_quantum_chemistry(
+#     name: str,
+#     molecule: str,
+#     method: Optional[str] = None,
+#     basis_set: Optional[str] = None,
+#     tasks: Optional[List[str]] = None,
+#     corrections: Optional[List[str]] = None,
+#     engine: Optional[str] = None,
+#     charge: int = 0,
+#     multiplicity: int = 1,
+#     folder_uuid: Optional[str] = None,
+#     blocking: bool = True,
+#     ping_interval: int = 5,
+#     use_recommended_defaults: bool = True,
+#     additional_settings: Optional[Dict[str, Any]] = None
+# ) -> str:
+#     """Run quantum chemistry calculations with intelligent defaults or custom settings.
+#     
+#     **🔬 Smart Defaults**: When no parameters are specified, uses Rowan's settings:
+#     - Method: B3LYP (popular, reliable hybrid functional)
+#     - Basis Set: pcseg-1 (better than 6-31G(d) at same cost)
+#     - Tasks: ["energy", "optimize"] (energy + geometry optimization)
+#     - Corrections: ["d3bj"] (dispersion correction for better accuracy)
+#     
+#     **⚗️ Full Customization**: All parameters can be overridden for advanced users
+#     
+#     **Available Methods (16 total):**
+#     - HF: Hartree-Fock (unrestricted for open-shell)
+#     - Pure DFT: LSDA, PBE, BLYP, BP86, B97-D3, r2SCAN, TPSS, M06-L
+#     - Hybrid DFT: PBE0, B3LYP, B3PW91, CAM-B3LYP, ωB97X-D3, ωB97X-V, ωB97M-V
+#     
+#     **Available Basis Sets (29 total):**
+#     - Recommended: pcseg-1 (DFT), pcseg-2 (high accuracy)
+#     - Popular: 6-31G*, 6-31G(d,p), cc-pVDZ(seg-opt)
+#     - Fast: MIDI!, STO-3G
+#     
+#     **Available Corrections:**
+#     - D3BJ: Grimme's D3 dispersion with Becke-Johnson damping
+#     
+#     Use this for: All quantum chemistry calculations (beginners get good defaults, experts get full control)
+#     
+#     Args:
+#         name: Name for the calculation
+#         molecule: Molecule SMILES string (e.g., 'CC(=O)OC1=CC=CC=C1C(=O)O' for aspirin)
+#         method: QC method - if None, uses 'b3lyp' (recommended default)
+#         basis_set: Basis set - if None, uses 'pcseg-1' (recommended default)
+#         tasks: List of tasks - if None, uses ['energy', 'optimize'] (recommended default)
+#         corrections: List of corrections - if None, uses ['d3bj'] (recommended default)
+#         engine: Computational engine - if None, defaults to 'psi4' (required by Rowan API)
+#         charge: Molecular charge (default: 0)
+#         multiplicity: Spin multiplicity (default: 1 for singlet)
+#         folder_uuid: Optional folder UUID for organization
+#         blocking: Whether to wait for completion (default: True)
+#         ping_interval: Check status interval in seconds (default: 5)
+#         use_recommended_defaults: If True, uses smart defaults when parameters are None
+#         additional_settings: Extra calculation-specific settings
+#     
+#     Returns:
+#         Quantum chemistry calculation results
+#     """
+#     
+#     # Always provide quantum chemistry guidance context first
+#     guidance_context = rowan_qc_guide()
+#     
+#     # Determine if we're using defaults or custom settings
+#     using_defaults = (method is None and basis_set is None and 
+#                      tasks is None and corrections is None)
+#     
+#     # Apply intelligent defaults when no parameters specified
+#     if use_recommended_defaults and using_defaults:
+#         method = "b3lyp"  # Popular, reliable hybrid functional
+#         basis_set = "pcseg-1"  # Better than 6-31G(d) at same cost
+#         tasks = ["energy", "optimize"]  # Energy + geometry optimization
+#         corrections = ["d3bj"]  # Dispersion correction for accuracy
+#         if engine is None:  # Only set default if not provided
+#             engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
+#         default_msg = "Rowan's defaults"
+#     elif using_defaults:
+#         # Fall back to Rowan's system defaults but ensure engine is set
+#         if engine is None:  # Only set default if not provided
+#             engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
+#         default_msg = "Rowan's system defaults (HF/STO-3G)"
+#     else:
+#         # For custom settings, still ensure engine is set if not provided
+#         if engine is None:  # Only set default if not provided
+#             engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
+#         default_msg = "Custom user settings"
+#     
+#     # Validate inputs and provide guidance
+#     if method and method.lower() not in QC_METHODS:
+#         available_methods = ", ".join(QC_METHODS.keys())
+#         return f"❌ Invalid method '{method}'. Available methods: {available_methods}"
+#     
+#     if basis_set and basis_set.lower() not in QC_BASIS_SETS:
+#         available_basis = ", ".join(QC_BASIS_SETS.keys())
+#         return f"❌ Invalid basis set '{basis_set}'. Available basis sets: {available_basis}"
+#     
+#     if tasks:
+#         invalid_tasks = [task for task in tasks if task.lower() not in QC_TASKS]
+#         if invalid_tasks:
+#             available_tasks = ", ".join(QC_TASKS.keys())
+#             return f"❌ Invalid tasks {invalid_tasks}. Available tasks: {available_tasks}"
+#     
+#     if engine and engine.lower() not in QC_ENGINES:
+#         available_engines = ", ".join(QC_ENGINES.keys())
+#         return f"❌ Invalid engine '{engine}'. Available engines: {available_engines}"
+#     
+#     if corrections:
+#         invalid_corrections = [corr for corr in corrections if corr.lower() not in QC_CORRECTIONS]
+#         if invalid_corrections:
+#             available_corrections = ", ".join(QC_CORRECTIONS.keys())
+#             return f"❌ Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}"
+#     
+#     # Engine is always required, so ensure it's set
+#     if engine is None:
+#         engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
+#     
+#     # Log the QC parameters
+#     logger.info(f"🔬 Quantum Chemistry Calculation: {name}")
+#     logger.info(f"⚙️ Using: {default_msg}")
+#     logger.info(f"⚗️ Method: {method or 'system default'}")
+#     logger.info(f"📐 Basis Set: {basis_set or 'system default'}")
+#     logger.info(f"🎯 Tasks: {tasks or 'system default'}")
+#     logger.info(f"🔧 Corrections: {corrections or 'none'}")
+#     logger.info(f"🖥️ Engine: {engine or 'auto-selected'}")
+#     logger.info(f"⚡ Charge: {charge}, Multiplicity: {multiplicity}")
+#     
+#     try:
+#         # Build parameters for rowan.compute call based on documentation
+#         compute_params = {
+#             "name": name,
+#             "input_mol": molecule,  # Use input_mol as shown in docs
+#             "folder_uuid": folder_uuid,
+#             "blocking": blocking,
+#             "ping_interval": ping_interval
+#         }
+#         
+#         # Add QC parameters directly (not in settings object)
+#         if method:
+#             compute_params["method"] = method.lower()
+#         if basis_set:
+#             compute_params["basis_set"] = basis_set.lower()
+#         if tasks:
+#             compute_params["tasks"] = [task.lower() for task in tasks]
+#         if corrections:
+#             compute_params["corrections"] = [corr.lower() for corr in corrections]
+#         if engine:
+#             compute_params["engine"] = engine.lower()
+#         if charge != 0:
+#             compute_params["charge"] = charge
+#         if multiplicity != 1:
+#             compute_params["multiplicity"] = multiplicity
+#         
+#         # Add any additional settings
+#         if additional_settings:
+#             compute_params.update(additional_settings)
+#         
+#         # Use "calculation" workflow type as shown in documentation
+#         result = log_rowan_api_call(
+#             workflow_type="calculation",
+#             **compute_params
+#         )
+#         
+#         # Check actual job status and format accordingly
+#         # First try to get status from submission response, then check via API if needed
+#         job_status = result.get('status', result.get('object_status', None))
+#         
+#         # If status is None (common after submission), try to check via API
+#         if job_status is None and result.get('uuid'):
+#             try:
+#                 job_status = rowan.Workflow.status(uuid=result.get('uuid'))
+#                 logger.info(f"📊 Retrieved status via API: {job_status}")
+#             except Exception as e:
+#                 logger.warning(f"⚠️ Could not retrieve status via API: {e}")
+#                 job_status = None
+#         
+#         status_names = {
+#             0: ("⏳", "Queued"),
+#             1: ("🔄", "Running"), 
+#             2: ("✅", "Completed Successfully"),
+#             3: ("❌", "Failed"),
+#             4: ("⏹️", "Stopped"),
+#             5: ("⏸️", "Awaiting Queue")
+#         }
+#         
+#         status_icon, status_text = status_names.get(job_status, ("❓", f"Unknown ({job_status})"))
+#         
+#         # Special handling for None status (very common case)
+#         if job_status is None:
+#             status_icon, status_text = ("📝", "Submitted (status pending)")
+#             logger.info(f"📝 Workflow submitted, status will be available shortly")
+#         
+#         # Use appropriate header based on actual status
+#         if job_status == 2:
+#             formatted = f"✅ Quantum chemistry calculation '{name}' completed successfully!\n\n"
+#         elif job_status == 3:
+#             formatted = f"❌ Quantum chemistry calculation '{name}' failed!\n\n"
+#         elif job_status in [0, 1, 5]:
+#             formatted = f"🔄 Quantum chemistry calculation '{name}' submitted!\n\n"
+#         elif job_status == 4:
+#             formatted = f"⏹️ Quantum chemistry calculation '{name}' was stopped!\n\n"
+#         else:
+#             formatted = f"📊 Quantum chemistry calculation '{name}' status unknown!\n\n"
+#             
+#         formatted += f"🧪 Molecule: {molecule}\n"
+#         formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
+#         formatted += f"📊 Status: {status_icon} {status_text} ({job_status})\n"
+#         formatted += f"⚙️ Used: {default_msg}\n"
+#         
+#         # Show applied settings
+#         if method or basis_set or tasks or corrections or engine or charge != 0 or multiplicity != 1:
+#             formatted += f"\n⚙️ **Applied Settings:**\n"
+#             if method:
+#                 formatted += f"   Method: {method.upper()} - {QC_METHODS.get(method.lower(), 'Custom method')}\n"
+#             if basis_set:
+#                 formatted += f"   Basis Set: {basis_set} - {QC_BASIS_SETS.get(basis_set.lower(), 'Custom basis')}\n"
+#             if tasks:
+#                 formatted += f"   Tasks: {', '.join(tasks)}\n"
+#             if corrections:
+#                 formatted += f"   Corrections: {', '.join(corrections)} - "
+#                 formatted += ", ".join([QC_CORRECTIONS.get(corr.lower(), 'Custom correction') for corr in corrections]) + "\n"
+#             if engine:
+#                 formatted += f"   Engine: {engine.upper()} - {QC_ENGINES.get(engine.lower(), 'Custom engine')}\n"
+#             if charge != 0 or multiplicity != 1:
+#                 formatted += f"   Charge: {charge}, Multiplicity: {multiplicity}\n"
+#         
+#         # Add status-appropriate guidance
+#         formatted += f"\n💡 **Next Steps:**\n"
+#         if job_status == 2:  # Completed successfully
+#             formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to get detailed results\n"
+#             formatted += f"• Results should include energies, geometries, and other calculated properties\n"
+#         elif job_status == 3:  # Failed
+#             formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to see error details\n"
+#             formatted += f"• **Troubleshooting tips:**\n"
+#             formatted += f"  - Try simpler settings: method='hf', basis_set='sto-3g'\n"
+#             formatted += f"  - Use `rowan_multistage_opt()` for geometry optimization (more robust)\n"
+#             formatted += f"  - Check if SMILES string is valid\n"
+#             formatted += f"  - For difficult molecules, try method='xtb' (semiempirical)\n"
+#         elif job_status in [0, 1, 5]:  # Queued/Running/Awaiting
+#             formatted += f"• Check status: `rowan_workflow_status('{result.get('uuid', 'UUID')}')`\n"
+#             formatted += f"• Wait for completion, then retrieve results\n"
+#             formatted += f"• Calculation may take several minutes depending on molecule size\n"
+#         elif job_status == 4:  # Stopped
+#             formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to see why it was stopped\n"
+#             formatted += f"• You can restart with the same or different parameters\n"
+#         else:  # Unknown status
+#             formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to get more information\n"
+#             formatted += f"• Check `rowan_workflow_status('{result.get('uuid', 'UUID')}')` for current status\n"
+#             
+#         # Add general guidance for successful submissions or unknown states
+#         if job_status != 3:  # Don't show alternatives if it failed
+#             if using_defaults and use_recommended_defaults:
+#                 formatted += f"• **For future calculations:** Try different methods/basis sets for different accuracy/speed trade-offs\n"
+#         
+#         # Prepend guidance context to the result
+#         final_result = f"{guidance_context}\n\n" + "="*80 + "\n\n" + formatted
+#         return final_result
+#         
+#     except Exception as e:
+#         error_msg = f"❌ Quantum chemistry calculation submission failed: {str(e)}\n\n"
+#         error_msg += "🔧 **This is a submission error, not a calculation failure.**\n"
+#         error_msg += "The job never started due to invalid parameters or API issues.\n\n"
+#         if "method" in str(e).lower() or "basis" in str(e).lower():
+#             error_msg += "💡 **Parameter Error**: Try using recommended defaults by calling with just name and molecule\n"
+#             error_msg += "Or check parameter spelling and availability\n\n"
+#         elif "engine" in str(e).lower():
+#             error_msg += "💡 **Engine Error**: The engine parameter is required. This should be auto-set to 'psi4'\n\n"
+#         
+#         # Prepend guidance context even in error cases
+#         final_error_result = f"{guidance_context}\n\n" + "="*80 + "\n\n" + error_msg
+#         return final_error_result
 
 # ADMET - Drug Discovery Properties
 @mcp.tool()
