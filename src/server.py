@@ -9,7 +9,7 @@ import os
 import logging
 import time
 import traceback
-from typing import Any, Dict, List, Optional, Literal
+from typing import Any, Dict, List, Optional, Literal, Union
 from enum import Enum
 
 from fastmcp import FastMCP
@@ -337,6 +337,136 @@ QC_CORRECTIONS = {
     "d3": "Grimme's D3 dispersion correction (automatically applied for B97-D3, ωB97X-D3)"
 }
 
+def analyze_spin_states(molecule: str) -> Dict[str, Any]:
+    """Analyze molecule to predict charge, multiplicity, and appropriate spin states.
+    
+    Args:
+        molecule: Molecular formula or name (e.g., "Mn(Cl)6", "Fe(CN)6", "CuSO4")
+    
+    Returns:
+        Dictionary with predicted charge, multiplicity, and spin states
+    """
+    import re
+    
+    analysis = {
+        "charge": 0,
+        "multiplicity": 1,
+        "states": [1],
+        "confidence": "low",
+        "explanation": "Default singlet state assumed"
+    }
+    
+    # Common transition metal complex patterns
+    complex_patterns = {
+        # Manganese complexes
+        r"Mn\(Cl\)6": {"charge": -4, "oxidation_state": 2, "d_electrons": 5, "states": [2, 6], "explanation": "Mn(II)Cl6^4- - d5, low-spin vs high-spin"},
+        r"Mn\(CN\)6": {"charge": -4, "oxidation_state": 2, "d_electrons": 5, "states": [2, 6], "explanation": "Mn(II)(CN)6^4- - d5, strong field ligand favors low-spin"},
+        r"Mn\(H2O\)6": {"charge": 2, "oxidation_state": 2, "d_electrons": 5, "states": [6], "explanation": "Mn(II)(H2O)6^2+ - d5, weak field favors high-spin"},
+        r"MnO4": {"charge": -1, "oxidation_state": 7, "d_electrons": 0, "states": [1], "explanation": "MnO4^- - d0, diamagnetic"},
+        
+        # Iron complexes  
+        r"Fe\(CN\)6": {"charge": -4, "oxidation_state": 2, "d_electrons": 6, "states": [1, 5], "explanation": "Fe(II)(CN)6^4- - d6, low-spin vs high-spin"},
+        r"Fe\(H2O\)6": {"charge": 2, "oxidation_state": 2, "d_electrons": 6, "states": [5], "explanation": "Fe(II)(H2O)6^2+ - d6, weak field favors high-spin"},
+        r"FeCl4": {"charge": -1, "oxidation_state": 3, "d_electrons": 5, "states": [6], "explanation": "FeCl4^- - d5, tetrahedral high-spin"},
+        
+        # Copper complexes
+        r"Cu\(H2O\)4": {"charge": 2, "oxidation_state": 2, "d_electrons": 9, "states": [2], "explanation": "Cu(II)(H2O)4^2+ - d9, Jahn-Teller distorted"},
+        r"CuCl4": {"charge": -2, "oxidation_state": 2, "d_electrons": 9, "states": [2], "explanation": "CuCl4^2- - d9, always doublet"},
+        
+        # Chromium complexes
+        r"Cr\(H2O\)6": {"charge": 3, "oxidation_state": 3, "d_electrons": 3, "states": [4], "explanation": "Cr(III)(H2O)6^3+ - d3, always high-spin"},
+        r"Cr\(CN\)6": {"charge": -3, "oxidation_state": 3, "d_electrons": 3, "states": [4], "explanation": "Cr(III)(CN)6^3- - d3, strong field but still high-spin"},
+        
+        # Cobalt complexes
+        r"Co\(NH3\)6": {"charge": 3, "oxidation_state": 3, "d_electrons": 6, "states": [1], "explanation": "Co(III)(NH3)6^3+ - d6, strong field low-spin"},
+        r"Co\(H2O\)6": {"charge": 2, "oxidation_state": 2, "d_electrons": 7, "states": [2, 4], "explanation": "Co(II)(H2O)6^2+ - d7, low-spin vs high-spin"},
+        
+        # Nickel complexes
+        r"Ni\(H2O\)6": {"charge": 2, "oxidation_state": 2, "d_electrons": 8, "states": [3], "explanation": "Ni(II)(H2O)6^2+ - d8, always high-spin triplet"},
+        r"Ni\(CN\)4": {"charge": -2, "oxidation_state": 2, "d_electrons": 8, "states": [1], "explanation": "Ni(II)(CN)4^2- - d8, square planar low-spin"},
+    }
+    
+    # Check for transition metal complex patterns
+    molecule_clean = molecule.strip()
+    for pattern, data in complex_patterns.items():
+        if re.search(pattern, molecule_clean, re.IGNORECASE):
+            analysis.update({
+                "charge": data["charge"],
+                "multiplicity": data["states"][0],  # Use first/most likely state as default
+                "states": data["states"],
+                "confidence": "high",
+                "explanation": data["explanation"],
+                "oxidation_state": data["oxidation_state"],
+                "d_electrons": data["d_electrons"]
+            })
+            logger.info(f"🔍 Complex Analysis: {molecule} → {data['explanation']}")
+            return analysis
+    
+    # Check for simple metal ions or common patterns
+    metal_patterns = {
+        r"\bFe2\+": {"charge": 2, "d_electrons": 6, "states": [1, 5], "explanation": "Fe(II) - d6, low-spin vs high-spin"},
+        r"\bFe3\+": {"charge": 3, "d_electrons": 5, "states": [2, 6], "explanation": "Fe(III) - d5, low-spin vs high-spin"},
+        r"\bMn2\+": {"charge": 2, "d_electrons": 5, "states": [2, 6], "explanation": "Mn(II) - d5, low-spin vs high-spin"},
+        r"\bCu2\+": {"charge": 2, "d_electrons": 9, "states": [2], "explanation": "Cu(II) - d9, always doublet"},
+        r"\bNi2\+": {"charge": 2, "d_electrons": 8, "states": [1, 3], "explanation": "Ni(II) - d8, depends on ligand field"},
+        r"\bCo2\+": {"charge": 2, "d_electrons": 7, "states": [2, 4], "explanation": "Co(II) - d7, low-spin vs high-spin"},
+        r"\bCr3\+": {"charge": 3, "d_electrons": 3, "states": [4], "explanation": "Cr(III) - d3, always high-spin"},
+    }
+    
+    for pattern, data in metal_patterns.items():
+        if re.search(pattern, molecule_clean, re.IGNORECASE):
+            analysis.update({
+                "charge": data["charge"],
+                "multiplicity": data["states"][0],
+                "states": data["states"],
+                "confidence": "medium",
+                "explanation": data["explanation"],
+                "d_electrons": data["d_electrons"]
+            })
+            logger.info(f"🔍 Metal Ion Analysis: {molecule} → {data['explanation']}")
+            return analysis
+    
+    # Check for organic radicals or common molecules
+    radical_patterns = {
+        r"^\.CH3$|^CH3\.$": {"states": [2], "explanation": "Methyl radical - doublet"},
+        r"^\.OH$|^OH\.$": {"states": [2], "explanation": "Hydroxyl radical - doublet"},
+        r"^O2$": {"states": [3], "explanation": "Molecular oxygen - triplet"},
+        r"^NO$": {"states": [2], "explanation": "Nitric oxide - doublet"},
+        r"carbene": {"states": [1, 3], "explanation": "Carbene - singlet vs triplet"},
+        r"biradical": {"states": [1, 3, 5], "explanation": "Biradical - various spin coupling schemes"},
+    }
+    
+    for pattern, data in radical_patterns.items():
+        if re.search(pattern, molecule_clean, re.IGNORECASE):
+            analysis.update({
+                "multiplicity": data["states"][0],
+                "states": data["states"],
+                "confidence": "medium",
+                "explanation": data["explanation"]
+            })
+            logger.info(f"🔍 Radical Analysis: {molecule} → {data['explanation']}")
+            return analysis
+    
+    # If no patterns match, try to infer from SMILES or molecule name
+    if molecule_clean.lower() in ["o2", "oxygen"]:
+        analysis.update({
+            "multiplicity": 3,
+            "states": [1, 3],
+            "confidence": "high",
+            "explanation": "Molecular oxygen - ground state triplet"
+        })
+    elif "radical" in molecule_clean.lower():
+        analysis.update({
+            "multiplicity": 2,
+            "states": [2],
+            "confidence": "medium",
+            "explanation": "Assumed organic radical - doublet"
+        })
+    
+    logger.info(f"🔍 Spin Analysis: {molecule} → {analysis['explanation']} (confidence: {analysis['confidence']})")
+    return analysis
+
+
 def lookup_molecule_smiles(molecule_name: str) -> str:
     """Look up canonical SMILES for common molecule names.
     
@@ -585,7 +715,8 @@ def rowan_qc_guide() -> str:
     Returns:
         Comprehensive quantum chemistry guidance
     """
-    return get_qc_guidance()
+    guidance = get_qc_guidance()
+    return guidance
 
 # Unified Quantum Chemistry Tool
 @mcp.tool()
@@ -651,6 +782,9 @@ def rowan_quantum_chemistry(
         Quantum chemistry calculation results
     """
     
+    # Always provide quantum chemistry guidance context first
+    guidance_context = rowan_qc_guide()
+    
     # Determine if we're using defaults or custom settings
     using_defaults = (method is None and basis_set is None and 
                      tasks is None and corrections is None)
@@ -678,27 +812,27 @@ def rowan_quantum_chemistry(
     # Validate inputs and provide guidance
     if method and method.lower() not in QC_METHODS:
         available_methods = ", ".join(QC_METHODS.keys())
-        return f"❌ Invalid method '{method}'. Available methods: {available_methods}\n\n" + get_qc_guidance()
+        return f"❌ Invalid method '{method}'. Available methods: {available_methods}"
     
     if basis_set and basis_set.lower() not in QC_BASIS_SETS:
         available_basis = ", ".join(QC_BASIS_SETS.keys())
-        return f"❌ Invalid basis set '{basis_set}'. Available basis sets: {available_basis}\n\n" + get_qc_guidance()
+        return f"❌ Invalid basis set '{basis_set}'. Available basis sets: {available_basis}"
     
     if tasks:
         invalid_tasks = [task for task in tasks if task.lower() not in QC_TASKS]
         if invalid_tasks:
             available_tasks = ", ".join(QC_TASKS.keys())
-            return f"❌ Invalid tasks {invalid_tasks}. Available tasks: {available_tasks}\n\n" + get_qc_guidance()
+            return f"❌ Invalid tasks {invalid_tasks}. Available tasks: {available_tasks}"
     
     if engine and engine.lower() not in QC_ENGINES:
         available_engines = ", ".join(QC_ENGINES.keys())
-        return f"❌ Invalid engine '{engine}'. Available engines: {available_engines}\n\n" + get_qc_guidance()
+        return f"❌ Invalid engine '{engine}'. Available engines: {available_engines}"
     
     if corrections:
         invalid_corrections = [corr for corr in corrections if corr.lower() not in QC_CORRECTIONS]
         if invalid_corrections:
             available_corrections = ", ".join(QC_CORRECTIONS.keys())
-            return f"❌ Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}\n\n" + get_qc_guidance()
+            return f"❌ Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}"
     
     # Engine is always required, so ensure it's set
     if engine is None:
@@ -841,7 +975,9 @@ def rowan_quantum_chemistry(
             if using_defaults and use_recommended_defaults:
                 formatted += f"• **For future calculations:** Try different methods/basis sets for different accuracy/speed trade-offs\n"
         
-        return formatted
+        # Prepend guidance context to the result
+        final_result = f"{guidance_context}\n\n" + "="*80 + "\n\n" + formatted
+        return final_result
         
     except Exception as e:
         error_msg = f"❌ Quantum chemistry calculation submission failed: {str(e)}\n\n"
@@ -852,8 +988,10 @@ def rowan_quantum_chemistry(
             error_msg += "Or check parameter spelling and availability\n\n"
         elif "engine" in str(e).lower():
             error_msg += "💡 **Engine Error**: The engine parameter is required. This should be auto-set to 'psi4'\n\n"
-        error_msg += get_qc_guidance()
-        return error_msg
+        
+        # Prepend guidance context even in error cases
+        final_error_result = f"{guidance_context}\n\n" + "="*80 + "\n\n" + error_msg
+        return final_error_result
 
 # ADMET - Drug Discovery Properties
 @mcp.tool()
@@ -1085,41 +1223,283 @@ def rowan_descriptors(
 
 # Solubility Prediction
 @mcp.tool()
+@log_mcp_call
 def rowan_solubility(
     name: str,
     molecule: str,
+    solvents: Optional[List[str]] = None,
+    temperatures: Optional[List[float]] = None,
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
     ping_interval: int = 5
 ) -> str:
-    """Predict aqueous solubility.
+    """Predict solubility in various solvents and temperatures using Rowan's SolubilityWorkflow.
     
-    Predicts water solubility, a critical property for:
-    - Drug formulation and bioavailability
-    - Environmental fate and transport
-    - Process chemistry and purification
+    Implements the SolubilityWorkflow class for predicting molecular solubility across
+    multiple solvents and temperature ranges. Critical for:
+    - Drug formulation and bioavailability optimization
+    - Environmental fate and transport modeling
+    - Process chemistry and purification design
+    - Crystallization and precipitation studies
     
-    Use this for: Drug development, environmental assessment, process optimization
+    **🌡️ Temperature Control (SolubilityWorkflow.temperatures):**
+    - Default: 0-150°C range [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+    - Custom: Specify any temperatures in Kelvin as list[float]
+    - Results: log(S) solubility values with uncertainties for each temperature
+    
+    **🧪 Solvent Support (SolubilityWorkflow.solvents):**
+    - Water (default): "O" SMILES for aqueous solubility
+    - Organic solvents: Any valid SMILES strings (e.g., "CCO" for ethanol)
+    - Multiple solvents: Comparative solubility analysis across solvents
+    
+    **📊 Output Format (SolubilityResult):**
+    - solubilities: log(S) values in mol/L units (list[float])
+    - uncertainties: Prediction confidence intervals (list[float])
+    - Temperature dependence: Results for each temperature point
+    - Per-solvent results: dict[solvent_smiles, SolubilityResult]
+    
+    **🔬 SolubilityWorkflow Parameters:**
+    - initial_smiles: Target molecule SMILES string
+    - solvents: List of solvent SMILES strings
+    - temperatures: Temperature points in Kelvin (default 0-150°C)
+    
+    Use this for: Drug development, environmental assessment, process optimization,
+    crystallization studies, solvent selection
     
     Args:
         name: Name for the calculation
-        molecule: Molecule SMILES string
+        molecule: Molecule SMILES string or common name (converted to initial_smiles)
+        solvents: List of solvent SMILES strings (default: ["O"] for water)
+        temperatures: Temperatures in Kelvin (default: 0-150°C range as per SolubilityWorkflow)
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
         ping_interval: Check status interval in seconds (default: 5)
     
     Returns:
-        Solubility prediction results
+        Comprehensive solubility prediction results following SolubilityWorkflow output format
     """
-    result = log_rowan_api_call(
-        workflow_type="solubility",
-        name=name,
-        molecule=molecule,
-        folder_uuid=folder_uuid,
-        blocking=blocking,
-        ping_interval=ping_interval
-    )
-    return str(result)
+    # Look up SMILES if a common name was provided
+    canonical_smiles = lookup_molecule_smiles(molecule)
+    
+    # Handle solvents parameter - fix string to list conversion issue
+    if solvents is None:
+        solvents = ["O"]  # Water SMILES
+    elif isinstance(solvents, str):
+        # Handle common solvent names
+        if solvents.lower() in ["water", "h2o"]:
+            solvents = ["O"]  # Water SMILES
+        else:
+            # Assume it's a SMILES string for a custom solvent
+            solvents = [solvents]
+    
+    # Set default temperature range (0-150°C) if not provided
+    if temperatures is None:
+        temperatures = [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15]  # 0-150°C
+    elif isinstance(temperatures, (int, float, str)):
+        # Handle single temperature value
+        try:
+            temp_val = float(temperatures)
+            temperatures = [temp_val]
+        except (ValueError, TypeError):
+            return f"❌ Invalid temperature value: {temperatures}"
+    
+    # Validate temperatures
+    if not temperatures or len(temperatures) == 0:
+        return "❌ At least one temperature must be specified"
+    
+    # Convert all temperatures to float and validate
+    validated_temps = []
+    for temp in temperatures:
+        try:
+            temp_val = float(temp)
+            if temp_val <= 0:
+                return f"❌ Temperature must be positive (got {temp_val} K)"
+            if temp_val < 200 or temp_val > 500:
+                return f"⚠️ Temperature {temp_val} K is outside typical range (200-500 K)"
+            validated_temps.append(temp_val)
+        except (ValueError, TypeError):
+            return f"❌ Invalid temperature value: {temp} (must be numeric)"
+    
+    temperatures = validated_temps
+    
+    # Validate solvents
+    if not solvents or len(solvents) == 0:
+        return "❌ At least one solvent must be specified"
+    
+    # Basic validation for solvent SMILES strings
+    for i, solvent in enumerate(solvents):
+        if not isinstance(solvent, str) or len(solvent.strip()) == 0:
+            return f"❌ Solvent {i+1} must be a non-empty string (SMILES format)"
+        # Check for obviously invalid SMILES characters (basic check)
+        if any(char in solvent for char in [' ', '\t', '\n']):
+            return f"❌ Solvent {i+1} contains invalid whitespace characters: '{solvent}'"
+    
+    logger.info(f"🧪 Solubility Analysis Debug:")
+    logger.info(f"   Name: {name}")
+    logger.info(f"   Input: {molecule}")
+    logger.info(f"   Using SMILES: {canonical_smiles}")
+    logger.info(f"   Solvents: {solvents}")
+    logger.info(f"   Temperatures: {temperatures} K")
+    logger.info(f"   Temperature range: {min(temperatures):.1f}-{max(temperatures):.1f} K")
+    
+    # Build parameters for Rowan API following SolubilityWorkflow specification
+    solubility_params = {
+        "name": name,
+        "molecule": canonical_smiles,  # Required by compute() function interface
+        "initial_smiles": canonical_smiles,  # Required by SolubilityWorkflow class
+        "solvents": solvents,  # List of solvent SMILES strings
+        "temperatures": temperatures,  # Temperatures in Kelvin
+        "folder_uuid": folder_uuid,
+        "blocking": blocking,
+        "ping_interval": ping_interval
+    }
+    
+    try:
+        result = log_rowan_api_call(
+            workflow_type="solubility",
+            **solubility_params
+        )
+    except Exception as e:
+        # Handle all errors gracefully with detailed reporting
+        error_msg = str(e)
+        error_type = type(e).__name__
+        
+        formatted = f"❌ Solubility analysis for '{name}' failed!\n\n"
+        formatted += f"🚨 Error Type: {error_type}\n"
+        formatted += f"🚨 Error Details: {error_msg}\n\n"
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 SMILES: {canonical_smiles}\n"
+        formatted += f"🧪 Solvents: {solvents}\n"
+        formatted += f"🌡️ Temperatures: {temperatures} K\n\n"
+        
+        # Provide specific guidance based on error type
+        if "typeerror" in error_msg.lower() or error_type == "TypeError":
+            formatted += f"🔧 **TypeError Detected:**\n"
+            formatted += f"• This usually indicates a parameter type mismatch\n"
+            formatted += f"• Check that temperatures are numeric (not strings)\n"
+            formatted += f"• Verify solvents are provided as a list of strings\n"
+        elif "validation error" in error_msg.lower():
+            formatted += f"🔧 **Validation Error:**\n"
+            formatted += f"• Invalid SMILES string format\n"
+            formatted += f"• Incorrect parameter types\n"
+            formatted += f"• Missing required parameters\n"
+        else:
+            formatted += f"🔧 **General Troubleshooting:**\n"
+            formatted += f"• Check molecule SMILES format\n"
+            formatted += f"• Verify parameter types and values\n"
+            formatted += f"• Ensure all required fields are provided\n"
+        
+        return formatted
+    
+    if blocking:
+        status = result.get('status', result.get('object_status', 'Unknown'))
+        
+        # Check for explicit failure indicators
+        has_failed = False
+        failure_reason = None
+        
+        if status == 3:  # Explicit failure status
+            has_failed = True
+        elif status is None or status == 'Unknown':
+            # Check for validation errors or other failure indicators
+            if isinstance(result, dict):
+                error_msg = result.get('error', result.get('message', ''))
+                if error_msg and ('validation error' in str(error_msg).lower() or 'failed' in str(error_msg).lower()):
+                    has_failed = True
+                    failure_reason = str(error_msg)
+        
+        if has_failed:
+            formatted = f"❌ Solubility analysis for '{name}' failed!\n\n"
+            if failure_reason:
+                formatted += f"🚨 Error: {failure_reason}\n\n"
+        elif status == 2:  # Completed successfully
+            formatted = f"✅ Solubility analysis for '{name}' completed successfully!\n\n"
+        else:
+            formatted = f"⚠️ Solubility analysis for '{name}' finished with status {status}\n\n"
+            
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 SMILES: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {status}\n"
+        
+        # Format solvent information
+        solvent_names = []
+        for solvent in solvents:
+            if solvent == "O":
+                solvent_names.append("Water")
+            else:
+                solvent_names.append(f"Custom ({solvent})")
+        formatted += f"🧪 Solvents: {', '.join(solvent_names)}\n"
+        
+        # Format temperature information
+        temp_celsius = [f"{t-273.15:.1f}°C" for t in temperatures]
+        formatted += f"🌡️ Temperatures: {', '.join(temp_celsius)}\n"
+        formatted += f"📏 Temperature Range: {min(temperatures)-273.15:.1f}-{max(temperatures)-273.15:.1f}°C\n"
+        
+        # Try to extract solubility results
+        if isinstance(result, dict) and 'object_data' in result and result['object_data']:
+            data = result['object_data']
+            
+            if 'solubilities' in data and data['solubilities']:
+                formatted += f"\n🎯 **Solubility Results:**\n"
+                
+                for solvent, solub_data in data['solubilities'].items():
+                    solvent_name = "Water" if solvent == "O" else f"Solvent ({solvent})"
+                    formatted += f"\n💧 **{solvent_name}:**\n"
+                    
+                    if 'solubilities' in solub_data and 'uncertainties' in solub_data:
+                        solubilities = solub_data['solubilities']
+                        uncertainties = solub_data['uncertainties']
+                        
+                        for i, (temp, sol, unc) in enumerate(zip(temperatures, solubilities, uncertainties)):
+                            temp_c = temp - 273.15
+                            formatted += f"  • {temp_c:.1f}°C: log(S) = {sol:.3f} ± {unc:.3f} L\n"
+                        
+                        # Show solubility interpretation
+                        avg_sol = sum(solubilities) / len(solubilities)
+                        if avg_sol > -2:
+                            interp = "Highly soluble"
+                        elif avg_sol > -4:
+                            interp = "Moderately soluble"
+                        elif avg_sol > -6:
+                            interp = "Poorly soluble"
+                        else:
+                            interp = "Very poorly soluble"
+                        formatted += f"  📊 Average: {avg_sol:.3f} log(S) ({interp})\n"
+        
+        if has_failed:
+            formatted += f"\n🔧 **Troubleshooting:**\n"
+            formatted += f"• Check that molecule SMILES is valid\n"
+            formatted += f"• Verify solvent specifications (use 'water' or SMILES)\n"
+            formatted += f"• Ensure temperature range is reasonable (200-500 K)\n"
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed error logs\n"
+        elif status == 2:
+            formatted += f"\n🎯 **Analysis Complete:**\n"
+            formatted += f"• Solubilities in log(S) units (mol/L)\n"
+            formatted += f"• Higher values = more soluble\n"
+            formatted += f"• Uncertainties indicate prediction confidence\n"
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed data\n"
+        
+        return formatted
+    else:
+        formatted = f"🚀 Solubility analysis for '{name}' submitted!\n\n"
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 SMILES: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
+        
+        solvent_names = []
+        for solvent in solvents:
+            if solvent == "O":
+                solvent_names.append("Water")
+            else:
+                solvent_names.append(f"Custom ({solvent})")
+        formatted += f"🧪 Solvents: {', '.join(solvent_names)}\n"
+        
+        temp_celsius = [f"{t-273.15:.1f}°C" for t in temperatures]
+        formatted += f"🌡️ Temperatures: {', '.join(temp_celsius)}\n"
+        
+        return formatted
 
 
 # Redox Potential
@@ -1266,42 +1646,506 @@ def rowan_redox_potential(
 
 # Scan - Potential Energy Surface Scans
 @mcp.tool()
+@log_mcp_call
 def rowan_scan(
     name: str,
     molecule: str,
+    coordinate_type: str,
+    atoms: Union[List[int], str],
+    start: float,
+    stop: float,
+    num: int,
+    method: Optional[str] = None,
+    basis_set: Optional[str] = None,
+    engine: Optional[str] = None,
+    corrections: Optional[List[str]] = None,
+    charge: int = 0,
+    multiplicity: int = 1,
+    mode: Optional[str] = None,
+    constraints: Optional[List[Dict[str, Any]]] = None,
+    # New parameters from ScanWorkflow
+    coordinate_type_2d: Optional[str] = None,
+    atoms_2d: Optional[Union[List[int], str]] = None,
+    start_2d: Optional[float] = None,
+    stop_2d: Optional[float] = None,
+    num_2d: Optional[int] = None,
+    wavefront_propagation: bool = True,
+    concerted_coordinates: Optional[List[Dict[str, Any]]] = None,
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
-    ping_interval: int = 5
+    ping_interval: int = 10
 ) -> str:
-    """Run potential energy surface scans.
+    """Run potential energy surface scans with full parameter control including 2D and concerted scans.
     
-    Performs constrained optimizations along reaction coordinates to:
-    - Map reaction pathways and mechanisms
-    - Find transition state approximations
-    - Study conformational preferences
-    - Analyze rotational barriers (atropisomerism)
+    Performs constrained optimizations along reaction coordinates using Rowan's
+    wavefront propagation method to avoid local minima. Essential for:
+    - Mapping reaction pathways and mechanisms
+    - Finding transition state approximations  
+    - Studying conformational preferences and rotational barriers
+    - Analyzing atropisomerism and molecular flexibility
+    - 2D potential energy surfaces
+    - Concerted coordinate changes
     
-    Use this for: Reaction mechanism studies, transition state searching, conformational analysis
+    **📐 Coordinate Types:**
+    - **bond**: Distance between 2 atoms (requires 2 atom indices)
+    - **angle**: Angle between 3 atoms (requires 3 atom indices)  
+    - **dihedral**: Dihedral angle between 4 atoms (requires 4 atom indices)
+    
+    **🔢 Scan Types:**
+    - **1D Scan**: Single coordinate (coordinate_type, atoms, start, stop, num)
+    - **2D Scan**: Two coordinates simultaneously creating a grid (add coordinate_type_2d, atoms_2d, start_2d, stop_2d, num_2d)
+    - **Concerted Scan**: Multiple coordinates changing together (use concerted_coordinates list)
+    
+    **⚙️ Advanced Features:**
+    - **Wavefront Propagation**: Uses previous scan point geometries as starting points (wavefront_propagation=True)
+    - **2D Grids**: Scan two coordinates simultaneously to create potential energy surfaces
+    - **Concerted Scans**: Multiple coordinates can be scanned simultaneously with same number of steps
+    
+    **Example: Ethane C-C rotation (1D)**
+    ```
+    rowan_scan(
+        name="ethane_rotation", 
+        molecule="CC",
+        coordinate_type="dihedral",
+        atoms=[1, 2, 3, 4],  # H-C-C-H dihedral
+        start=0, stop=360, num=24,  # Full rotation in 15° steps
+        method="b3lyp", basis_set="pcseg-1"
+    )
+    ```
+    
+    **Example: 2D scan (bond + dihedral)**
+    ```
+    rowan_scan(
+        name="2d_scan", 
+        molecule="CC",
+        coordinate_type="bond", atoms=[1, 2], start=1.3, stop=1.8, num=10,
+        coordinate_type_2d="dihedral", atoms_2d=[1, 2, 3, 4], start_2d=0, stop_2d=180, num_2d=10,
+        wavefront_propagation=True
+    )
+    ```
+    
+    Use this for: Reaction mechanism studies, transition state searching, conformational analysis, 2D energy surfaces
     
     Args:
-        name: Name for the calculation
-        molecule: Molecule SMILES string
+        name: Name for the scan calculation
+        molecule: Molecule SMILES string or common name (e.g., "butane", "phenol")
+        coordinate_type: Type of coordinate to scan - "bond", "angle", or "dihedral"
+        atoms: List of 1-indexed atom numbers or comma-separated string (e.g., [1,2,3,4] or "1,2,3,4")
+        start: Starting value of the coordinate (Å for bonds, degrees for angles/dihedrals)
+        stop: Ending value of the coordinate
+        num: Number of scan points to calculate
+        method: QC method (default: "hf-3c" for speed, use "b3lyp" for accuracy)
+        basis_set: Basis set (default: auto-selected based on method)
+        engine: Computational engine (default: "psi4") 
+        corrections: List of corrections like ["d3bj"] for dispersion
+        charge: Molecular charge (default: 0)
+        multiplicity: Spin multiplicity (default: 1 for singlet)
+        mode: Calculation precision - "reckless", "rapid", "careful", "meticulous" (default: "rapid")
+        constraints: Additional coordinate constraints during optimization
+        coordinate_type_2d: Type of second coordinate for 2D scan (optional)
+        atoms_2d: Atoms for second coordinate in 2D scan (optional)
+        start_2d: Starting value of second coordinate (optional)
+        stop_2d: Ending value of second coordinate (optional) 
+        num_2d: Number of points for second coordinate (must equal num for 2D grid, optional)
+        wavefront_propagation: Use wavefront propagation for smoother scans (default: True)
+        concerted_coordinates: List of coordinate dictionaries for concerted scans (optional)
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
-        ping_interval: Check status interval in seconds (default: 5)
+        ping_interval: Check status interval in seconds (default: 10, longer for scans)
     
     Returns:
-        Scan results with energy profile
+        Scan results with energy profile and structural data
     """
-    result = log_rowan_api_call(
-        workflow_type="scan",
-        name=name,
-        molecule=molecule,
-        folder_uuid=folder_uuid,
-        blocking=blocking,
-        ping_interval=ping_interval
-    )
-    return str(result)
+    
+    # Look up SMILES if a common name was provided
+    canonical_smiles = lookup_molecule_smiles(molecule)
+    
+    # Validate coordinate type
+    valid_coord_types = ["bond", "angle", "dihedral"]
+    coord_type_lower = coordinate_type.lower()
+    if coord_type_lower not in valid_coord_types:
+        return f"❌ Invalid coordinate_type '{coordinate_type}'. Valid types: {', '.join(valid_coord_types)}"
+    
+    # Handle string input for atoms (common format: "1,2,3,4")
+    if isinstance(atoms, str):
+        try:
+            # Parse comma-separated string to list of integers
+            atoms = [int(x.strip()) for x in atoms.split(",")]
+            logger.info(f"🔍 Parsed atom string '{atoms}' to list: {atoms}")
+        except ValueError as e:
+            return f"❌ Invalid atoms string '{atoms}'. Use format '1,2,3,4' or pass as list [1,2,3,4]. Error: {e}"
+    
+    # Ensure atoms is a list
+    if not isinstance(atoms, list):
+        return f"❌ Atoms must be a list of integers or comma-separated string. Got: {type(atoms).__name__}"
+    
+    # Validate atom count for coordinate type
+    expected_atoms = {"bond": 2, "angle": 3, "dihedral": 4}
+    expected_count = expected_atoms[coord_type_lower]
+    if len(atoms) != expected_count:
+        return f"❌ {coordinate_type} requires exactly {expected_count} atoms, got {len(atoms)}. Use format: [1,2,3,4] or '1,2,3,4'"
+    
+    # Validate atoms are positive integers
+    if not all(isinstance(atom, int) and atom > 0 for atom in atoms):
+        return f"❌ All atom indices must be positive integers (1-indexed). Got: {atoms}. Use format: [1,2,3,4] or '1,2,3,4'"
+    
+    # Validate scan range
+    if num < 2:
+        return f"❌ Number of scan points must be at least 2, got {num}"
+    
+    if start >= stop:
+        return f"❌ Start value ({start}) must be less than stop value ({stop})"
+    
+    # Handle 2D scan validation
+    is_2d_scan = any([coordinate_type_2d, atoms_2d, start_2d is not None, stop_2d is not None, num_2d is not None])
+    
+    if is_2d_scan:
+        # For 2D scan, all 2D parameters must be provided
+        if not all([coordinate_type_2d, atoms_2d, start_2d is not None, stop_2d is not None, num_2d is not None]):
+            return f"❌ For 2D scans, all 2D parameters must be provided: coordinate_type_2d, atoms_2d, start_2d, stop_2d, num_2d"
+        
+        # Validate 2D coordinate type
+        coord_type_2d_lower = coordinate_type_2d.lower()
+        if coord_type_2d_lower not in valid_coord_types:
+            return f"❌ Invalid coordinate_type_2d '{coordinate_type_2d}'. Valid types: {', '.join(valid_coord_types)}"
+        
+        # Handle string input for 2D atoms
+        if isinstance(atoms_2d, str):
+            try:
+                atoms_2d = [int(x.strip()) for x in atoms_2d.split(",")]
+                logger.info(f"🔍 Parsed 2D atom string to list: {atoms_2d}")
+            except ValueError as e:
+                return f"❌ Invalid atoms_2d string '{atoms_2d}'. Use format '1,2,3,4' or pass as list [1,2,3,4]. Error: {e}"
+        
+        # Validate 2D atom count
+        expected_count_2d = expected_atoms[coord_type_2d_lower]
+        if len(atoms_2d) != expected_count_2d:
+            return f"❌ {coordinate_type_2d} requires exactly {expected_count_2d} atoms, got {len(atoms_2d)}"
+        
+        # Validate 2D atoms are positive integers
+        if not all(isinstance(atom, int) and atom > 0 for atom in atoms_2d):
+            return f"❌ All 2D atom indices must be positive integers (1-indexed). Got: {atoms_2d}"
+        
+        # Validate 2D scan range
+        if num_2d < 2:
+            return f"❌ Number of 2D scan points must be at least 2, got {num_2d}"
+        
+        if start_2d >= stop_2d:
+            return f"❌ 2D start value ({start_2d}) must be less than stop value ({stop_2d})"
+        
+        # For true 2D grid scans, both dimensions should have same number of points
+        # (This creates an N×N grid rather than N points along each coordinate)
+        logger.info(f"🔲 2D Scan: {num} × {num_2d} grid ({num * num_2d} total points)")
+    
+    # Handle concerted scan validation
+    if concerted_coordinates:
+        # Validate each coordinate in the concerted scan
+        for i, coord in enumerate(concerted_coordinates):
+            required_keys = {"coordinate_type", "atoms", "start", "stop", "num"}
+            if not all(key in coord for key in required_keys):
+                return f"❌ Concerted coordinate {i+1} missing required keys: {required_keys}"
+            
+            # All concerted coordinates must have same number of steps
+            if coord["num"] != num:
+                return f"❌ All concerted scan coordinates must have same number of steps. Got {coord['num']} vs {num}"
+            
+            # Validate coordinate type
+            if coord["coordinate_type"].lower() not in valid_coord_types:
+                return f"❌ Invalid coordinate_type in concerted coordinate {i+1}: '{coord['coordinate_type']}'"
+        
+        logger.info(f"🔗 Concerted Scan: {len(concerted_coordinates)} coordinates with {num} steps each")
+    
+    # Set intelligent defaults based on coordinate type and method preferences
+    if method is None:
+        method = "hf-3c"  # Fast default for scans as recommended in docs
+        
+    if engine is None:
+        engine = "psi4"  # Required by Rowan API
+        
+    if mode is None:
+        mode = "rapid"  # Good balance for scans
+        
+    # Validate QC parameters if provided (reuse existing validation logic)
+    if method and method.lower() not in QC_METHODS and method.lower() != "hf-3c":
+        available_methods = ", ".join(list(QC_METHODS.keys()) + ["hf-3c"])
+        return f"❌ Invalid method '{method}'. Available methods: {available_methods}"
+    
+    if basis_set and basis_set.lower() not in QC_BASIS_SETS:
+        available_basis = ", ".join(QC_BASIS_SETS.keys())
+        return f"❌ Invalid basis set '{basis_set}'. Available basis sets: {available_basis}"
+    
+    if engine and engine.lower() not in QC_ENGINES:
+        available_engines = ", ".join(QC_ENGINES.keys())
+        return f"❌ Invalid engine '{engine}'. Available engines: {available_engines}"
+    
+    if corrections:
+        invalid_corrections = [corr for corr in corrections if corr.lower() not in QC_CORRECTIONS]
+        if invalid_corrections:
+            available_corrections = ", ".join(QC_CORRECTIONS.keys())
+            return f"❌ Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}"
+    
+    # Validate mode
+    valid_modes = ["reckless", "rapid", "careful", "meticulous"]
+    if mode and mode.lower() not in valid_modes:
+        return f"❌ Invalid mode '{mode}'. Valid modes: {', '.join(valid_modes)}"
+    
+    # Log the scan parameters
+    logger.info(f"🔬 PES Scan Debug:")
+    logger.info(f"   Name: {name}")
+    logger.info(f"   Input: {molecule}")
+    logger.info(f"   Using SMILES: {canonical_smiles}")
+    logger.info(f"   Primary Coordinate: {coord_type_lower}")
+    logger.info(f"   Primary Atoms: {atoms}")
+    logger.info(f"   Primary Range: {start} to {stop} in {num} steps")
+    if is_2d_scan:
+        logger.info(f"   Secondary Coordinate: {coord_type_2d_lower}")
+        logger.info(f"   Secondary Atoms: {atoms_2d}")
+        logger.info(f"   Secondary Range: {start_2d} to {stop_2d} in {num_2d} steps")
+        logger.info(f"   2D Grid Size: {num} × {num_2d} = {num * num_2d} total points")
+    if concerted_coordinates:
+        logger.info(f"   Concerted Coordinates: {len(concerted_coordinates)}")
+    logger.info(f"   Method: {method}")
+    logger.info(f"   Basis Set: {basis_set or 'auto-selected'}")
+    logger.info(f"   Engine: {engine}")
+    logger.info(f"   Mode: {mode}")
+    logger.info(f"   Wavefront Propagation: {wavefront_propagation}")
+    
+    try:
+        # Build scan coordinate specification based on scan type
+        scan_coordinates = []
+        
+        # Primary coordinate
+        primary_coord = {
+            "coordinate_type": coord_type_lower,
+            "atoms": atoms,
+            "start": start,
+            "stop": stop,
+            "num": num
+        }
+        scan_coordinates.append(primary_coord)
+        
+        # Add 2D coordinate if specified
+        if is_2d_scan:
+            secondary_coord = {
+                "coordinate_type": coord_type_2d_lower,
+                "atoms": atoms_2d,
+                "start": start_2d,
+                "stop": stop_2d,
+                "num": num_2d
+            }
+            scan_coordinates.append(secondary_coord)
+        
+        # Add concerted coordinates if specified
+        if concerted_coordinates:
+            for coord in concerted_coordinates:
+                scan_coordinates.append({
+                    "coordinate_type": coord["coordinate_type"].lower(),
+                    "atoms": coord["atoms"],
+                    "start": coord["start"],
+                    "stop": coord["stop"],
+                    "num": coord["num"]
+                })
+        
+        # Build parameters for rowan.compute call
+        compute_params = {
+            "name": name,
+            "molecule": canonical_smiles,  # Use canonical SMILES
+            "folder_uuid": folder_uuid,
+            "blocking": blocking,
+            "ping_interval": ping_interval
+        }
+        
+        # Handle different scan coordinate formats based on what Rowan API expects
+        if len(scan_coordinates) == 1:
+            # Single coordinate scan - use the existing format
+            compute_params["scan_coordinate"] = scan_coordinates[0]
+        else:
+            # Multiple coordinates - use scan_settings format
+            compute_params["scan_settings"] = scan_coordinates
+            if is_2d_scan:
+                # For 2D scans, separate primary and secondary coordinates
+                compute_params["scan_settings"] = scan_coordinates[0]
+                compute_params["scan_settings_2d"] = scan_coordinates[1]
+        
+        # Add wavefront propagation setting
+        compute_params["wavefront_propagation"] = wavefront_propagation
+        
+        # Add QC parameters
+        if method:
+            compute_params["method"] = method.lower()
+        if basis_set:
+            compute_params["basis_set"] = basis_set.lower()
+        if engine:
+            compute_params["engine"] = engine.lower()
+        if corrections:
+            compute_params["corrections"] = [corr.lower() for corr in corrections]
+        if charge != 0:
+            compute_params["charge"] = charge
+        if multiplicity != 1:
+            compute_params["multiplicity"] = multiplicity
+        if mode:
+            compute_params["mode"] = mode.lower()
+        if constraints:
+            compute_params["constraints"] = constraints
+        
+        # Use "scan" workflow type
+        result = log_rowan_api_call(
+            workflow_type="scan",
+            **compute_params
+        )
+        
+        # Format results based on status
+        job_status = result.get('status', result.get('object_status', None))
+        
+        # Try to get status via API if not available
+        if job_status is None and result.get('uuid'):
+            try:
+                job_status = rowan.Workflow.status(uuid=result.get('uuid'))
+                logger.info(f"📊 Retrieved scan status via API: {job_status}")
+            except Exception as e:
+                logger.warning(f"⚠️ Could not retrieve scan status: {e}")
+                job_status = None
+        
+        status_names = {
+            0: ("⏳", "Queued"),
+            1: ("🔄", "Running"), 
+            2: ("✅", "Completed Successfully"),
+            3: ("❌", "Failed"),
+            4: ("⏹️", "Stopped"),
+            5: ("⏸️", "Awaiting Queue")
+        }
+        
+        status_icon, status_text = status_names.get(job_status, ("❓", f"Unknown ({job_status})"))
+        
+        # Handle None status
+        if job_status is None:
+            status_icon, status_text = ("📝", "Submitted (status pending)")
+        
+        # Determine scan type for display
+        scan_type = "1D Scan"
+        total_points = num
+        if is_2d_scan:
+            scan_type = "2D Grid Scan"
+            total_points = num * num_2d
+        elif concerted_coordinates:
+            scan_type = f"Concerted Scan ({len(concerted_coordinates) + 1} coordinates)"
+            total_points = num
+        
+        # Format response
+        if job_status == 2:
+            formatted = f"✅ {scan_type} '{name}' completed successfully!\n\n"
+        elif job_status == 3:
+            formatted = f"❌ {scan_type} '{name}' failed!\n\n"
+        elif job_status in [0, 1, 5]:
+            formatted = f"🔄 {scan_type} '{name}' submitted and running!\n\n"
+        elif job_status == 4:
+            formatted = f"⏹️ {scan_type} '{name}' was stopped!\n\n"
+        else:
+            formatted = f"📊 {scan_type} '{name}' status unknown!\n\n"
+            
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 SMILES: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {status_icon} {status_text} ({job_status})\n"
+        
+        # Scan coordinate details
+        formatted += f"\n📐 **Scan Coordinates:**\n"
+        formatted += f"   Type: {scan_type}\n"
+        formatted += f"   Primary: {coordinate_type.upper()} on atoms {atoms} ({start} → {stop}, {num} points)\n"
+        if is_2d_scan:
+            formatted += f"   Secondary: {coordinate_type_2d.upper()} on atoms {atoms_2d} ({start_2d} → {stop_2d}, {num_2d} points)\n"
+            formatted += f"   Grid Size: {num} × {num_2d} = {total_points} total points\n"
+        elif concerted_coordinates:
+            for i, coord in enumerate(concerted_coordinates):
+                formatted += f"   Coordinate {i+2}: {coord['coordinate_type'].upper()} on atoms {coord['atoms']} ({coord['start']} → {coord['stop']})\n"
+        formatted += f"   Total Points: {total_points}\n"
+        
+        # Applied settings
+        formatted += f"\n⚙️ **Computational Settings:**\n"
+        if method:
+            method_desc = QC_METHODS.get(method.lower(), "Fast composite method" if "3c" in method else "Custom method")
+            formatted += f"   Method: {method.upper()} - {method_desc}\n"
+        if basis_set:
+            basis_desc = QC_BASIS_SETS.get(basis_set.lower(), "Custom basis set")
+            formatted += f"   Basis Set: {basis_set} - {basis_desc}\n"
+        if engine:
+            engine_desc = QC_ENGINES.get(engine.lower(), "Custom engine")
+            formatted += f"   Engine: {engine.upper()} - {engine_desc}\n"
+        if corrections:
+            formatted += f"   Corrections: {', '.join(corrections)}\n"
+        if charge != 0 or multiplicity != 1:
+            formatted += f"   Charge: {charge}, Multiplicity: {multiplicity}\n"
+        if mode:
+            formatted += f"   Mode: {mode.title()}\n"
+        if constraints:
+            formatted += f"   Additional Constraints: {len(constraints)} applied\n"
+        formatted += f"   Wavefront Propagation: {'Enabled' if wavefront_propagation else 'Disabled'}\n"
+        
+        # Status-specific guidance
+        formatted += f"\n💡 **Next Steps:**\n"
+        if job_status == 2:  # Completed
+            formatted += f"• Use `rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid', 'UUID')}')` for detailed results\n"
+            if is_2d_scan:
+                formatted += f"• 2D scan creates energy surface - look for minima, maxima, and saddle points\n"
+                formatted += f"• Results can be visualized as contour plots or 3D surfaces\n"
+            else:
+                formatted += f"• Scan shows energy profile along coordinate(s)\n"
+                formatted += f"• Look for energy maxima (potential transition states) and minima (stable conformers)\n"
+            formatted += f"• High-energy points can be used as starting guesses for transition state optimizations\n"
+        elif job_status == 3:  # Failed
+            formatted += f"• Use `rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid', 'UUID')}')` for error details\n"
+            formatted += f"• **Troubleshooting:**\n"
+            formatted += f"  - Check atom indices are correct and within molecule range\n"
+            formatted += f"  - Try smaller scan range or fewer points\n"
+            formatted += f"  - Use faster method: method='hf-3c' (recommended for scans)\n"
+            formatted += f"  - For 2D scans: consider reducing grid size ({num}×{num_2d} = {total_points} points)\n"
+            formatted += f"  - Ensure coordinate ranges are chemically reasonable\n"
+        elif job_status in [0, 1, 5]:  # Running
+            formatted += f"• Check progress: `rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid', 'UUID')}')`\n"
+            if is_2d_scan:
+                formatted += f"• 2D scan with {total_points} points may take several hours depending on method and molecule size\n"
+            else:
+                formatted += f"• Scan with {total_points} points may take 10-60 minutes depending on method and molecule size\n"
+            formatted += f"• Each scan point involves a constrained geometry optimization\n"
+            if wavefront_propagation:
+                formatted += f"• Wavefront propagation helps avoid local minima by using previous geometries\n"
+        elif job_status == 4:  # Stopped
+            formatted += f"• Check why stopped: `rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid', 'UUID')}')`\n"
+            formatted += f"• You can restart with same or modified parameters\n"
+        else:  # Unknown
+            formatted += f"• Check status: `rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid', 'UUID')}')`\n"
+            formatted += f"• Get details: `rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid', 'UUID')}')`\n"
+        
+        # Add examples and guidance
+        formatted += f"\n📚 **Scan Examples:**\n"
+        formatted += f"• **1D Bond scan**: coordinate_type='bond', atoms=[1,2], start=1.0, stop=3.0\n"
+        formatted += f"• **1D Angle scan**: coordinate_type='angle', atoms=[1,2,3], start=90, stop=180\n"
+        formatted += f"• **1D Dihedral scan**: coordinate_type='dihedral', atoms=[1,2,3,4], start=0, stop=360\n"
+        formatted += f"• **2D Bond+Dihedral**: Add coordinate_type_2d='dihedral', atoms_2d=[1,2,3,4], etc.\n"
+        formatted += f"• **Concerted scan**: Use concerted_coordinates=[{{...}}, {{...}}] for multiple coordinates\n"
+        formatted += f"• For atropisomerism studies: Use dihedral scans with 15-30 points over 360°\n"
+        formatted += f"• For reaction mechanisms: 1D scans first, then 2D near transition states\n"
+        
+        return formatted
+        
+    except Exception as e:
+        error_msg = f"❌ PES scan submission failed: {str(e)}\n\n"
+        error_msg += "🔧 **Enhanced Scan Troubleshooting:**\n"
+        error_msg += "• **Atom indices**: Check that atom numbers exist in the molecule (1-indexed)\n"
+        error_msg += "• **Coordinate range**: Ensure start < stop and range is chemically reasonable\n"
+        error_msg += "• **Method compatibility**: Some methods may not support scan calculations\n"
+        error_msg += "• **Parameter format**: Use atoms=[1,2,3,4] or atoms='1,2,3,4'\n"
+        error_msg += "• **2D scans**: All 2D parameters required if any are specified\n"
+        error_msg += "• **Concerted scans**: All coordinates must have same number of steps\n\n"
+        error_msg += "💡 **Quick Fix Examples:**\n"
+        error_msg += f"• **1D scan**: rowan_scan('{name}', '{molecule}', '{coordinate_type}', [1,2,3,4], {start}, {stop}, {num})\n"
+        error_msg += f"• **2D scan**: Add coordinate_type_2d='dihedral', atoms_2d=[1,2,3,4], start_2d=0, stop_2d=180, num_2d={num}\n"
+        error_msg += f"• **With method**: rowan_scan(..., method='hf-3c', wavefront_propagation=True)\n\n"
+        error_msg += "📚 **New Features:**\n"
+        error_msg += "• **2D Scans**: Create potential energy surfaces with two coordinates\n"
+        error_msg += "• **Concerted Scans**: Multiple coordinates changing simultaneously\n"
+        error_msg += "• **Wavefront Propagation**: Better convergence using previous scan point geometries\n"
+        return error_msg
 
 
 # Fukui Indices - Reactivity Analysis
@@ -1310,44 +2154,131 @@ def rowan_scan(
 def rowan_fukui(
     name: str,
     molecule: str,
+    optimize: bool = True,
+    opt_method: Optional[str] = None,
+    opt_basis_set: Optional[str] = None,
+    opt_engine: Optional[str] = None,
+    fukui_method: str = "gfn1_xtb",
+    fukui_basis_set: Optional[str] = None,
+    fukui_engine: Optional[str] = None,
+    charge: int = 0,
+    multiplicity: int = 1,
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
     ping_interval: int = 5
 ) -> str:
-    """Calculate Fukui indices for reactivity prediction.
+    """Calculate Fukui indices for reactivity prediction with comprehensive control.
     
-    Predicts sites of chemical reactivity by analyzing electron density changes:
-    - f(+): reactivity towards nucleophiles
-    - f(-): reactivity towards electrophiles  
-    - f(0): reactivity towards radicals
+    Predicts sites of chemical reactivity by analyzing electron density changes upon
+    gaining/losing electrons. Uses a two-step process: optimization + Fukui calculation.
     
-    Use this for: Predicting reaction sites, selectivity analysis, drug design
+    **🔬 Fukui Index Types:**
+    - **f(+)**: Electrophilic attack sites (nucleophile reactivity)
+    - **f(-)**: Nucleophilic attack sites (electrophile reactivity)  
+    - **f(0)**: Radical attack sites (average of f(+) and f(-))
+    - **Global Electrophilicity Index**: Overall electrophilic character
+    
+    **⚡ Key Features:**
+    - Optional geometry optimization before Fukui calculation
+    - Separate control over optimization and Fukui calculation methods
+    - Per-atom reactivity indices for site-specific analysis
+    - Global reactivity descriptors
     
     Args:
         name: Name for the calculation
         molecule: Molecule SMILES string or common name (e.g., "phenol", "benzene")
+        optimize: Whether to optimize geometry before Fukui calculation (default: True)
+        opt_method: Method for optimization (default: None, uses engine default)
+        opt_basis_set: Basis set for optimization (default: None, uses engine default)
+        opt_engine: Engine for optimization (default: None, auto-selected)
+        fukui_method: Method for Fukui calculation (default: "gfn1_xtb")
+        fukui_basis_set: Basis set for Fukui calculation (default: None, uses method default)
+        fukui_engine: Engine for Fukui calculation (default: None, auto-selected)
+        charge: Molecular charge (default: 0)
+        multiplicity: Spin multiplicity (default: 1)
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
         ping_interval: Check status interval in seconds (default: 5)
     
     Returns:
-        Fukui indices and reactivity analysis
+        Fukui indices and reactivity analysis with per-atom and global descriptors
     """
     # Look up SMILES if a common name was provided
     canonical_smiles = lookup_molecule_smiles(molecule)
     
+    # Build optimization settings if requested
+    opt_settings = None
+    if optimize:
+        opt_settings = {
+            "charge": charge,
+            "multiplicity": multiplicity
+        }
+        
+        # Add optimization method/basis/engine if specified
+        if opt_method:
+            opt_settings["method"] = opt_method.lower()
+        if opt_basis_set:
+            opt_settings["basis_set"] = opt_basis_set.lower()
+        
+        # Default to fast optimization if no engine specified
+        if not opt_engine and not opt_method:
+            opt_settings["method"] = "gfn2_xtb"  # Fast optimization
+            logger.info(f"🚀 No optimization method specified, defaulting to GFN2-xTB")
+    
+    # Build Fukui calculation settings
+    fukui_settings = {
+        "method": fukui_method.lower(),
+        "charge": charge,
+        "multiplicity": multiplicity
+    }
+    
+    # Add Fukui basis set if specified
+    if fukui_basis_set:
+        fukui_settings["basis_set"] = fukui_basis_set.lower()
+    
+    # Validate Fukui method
+    valid_fukui_methods = ["gfn1_xtb", "gfn2_xtb", "hf", "b3lyp", "pbe", "m06-2x"]
+    if fukui_method.lower() not in valid_fukui_methods:
+        logger.warning(f"⚠️ Unusual Fukui method '{fukui_method}'. Common methods: {valid_fukui_methods}")
+    
+    # Log the Fukui parameters
     logger.info(f"🔬 Fukui Analysis Debug:")
     logger.info(f"   Name: {name}")
     logger.info(f"   Input: {molecule}")
     logger.info(f"   Using SMILES: {canonical_smiles}")
+    logger.info(f"   Optimization: {'Enabled' if optimize else 'Disabled'}")
+    if optimize:
+        logger.info(f"   Opt Method: {opt_settings.get('method', 'default')}")
+        if opt_engine:
+            logger.info(f"   Opt Engine: {opt_engine}")
+    logger.info(f"   Fukui Method: {fukui_method}")
+    if fukui_engine:
+        logger.info(f"   Fukui Engine: {fukui_engine}")
+    logger.info(f"   Charge: {charge}, Multiplicity: {multiplicity}")
+    
+    # Build parameters for Rowan API
+    fukui_params = {
+        "name": name,
+        "molecule": canonical_smiles,
+        "fukui_settings": fukui_settings,
+        "folder_uuid": folder_uuid,
+        "blocking": blocking,
+        "ping_interval": ping_interval
+    }
+    
+    # Add optimization settings if enabled
+    if optimize and opt_settings:
+        fukui_params["opt_settings"] = opt_settings
+        
+    # Add engines if specified
+    if opt_engine:
+        fukui_params["opt_engine"] = opt_engine.lower()
+    if fukui_engine:
+        fukui_params["fukui_engine"] = fukui_engine.lower()
     
     result = log_rowan_api_call(
         workflow_type="fukui",
-        name=name,
-        molecule=canonical_smiles,
-        folder_uuid=folder_uuid,
-        blocking=blocking,
-        ping_interval=ping_interval
+        **fukui_params
     )
     
     if blocking:
@@ -1365,29 +2296,123 @@ def rowan_fukui(
         formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
         formatted += f"📊 Status: {status}\n"
         
+        # Computational settings summary
+        formatted += f"\n⚙️ **Computational Settings:**\n"
+        formatted += f"   Optimization: {'Enabled' if optimize else 'Disabled'}\n"
+        if optimize:
+            opt_method_display = opt_settings.get('method', 'default') if opt_settings else 'default'
+            formatted += f"   Opt Method: {opt_method_display.upper()}\n"
+            if opt_engine:
+                formatted += f"   Opt Engine: {opt_engine.upper()}\n"
+        formatted += f"   Fukui Method: {fukui_method.upper()}\n"
+        if fukui_engine:
+            formatted += f"   Fukui Engine: {fukui_engine.upper()}\n"
+        formatted += f"   Charge: {charge}, Multiplicity: {multiplicity}\n"
+        
         # Try to extract Fukui results
         if isinstance(result, dict) and 'object_data' in result and result['object_data']:
             data = result['object_data']
             
-            if 'fukui_plus' in data or 'fukui_minus' in data or 'fukui_zero' in data:
-                formatted += f"\n⚡ **Fukui Indices Available:**\n"
-                if 'fukui_plus' in data:
-                    formatted += f"• f(+): Nucleophilic attack sites\n"
-                if 'fukui_minus' in data:
-                    formatted += f"• f(-): Electrophilic attack sites\n"
-                if 'fukui_zero' in data:
-                    formatted += f"• f(0): Radical attack sites\n"
+            # Global electrophilicity index
+            if 'global_electrophilicity_index' in data and data['global_electrophilicity_index'] is not None:
+                gei = data['global_electrophilicity_index']
+                formatted += f"\n🌐 **Global Electrophilicity Index:** {gei:.4f}\n"
+                if gei > 1.5:
+                    formatted += f"   → Strong electrophile (highly reactive towards nucleophiles)\n"
+                elif gei > 0.8:
+                    formatted += f"   → Moderate electrophile\n"
+                else:
+                    formatted += f"   → Weak electrophile\n"
+            
+            # Fukui indices per atom
+            fukui_available = []
+            if 'fukui_positive' in data and data['fukui_positive']:
+                fukui_available.append("f(+)")
+            if 'fukui_negative' in data and data['fukui_negative']:
+                fukui_available.append("f(-)")
+            if 'fukui_zero' in data and data['fukui_zero']:
+                fukui_available.append("f(0)")
                 
-                formatted += f"\n💡 **Most Reactive Sites:**\n"
-                # Would need to analyze the actual data to show top sites
-                formatted += f"Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed site rankings\n"
+            if fukui_available:
+                formatted += f"\n⚡ **Fukui Indices Available:** {', '.join(fukui_available)}\n"
+                
+                # Analyze most reactive sites
+                formatted += f"\n🎯 **Most Reactive Sites:**\n"
+                
+                # f(+) - electrophilic attack sites
+                if 'fukui_positive' in data and data['fukui_positive']:
+                    f_plus = data['fukui_positive']
+                    if isinstance(f_plus, list) and len(f_plus) > 0:
+                        # Find top 3 sites
+                        indexed_values = [(i+1, val) for i, val in enumerate(f_plus) if val is not None]
+                        top_f_plus = sorted(indexed_values, key=lambda x: x[1], reverse=True)[:3]
+                        formatted += f"   f(+) Top Sites (electrophilic attack): "
+                        formatted += f"{', '.join([f'Atom {atom}({val:.3f})' for atom, val in top_f_plus])}\n"
+                
+                # f(-) - nucleophilic attack sites  
+                if 'fukui_negative' in data and data['fukui_negative']:
+                    f_minus = data['fukui_negative']
+                    if isinstance(f_minus, list) and len(f_minus) > 0:
+                        indexed_values = [(i+1, val) for i, val in enumerate(f_minus) if val is not None]
+                        top_f_minus = sorted(indexed_values, key=lambda x: x[1], reverse=True)[:3]
+                        formatted += f"   f(-) Top Sites (nucleophilic attack): "
+                        formatted += f"{', '.join([f'Atom {atom}({val:.3f})' for atom, val in top_f_minus])}\n"
+                
+                # f(0) - radical attack sites
+                if 'fukui_zero' in data and data['fukui_zero']:
+                    f_zero = data['fukui_zero']
+                    if isinstance(f_zero, list) and len(f_zero) > 0:
+                        indexed_values = [(i+1, val) for i, val in enumerate(f_zero) if val is not None]
+                        top_f_zero = sorted(indexed_values, key=lambda x: x[1], reverse=True)[:3]
+                        formatted += f"   f(0) Top Sites (radical attack): "
+                        formatted += f"{', '.join([f'Atom {atom}({val:.3f})' for atom, val in top_f_zero])}\n"
         
-        if status == 2:
-            formatted += f"\n🎯 **Results Available:**\n"
-            formatted += f"• Fukui indices calculated for each atom\n"
-            formatted += f"• Higher values = more reactive sites\n"
-            formatted += f"• f(+) identifies sites attacked by nucleophiles\n"
-            formatted += f"• f(-) identifies sites attacked by electrophiles\n"
+        # Status-specific guidance
+        formatted += f"\n💡 **Next Steps:**\n"
+        if status == 2:  # Completed
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for full per-atom data\n"
+            formatted += f"• Higher Fukui values indicate more reactive sites\n"
+            formatted += f"• f(+) predicts where nucleophiles will attack\n"
+            formatted += f"• f(-) predicts where electrophiles will attack\n"
+            formatted += f"• f(0) predicts radical reaction sites\n"
+        elif status == 3:  # Failed
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for error details\n"
+            formatted += f"• **Troubleshooting:**\n"
+            formatted += f"  - Try disabling optimization: optimize=False\n"
+            formatted += f"  - Use faster Fukui method: fukui_method='gfn1_xtb'\n"
+            formatted += f"  - Check if molecule SMILES is valid\n"
+            formatted += f"  - Verify charge and multiplicity are correct\n"
+        elif status in [0, 1, 5]:  # Running
+            formatted += f"• Check progress: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
+            if optimize:
+                formatted += f"• Two-step process: optimization → Fukui calculation\n"
+            formatted += f"• Fukui analysis may take 5-20 minutes depending on method and molecule size\n"
+        elif status == 4:  # Stopped
+            formatted += f"• Check why stopped: rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}')\n"
+            formatted += f"• You can restart with same or modified parameters\n"
+        else:  # Unknown
+            formatted += f"• Check status: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
+        
+        # Add examples and guidance
+        formatted += f"\n📚 **Fukui Examples:**\n"
+        formatted += f"• **Basic analysis**: rowan_fukui('benzene_fukui', 'benzene')\n"
+        formatted += f"• **Skip optimization**: rowan_fukui('quick', 'SMILES', optimize=False)\n"
+        formatted += f"• **High-accuracy**: rowan_fukui('accurate', 'SMILES', fukui_method='b3lyp', fukui_basis_set='def2-tzvp')\n"
+        formatted += f"• **Charged species**: rowan_fukui('cation', 'SMILES', charge=+1)\n"
+        formatted += f"• **Custom optimization**: rowan_fukui('custom', 'SMILES', opt_method='b3lyp', opt_basis_set='def2-svp')\n\n"
+        
+        formatted += f"🔬 **Method Guide:**\n"
+        formatted += f"• **gfn1_xtb**: Fast semiempirical, good for large molecules (default)\n"
+        formatted += f"• **gfn2_xtb**: More accurate semiempirical method\n"
+        formatted += f"• **hf**: Hartree-Fock, basic quantum method\n"
+        formatted += f"• **b3lyp**: Popular DFT method, good accuracy\n"
+        formatted += f"• **m06-2x**: Meta-GGA DFT, excellent for organics\n\n"
+        
+        formatted += f"⚡ **Interpretation Guide:**\n"
+        formatted += f"• **f(+) > 0.1**: Strong electrophilic attack site\n"
+        formatted += f"• **f(-) > 0.1**: Strong nucleophilic attack site\n"
+        formatted += f"• **f(0) > 0.1**: Strong radical attack site\n"
+        formatted += f"• Compare relative values within the same molecule\n"
         
         return formatted
     else:
@@ -1396,46 +2421,390 @@ def rowan_fukui(
         formatted += f"🔬 SMILES: {canonical_smiles}\n"
         formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
         formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
+        formatted += f"⚙️ Optimization: {'Enabled' if optimize else 'Disabled'}\n"
+        formatted += f"🔬 Fukui Method: {fukui_method.upper()}\n"
+        formatted += f"⚡ Charge: {charge}, Multiplicity: {multiplicity}\n"
+        formatted += f"\n💡 Use rowan_workflow_management tools to check progress and retrieve results\n"
         return formatted
 
 
 # Spin States
 @mcp.tool()
+@log_mcp_call
 def rowan_spin_states(
     name: str,
     molecule: str,
+    states: Optional[List[int]] = None,
+    charge: Optional[int] = None,
+    multiplicity: Optional[int] = None,
+    mode: str = "rapid",
+    solvent: Optional[str] = None,
+    xtb_preopt: bool = True,
+    constraints: Optional[List[Dict[str, Any]]] = None,
+    transition_state: bool = False,
+    frequencies: bool = False,
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
-    ping_interval: int = 5
+    ping_interval: int = 10,
+    auto_analyze: bool = True
 ) -> str:
-    """Determine preferred spin states for molecules.
+    """Determine preferred spin states for molecules with intelligent auto-analysis.
     
-    Calculates energies of different spin multiplicities to determine:
-    - Ground state spin multiplicity
-    - Spin crossover energetics
-    - High-spin vs low-spin preferences
+    **🤖 INTELLIGENT AUTO-ANALYSIS:**
+    - Automatically recognizes transition metal complexes (e.g., Mn(Cl)6, Fe(CN)6, Cu(H2O)4)
+    - Predicts appropriate charge, multiplicity, and spin states based on chemical knowledge
+    - Suggests realistic spin states for d-electron configurations
+    - Provides chemical explanations for predictions
     
-    Use this for: Transition metal complexes, radical species, magnetic materials
+    **🔬 Spin State Analysis:**
+    - Uses multi-stage optimization (xTB → AIMNet2 → DFT) for accurate energies
+    - Validates multiplicity consistency (all must have same parity)
+    - Ranks spin states by energy to identify ground state
+    - Supports transition metal complexes and radical species
+    
+    **⚡ Auto-Detected Complexes:**
+    - Mn(Cl)6 → charge: -4, states: [2, 6] (d5: low-spin vs high-spin)
+    - Fe(CN)6 → charge: -4, states: [1, 5] (d6: low-spin vs high-spin) 
+    - Cu(H2O)4 → charge: +2, states: [2] (d9: always doublet)
+    - Ni(H2O)6 → charge: +2, states: [3] (d8: high-spin triplet)
+    - Co(NH3)6 → charge: +3, states: [1] (d6: low-spin singlet)
+    
+    **🎯 Manual Override Available:**
+    - All auto-detected parameters can be manually overridden
+    - Set auto_analyze=False to disable automatic analysis
+    - Specify states, charge, multiplicity explicitly if needed
+    
+    Use this for: Transition metal complexes, radical species, magnetic materials, spin crossover systems
     
     Args:
         name: Name for the calculation
-        molecule: Molecule SMILES string
+        molecule: Molecular formula or SMILES (e.g., "Mn(Cl)6", "Fe(CN)6", SMILES string)
+        states: List of spin multiplicities - auto-detected if None (e.g., [1, 3, 5])
+        charge: Molecular charge - auto-detected if None (e.g., -4 for Mn(Cl)6)
+        multiplicity: Default multiplicity - auto-detected if None
+        mode: Calculation precision - "reckless", "rapid", "careful", "meticulous" (default: "rapid")
+        solvent: Solvent for optimization (e.g., "water", "acetonitrile", "dmso", default: None = gas phase)
+        xtb_preopt: Whether to pre-optimize with xTB before higher-level calculations (default: True)
+        constraints: Additional coordinate constraints during optimization (default: None)
+        transition_state: Whether this is a transition state optimization (default: False)
+        frequencies: Whether to calculate vibrational frequencies (default: False)
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
-        ping_interval: Check status interval in seconds (default: 5)
+        ping_interval: Check status interval in seconds (default: 10, longer for spin state calculations)
+        auto_analyze: Whether to automatically analyze molecule for appropriate parameters (default: True)
     
     Returns:
-        Spin state energetics results
+        Spin state energetics analysis with relative energies and ground state identification
     """
+    # Preprocess molecule input to handle subscripts and chemical formulas
+    def preprocess_molecule_input(mol_input: str) -> str:
+        """Convert subscripts and normalize chemical formulas."""
+        # Replace Unicode subscripts with regular numbers
+        subscript_map = {
+            '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', 
+            '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9'
+        }
+        
+        processed = mol_input
+        for sub, num in subscript_map.items():
+            processed = processed.replace(sub, num)
+            
+        logger.info(f"🔧 Preprocessed molecule: '{mol_input}' → '{processed}'")
+        return processed
+    
+    # Preprocess the molecule input
+    processed_molecule = preprocess_molecule_input(molecule)
+    
+    # Auto-analyze molecule if enabled and parameters not provided
+    analysis_results = None
+    if auto_analyze and (states is None or charge is None or multiplicity is None):
+        analysis_results = analyze_spin_states(processed_molecule)
+        logger.info(f"🤖 Auto-analysis enabled for '{processed_molecule}'")
+        logger.info(f"🔍 Analysis results: {analysis_results}")
+    
+    # Apply auto-analysis results, but allow manual overrides
+    if states is None:
+        if analysis_results:
+            states = analysis_results["states"]
+            logger.info(f"🎯 Auto-detected spin states: {states}")
+        else:
+            return f"❌ Error: 'states' must be provided when auto_analyze=False or analysis fails. Provide as list like [1, 3, 5]"
+    
+    if charge is None and analysis_results and "charge" in analysis_results:
+        charge = analysis_results["charge"]
+        logger.info(f"⚡ Auto-detected charge: {charge}")
+    
+    if multiplicity is None and analysis_results and "multiplicity" in analysis_results:
+        multiplicity = analysis_results["multiplicity"]
+        logger.info(f"🔬 Auto-detected multiplicity: {multiplicity}")
+    
+    # For chemical formulas, don't try SMILES lookup - use the processed formula directly
+    # Check if this looks like a chemical formula vs SMILES
+    import re
+    is_chemical_formula = bool(re.search(r'[A-Z][a-z]?\([A-Z]', processed_molecule))
+    
+    if is_chemical_formula:
+        canonical_smiles = processed_molecule
+        logger.info(f"🔬 Using chemical formula directly: {canonical_smiles}")
+    else:
+        # Look up SMILES if a common name was provided
+        canonical_smiles = lookup_molecule_smiles(processed_molecule)
+    
+    # Validate states parameter
+    if not states or not isinstance(states, list):
+        return f"❌ Error: 'states' must be a non-empty list of positive integers. Got: {states}"
+    
+    if not all(isinstance(s, int) and s > 0 for s in states):
+        return f"❌ Error: All multiplicities in 'states' must be positive integers. Got: {states}"
+    
+    if len(states) < 1:
+        return f"❌ Error: At least one spin multiplicity must be specified. Got: {states}"
+    
+    # Check multiplicity parity consistency (all odd or all even)
+    first_parity = states[0] % 2
+    if not all((s % 2) == first_parity for s in states):
+        return f"❌ Error: All multiplicities must have the same parity (all odd or all even). Got: {states}"
+    
+    # Validate mode
+    valid_modes = ["reckless", "rapid", "careful", "meticulous"]
+    mode_lower = mode.lower()
+    if mode_lower not in valid_modes:
+        return f"❌ Invalid mode '{mode}'. Valid modes: {', '.join(valid_modes)}"
+    
+    # Log the spin states parameters
+    logger.info(f"🔬 Spin States Analysis Debug:")
+    logger.info(f"   Name: {name}")
+    logger.info(f"   Input: {molecule}")
+    logger.info(f"   Using SMILES: {canonical_smiles}")
+    logger.info(f"   States (multiplicities): {states}")
+    logger.info(f"   Charge: {charge}")
+    logger.info(f"   Multiplicity: {multiplicity}")
+    logger.info(f"   Mode: {mode_lower}")
+    logger.info(f"   Auto-analysis: {auto_analyze}")
+    if analysis_results:
+        logger.info(f"   Analysis explanation: {analysis_results.get('explanation', 'N/A')}")
+        logger.info(f"   Analysis confidence: {analysis_results.get('confidence', 'N/A')}")
+    logger.info(f"   Solvent: {solvent or 'gas phase'}")
+    logger.info(f"   xTB Pre-optimization: {xtb_preopt}")
+    logger.info(f"   Transition State: {transition_state}")
+    logger.info(f"   Frequencies: {frequencies}")
+    logger.info(f"   Constraints: {len(constraints) if constraints else 0} applied")
+    
+    # Build parameters for Rowan API
+    spin_params = {
+        "name": name,
+        "molecule": canonical_smiles,
+        "states": states,
+        "mode": mode_lower,
+        "folder_uuid": folder_uuid,
+        "blocking": blocking,
+        "ping_interval": ping_interval
+    }
+    
+    # Add charge and multiplicity if specified
+    if charge is not None:
+        spin_params["charge"] = charge
+    if multiplicity is not None:
+        spin_params["multiplicity"] = multiplicity
+    
+    # Add optional parameters if specified
+    if solvent is not None:
+        spin_params["solvent"] = solvent
+    if not xtb_preopt:  # Only set if False (True is likely default)
+        spin_params["xtb_preopt"] = xtb_preopt
+    if constraints is not None:
+        spin_params["constraints"] = constraints
+    if transition_state:  # Only set if True (False is likely default)
+        spin_params["transition_state"] = transition_state
+    if frequencies:  # Only set if True (False is likely default) 
+        spin_params["frequencies"] = frequencies
+    
     result = log_rowan_api_call(
         workflow_type="spin_states",
-        name=name,
-        molecule=molecule,
-        folder_uuid=folder_uuid,
-        blocking=blocking,
-        ping_interval=ping_interval
+        **spin_params
     )
-    return str(result)
+    
+    if blocking:
+        status = result.get('status', result.get('object_status', 'Unknown'))
+        
+        if status == 2:  # Completed successfully
+            formatted = f"✅ Spin states analysis for '{name}' completed successfully!\n\n"
+        elif status == 3:  # Failed
+            formatted = f"❌ Spin states analysis for '{name}' failed!\n\n"
+        else:
+            formatted = f"⚠️ Spin states analysis for '{name}' finished with status {status}\n\n"
+            
+        formatted += f"🧪 Molecule: {molecule}\n"
+        if processed_molecule != molecule:
+            formatted += f"🔧 Processed: {processed_molecule}\n"
+        formatted += f"🔬 Input: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {status}\n"
+        formatted += f"⚡ Multiplicities: {states}\n"
+        if charge is not None:
+            formatted += f"⚡ Charge: {charge:+d}\n"
+        if multiplicity is not None:
+            formatted += f"🔬 Default Multiplicity: {multiplicity}\n"
+        
+        # Show auto-analysis results if used
+        if analysis_results and auto_analyze:
+            formatted += f"\n🤖 **Auto-Analysis Results:**\n"
+            formatted += f"   Confidence: {analysis_results['confidence'].title()}\n"
+            formatted += f"   Explanation: {analysis_results['explanation']}\n"
+            if 'oxidation_state' in analysis_results:
+                formatted += f"   Metal Oxidation State: +{analysis_results['oxidation_state']}\n"
+            if 'd_electrons' in analysis_results:
+                formatted += f"   d-Electron Count: d{analysis_results['d_electrons']}\n"
+        
+        # Applied settings
+        formatted += f"\n⚙️ **Computational Settings:**\n"
+        formatted += f"   Mode: {mode_lower.title()} (multi-stage optimization)\n"
+        formatted += f"   Solvent: {solvent or 'Gas Phase'}\n"
+        formatted += f"   xTB Pre-optimization: {'Enabled' if xtb_preopt else 'Disabled'}\n"
+        if transition_state:
+            formatted += f"   Transition State: Yes\n"
+        if frequencies:
+            formatted += f"   Frequencies: Calculated\n"
+        if constraints:
+            formatted += f"   Constraints: {len(constraints)} applied\n"
+        
+        # Try to extract spin states results
+        if isinstance(result, dict) and 'object_data' in result and result['object_data']:
+            data = result['object_data']
+            
+            # Look for spin states data
+            if 'spin_states' in data and isinstance(data['spin_states'], list):
+                spin_results = data['spin_states']
+                if spin_results:
+                    formatted += f"\n⚡ **Spin States Results:**\n"
+                    
+                    # Sort by energy to identify ground state
+                    sorted_states = sorted(spin_results, key=lambda x: x.get('energy', float('inf')))
+                    ground_state = sorted_states[0] if sorted_states else None
+                    
+                    for i, state in enumerate(sorted_states):
+                        mult = state.get('multiplicity', 'N/A')
+                        energy = state.get('energy', 'N/A')
+                        is_ground = (i == 0)
+                        
+                        if isinstance(energy, (int, float)):
+                            # Calculate relative energy in kcal/mol (assuming energies in Hartree)
+                            if is_ground:
+                                rel_energy = 0.0
+                                formatted += f"   🥇 Multiplicity {mult}: {energy:.6f} au (Ground State)\n"
+                            else:
+                                rel_energy = (energy - ground_state.get('energy', 0)) * 627.5094740631  # Hartree to kcal/mol
+                                formatted += f"   ⚡ Multiplicity {mult}: {energy:.6f} au (+{rel_energy:.2f} kcal/mol)\n"
+                        else:
+                            formatted += f"   ⚡ Multiplicity {mult}: {energy}\n"
+                    
+                    # Summary
+                    if ground_state:
+                        ground_mult = ground_state.get('multiplicity', 'Unknown')
+                        formatted += f"\n🎯 **Ground State:** Multiplicity {ground_mult}\n"
+                        
+                        # Interpret ground state
+                        spin_names = {1: "Singlet", 2: "Doublet", 3: "Triplet", 4: "Quartet", 5: "Quintet", 6: "Sextet", 7: "Septet"}
+                        if ground_mult in spin_names:
+                            formatted += f"   Spin State: {spin_names[ground_mult]}\n"
+                        
+                        unpaired_electrons = ground_mult - 1
+                        formatted += f"   Unpaired Electrons: {unpaired_electrons}\n"
+            
+            # Legacy support for other energy formats
+            elif 'energies' in data and isinstance(data['energies'], list):
+                energies = data['energies']
+                if energies and len(energies) == len(states):
+                    formatted += f"\n⚡ **Spin States Energies:**\n"
+                    
+                    # Pair with multiplicities and sort by energy
+                    paired_results = list(zip(states, energies))
+                    paired_results.sort(key=lambda x: x[1])
+                    
+                    ground_energy = paired_results[0][1]
+                    ground_mult = paired_results[0][0]
+                    
+                    for mult, energy in paired_results:
+                        if mult == ground_mult:
+                            formatted += f"   🥇 Multiplicity {mult}: {energy:.6f} au (Ground State)\n"
+                        else:
+                            rel_energy = (energy - ground_energy) * 627.5094740631  # Hartree to kcal/mol
+                            formatted += f"   ⚡ Multiplicity {mult}: {energy:.6f} au (+{rel_energy:.2f} kcal/mol)\n"
+                    
+                    formatted += f"\n🎯 **Ground State:** Multiplicity {ground_mult}\n"
+        
+        # Status-specific guidance
+        formatted += f"\n💡 **Next Steps:**\n"
+        if status == 2:  # Completed
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed results\n"
+            formatted += f"• Ground state identified from relative energies\n"
+            formatted += f"• Consider electronic structure analysis for ground state geometry\n"
+            formatted += f"• For transition metals: compare with experimental magnetic data\n"
+        elif status == 3:  # Failed
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for error details\n"
+            formatted += f"• **Troubleshooting:**\n"
+            formatted += f"  - Check multiplicity parity: {states} (all odd or all even)\n"
+            formatted += f"  - Try fewer multiplicities or simpler mode: mode='reckless'\n"
+            formatted += f"  - For transition metals: ensure reasonable oxidation states\n"
+            formatted += f"  - Consider starting with just two states: [1, 3] or [2, 4]\n"
+        elif status in [0, 1, 5]:  # Running
+            formatted += f"• Check progress: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
+            total_calcs = len(states) * 3  # Approximate: 3 levels per multiplicity
+            formatted += f"• Spin states calculation involves ~{total_calcs} optimizations ({len(states)} multiplicities × 3 levels)\n"
+            formatted += f"• May take 15-60 minutes depending on molecule size and multiplicities\n"
+        elif status == 4:  # Stopped
+            formatted += f"• Check why stopped: rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}')\n"
+            formatted += f"• You can restart with same or different multiplicities\n"
+        else:  # Unknown
+            formatted += f"• Check status: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
+        
+        # Add examples and guidance
+        formatted += f"\n📚 **Auto-Analysis Examples:**\n"
+        formatted += f"• **Mn(Cl)6** → charge: -4, states: [2, 6] (Mn(II) d5: low vs high-spin)\n"
+        formatted += f"• **Fe(CN)6** → charge: -4, states: [1, 5] (Fe(II) d6: low vs high-spin)\n"
+        formatted += f"• **Cu(H2O)4** → charge: +2, states: [2] (Cu(II) d9: always doublet)\n"
+        formatted += f"• **Ni(H2O)6** → charge: +2, states: [3] (Ni(II) d8: high-spin triplet)\n"
+        formatted += f"• **Co(NH3)6** → charge: +3, states: [1] (Co(III) d6: low-spin singlet)\n"
+        formatted += f"• **Cr(H2O)6** → charge: +3, states: [4] (Cr(III) d3: always high-spin)\n\n"
+        
+        formatted += f"🎯 **Manual Override Examples:**\n"
+        formatted += f"• rowan_spin_states('test', 'Mn(Cl)6') → auto-detects everything\n"
+        formatted += f"• rowan_spin_states('test', 'SMILES', states=[1,3,5]) → manual states\n"
+        formatted += f"• rowan_spin_states('test', 'complex', charge=-2, states=[2,4]) → manual override\n"
+        formatted += f"• rowan_spin_states('test', 'molecule', auto_analyze=False, states=[1]) → no auto-analysis\n\n"
+        
+        formatted += f"⚗️ **Multiplicity Guide:**\n"
+        formatted += f"• Multiplicity = 2S + 1 (where S = total spin)\n"
+        formatted += f"• Singlet (S=0): 0 unpaired electrons → closed shell\n"
+        formatted += f"• Doublet (S=1/2): 1 unpaired electron\n" 
+        formatted += f"• Triplet (S=1): 2 unpaired electrons, parallel spins\n"
+        formatted += f"• Quartet (S=3/2): 3 unpaired electrons\n"
+        formatted += f"• Quintet (S=2): 4 unpaired electrons\n"
+        
+        return formatted
+    else:
+        formatted = f"🚀 Spin states analysis for '{name}' submitted!\n\n"
+        formatted += f"🧪 Molecule: {molecule}\n"
+        if processed_molecule != molecule:
+            formatted += f"🔧 Processed: {processed_molecule}\n"
+        formatted += f"🔬 Input: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
+        formatted += f"⚡ Multiplicities: {states}\n"
+        if charge is not None:
+            formatted += f"⚡ Charge: {charge:+d}\n"
+        if multiplicity is not None:
+            formatted += f"🔬 Default Multiplicity: {multiplicity}\n"
+        formatted += f"⚙️ Mode: {mode_lower.title()}\n"
+        
+        # Show auto-analysis results if used
+        if analysis_results and auto_analyze:
+            formatted += f"\n🤖 **Auto-Analysis Applied:**\n"
+            formatted += f"   {analysis_results['explanation']}\n"
+            formatted += f"   Confidence: {analysis_results['confidence'].title()}\n"
+        
+        formatted += f"\n💡 Use rowan_workflow_management tools to check progress and retrieve results\n"
+        return formatted
 
 
 # Tautomers
@@ -1561,39 +2930,371 @@ def rowan_irc(
 def rowan_molecular_dynamics(
     name: str,
     molecule: str,
+    ensemble: str = "nvt",
+    temperature: float = 300.0,
+    pressure: Optional[float] = None,
+    timestep: float = 1.0,
+    num_steps: int = 500,
+    save_interval: int = 10,
+    initialization: str = "random",
+    langevin_thermostat_timescale: float = 100.0,
+    berendsen_barostat_timescale: float = 1000.0,
+    method: Optional[str] = None,
+    basis_set: Optional[str] = None,
+    engine: Optional[str] = None,
+    charge: int = 0,
+    multiplicity: int = 1,
+    constraints: Optional[List[Dict[str, Any]]] = None,
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
     ping_interval: int = 5
 ) -> str:
-    """Run molecular dynamics simulations.
+    """Run molecular dynamics simulations with comprehensive control following Rowan's MolecularDynamicsWorkflow.
     
-    Performs MD simulations to study:
-    - Dynamic behavior and flexibility
-    - Conformational sampling
-    - Thermal properties
-    - Time-dependent phenomena
+    Performs MD simulations to study molecular dynamics, conformational sampling, 
+    and thermal properties using various thermodynamic ensembles. Based on Rowan's
+    MolecularDynamicsWorkflow with full parameter control.
     
-    Use this for: Conformational dynamics, thermal properties, flexible systems
+    **🔬 Simulation Types:**
+    - **NVT**: Constant volume and temperature (canonical ensemble)
+    - **NPT**: Constant pressure and temperature (isothermal-isobaric)
+    - **NVE**: Constant energy and volume (microcanonical)
+    
+    **⚡ Key Features:**
+    - Multiple thermodynamic ensembles (NVT, NPT, NVE)
+    - Configurable timestep and trajectory length
+    - Temperature and pressure control with thermostat/barostat settings
+    - Various initialization methods
+    - Constraint support for bond lengths/angles
+    - Smart engine/method selection with compatibility validation
     
     Args:
         name: Name for the calculation
-        molecule: Molecule SMILES string
+        molecule: Molecule SMILES string or common name
+        ensemble: Thermodynamic ensemble ("nvt", "npt", "nve") (default: "nvt")
+        temperature: Temperature in Kelvin (default: 300.0 K)
+        pressure: Pressure in atm (required for NPT, ignored for NVT/NVE)
+        timestep: Integration timestep in femtoseconds (default: 1.0 fs)
+        num_steps: Number of MD steps to run (default: 500)
+        save_interval: Save trajectory every N steps (default: 10)
+        initialization: Initial velocities ("random", "quasiclassical", "read") (default: "random")
+        langevin_thermostat_timescale: Thermostat coupling timescale in fs (default: 100.0)
+        berendsen_barostat_timescale: Barostat coupling timescale in fs (default: 1000.0)
+        method: QM method for forces (default: None, auto-selected based on engine)
+        basis_set: Basis set for QM calculations (default: None, auto-selected based on engine)
+        engine: Computational engine ("xtb", "aimnet2", "psi4", etc.) (default: "xtb" for speed)
+        charge: Molecular charge (default: 0)
+        multiplicity: Spin multiplicity (default: 1)
+        constraints: List of geometric constraints during MD
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
         ping_interval: Check status interval in seconds (default: 5)
     
     Returns:
-        Molecular dynamics trajectory and analysis
+        Molecular dynamics trajectory with Frame objects containing energies, temperatures, and structures
     """
+    # Look up SMILES if a common name was provided
+    canonical_smiles = lookup_molecule_smiles(molecule)
+    
+    # Validate ensemble and parameters
+    ensemble_lower = ensemble.lower()
+    valid_ensembles = ["nvt", "npt", "nve"]
+    if ensemble_lower not in valid_ensembles:
+        return f"❌ Error: ensemble must be one of {valid_ensembles}. Got: '{ensemble}'"
+    
+    # Validate ensemble-specific requirements (following MolecularDynamicsSettings validation)
+    if ensemble_lower == "nvt" and temperature <= 0:
+        return f"❌ Error: NVT ensemble must have a positive temperature defined. Got: {temperature}"
+    elif ensemble_lower == "npt":
+        if temperature <= 0:
+            return f"❌ Error: NPT ensemble must have a positive temperature defined. Got: {temperature}"
+        if pressure is None or pressure <= 0:
+            return f"❌ Error: NPT ensemble must have a positive pressure defined. Got: {pressure}"
+    elif ensemble_lower == "nve":
+        # NVE doesn't require temperature/pressure validation (energy conserving)
+        pass
+    
+    # Validate simulation parameters (following PositiveFloat/PositiveInt validation)
+    if timestep <= 0:
+        return f"❌ Error: timestep must be positive. Got: {timestep}"
+    
+    if num_steps <= 0:
+        return f"❌ Error: num_steps must be positive. Got: {num_steps}"
+    
+    if save_interval <= 0 or save_interval > num_steps:
+        return f"❌ Error: save_interval must be positive and ≤ num_steps. Got: {save_interval} (num_steps: {num_steps})"
+    
+    if langevin_thermostat_timescale <= 0:
+        return f"❌ Error: langevin_thermostat_timescale must be positive. Got: {langevin_thermostat_timescale}"
+    
+    if berendsen_barostat_timescale <= 0:
+        return f"❌ Error: berendsen_barostat_timescale must be positive. Got: {berendsen_barostat_timescale}"
+    
+    # Validate initialization method
+    initialization_lower = initialization.lower()
+    valid_init = ["random", "quasiclassical", "read"]
+    if initialization_lower not in valid_init:
+        return f"❌ Error: initialization must be one of {valid_init}. Got: '{initialization}'"
+    
+    # Build MD settings following MolecularDynamicsSettings structure
+    md_settings = {
+        "ensemble": ensemble_lower,
+        "initialization": initialization_lower,
+        "timestep": timestep,
+        "num_steps": num_steps,
+        "save_interval": save_interval,
+        "temperature": temperature,
+        "langevin_thermostat_timescale": langevin_thermostat_timescale,
+        "berendsen_barostat_timescale": berendsen_barostat_timescale,
+        "constraints": constraints or []
+    }
+    
+    # Add pressure for NPT ensemble
+    if ensemble_lower == "npt":
+        md_settings["pressure"] = pressure
+    
+    # Build calculation settings for forces
+    calc_settings = {
+        "charge": charge,
+        "multiplicity": multiplicity
+    }
+    
+    # For MD simulations, default to fast methods if none specified
+    # Smart engine/method selection to avoid incompatibilities
+    actual_engine = engine
+    
+    if not engine and not method:
+        # Default to xTB for fast MD simulations
+        actual_engine = "xtb"
+        calc_settings["engine"] = "xtb"
+        # Don't set method - let xTB use its default (gfn2-xtb)
+        logger.info(f"🚀 No engine/method specified, defaulting to xTB engine for fast MD forces")
+    elif engine and not method:
+        # Engine specified but no method - let engine choose its default
+        calc_settings["engine"] = engine.lower()
+        actual_engine = engine
+        logger.info(f"🔧 Engine '{engine}' specified, using engine's default method")
+    elif method and not engine:
+        # Method specified but no engine - choose appropriate engine
+        method_lower = method.lower()
+        calc_settings["method"] = method_lower
+        
+        # Determine appropriate engine based on method
+        if method_lower in ["gfn1-xtb", "gfn1_xtb", "gfn2-xtb", "gfn2_xtb"]:
+            actual_engine = "xtb"
+            calc_settings["engine"] = "xtb"
+            logger.info(f"🚀 xTB method '{method}' specified, using xTB engine")
+        elif method_lower in ["hf", "b3lyp", "pbe", "m06-2x", "mp2", "ccsd"]:
+            actual_engine = "psi4"
+            calc_settings["engine"] = "psi4"
+            logger.info(f"🔬 Quantum method '{method}' specified, using Psi4 engine")
+        else:
+            # Unknown method - default to Psi4 and let it handle validation
+            actual_engine = "psi4"
+            calc_settings["engine"] = "psi4"
+            logger.warning(f"⚠️ Unknown method '{method}', defaulting to Psi4 engine")
+    else:
+        # Both engine and method specified - use as provided
+        calc_settings["method"] = method.lower()
+        calc_settings["engine"] = engine.lower()
+        actual_engine = engine
+        logger.info(f"🎯 Both engine '{engine}' and method '{method}' specified")
+        
+        # Validate compatibility
+        method_lower = method.lower()
+        engine_lower = engine.lower()
+        if engine_lower == "xtb" and method_lower not in ["gfn1-xtb", "gfn1_xtb", "gfn2-xtb", "gfn2_xtb"]:
+            logger.warning(f"⚠️ Method '{method}' may not be compatible with xTB engine")
+        elif engine_lower == "psi4" and method_lower in ["gfn1-xtb", "gfn1_xtb", "gfn2-xtb", "gfn2_xtb"]:
+            logger.warning(f"⚠️ xTB method '{method}' may not be compatible with Psi4 engine")
+    
+    # Add basis set if specified
+    if basis_set:
+        calc_settings["basis_set"] = basis_set.lower()
+            
+    # If using Psi4 (explicitly or via method), ensure we have a basis set
+    specified_engine = actual_engine.lower() if actual_engine else None
+    if specified_engine == "psi4" and not basis_set:
+        # Default basis set for Psi4/DFT methods
+        calc_settings["basis_set"] = "def2-svp"
+        logger.info(f"🔬 Using Psi4 engine, defaulting to def2-SVP basis set")
+    
+    # Log the MD parameters
+    logger.info(f"🔬 Molecular Dynamics Debug:")
+    logger.info(f"   Name: {name}")
+    logger.info(f"   Input: {molecule}")
+    logger.info(f"   Using SMILES: {canonical_smiles}")
+    logger.info(f"   Ensemble: {ensemble_lower.upper()}")
+    logger.info(f"   Temperature: {temperature} K")
+    if ensemble_lower == "npt":
+        logger.info(f"   Pressure: {pressure} atm")
+    logger.info(f"   Timestep: {timestep} fs")
+    logger.info(f"   Steps: {num_steps} ({num_steps * timestep / 1000:.1f} ps total)")
+    logger.info(f"   Save interval: every {save_interval} steps")
+    logger.info(f"   Initialization: {initialization_lower}")
+    logger.info(f"   Thermostat timescale: {langevin_thermostat_timescale} fs")
+    logger.info(f"   Barostat timescale: {berendsen_barostat_timescale} fs")
+    
+    # Build parameters for Rowan API
+    md_params = {
+        "name": name,
+        "molecule": canonical_smiles,
+        "settings": md_settings,
+        "calc_settings": calc_settings,
+        "folder_uuid": folder_uuid,
+        "blocking": blocking,
+        "ping_interval": ping_interval
+    }
+    
+    # Add calc_engine - use actual_engine which includes defaults
+    if actual_engine:
+        md_params["calc_engine"] = actual_engine.lower()
+    
     result = log_rowan_api_call(
         workflow_type="molecular_dynamics",
-        name=name,
-        molecule=molecule,
-        folder_uuid=folder_uuid,
-        blocking=blocking,
-        ping_interval=ping_interval
+        **md_params
     )
-    return str(result)
+    
+    if blocking:
+        status = result.get('status', result.get('object_status', 'Unknown'))
+        
+        if status == 2:  # Completed successfully
+            formatted = f"✅ Molecular dynamics simulation for '{name}' completed successfully!\n\n"
+        elif status == 3:  # Failed
+            formatted = f"❌ Molecular dynamics simulation for '{name}' failed!\n\n"
+        else:
+            formatted = f"⚠️ Molecular dynamics simulation for '{name}' finished with status {status}\n\n"
+            
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 SMILES: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {status}\n"
+        
+        # Simulation settings summary
+        formatted += f"\n⚙️ **Simulation Settings:**\n"
+        formatted += f"   Ensemble: {ensemble_lower.upper()}\n"
+        formatted += f"   Temperature: {temperature} K\n"
+        if ensemble_lower == "npt":
+            formatted += f"   Pressure: {pressure} atm\n"
+        formatted += f"   Timestep: {timestep} fs\n"
+        formatted += f"   Total Steps: {num_steps:,}\n"
+        formatted += f"   Simulation Time: {num_steps * timestep / 1000:.1f} ps\n"
+        formatted += f"   Save Frequency: Every {save_interval} steps\n"
+        formatted += f"   Initialization: {initialization_lower.title()}\n"
+        formatted += f"   Thermostat Timescale: {langevin_thermostat_timescale} fs\n"
+        formatted += f"   Barostat Timescale: {berendsen_barostat_timescale} fs\n"
+        
+        # Computational settings
+        formatted += f"\n🔬 **Computational Settings:**\n"
+        actual_engine = calc_settings.get("engine", "default")
+        if method:
+            formatted += f"   Method: {method.upper()}\n"
+        if calc_settings.get("basis_set"):
+            formatted += f"   Basis Set: {calc_settings['basis_set']}\n"
+        formatted += f"   Engine: {actual_engine.upper()}\n"
+        formatted += f"   Charge: {charge}, Multiplicity: {multiplicity}\n"
+        if constraints:
+            formatted += f"   Constraints: {len(constraints)} applied\n"
+        
+        # Try to extract MD results
+        if isinstance(result, dict) and 'object_data' in result and result['object_data']:
+            data = result['object_data']
+            
+            # Check for trajectory frames
+            if 'frames' in data and isinstance(data['frames'], list):
+                frames = data['frames']
+                num_frames = len(frames)
+                formatted += f"\n📊 **Trajectory Results:**\n"
+                formatted += f"   Total Frames: {num_frames}\n"
+                
+                if frames:
+                    # Analyze trajectory
+                    first_frame = frames[0]
+                    last_frame = frames[-1]
+                    
+                    if 'temperature' in first_frame and 'temperature' in last_frame:
+                        avg_temp = sum(f.get('temperature', 0) for f in frames) / num_frames
+                        formatted += f"   Average Temperature: {avg_temp:.1f} K\n"
+                    
+                    if 'potential_energy' in first_frame and 'potential_energy' in last_frame:
+                        energies = [f.get('potential_energy', 0) for f in frames]
+                        avg_energy = sum(energies) / len(energies)
+                        min_energy = min(energies)
+                        max_energy = max(energies)
+                        formatted += f"   Average Potential Energy: {avg_energy:.2f} kcal/mol\n"
+                        formatted += f"   Energy Range: {min_energy:.2f} to {max_energy:.2f} kcal/mol\n"
+                    
+                    if ensemble_lower == "npt" and 'volume' in first_frame:
+                        volumes = [f.get('volume', 0) for f in frames]
+                        avg_volume = sum(volumes) / len(volumes)
+                        formatted += f"   Average Volume: {avg_volume:.2f} Ų\n"
+        
+        # Status-specific guidance
+        formatted += f"\n💡 **Next Steps:**\n"
+        if status == 2:  # Completed
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for full trajectory\n"
+            formatted += f"• Trajectory contains {num_steps//save_interval} frames over {num_steps * timestep / 1000:.1f} ps\n"
+            formatted += f"• Analyze conformational flexibility and thermal motion\n"
+            formatted += f"• Consider longer simulations for better sampling\n"
+        elif status == 3:  # Failed
+            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for error details\n"
+            formatted += f"• **Troubleshooting:**\n"
+            formatted += f"  - Try smaller timestep (current: {timestep} fs → try 0.5 fs)\n"
+            formatted += f"  - Reduce number of steps for testing (current: {num_steps})\n"
+            formatted += f"  - Check if molecule SMILES is valid\n"
+            formatted += f"  - For NPT: verify pressure is reasonable ({pressure} atm)\n"
+            formatted += f"  - Try different computational engine: engine='xtb' (fastest) or engine='aimnet2'\n"
+            formatted += f"  - If using Psi4: ensure basis_set is specified (e.g., basis_set='def2-svp')\n"
+            formatted += f"  - Try different initialization method\n"
+        elif status in [0, 1, 5]:  # Running
+            formatted += f"• Check progress: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
+            formatted += f"• MD simulation with {num_steps:,} steps may take 10-60 minutes\n"
+            formatted += f"• Each step requires force calculation on the molecule\n"
+            formatted += f"• {ensemble_lower.upper()} ensemble with {timestep} fs timestep\n"
+        elif status == 4:  # Stopped
+            formatted += f"• Check why stopped: rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}')\n"
+            formatted += f"• You can restart with same or modified parameters\n"
+        else:  # Unknown
+            formatted += f"• Check status: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
+        
+        # Add examples and guidance
+        formatted += f"\n📚 **MD Examples:**\n"
+        formatted += f"• **Basic NVT**: rowan_molecular_dynamics('glucose_md', 'glucose', temperature=300)\n"
+        formatted += f"• **NPT simulation**: rowan_molecular_dynamics('drug_npt', 'SMILES', ensemble='npt', pressure=1.0)\n"
+        formatted += f"• **Long trajectory**: rowan_molecular_dynamics('protein_md', 'SMILES', num_steps=5000, timestep=0.5)\n"
+        formatted += f"• **High-accuracy**: rowan_molecular_dynamics('accurate', 'SMILES', engine='aimnet2', num_steps=1000)\n"
+        formatted += f"• **DFT forces**: rowan_molecular_dynamics('dft_md', 'SMILES', engine='psi4', method='b3lyp', basis_set='def2-svp')\n\n"
+        
+        formatted += f"⚗️ **Ensemble Guide:**\n"
+        formatted += f"• **NVT**: Fixed volume, controlled temperature (most common)\n"
+        formatted += f"• **NPT**: Fixed pressure, controlled temperature (realistic conditions)\n"
+        formatted += f"• **NVE**: Energy conserving (microcanonical, for testing)\n\n"
+        
+        formatted += f"🔬 **Engine Guide:**\n"
+        formatted += f"• **xTB**: Fastest, good for large systems and long MD (default)\n"
+        formatted += f"• **AIMNet2**: Neural network, balance of speed and accuracy\n"
+        formatted += f"• **Psi4**: Quantum chemistry, highest accuracy but slowest\n\n"
+        
+        formatted += f"🕐 **Timescale Guide:**\n"
+        formatted += f"• **Timestep**: 0.5-2.0 fs (smaller = more stable, slower)\n"
+        formatted += f"• **Short MD**: 100-500 steps (0.1-1 ps) for quick sampling\n"
+        formatted += f"• **Medium MD**: 1000-5000 steps (1-10 ps) for conformations\n"
+        formatted += f"• **Long MD**: 10000+ steps (10+ ps) for rare events\n"
+        
+        return formatted
+    else:
+        formatted = f"🚀 Molecular dynamics simulation for '{name}' submitted!\n\n"
+        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f"🔬 SMILES: {canonical_smiles}\n"
+        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
+        formatted += f"⚙️ Ensemble: {ensemble_lower.upper()}\n"
+        formatted += f"🌡️ Temperature: {temperature} K\n"
+        if ensemble_lower == "npt":
+            formatted += f"🔘 Pressure: {pressure} atm\n"
+        formatted += f"⏱️ Steps: {num_steps:,} ({num_steps * timestep / 1000:.1f} ps)\n"
+        formatted += f"\n💡 Use rowan_workflow_management tools to check progress and retrieve trajectory\n"
+        return formatted
 
 
 @mcp.tool()
@@ -2316,7 +4017,7 @@ def rowan_system_management(
             result += "• `rowan_docking` - Protein-ligand docking\n\n"
             
             result += "**🔬 Advanced Analysis:**\n"
-            result += "• `rowan_scan` - Potential energy scans\n"
+            result += "• `rowan_scan` - Potential energy surface scans (bond/angle/dihedral)\n"
             result += "• `rowan_fukui` - Reactivity analysis\n"
             result += "• `rowan_spin_states` - Spin state preferences\n"
             result += "• `rowan_irc` - Reaction coordinate following\n"
@@ -2331,7 +4032,8 @@ def rowan_system_management(
             result += "• For pKa prediction: use `rowan_pka`\n"
             result += "• For electronic structure: use `rowan_electronic_properties`\n"
             result += "• For drug properties: use `rowan_admet`\n"
-            result += "• For reaction mechanisms: use `rowan_scan` then `rowan_irc`\n\n"
+            result += "• For reaction mechanisms: use `rowan_scan` then `rowan_irc`\n"
+            result += "• For potential energy scans: use `rowan_scan` with coordinate specification\n\n"
             
             result += "**🗂️ Management Tools:**\n"
             result += "• `rowan_folder_management` - Unified folder operations (create, retrieve, update, delete, list)\n"

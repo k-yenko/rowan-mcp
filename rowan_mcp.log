@@ -3167,3 +3167,1685 @@ For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/St
 2025-06-15 22:44:13,802 - src.server - INFO - 📋 Job UUID: e5df2f61-9833-479d-98ae-03c8d398623b
 2025-06-15 22:44:13,803 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
 2025-06-15 22:44:13,803 - src.server - INFO - ✅ rowan_redox_potential completed successfully in 301.18s
+2025-06-15 22:58:19,200 - src.server - INFO - 🔧 MCP Tool Called: rowan_admet
+2025-06-15 22:58:19,201 - src.server - INFO - 📝 Parameters: {'name': 'Ibuprofen_ADMET_Analysis', 'molecule': 'CC(C)Cc1ccc(C(C)C(=O)O)cc1'}
+2025-06-15 22:58:19,202 - src.server - INFO - 🌐 Rowan API Call: admet
+2025-06-15 22:58:19,202 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Ibuprofen_ADMET_Analysis', 'molecule': 'CC(C)Cc1ccc(C(C)C(=O)O)cc1', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-15 22:58:19,869 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 22:58:20,251 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6c051705-27fc-4118-8d6e-d2ffde6c453c "HTTP/1.1 200 OK"
+2025-06-15 22:58:25,649 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6c051705-27fc-4118-8d6e-d2ffde6c453c "HTTP/1.1 200 OK"
+2025-06-15 22:58:31,020 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6c051705-27fc-4118-8d6e-d2ffde6c453c "HTTP/1.1 200 OK"
+2025-06-15 22:58:36,672 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6c051705-27fc-4118-8d6e-d2ffde6c453c "HTTP/1.1 200 OK"
+2025-06-15 22:58:37,076 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6c051705-27fc-4118-8d6e-d2ffde6c453c "HTTP/1.1 200 OK"
+2025-06-15 22:58:37,081 - src.server - INFO - 🎯 Rowan API submission successful: admet (17.88s)
+2025-06-15 22:58:37,081 - src.server - INFO - 📋 Job UUID: 6c051705-27fc-4118-8d6e-d2ffde6c453c
+2025-06-15 22:58:37,081 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-15 22:58:37,081 - src.server - INFO - ✅ rowan_admet completed successfully in 17.88s
+2025-06-15 23:03:41,429 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 23:03:41,832 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a6bca10c-aac7-49d9-9f02-131a3c3f186f "HTTP/1.1 200 OK"
+2025-06-15 23:03:47,201 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a6bca10c-aac7-49d9-9f02-131a3c3f186f "HTTP/1.1 200 OK"
+2025-06-15 23:03:52,573 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a6bca10c-aac7-49d9-9f02-131a3c3f186f "HTTP/1.1 200 OK"
+2025-06-15 23:03:57,942 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a6bca10c-aac7-49d9-9f02-131a3c3f186f "HTTP/1.1 200 OK"
+2025-06-15 23:03:58,328 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a6bca10c-aac7-49d9-9f02-131a3c3f186f "HTTP/1.1 200 OK"
+2025-06-15 23:04:50,686 - src.server - INFO - 🔧 MCP Tool Called: rowan_admet
+2025-06-15 23:04:50,687 - src.server - INFO - 📝 Parameters: {'name': 'aspirin_admet', 'molecule': 'CC(=O)OC1=CC=CC=C1C(=O)O'}
+2025-06-15 23:04:50,687 - src.server - INFO - 🌐 Rowan API Call: admet
+2025-06-15 23:04:50,687 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'aspirin_admet', 'molecule': 'CC(=O)OC1=CC=CC=C1C(=O)O', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-15 23:04:51,269 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 23:04:51,639 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9208df22-5acb-4120-b9c7-0e62e251fab0 "HTTP/1.1 200 OK"
+2025-06-15 23:04:57,027 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9208df22-5acb-4120-b9c7-0e62e251fab0 "HTTP/1.1 200 OK"
+2025-06-15 23:05:02,489 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9208df22-5acb-4120-b9c7-0e62e251fab0 "HTTP/1.1 200 OK"
+2025-06-15 23:05:07,901 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9208df22-5acb-4120-b9c7-0e62e251fab0 "HTTP/1.1 200 OK"
+2025-06-15 23:05:08,298 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9208df22-5acb-4120-b9c7-0e62e251fab0 "HTTP/1.1 200 OK"
+2025-06-15 23:05:08,300 - src.server - INFO - 🎯 Rowan API submission successful: admet (17.61s)
+2025-06-15 23:05:08,300 - src.server - INFO - 📋 Job UUID: 9208df22-5acb-4120-b9c7-0e62e251fab0
+2025-06-15 23:05:08,301 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-15 23:05:08,301 - src.server - INFO - ✅ rowan_admet completed successfully in 17.61s
+2025-06-15 23:05:08,444 - src.server - INFO - 🌐 Rowan API Call: descriptors
+2025-06-15 23:05:08,445 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'aspirin_descriptors', 'molecule': 'CC(=O)OC1=CC=CC=C1C(=O)O', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-15 23:05:09,140 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 23:05:09,529 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78baab97-c790-4111-8022-134246558689 "HTTP/1.1 200 OK"
+2025-06-15 23:05:14,909 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78baab97-c790-4111-8022-134246558689 "HTTP/1.1 200 OK"
+2025-06-15 23:05:20,274 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78baab97-c790-4111-8022-134246558689 "HTTP/1.1 200 OK"
+2025-06-15 23:05:25,663 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78baab97-c790-4111-8022-134246558689 "HTTP/1.1 200 OK"
+2025-06-15 23:05:26,174 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78baab97-c790-4111-8022-134246558689 "HTTP/1.1 200 OK"
+2025-06-15 23:05:26,275 - src.server - INFO - 🎯 Rowan API submission successful: descriptors (17.83s)
+2025-06-15 23:05:26,275 - src.server - INFO - 📋 Job UUID: 78baab97-c790-4111-8022-134246558689
+2025-06-15 23:05:26,275 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-15 23:05:26,408 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-15 23:05:26,408 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'aspirin_solubility', 'molecule': 'CC(=O)OC1=CC=CC=C1C(=O)O', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-15 23:05:27,061 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 23:05:27,442 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/05dd3ed7-42c8-460c-a857-7d195402a591 "HTTP/1.1 200 OK"
+2025-06-15 23:05:32,803 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/05dd3ed7-42c8-460c-a857-7d195402a591 "HTTP/1.1 200 OK"
+2025-06-15 23:05:38,186 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/05dd3ed7-42c8-460c-a857-7d195402a591 "HTTP/1.1 200 OK"
+2025-06-15 23:05:43,580 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/05dd3ed7-42c8-460c-a857-7d195402a591 "HTTP/1.1 200 OK"
+2025-06-15 23:05:43,920 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/05dd3ed7-42c8-460c-a857-7d195402a591 "HTTP/1.1 200 OK"
+2025-06-15 23:05:43,921 - src.server - INFO - 🎯 Rowan API submission successful: solubility (17.51s)
+2025-06-15 23:05:43,922 - src.server - INFO - 📋 Job UUID: 05dd3ed7-42c8-460c-a857-7d195402a591
+2025-06-15 23:05:43,922 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-15 23:05:44,074 - src.server - INFO - 🔧 MCP Tool Called: rowan_pka
+2025-06-15 23:05:44,074 - src.server - INFO - 📝 Parameters: {'name': 'aspirin_pka', 'molecule': 'CC(=O)OC1=CC=CC=C1C(=O)O'}
+2025-06-15 23:05:44,074 - src.server - INFO - 🌐 Rowan API Call: pka
+2025-06-15 23:05:44,074 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'aspirin_pka', 'molecule': 'CC(=O)OC1=CC=CC=C1C(=O)O', 'folder_uuid': None}
+2025-06-15 23:05:44,714 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-15 23:05:45,141 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/10c145fa-0f46-42a0-b2b6-aa9fa4aeafdd "HTTP/1.1 200 OK"
+2025-06-15 23:05:50,516 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/10c145fa-0f46-42a0-b2b6-aa9fa4aeafdd "HTTP/1.1 200 OK"
+2025-06-15 23:05:55,899 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/10c145fa-0f46-42a0-b2b6-aa9fa4aeafdd "HTTP/1.1 200 OK"
+2025-06-15 23:06:01,289 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/10c145fa-0f46-42a0-b2b6-aa9fa4aeafdd "HTTP/1.1 200 OK"
+2025-06-15 23:06:06,662 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/10c145fa-0f46-42a0-b2b6-aa9fa4aeafdd "HTTP/1.1 200 OK"
+2025-06-15 23:06:12,019 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/10c145fa-0f46-42a0-b2b6-aa9fa4aeafdd "HTTP/1.1 200 OK"
+2025-06-15 23:06:17,403 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/10c145fa-0f46-42a0-b2b6-aa9fa4aeafdd "HTTP/1.1 200 OK"
+2025-06-15 23:06:22,783 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/10c145fa-0f46-42a0-b2b6-aa9fa4aeafdd "HTTP/1.1 200 OK"
+2025-06-15 23:06:23,143 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/10c145fa-0f46-42a0-b2b6-aa9fa4aeafdd "HTTP/1.1 200 OK"
+2025-06-15 23:06:23,144 - src.server - INFO - 🎯 Rowan API submission successful: pka (39.07s)
+2025-06-15 23:06:23,144 - src.server - INFO - 📋 Job UUID: 10c145fa-0f46-42a0-b2b6-aa9fa4aeafdd
+2025-06-15 23:06:23,145 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-15 23:06:23,145 - src.server - INFO - ✅ rowan_pka completed successfully in 39.07s
+2025-06-20 14:21:01,955 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 14:21:01,981 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 14:21:01,983 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 14:31:15,683 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-20 14:31:15,695 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_cc_rotation_scan', 'molecule': 'CC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 14:31:16,508 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 14:31:16,910 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7dec240d-ebf3-4de5-869c-81f03d36793d "HTTP/1.1 200 OK"
+2025-06-20 14:31:22,350 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7dec240d-ebf3-4de5-869c-81f03d36793d "HTTP/1.1 200 OK"
+2025-06-20 14:31:27,782 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7dec240d-ebf3-4de5-869c-81f03d36793d "HTTP/1.1 200 OK"
+2025-06-20 14:31:33,140 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7dec240d-ebf3-4de5-869c-81f03d36793d "HTTP/1.1 200 OK"
+2025-06-20 14:31:33,524 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7dec240d-ebf3-4de5-869c-81f03d36793d "HTTP/1.1 200 OK"
+2025-06-20 14:31:33,525 - src.server - INFO - 🎯 Rowan API submission successful: scan (17.83s)
+2025-06-20 14:31:33,526 - src.server - INFO - 📋 Job UUID: 7dec240d-ebf3-4de5-869c-81f03d36793d
+2025-06-20 14:31:33,526 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 14:31:43,434 - src.server - INFO - 🔧 MCP Tool Called: rowan_quantum_chemistry
+2025-06-20 14:31:43,434 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_scan', 'molecule': 'CC', 'method': 'B3LYP', 'basis_set': 'pcseg-1', 'tasks': 'optimize', 'corrections': 'd3bj', 'blocking': True}
+2025-06-20 14:31:43,434 - src.server - INFO - ✅ rowan_quantum_chemistry completed successfully in 0.00s
+2025-06-20 14:31:48,681 - src.server - INFO - 🔧 MCP Tool Called: rowan_quantum_chemistry
+2025-06-20 14:31:48,681 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_scan', 'molecule': 'CC', 'use_recommended_defaults': True, 'tasks': 'energy', 'additional_settings': 'scan dihedral H-C-C-H', 'blocking': True}
+2025-06-20 14:31:48,681 - src.server - INFO - ✅ rowan_quantum_chemistry completed successfully in 0.00s
+2025-06-20 14:31:53,788 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=50&object_type=scan "HTTP/1.1 200 OK"
+2025-06-20 14:43:38,093 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 14:43:38,102 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 14:43:38,102 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 14:44:13,767 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 14:44:13,781 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_scan', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '1,2,3,4', 'start': 0, 'stop': 360, 'num': 36}
+2025-06-20 14:44:13,781 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 14:44:13,781 - src.server - INFO - ✅ rowan_scan completed successfully in 0.01s
+2025-06-20 14:44:23,954 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 14:44:23,955 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_scan', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '3,1,2,4', 'start': 0, 'stop': 360, 'num': 36}
+2025-06-20 14:44:23,955 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 14:44:23,955 - src.server - INFO - ✅ rowan_scan completed successfully in 0.00s
+2025-06-20 14:44:31,107 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 14:44:31,107 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_scan', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '3 1 2 4', 'start': 0, 'stop': 360, 'num': 36}
+2025-06-20 14:44:31,108 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 14:44:31,108 - src.server - INFO - ✅ rowan_scan completed successfully in 0.00s
+2025-06-20 14:44:37,380 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 14:44:37,380 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_scan', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '[3,1,2,4]', 'start': 0, 'stop': 360, 'num': 36}
+2025-06-20 14:44:37,380 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 14:44:37,380 - src.server - INFO - ✅ rowan_scan completed successfully in 0.00s
+2025-06-20 14:44:43,152 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 14:44:43,152 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_scan', 'molecule': 'CC', 'coordinate_type': 'bond', 'atoms': '1,2', 'start': 1.3, 'stop': 2, 'num': 20}
+2025-06-20 14:44:43,152 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 14:44:43,152 - src.server - INFO - ✅ rowan_scan completed successfully in 0.00s
+2025-06-20 14:45:04,016 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 14:45:04,017 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_scan', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '1 2 3 4', 'start': 0, 'stop': 360, 'num': 36}
+2025-06-20 14:45:04,017 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 14:45:04,017 - src.server - INFO - ✅ rowan_scan completed successfully in 0.00s
+2025-06-20 14:45:24,869 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 14:45:24,869 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_scan', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '1234', 'start': 0, 'stop': 360, 'num': 36}
+2025-06-20 14:45:24,869 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 14:45:24,869 - src.server - INFO - ✅ rowan_scan completed successfully in 0.00s
+2025-06-20 14:56:57,037 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 14:56:57,050 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 14:56:57,050 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 15:01:58,431 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 15:01:58,443 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 15:01:58,443 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 15:02:45,501 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:02:45,515 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '1,2,3,4', 'start': 0, 'stop': 360, 'num': 36}
+2025-06-20 15:02:45,516 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 15:02:45,516 - src.server - INFO - 🔍 Parsed atom string '[1, 2, 3, 4]' to list: [1, 2, 3, 4]
+2025-06-20 15:02:45,516 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-20 15:02:45,516 - src.server - INFO -    Name: ethane_cc_rotation
+2025-06-20 15:02:45,516 - src.server - INFO -    Input: CC
+2025-06-20 15:02:45,516 - src.server - INFO -    Using SMILES: CC
+2025-06-20 15:02:45,516 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-20 15:02:45,516 - src.server - INFO -    Primary Atoms: [1, 2, 3, 4]
+2025-06-20 15:02:45,516 - src.server - INFO -    Primary Range: 0 to 360 in 36 steps
+2025-06-20 15:02:45,516 - src.server - INFO -    Method: hf-3c
+2025-06-20 15:02:45,516 - src.server - INFO -    Basis Set: auto-selected
+2025-06-20 15:02:45,516 - src.server - INFO -    Engine: psi4
+2025-06-20 15:02:45,516 - src.server - INFO -    Mode: rapid
+2025-06-20 15:02:45,516 - src.server - INFO -    Wavefront Propagation: True
+2025-06-20 15:02:45,516 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-20 15:02:45,516 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_cc_rotation', 'molecule': 'CC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [1, 2, 3, 4], 'start': 0, 'stop': 360, 'num': 36}, 'wavefront_propagation': True, 'method': 'hf-3c', 'engine': 'psi4', 'mode': 'rapid'}
+2025-06-20 15:02:46,307 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:02:46,688 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4e20cfd5-ecee-421f-b54a-9b9d5d78f960 "HTTP/1.1 200 OK"
+2025-06-20 15:02:57,042 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4e20cfd5-ecee-421f-b54a-9b9d5d78f960 "HTTP/1.1 200 OK"
+2025-06-20 15:03:07,463 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4e20cfd5-ecee-421f-b54a-9b9d5d78f960 "HTTP/1.1 200 OK"
+2025-06-20 15:03:07,851 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4e20cfd5-ecee-421f-b54a-9b9d5d78f960 "HTTP/1.1 200 OK"
+2025-06-20 15:03:07,852 - src.server - INFO - 🎯 Rowan API submission successful: scan (22.34s)
+2025-06-20 15:03:07,852 - src.server - INFO - 📋 Job UUID: 4e20cfd5-ecee-421f-b54a-9b9d5d78f960
+2025-06-20 15:03:07,852 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:03:08,274 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4e20cfd5-ecee-421f-b54a-9b9d5d78f960 "HTTP/1.1 200 OK"
+2025-06-20 15:03:08,275 - src.server - INFO - 📊 Retrieved scan status via API: 3
+2025-06-20 15:03:08,275 - src.server - INFO - ✅ rowan_scan completed successfully in 22.77s
+2025-06-20 15:03:14,001 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4e20cfd5-ecee-421f-b54a-9b9d5d78f960 "HTTP/1.1 200 OK"
+2025-06-20 15:03:22,772 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:03:22,772 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_v2', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '3,1,2,6', 'start': 0, 'stop': 360, 'num': 36}
+2025-06-20 15:03:22,772 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 15:03:22,772 - src.server - INFO - 🔍 Parsed atom string '[3, 1, 2, 6]' to list: [3, 1, 2, 6]
+2025-06-20 15:03:22,772 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-20 15:03:22,772 - src.server - INFO -    Name: ethane_cc_rotation_v2
+2025-06-20 15:03:22,772 - src.server - INFO -    Input: CC
+2025-06-20 15:03:22,772 - src.server - INFO -    Using SMILES: CC
+2025-06-20 15:03:22,772 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-20 15:03:22,772 - src.server - INFO -    Primary Atoms: [3, 1, 2, 6]
+2025-06-20 15:03:22,772 - src.server - INFO -    Primary Range: 0 to 360 in 36 steps
+2025-06-20 15:03:22,772 - src.server - INFO -    Method: hf-3c
+2025-06-20 15:03:22,772 - src.server - INFO -    Basis Set: auto-selected
+2025-06-20 15:03:22,772 - src.server - INFO -    Engine: psi4
+2025-06-20 15:03:22,772 - src.server - INFO -    Mode: rapid
+2025-06-20 15:03:22,772 - src.server - INFO -    Wavefront Propagation: True
+2025-06-20 15:03:22,772 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-20 15:03:22,772 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_cc_rotation_v2', 'molecule': 'CC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [3, 1, 2, 6], 'start': 0, 'stop': 360, 'num': 36}, 'wavefront_propagation': True, 'method': 'hf-3c', 'engine': 'psi4', 'mode': 'rapid'}
+2025-06-20 15:03:23,478 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:03:23,864 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/08b20706-773d-41cb-846e-7f929aa1d34a "HTTP/1.1 200 OK"
+2025-06-20 15:03:34,238 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/08b20706-773d-41cb-846e-7f929aa1d34a "HTTP/1.1 200 OK"
+2025-06-20 15:03:44,607 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/08b20706-773d-41cb-846e-7f929aa1d34a "HTTP/1.1 200 OK"
+2025-06-20 15:03:44,999 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/08b20706-773d-41cb-846e-7f929aa1d34a "HTTP/1.1 200 OK"
+2025-06-20 15:03:45,001 - src.server - INFO - 🎯 Rowan API submission successful: scan (22.23s)
+2025-06-20 15:03:45,001 - src.server - INFO - 📋 Job UUID: 08b20706-773d-41cb-846e-7f929aa1d34a
+2025-06-20 15:03:45,001 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:03:45,371 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/08b20706-773d-41cb-846e-7f929aa1d34a "HTTP/1.1 200 OK"
+2025-06-20 15:03:45,372 - src.server - INFO - 📊 Retrieved scan status via API: 3
+2025-06-20 15:03:45,373 - src.server - INFO - ✅ rowan_scan completed successfully in 22.60s
+2025-06-20 15:03:51,804 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:03:51,805 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_v3', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '1,2,5,6', 'start': 0, 'stop': 360, 'num': 18}
+2025-06-20 15:03:51,806 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 15:03:51,806 - src.server - INFO - 🔍 Parsed atom string '[1, 2, 5, 6]' to list: [1, 2, 5, 6]
+2025-06-20 15:03:51,806 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-20 15:03:51,806 - src.server - INFO -    Name: ethane_cc_rotation_v3
+2025-06-20 15:03:51,806 - src.server - INFO -    Input: CC
+2025-06-20 15:03:51,806 - src.server - INFO -    Using SMILES: CC
+2025-06-20 15:03:51,806 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-20 15:03:51,806 - src.server - INFO -    Primary Atoms: [1, 2, 5, 6]
+2025-06-20 15:03:51,806 - src.server - INFO -    Primary Range: 0 to 360 in 18 steps
+2025-06-20 15:03:51,810 - src.server - INFO -    Method: hf-3c
+2025-06-20 15:03:51,810 - src.server - INFO -    Basis Set: auto-selected
+2025-06-20 15:03:51,812 - src.server - INFO -    Engine: psi4
+2025-06-20 15:03:51,812 - src.server - INFO -    Mode: rapid
+2025-06-20 15:03:51,812 - src.server - INFO -    Wavefront Propagation: True
+2025-06-20 15:03:51,812 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-20 15:03:51,812 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_cc_rotation_v3', 'molecule': 'CC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [1, 2, 5, 6], 'start': 0, 'stop': 360, 'num': 18}, 'wavefront_propagation': True, 'method': 'hf-3c', 'engine': 'psi4', 'mode': 'rapid'}
+2025-06-20 15:03:52,447 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:03:52,838 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e1cf565c-8a43-4994-a4e6-c8e733590607 "HTTP/1.1 200 OK"
+2025-06-20 15:04:03,258 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e1cf565c-8a43-4994-a4e6-c8e733590607 "HTTP/1.1 200 OK"
+2025-06-20 15:04:13,635 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e1cf565c-8a43-4994-a4e6-c8e733590607 "HTTP/1.1 200 OK"
+2025-06-20 15:04:13,992 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e1cf565c-8a43-4994-a4e6-c8e733590607 "HTTP/1.1 200 OK"
+2025-06-20 15:04:13,993 - src.server - INFO - 🎯 Rowan API submission successful: scan (22.18s)
+2025-06-20 15:04:13,994 - src.server - INFO - 📋 Job UUID: e1cf565c-8a43-4994-a4e6-c8e733590607
+2025-06-20 15:04:13,994 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:04:14,375 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e1cf565c-8a43-4994-a4e6-c8e733590607 "HTTP/1.1 200 OK"
+2025-06-20 15:04:14,377 - src.server - INFO - 📊 Retrieved scan status via API: 3
+2025-06-20 15:04:14,378 - src.server - INFO - ✅ rowan_scan completed successfully in 22.57s
+2025-06-20 15:04:19,103 - src.server - INFO - 🔧 MCP Tool Called: rowan_multistage_opt
+2025-06-20 15:04:19,103 - src.server - INFO - 📝 Parameters: {'name': 'ethane_optimization', 'molecule': 'CC'}
+2025-06-20 15:04:19,103 - src.server - INFO - 🚀 Starting multistage optimization: ethane_optimization
+2025-06-20 15:04:19,103 - src.server - INFO - ⏱️  Using ping_interval: 30s (longer for multi-stage calculation)
+2025-06-20 15:04:19,103 - src.server - INFO - 🌐 Rowan API Call: multistage_opt
+2025-06-20 15:04:19,103 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_optimization', 'molecule': 'CC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 30}
+2025-06-20 15:04:19,103 - src.server - INFO - ⏳ Multi-stage optimization may take several minutes...
+2025-06-20 15:04:19,103 - src.server - INFO - 🔄 Progress will be checked every 30 seconds
+2025-06-20 15:04:20,193 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:04:20,856 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f68137f-0e04-4f3e-a0ce-8293081047d3 "HTTP/1.1 200 OK"
+2025-06-20 15:04:51,226 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f68137f-0e04-4f3e-a0ce-8293081047d3 "HTTP/1.1 200 OK"
+2025-06-20 15:04:51,712 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f68137f-0e04-4f3e-a0ce-8293081047d3 "HTTP/1.1 200 OK"
+2025-06-20 15:04:51,817 - src.server - INFO - 🎯 Rowan API submission successful: multistage_opt (32.71s)
+2025-06-20 15:04:51,818 - src.server - INFO - 📋 Job UUID: 6f68137f-0e04-4f3e-a0ce-8293081047d3
+2025-06-20 15:04:51,818 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:04:51,819 - src.server - INFO - ✅ rowan_multistage_opt completed successfully in 32.72s
+2025-06-20 15:05:11,657 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:05:11,658 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_final', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '3,1,2,6', 'start': 0, 'stop': 360, 'num': 18}
+2025-06-20 15:05:11,659 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 15:05:11,660 - src.server - INFO - 🔍 Parsed atom string '[3, 1, 2, 6]' to list: [3, 1, 2, 6]
+2025-06-20 15:05:11,660 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-20 15:05:11,660 - src.server - INFO -    Name: ethane_cc_rotation_final
+2025-06-20 15:05:11,660 - src.server - INFO -    Input: CC
+2025-06-20 15:05:11,660 - src.server - INFO -    Using SMILES: CC
+2025-06-20 15:05:11,660 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-20 15:05:11,660 - src.server - INFO -    Primary Atoms: [3, 1, 2, 6]
+2025-06-20 15:05:11,660 - src.server - INFO -    Primary Range: 0 to 360 in 18 steps
+2025-06-20 15:05:11,660 - src.server - INFO -    Method: hf-3c
+2025-06-20 15:05:11,660 - src.server - INFO -    Basis Set: auto-selected
+2025-06-20 15:05:11,661 - src.server - INFO -    Engine: psi4
+2025-06-20 15:05:11,661 - src.server - INFO -    Mode: rapid
+2025-06-20 15:05:11,661 - src.server - INFO -    Wavefront Propagation: True
+2025-06-20 15:05:11,661 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-20 15:05:11,661 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_cc_rotation_final', 'molecule': 'CC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [3, 1, 2, 6], 'start': 0, 'stop': 360, 'num': 18}, 'wavefront_propagation': True, 'method': 'hf-3c', 'engine': 'psi4', 'mode': 'rapid'}
+2025-06-20 15:05:12,328 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:05:12,702 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a5083f6d-741e-4930-a6e3-ae2ec5d8d966 "HTTP/1.1 200 OK"
+2025-06-20 15:05:23,066 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a5083f6d-741e-4930-a6e3-ae2ec5d8d966 "HTTP/1.1 200 OK"
+2025-06-20 15:05:33,419 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a5083f6d-741e-4930-a6e3-ae2ec5d8d966 "HTTP/1.1 200 OK"
+2025-06-20 15:05:33,867 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a5083f6d-741e-4930-a6e3-ae2ec5d8d966 "HTTP/1.1 200 OK"
+2025-06-20 15:05:33,869 - src.server - INFO - 🎯 Rowan API submission successful: scan (22.21s)
+2025-06-20 15:05:33,870 - src.server - INFO - 📋 Job UUID: a5083f6d-741e-4930-a6e3-ae2ec5d8d966
+2025-06-20 15:05:33,870 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:05:34,223 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a5083f6d-741e-4930-a6e3-ae2ec5d8d966 "HTTP/1.1 200 OK"
+2025-06-20 15:05:34,224 - src.server - INFO - 📊 Retrieved scan status via API: 3
+2025-06-20 15:05:34,224 - src.server - INFO - ✅ rowan_scan completed successfully in 22.57s
+2025-06-20 15:05:41,012 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:05:41,012 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_0based', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '2,0,1,5', 'start': 0, 'stop': 360, 'num': 18}
+2025-06-20 15:05:41,012 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 15:05:41,012 - src.server - INFO - 🔍 Parsed atom string '[2, 0, 1, 5]' to list: [2, 0, 1, 5]
+2025-06-20 15:05:41,012 - src.server - INFO - ✅ rowan_scan completed successfully in 0.00s
+2025-06-20 15:05:57,500 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:05:57,500 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_rotation_alt', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '5,1,2,8', 'start': 0, 'stop': 180, 'num': 18}
+2025-06-20 15:05:57,500 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 15:05:57,500 - src.server - INFO - 🔍 Parsed atom string '[5, 1, 2, 8]' to list: [5, 1, 2, 8]
+2025-06-20 15:05:57,500 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-20 15:05:57,500 - src.server - INFO -    Name: ethane_cc_rotation_alt
+2025-06-20 15:05:57,500 - src.server - INFO -    Input: CC
+2025-06-20 15:05:57,500 - src.server - INFO -    Using SMILES: CC
+2025-06-20 15:05:57,500 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-20 15:05:57,500 - src.server - INFO -    Primary Atoms: [5, 1, 2, 8]
+2025-06-20 15:05:57,500 - src.server - INFO -    Primary Range: 0 to 180 in 18 steps
+2025-06-20 15:05:57,500 - src.server - INFO -    Method: hf-3c
+2025-06-20 15:05:57,500 - src.server - INFO -    Basis Set: auto-selected
+2025-06-20 15:05:57,500 - src.server - INFO -    Engine: psi4
+2025-06-20 15:05:57,500 - src.server - INFO -    Mode: rapid
+2025-06-20 15:05:57,500 - src.server - INFO -    Wavefront Propagation: True
+2025-06-20 15:05:57,501 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-20 15:05:57,501 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_cc_rotation_alt', 'molecule': 'CC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [5, 1, 2, 8], 'start': 0, 'stop': 180, 'num': 18}, 'wavefront_propagation': True, 'method': 'hf-3c', 'engine': 'psi4', 'mode': 'rapid'}
+2025-06-20 15:05:58,100 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:05:58,472 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6a5d0e17-dafd-4233-a6e7-4bdaf184b4a1 "HTTP/1.1 200 OK"
+2025-06-20 15:06:08,864 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6a5d0e17-dafd-4233-a6e7-4bdaf184b4a1 "HTTP/1.1 200 OK"
+2025-06-20 15:06:19,216 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6a5d0e17-dafd-4233-a6e7-4bdaf184b4a1 "HTTP/1.1 200 OK"
+2025-06-20 15:06:19,585 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6a5d0e17-dafd-4233-a6e7-4bdaf184b4a1 "HTTP/1.1 200 OK"
+2025-06-20 15:06:19,586 - src.server - INFO - 🎯 Rowan API submission successful: scan (22.09s)
+2025-06-20 15:06:19,586 - src.server - INFO - 📋 Job UUID: 6a5d0e17-dafd-4233-a6e7-4bdaf184b4a1
+2025-06-20 15:06:19,586 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:06:19,957 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6a5d0e17-dafd-4233-a6e7-4bdaf184b4a1 "HTTP/1.1 200 OK"
+2025-06-20 15:06:19,958 - src.server - INFO - 📊 Retrieved scan status via API: 3
+2025-06-20 15:06:19,959 - src.server - INFO - ✅ rowan_scan completed successfully in 22.46s
+2025-06-20 15:06:26,174 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6a5d0e17-dafd-4233-a6e7-4bdaf184b4a1 "HTTP/1.1 200 OK"
+2025-06-20 15:06:37,538 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:06:37,538 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_scan_xyz', 'molecule': '8\n\nC           -0.758113690000     0.005353620000    -0.054525820000\nC            0.758113630000    -0.005352990000     0.054526160000\nH           -1.096740110000     0.905030590000    -0.563564390000\nH           -1.105423630000    -0.859120410000    -0.616012420000\nH           -1.211000950000    -0.021808730000     0.934090480000\nH            1.096738890000    -0.905029670000     0.563565930000\nH            1.105426040000     0.859121420000     0.616010740000\nH            1.210999840000     0.021806160000    -0.934090690000', 'coordinate_type': 'dihedral', 'atoms': '3,1,2,6', 'start': 0, 'stop': 360, 'num': 24}
+2025-06-20 15:06:37,538 - src.server - WARNING - ⚠️ No SMILES found for '8
+
+C           -0.758113690000     0.005353620000    -0.054525820000
+C            0.758113630000    -0.005352990000     0.054526160000
+H           -1.096740110000     0.905030590000    -0.563564390000
+H           -1.105423630000    -0.859120410000    -0.616012420000
+H           -1.211000950000    -0.021808730000     0.934090480000
+H            1.096738890000    -0.905029670000     0.563565930000
+H            1.105426040000     0.859121420000     0.616010740000
+H            1.210999840000     0.021806160000    -0.934090690000', using as-is
+2025-06-20 15:06:37,538 - src.server - INFO - 🔍 Parsed atom string '[3, 1, 2, 6]' to list: [3, 1, 2, 6]
+2025-06-20 15:06:37,538 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-20 15:06:37,538 - src.server - INFO -    Name: ethane_cc_scan_xyz
+2025-06-20 15:06:37,538 - src.server - INFO -    Input: 8
+
+C           -0.758113690000     0.005353620000    -0.054525820000
+C            0.758113630000    -0.005352990000     0.054526160000
+H           -1.096740110000     0.905030590000    -0.563564390000
+H           -1.105423630000    -0.859120410000    -0.616012420000
+H           -1.211000950000    -0.021808730000     0.934090480000
+H            1.096738890000    -0.905029670000     0.563565930000
+H            1.105426040000     0.859121420000     0.616010740000
+H            1.210999840000     0.021806160000    -0.934090690000
+2025-06-20 15:06:37,538 - src.server - INFO -    Using SMILES: 8
+
+C           -0.758113690000     0.005353620000    -0.054525820000
+C            0.758113630000    -0.005352990000     0.054526160000
+H           -1.096740110000     0.905030590000    -0.563564390000
+H           -1.105423630000    -0.859120410000    -0.616012420000
+H           -1.211000950000    -0.021808730000     0.934090480000
+H            1.096738890000    -0.905029670000     0.563565930000
+H            1.105426040000     0.859121420000     0.616010740000
+H            1.210999840000     0.021806160000    -0.934090690000
+2025-06-20 15:06:37,538 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-20 15:06:37,538 - src.server - INFO -    Primary Atoms: [3, 1, 2, 6]
+2025-06-20 15:06:37,538 - src.server - INFO -    Primary Range: 0 to 360 in 24 steps
+2025-06-20 15:06:37,538 - src.server - INFO -    Method: hf-3c
+2025-06-20 15:06:37,539 - src.server - INFO -    Basis Set: auto-selected
+2025-06-20 15:06:37,539 - src.server - INFO -    Engine: psi4
+2025-06-20 15:06:37,539 - src.server - INFO -    Mode: rapid
+2025-06-20 15:06:37,539 - src.server - INFO -    Wavefront Propagation: True
+2025-06-20 15:06:37,539 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-20 15:06:37,539 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_cc_scan_xyz', 'molecule': '8\n\nC           -0.758113690000     0.005353620000    -0.054525820000\nC            0.758113630000    -0.005352990000     0.054526160000\nH           -1.096740110000     0.905030590000    -0.563564390000\nH           -1.105423630000    -0.859120410000    -0.616012420000\nH           -1.211000950000    -0.021808730000     0.934090480000\nH            1.096738890000    -0.905029670000     0.563565930000\nH            1.105426040000     0.859121420000     0.616010740000\nH            1.210999840000     0.021806160000    -0.934090690000', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [3, 1, 2, 6], 'start': 0, 'stop': 360, 'num': 24}, 'wavefront_propagation': True, 'method': 'hf-3c', 'engine': 'psi4', 'mode': 'rapid'}
+2025-06-20 15:06:37,539 - src.server - ERROR - 🌐 Rowan API failed: scan (0.00s)
+2025-06-20 15:06:37,539 - src.server - ERROR - 🚨 Rowan Error: 
+2025-06-20 15:06:37,539 - src.server - ERROR - 📋 Exception Type: AssertionError
+2025-06-20 15:06:37,539 - src.server - ERROR - 📄 Full Exception: AssertionError()
+2025-06-20 15:06:37,539 - src.server - ERROR - 🔍 Exception Args: ()
+2025-06-20 15:06:37,542 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 392, in from_smiles
+    assert rdkm is not None
+           ^^^^^^^^^^^^^^^^
+AssertionError
+
+2025-06-20 15:06:37,542 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 15:06:37,542 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 15:06:37,543 - src.server - ERROR - 📝 Exception has no message
+2025-06-20 15:06:37,543 - src.server - INFO - ✅ rowan_scan completed successfully in 0.00s
+2025-06-20 15:06:44,411 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:06:44,413 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_scan_string', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '3,1,2,6', 'start': 0, 'stop': 360, 'num': 24}
+2025-06-20 15:06:44,413 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 15:06:44,413 - src.server - INFO - 🔍 Parsed atom string '[3, 1, 2, 6]' to list: [3, 1, 2, 6]
+2025-06-20 15:06:44,413 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-20 15:06:44,413 - src.server - INFO -    Name: ethane_cc_scan_string
+2025-06-20 15:06:44,414 - src.server - INFO -    Input: CC
+2025-06-20 15:06:44,414 - src.server - INFO -    Using SMILES: CC
+2025-06-20 15:06:44,414 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-20 15:06:44,415 - src.server - INFO -    Primary Atoms: [3, 1, 2, 6]
+2025-06-20 15:06:44,415 - src.server - INFO -    Primary Range: 0 to 360 in 24 steps
+2025-06-20 15:06:44,415 - src.server - INFO -    Method: hf-3c
+2025-06-20 15:06:44,415 - src.server - INFO -    Basis Set: auto-selected
+2025-06-20 15:06:44,415 - src.server - INFO -    Engine: psi4
+2025-06-20 15:06:44,415 - src.server - INFO -    Mode: rapid
+2025-06-20 15:06:44,415 - src.server - INFO -    Wavefront Propagation: True
+2025-06-20 15:06:44,415 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-20 15:06:44,415 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_cc_scan_string', 'molecule': 'CC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [3, 1, 2, 6], 'start': 0, 'stop': 360, 'num': 24}, 'wavefront_propagation': True, 'method': 'hf-3c', 'engine': 'psi4', 'mode': 'rapid'}
+2025-06-20 15:06:45,056 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:06:45,414 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/056af8cd-62e8-4f35-94d0-5ec6de211f2b "HTTP/1.1 200 OK"
+2025-06-20 15:06:55,790 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/056af8cd-62e8-4f35-94d0-5ec6de211f2b "HTTP/1.1 200 OK"
+2025-06-20 15:07:06,178 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/056af8cd-62e8-4f35-94d0-5ec6de211f2b "HTTP/1.1 200 OK"
+2025-06-20 15:07:06,595 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/056af8cd-62e8-4f35-94d0-5ec6de211f2b "HTTP/1.1 200 OK"
+2025-06-20 15:07:06,596 - src.server - INFO - 🎯 Rowan API submission successful: scan (22.18s)
+2025-06-20 15:07:06,596 - src.server - INFO - 📋 Job UUID: 056af8cd-62e8-4f35-94d0-5ec6de211f2b
+2025-06-20 15:07:06,597 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:07:06,982 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/056af8cd-62e8-4f35-94d0-5ec6de211f2b "HTTP/1.1 200 OK"
+2025-06-20 15:07:06,984 - src.server - INFO - 📊 Retrieved scan status via API: 3
+2025-06-20 15:07:06,984 - src.server - INFO - ✅ rowan_scan completed successfully in 22.57s
+2025-06-20 15:07:15,019 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:07:15,019 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_xtb_scan', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '3,1,2,6', 'start': 0, 'stop': 360, 'num': 12, 'method': 'gfn2_xtb', 'engine': 'xtb'}
+2025-06-20 15:07:15,019 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 15:07:15,019 - src.server - INFO - 🔍 Parsed atom string '[3, 1, 2, 6]' to list: [3, 1, 2, 6]
+2025-06-20 15:07:15,019 - src.server - INFO - ✅ rowan_scan completed successfully in 0.00s
+2025-06-20 15:07:22,106 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:07:22,106 - src.server - INFO - 📝 Parameters: {'name': 'ethane_cc_hf3c_scan', 'molecule': 'CC', 'coordinate_type': 'dihedral', 'atoms': '3,1,2,6', 'start': 0, 'stop': 360, 'num': 12, 'method': 'hf-3c'}
+2025-06-20 15:07:22,106 - src.server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-20 15:07:22,106 - src.server - INFO - 🔍 Parsed atom string '[3, 1, 2, 6]' to list: [3, 1, 2, 6]
+2025-06-20 15:07:22,106 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-20 15:07:22,106 - src.server - INFO -    Name: ethane_cc_hf3c_scan
+2025-06-20 15:07:22,106 - src.server - INFO -    Input: CC
+2025-06-20 15:07:22,106 - src.server - INFO -    Using SMILES: CC
+2025-06-20 15:07:22,106 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-20 15:07:22,106 - src.server - INFO -    Primary Atoms: [3, 1, 2, 6]
+2025-06-20 15:07:22,106 - src.server - INFO -    Primary Range: 0 to 360 in 12 steps
+2025-06-20 15:07:22,106 - src.server - INFO -    Method: hf-3c
+2025-06-20 15:07:22,106 - src.server - INFO -    Basis Set: auto-selected
+2025-06-20 15:07:22,106 - src.server - INFO -    Engine: psi4
+2025-06-20 15:07:22,106 - src.server - INFO -    Mode: rapid
+2025-06-20 15:07:22,106 - src.server - INFO -    Wavefront Propagation: True
+2025-06-20 15:07:22,106 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-20 15:07:22,106 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_cc_hf3c_scan', 'molecule': 'CC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [3, 1, 2, 6], 'start': 0, 'stop': 360, 'num': 12}, 'wavefront_propagation': True, 'method': 'hf-3c', 'engine': 'psi4', 'mode': 'rapid'}
+2025-06-20 15:07:22,742 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:07:23,142 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/496471ab-ee82-47a6-9e3c-a64aefc9c372 "HTTP/1.1 200 OK"
+2025-06-20 15:07:33,552 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/496471ab-ee82-47a6-9e3c-a64aefc9c372 "HTTP/1.1 200 OK"
+2025-06-20 15:07:43,932 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/496471ab-ee82-47a6-9e3c-a64aefc9c372 "HTTP/1.1 200 OK"
+2025-06-20 15:07:44,311 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/496471ab-ee82-47a6-9e3c-a64aefc9c372 "HTTP/1.1 200 OK"
+2025-06-20 15:07:44,313 - src.server - INFO - 🎯 Rowan API submission successful: scan (22.21s)
+2025-06-20 15:07:44,313 - src.server - INFO - 📋 Job UUID: 496471ab-ee82-47a6-9e3c-a64aefc9c372
+2025-06-20 15:07:44,313 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:07:44,656 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/496471ab-ee82-47a6-9e3c-a64aefc9c372 "HTTP/1.1 200 OK"
+2025-06-20 15:07:44,657 - src.server - INFO - 📊 Retrieved scan status via API: 3
+2025-06-20 15:07:44,657 - src.server - INFO - ✅ rowan_scan completed successfully in 22.55s
+2025-06-20 15:07:51,161 - src.server - INFO - 🔧 MCP Tool Called: rowan_conformers
+2025-06-20 15:07:51,162 - src.server - INFO - 📝 Parameters: {'name': 'ethane_conformers', 'molecule': 'CC', 'max_conformers': 10}
+2025-06-20 15:07:51,162 - src.server - INFO - 🕐 Conformer search will wait up to 120 seconds (2.0 minutes)
+2025-06-20 15:07:51,162 - src.server - INFO - 🔄 Checking progress every 5 seconds
+2025-06-20 15:07:51,162 - src.server - INFO - 🌐 Rowan API Call: conformer_search
+2025-06-20 15:07:51,162 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_conformers', 'molecule': 'CC', 'settings': {'max_conformers': 10}, 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 15:07:51,162 - src.server - INFO - ⏳ Conformer search may take several minutes...
+2025-06-20 15:07:51,162 - src.server - INFO - 🔄 Progress will be checked every 5 seconds
+2025-06-20 15:07:51,721 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:07:52,085 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2ab15ffc-3306-4988-93ce-f9be6af58527 "HTTP/1.1 200 OK"
+2025-06-20 15:07:57,504 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2ab15ffc-3306-4988-93ce-f9be6af58527 "HTTP/1.1 200 OK"
+2025-06-20 15:08:02,908 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2ab15ffc-3306-4988-93ce-f9be6af58527 "HTTP/1.1 200 OK"
+2025-06-20 15:08:08,300 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2ab15ffc-3306-4988-93ce-f9be6af58527 "HTTP/1.1 200 OK"
+2025-06-20 15:08:13,724 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2ab15ffc-3306-4988-93ce-f9be6af58527 "HTTP/1.1 200 OK"
+2025-06-20 15:08:19,134 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2ab15ffc-3306-4988-93ce-f9be6af58527 "HTTP/1.1 200 OK"
+2025-06-20 15:08:19,543 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2ab15ffc-3306-4988-93ce-f9be6af58527 "HTTP/1.1 200 OK"
+2025-06-20 15:08:19,548 - src.server - INFO - 🎯 Rowan API submission successful: conformer_search (28.39s)
+2025-06-20 15:08:19,548 - src.server - INFO - 📋 Job UUID: 2ab15ffc-3306-4988-93ce-f9be6af58527
+2025-06-20 15:08:19,549 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:08:19,549 - src.server - INFO - ✅ rowan_conformers completed successfully in 28.39s
+2025-06-20 15:09:36,466 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:09:36,466 - src.server - INFO - 📝 Parameters: {'name': 'butane', 'molecule': 'CCCC'}
+2025-06-20 15:09:36,466 - src.server - ERROR - ❌ rowan_scan failed after 0.00s
+2025-06-20 15:09:36,466 - src.server - ERROR - 🚨 Error: rowan_scan() missing 5 required positional arguments: 'coordinate_type', 'atoms', 'start', 'stop', and 'num'
+2025-06-20 15:09:36,466 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+TypeError: rowan_scan() missing 5 required positional arguments: 'coordinate_type', 'atoms', 'start', 'stop', and 'num'
+
+2025-06-20 15:11:34,288 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-20 15:11:34,288 - src.server - INFO - 📝 Parameters: {'name': 'butane', 'molecule': 'CCCC', 'coordinate_type': 'dihedral', 'atoms': '1, 2, 3, 4', 'start': 0, 'stop': 360, 'num': 30}
+2025-06-20 15:11:34,288 - src.server - WARNING - ⚠️ No SMILES found for 'CCCC', using as-is
+2025-06-20 15:11:34,288 - src.server - INFO - 🔍 Parsed atom string '[1, 2, 3, 4]' to list: [1, 2, 3, 4]
+2025-06-20 15:11:34,288 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-20 15:11:34,288 - src.server - INFO -    Name: butane
+2025-06-20 15:11:34,288 - src.server - INFO -    Input: CCCC
+2025-06-20 15:11:34,288 - src.server - INFO -    Using SMILES: CCCC
+2025-06-20 15:11:34,288 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-20 15:11:34,288 - src.server - INFO -    Primary Atoms: [1, 2, 3, 4]
+2025-06-20 15:11:34,289 - src.server - INFO -    Primary Range: 0 to 360 in 30 steps
+2025-06-20 15:11:34,289 - src.server - INFO -    Method: hf-3c
+2025-06-20 15:11:34,289 - src.server - INFO -    Basis Set: auto-selected
+2025-06-20 15:11:34,289 - src.server - INFO -    Engine: psi4
+2025-06-20 15:11:34,289 - src.server - INFO -    Mode: rapid
+2025-06-20 15:11:34,289 - src.server - INFO -    Wavefront Propagation: True
+2025-06-20 15:11:34,289 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-20 15:11:34,289 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'butane', 'molecule': 'CCCC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [1, 2, 3, 4], 'start': 0, 'stop': 360, 'num': 30}, 'wavefront_propagation': True, 'method': 'hf-3c', 'engine': 'psi4', 'mode': 'rapid'}
+2025-06-20 15:11:34,922 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:11:35,270 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/31218931-b45c-4b1f-aa98-9cc1c02375a7 "HTTP/1.1 200 OK"
+2025-06-20 15:11:45,635 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/31218931-b45c-4b1f-aa98-9cc1c02375a7 "HTTP/1.1 200 OK"
+2025-06-20 15:11:56,028 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/31218931-b45c-4b1f-aa98-9cc1c02375a7 "HTTP/1.1 200 OK"
+2025-06-20 15:11:56,428 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/31218931-b45c-4b1f-aa98-9cc1c02375a7 "HTTP/1.1 200 OK"
+2025-06-20 15:11:56,429 - src.server - INFO - 🎯 Rowan API submission successful: scan (22.14s)
+2025-06-20 15:11:56,429 - src.server - INFO - 📋 Job UUID: 31218931-b45c-4b1f-aa98-9cc1c02375a7
+2025-06-20 15:11:56,429 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:11:56,768 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/31218931-b45c-4b1f-aa98-9cc1c02375a7 "HTTP/1.1 200 OK"
+2025-06-20 15:11:56,769 - src.server - INFO - 📊 Retrieved scan status via API: 3
+2025-06-20 15:11:56,769 - src.server - INFO - ✅ rowan_scan completed successfully in 22.48s
+2025-06-20 15:14:25,899 - src.server - INFO - 🌐 Rowan API Call: spin_states
+2025-06-20 15:14:25,899 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'MnCl6_spin_states', 'molecule': '[Mn+4]([Cl-])([Cl-])([Cl-])([Cl-])([Cl-])[Cl-]', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 15:14:25,900 - src.server - ERROR - 🌐 Rowan API failed: spin_states (0.00s)
+2025-06-20 15:14:25,900 - src.server - ERROR - 🚨 Rowan Error: 
+2025-06-20 15:14:25,900 - src.server - ERROR - 📋 Exception Type: AssertionError
+2025-06-20 15:14:25,900 - src.server - ERROR - 📄 Full Exception: AssertionError()
+2025-06-20 15:14:25,900 - src.server - ERROR - 🔍 Exception Args: ()
+2025-06-20 15:14:25,901 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 392, in from_smiles
+    assert rdkm is not None
+           ^^^^^^^^^^^^^^^^
+AssertionError
+
+2025-06-20 15:14:25,901 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 15:14:25,901 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 15:14:25,901 - src.server - ERROR - 📝 Exception has no message
+2025-06-20 15:14:30,316 - src.server - INFO - 🌐 Rowan API Call: spin_states
+2025-06-20 15:14:30,316 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'MnCl6_spin_states_rapid', 'molecule': 'Cl[Mn](Cl)(Cl)(Cl)(Cl)Cl', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 15:14:30,319 - src.server - ERROR - 🌐 Rowan API failed: spin_states (0.00s)
+2025-06-20 15:14:30,319 - src.server - ERROR - 🚨 Rowan Error: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [2.26...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:14:30,319 - src.server - ERROR - 📋 Exception Type: ValidationError
+2025-06-20 15:14:30,319 - src.server - ERROR - 📄 Full Exception: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [2.26...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:14:30,319 - src.server - ERROR - 🔍 Exception Args: ()
+2025-06-20 15:14:30,320 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 393, in from_smiles
+    return cls.from_rdkit(rdkm)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 387, in from_rdkit
+    return cls(atoms=atoms, charge=charge, multiplicity=multiplicity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [2.26...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+2025-06-20 15:14:30,320 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 15:14:30,320 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 15:14:30,320 - src.server - ERROR - 📝 Exception message: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [2.26...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:14:35,306 - src.server - INFO - 🌐 Rowan API Call: spin_states
+2025-06-20 15:14:35,306 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'MnCl6_complex', 'molecule': 'Cl[Mn+4](Cl)(Cl)(Cl)(Cl)Cl', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 15:14:35,308 - src.server - ERROR - 🌐 Rowan API failed: spin_states (0.00s)
+2025-06-20 15:14:35,308 - src.server - ERROR - 🚨 Rowan Error: 1 validation error for Molecule
+  Value error, The combination of 123 electrons, charge 4, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [2.35...': 4, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:14:35,308 - src.server - ERROR - 📋 Exception Type: ValidationError
+2025-06-20 15:14:35,308 - src.server - ERROR - 📄 Full Exception: 1 validation error for Molecule
+  Value error, The combination of 123 electrons, charge 4, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [2.35...': 4, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:14:35,308 - src.server - ERROR - 🔍 Exception Args: ()
+2025-06-20 15:14:35,309 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 393, in from_smiles
+    return cls.from_rdkit(rdkm)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 387, in from_rdkit
+    return cls(atoms=atoms, charge=charge, multiplicity=multiplicity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Molecule
+  Value error, The combination of 123 electrons, charge 4, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [2.35...': 4, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+2025-06-20 15:14:35,309 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 15:14:35,309 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 15:14:35,309 - src.server - ERROR - 📝 Exception message: 1 validation error for Molecule
+  Value error, The combination of 123 electrons, charge 4, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [2.35...': 4, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:14:40,612 - src.server - INFO - 🔧 MCP Tool Called: rowan_quantum_chemistry
+2025-06-20 15:14:40,612 - src.server - INFO - 📝 Parameters: {'name': 'MnCl6_high_spin', 'molecule': 'Cl[Mn](Cl)(Cl)(Cl)(Cl)Cl', 'charge': -2, 'multiplicity': 4, 'use_recommended_defaults': True, 'blocking': True}
+2025-06-20 15:14:40,612 - src.server - ERROR - ❌ rowan_quantum_chemistry failed after 0.00s
+2025-06-20 15:14:40,612 - src.server - ERROR - 🚨 Error: 'FunctionTool' object is not callable
+2025-06-20 15:14:40,612 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 656, in rowan_quantum_chemistry
+    guidance_context = rowan_qc_guide()
+                       ^^^^^^^^^^^^^^^^
+TypeError: 'FunctionTool' object is not callable
+
+2025-06-20 15:27:23,808 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 15:27:23,817 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 15:27:23,817 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 15:28:29,004 - src.server - INFO - 🔧 MCP Tool Called: rowan_spin_states
+2025-06-20 15:28:29,020 - src.server - INFO - 📝 Parameters: {'name': 'MnCl6_spin_states', 'molecule': '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl', 'auto_analyze': True, 'blocking': True}
+2025-06-20 15:28:29,020 - src.server - INFO - 🔍 Spin Analysis: [Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl → Default singlet state assumed (confidence: low)
+2025-06-20 15:28:29,020 - src.server - INFO - 🤖 Auto-analysis enabled for '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl'
+2025-06-20 15:28:29,020 - src.server - INFO - 🔍 Analysis results: {'charge': 0, 'multiplicity': 1, 'states': [1], 'confidence': 'low', 'explanation': 'Default singlet state assumed'}
+2025-06-20 15:28:29,020 - src.server - INFO - 🎯 Auto-detected spin states: [1]
+2025-06-20 15:28:29,020 - src.server - INFO - ⚡ Auto-detected charge: 0
+2025-06-20 15:28:29,020 - src.server - INFO - 🔬 Auto-detected multiplicity: 1
+2025-06-20 15:28:29,020 - src.server - WARNING - ⚠️ No SMILES found for '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl', using as-is
+2025-06-20 15:28:29,020 - src.server - INFO - 🔬 Spin States Analysis Debug:
+2025-06-20 15:28:29,021 - src.server - INFO -    Name: MnCl6_spin_states
+2025-06-20 15:28:29,021 - src.server - INFO -    Input: [Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl
+2025-06-20 15:28:29,021 - src.server - INFO -    Using SMILES: [Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl
+2025-06-20 15:28:29,021 - src.server - INFO -    States (multiplicities): [1]
+2025-06-20 15:28:29,021 - src.server - INFO -    Charge: 0
+2025-06-20 15:28:29,021 - src.server - INFO -    Multiplicity: 1
+2025-06-20 15:28:29,021 - src.server - INFO -    Mode: rapid
+2025-06-20 15:28:29,021 - src.server - INFO -    Auto-analysis: True
+2025-06-20 15:28:29,021 - src.server - INFO -    Analysis explanation: Default singlet state assumed
+2025-06-20 15:28:29,021 - src.server - INFO -    Analysis confidence: low
+2025-06-20 15:28:29,021 - src.server - INFO -    Solvent: gas phase
+2025-06-20 15:28:29,021 - src.server - INFO -    xTB Pre-optimization: True
+2025-06-20 15:28:29,021 - src.server - INFO -    Transition State: False
+2025-06-20 15:28:29,021 - src.server - INFO -    Frequencies: False
+2025-06-20 15:28:29,021 - src.server - INFO -    Constraints: 0 applied
+2025-06-20 15:28:29,021 - src.server - INFO - 🌐 Rowan API Call: spin_states
+2025-06-20 15:28:29,021 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'MnCl6_spin_states', 'molecule': '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl', 'states': [1], 'mode': 'rapid', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'charge': 0, 'multiplicity': 1}
+2025-06-20 15:28:29,037 - src.server - ERROR - 🌐 Rowan API failed: spin_states (0.02s)
+2025-06-20 15:28:29,037 - src.server - ERROR - 🚨 Rowan Error: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.14...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:29,037 - src.server - ERROR - 📋 Exception Type: ValidationError
+2025-06-20 15:28:29,037 - src.server - ERROR - 📄 Full Exception: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.14...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:29,037 - src.server - ERROR - 🔍 Exception Args: ()
+2025-06-20 15:28:29,041 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 393, in from_smiles
+    return cls.from_rdkit(rdkm)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 387, in from_rdkit
+    return cls(atoms=atoms, charge=charge, multiplicity=multiplicity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.14...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+2025-06-20 15:28:29,041 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 15:28:29,041 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 15:28:29,041 - src.server - ERROR - 📝 Exception message: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.14...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:29,041 - src.server - ERROR - ❌ rowan_spin_states failed after 0.04s
+2025-06-20 15:28:29,041 - src.server - ERROR - 🚨 Error: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.14...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:29,041 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 2167, in rowan_spin_states
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 238, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 393, in from_smiles
+    return cls.from_rdkit(rdkm)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 387, in from_rdkit
+    return cls(atoms=atoms, charge=charge, multiplicity=multiplicity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.14...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+2025-06-20 15:28:35,830 - src.server - INFO - 🔧 MCP Tool Called: rowan_spin_states
+2025-06-20 15:28:35,831 - src.server - INFO - 📝 Parameters: {'name': 'MnCl6_2minus_spin_states', 'molecule': '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl', 'charge': '-2', 'auto_analyze': True, 'blocking': True}
+2025-06-20 15:28:35,831 - src.server - INFO - 🔍 Spin Analysis: [Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl → Default singlet state assumed (confidence: low)
+2025-06-20 15:28:35,831 - src.server - INFO - 🤖 Auto-analysis enabled for '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl'
+2025-06-20 15:28:35,831 - src.server - INFO - 🔍 Analysis results: {'charge': 0, 'multiplicity': 1, 'states': [1], 'confidence': 'low', 'explanation': 'Default singlet state assumed'}
+2025-06-20 15:28:35,831 - src.server - INFO - 🎯 Auto-detected spin states: [1]
+2025-06-20 15:28:35,831 - src.server - INFO - 🔬 Auto-detected multiplicity: 1
+2025-06-20 15:28:35,831 - src.server - WARNING - ⚠️ No SMILES found for '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl', using as-is
+2025-06-20 15:28:35,831 - src.server - INFO - 🔬 Spin States Analysis Debug:
+2025-06-20 15:28:35,831 - src.server - INFO -    Name: MnCl6_2minus_spin_states
+2025-06-20 15:28:35,831 - src.server - INFO -    Input: [Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl
+2025-06-20 15:28:35,831 - src.server - INFO -    Using SMILES: [Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl
+2025-06-20 15:28:35,831 - src.server - INFO -    States (multiplicities): [1]
+2025-06-20 15:28:35,831 - src.server - INFO -    Charge: -2
+2025-06-20 15:28:35,831 - src.server - INFO -    Multiplicity: 1
+2025-06-20 15:28:35,831 - src.server - INFO -    Mode: rapid
+2025-06-20 15:28:35,831 - src.server - INFO -    Auto-analysis: True
+2025-06-20 15:28:35,831 - src.server - INFO -    Analysis explanation: Default singlet state assumed
+2025-06-20 15:28:35,831 - src.server - INFO -    Analysis confidence: low
+2025-06-20 15:28:35,831 - src.server - INFO -    Solvent: gas phase
+2025-06-20 15:28:35,831 - src.server - INFO -    xTB Pre-optimization: True
+2025-06-20 15:28:35,831 - src.server - INFO -    Transition State: False
+2025-06-20 15:28:35,831 - src.server - INFO -    Frequencies: False
+2025-06-20 15:28:35,831 - src.server - INFO -    Constraints: 0 applied
+2025-06-20 15:28:35,831 - src.server - INFO - 🌐 Rowan API Call: spin_states
+2025-06-20 15:28:35,831 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'MnCl6_2minus_spin_states', 'molecule': '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl', 'states': [1], 'mode': 'rapid', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'charge': '-2', 'multiplicity': 1}
+2025-06-20 15:28:35,833 - src.server - ERROR - 🌐 Rowan API failed: spin_states (0.00s)
+2025-06-20 15:28:35,833 - src.server - ERROR - 🚨 Rowan Error: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.26...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:35,833 - src.server - ERROR - 📋 Exception Type: ValidationError
+2025-06-20 15:28:35,833 - src.server - ERROR - 📄 Full Exception: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.26...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:35,833 - src.server - ERROR - 🔍 Exception Args: ()
+2025-06-20 15:28:35,833 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 393, in from_smiles
+    return cls.from_rdkit(rdkm)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 387, in from_rdkit
+    return cls(atoms=atoms, charge=charge, multiplicity=multiplicity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.26...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+2025-06-20 15:28:35,833 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 15:28:35,833 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 15:28:35,833 - src.server - ERROR - 📝 Exception message: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.26...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:35,833 - src.server - ERROR - ❌ rowan_spin_states failed after 0.00s
+2025-06-20 15:28:35,833 - src.server - ERROR - 🚨 Error: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.26...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:35,834 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 2167, in rowan_spin_states
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 238, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 393, in from_smiles
+    return cls.from_rdkit(rdkm)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 387, in from_rdkit
+    return cls(atoms=atoms, charge=charge, multiplicity=multiplicity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.26...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+2025-06-20 15:28:41,462 - src.server - INFO - 🔧 MCP Tool Called: rowan_spin_states
+2025-06-20 15:28:41,462 - src.server - INFO - 📝 Parameters: {'name': 'MnCl6_2minus_spin_states', 'molecule': '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl', 'charge': '-2', 'auto_analyze': True, 'blocking': True}
+2025-06-20 15:28:41,463 - src.server - INFO - 🔍 Spin Analysis: [Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl → Default singlet state assumed (confidence: low)
+2025-06-20 15:28:41,463 - src.server - INFO - 🤖 Auto-analysis enabled for '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl'
+2025-06-20 15:28:41,463 - src.server - INFO - 🔍 Analysis results: {'charge': 0, 'multiplicity': 1, 'states': [1], 'confidence': 'low', 'explanation': 'Default singlet state assumed'}
+2025-06-20 15:28:41,463 - src.server - INFO - 🎯 Auto-detected spin states: [1]
+2025-06-20 15:28:41,463 - src.server - INFO - 🔬 Auto-detected multiplicity: 1
+2025-06-20 15:28:41,463 - src.server - WARNING - ⚠️ No SMILES found for '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl', using as-is
+2025-06-20 15:28:41,463 - src.server - INFO - 🔬 Spin States Analysis Debug:
+2025-06-20 15:28:41,463 - src.server - INFO -    Name: MnCl6_2minus_spin_states
+2025-06-20 15:28:41,463 - src.server - INFO -    Input: [Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl
+2025-06-20 15:28:41,463 - src.server - INFO -    Using SMILES: [Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl
+2025-06-20 15:28:41,463 - src.server - INFO -    States (multiplicities): [1]
+2025-06-20 15:28:41,463 - src.server - INFO -    Charge: -2
+2025-06-20 15:28:41,463 - src.server - INFO -    Multiplicity: 1
+2025-06-20 15:28:41,463 - src.server - INFO -    Mode: rapid
+2025-06-20 15:28:41,463 - src.server - INFO -    Auto-analysis: True
+2025-06-20 15:28:41,463 - src.server - INFO -    Analysis explanation: Default singlet state assumed
+2025-06-20 15:28:41,463 - src.server - INFO -    Analysis confidence: low
+2025-06-20 15:28:41,463 - src.server - INFO -    Solvent: gas phase
+2025-06-20 15:28:41,463 - src.server - INFO -    xTB Pre-optimization: True
+2025-06-20 15:28:41,463 - src.server - INFO -    Transition State: False
+2025-06-20 15:28:41,463 - src.server - INFO -    Frequencies: False
+2025-06-20 15:28:41,463 - src.server - INFO -    Constraints: 0 applied
+2025-06-20 15:28:41,463 - src.server - INFO - 🌐 Rowan API Call: spin_states
+2025-06-20 15:28:41,463 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'MnCl6_2minus_spin_states', 'molecule': '[Mn](Cl)(Cl)(Cl)(Cl)(Cl)Cl', 'states': [1], 'mode': 'rapid', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'charge': '-2', 'multiplicity': 1}
+2025-06-20 15:28:41,464 - src.server - ERROR - 🌐 Rowan API failed: spin_states (0.00s)
+2025-06-20 15:28:41,464 - src.server - ERROR - 🚨 Rowan Error: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.21...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:41,464 - src.server - ERROR - 📋 Exception Type: ValidationError
+2025-06-20 15:28:41,464 - src.server - ERROR - 📄 Full Exception: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.21...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:41,464 - src.server - ERROR - 🔍 Exception Args: ()
+2025-06-20 15:28:41,464 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 393, in from_smiles
+    return cls.from_rdkit(rdkm)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 387, in from_rdkit
+    return cls(atoms=atoms, charge=charge, multiplicity=multiplicity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.21...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+2025-06-20 15:28:41,465 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 15:28:41,465 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 15:28:41,465 - src.server - ERROR - 📝 Exception message: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.21...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:41,465 - src.server - ERROR - ❌ rowan_spin_states failed after 0.00s
+2025-06-20 15:28:41,465 - src.server - ERROR - 🚨 Error: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.21...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:41,465 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 2167, in rowan_spin_states
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 238, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 393, in from_smiles
+    return cls.from_rdkit(rdkm)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 387, in from_rdkit
+    return cls(atoms=atoms, charge=charge, multiplicity=multiplicity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(25, [0.21...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+2025-06-20 15:28:47,098 - src.server - INFO - 🔧 MCP Tool Called: rowan_spin_states
+2025-06-20 15:28:47,098 - src.server - INFO - 📝 Parameters: {'name': 'MnCl6_anion_spin_states', 'molecule': 'Cl[Mn](Cl)(Cl)(Cl)(Cl)Cl', 'charge': '-2', 'auto_analyze': True, 'blocking': True}
+2025-06-20 15:28:47,099 - src.server - INFO - 🔍 Spin Analysis: Cl[Mn](Cl)(Cl)(Cl)(Cl)Cl → Default singlet state assumed (confidence: low)
+2025-06-20 15:28:47,099 - src.server - INFO - 🤖 Auto-analysis enabled for 'Cl[Mn](Cl)(Cl)(Cl)(Cl)Cl'
+2025-06-20 15:28:47,099 - src.server - INFO - 🔍 Analysis results: {'charge': 0, 'multiplicity': 1, 'states': [1], 'confidence': 'low', 'explanation': 'Default singlet state assumed'}
+2025-06-20 15:28:47,099 - src.server - INFO - 🎯 Auto-detected spin states: [1]
+2025-06-20 15:28:47,099 - src.server - INFO - 🔬 Auto-detected multiplicity: 1
+2025-06-20 15:28:47,099 - src.server - WARNING - ⚠️ No SMILES found for 'Cl[Mn](Cl)(Cl)(Cl)(Cl)Cl', using as-is
+2025-06-20 15:28:47,099 - src.server - INFO - 🔬 Spin States Analysis Debug:
+2025-06-20 15:28:47,099 - src.server - INFO -    Name: MnCl6_anion_spin_states
+2025-06-20 15:28:47,099 - src.server - INFO -    Input: Cl[Mn](Cl)(Cl)(Cl)(Cl)Cl
+2025-06-20 15:28:47,099 - src.server - INFO -    Using SMILES: Cl[Mn](Cl)(Cl)(Cl)(Cl)Cl
+2025-06-20 15:28:47,099 - src.server - INFO -    States (multiplicities): [1]
+2025-06-20 15:28:47,099 - src.server - INFO -    Charge: -2
+2025-06-20 15:28:47,099 - src.server - INFO -    Multiplicity: 1
+2025-06-20 15:28:47,099 - src.server - INFO -    Mode: rapid
+2025-06-20 15:28:47,099 - src.server - INFO -    Auto-analysis: True
+2025-06-20 15:28:47,099 - src.server - INFO -    Analysis explanation: Default singlet state assumed
+2025-06-20 15:28:47,099 - src.server - INFO -    Analysis confidence: low
+2025-06-20 15:28:47,099 - src.server - INFO -    Solvent: gas phase
+2025-06-20 15:28:47,099 - src.server - INFO -    xTB Pre-optimization: True
+2025-06-20 15:28:47,099 - src.server - INFO -    Transition State: False
+2025-06-20 15:28:47,099 - src.server - INFO -    Frequencies: False
+2025-06-20 15:28:47,099 - src.server - INFO -    Constraints: 0 applied
+2025-06-20 15:28:47,099 - src.server - INFO - 🌐 Rowan API Call: spin_states
+2025-06-20 15:28:47,099 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'MnCl6_anion_spin_states', 'molecule': 'Cl[Mn](Cl)(Cl)(Cl)(Cl)Cl', 'states': [1], 'mode': 'rapid', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'charge': '-2', 'multiplicity': 1}
+2025-06-20 15:28:47,100 - src.server - ERROR - 🌐 Rowan API failed: spin_states (0.00s)
+2025-06-20 15:28:47,100 - src.server - ERROR - 🚨 Rowan Error: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [-0.7...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:47,100 - src.server - ERROR - 📋 Exception Type: ValidationError
+2025-06-20 15:28:47,100 - src.server - ERROR - 📄 Full Exception: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [-0.7...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:47,100 - src.server - ERROR - 🔍 Exception Args: ()
+2025-06-20 15:28:47,101 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 393, in from_smiles
+    return cls.from_rdkit(rdkm)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 387, in from_rdkit
+    return cls(atoms=atoms, charge=charge, multiplicity=multiplicity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [-0.7...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+2025-06-20 15:28:47,101 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 15:28:47,101 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 15:28:47,101 - src.server - ERROR - 📝 Exception message: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [-0.7...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:47,101 - src.server - ERROR - ❌ rowan_spin_states failed after 0.00s
+2025-06-20 15:28:47,101 - src.server - ERROR - 🚨 Error: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [-0.7...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-20 15:28:47,101 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 2167, in rowan_spin_states
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 238, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/rowan/client.py", line 34, in compute
+    stjmol = stjames.Molecule.from_smiles(molecule)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 393, in from_smiles
+    return cls.from_rdkit(rdkm)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/stjames/molecule.py", line 387, in from_rdkit
+    return cls(atoms=atoms, charge=charge, multiplicity=multiplicity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Molecule
+  Value error, The combination of 127 electrons, charge 0, and multiplicity 1 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [-0.7...': 0, 'multiplicity': 1}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+2025-06-20 15:32:20,478 - src.server - INFO - 🔧 MCP Tool Called: rowan_molecular_dynamics
+2025-06-20 15:32:20,479 - src.server - INFO - 📝 Parameters: {'name': 'Glucose_MD_Simulation', 'molecule': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O'}
+2025-06-20 15:32:20,479 - src.server - INFO - 🌐 Rowan API Call: molecular_dynamics
+2025-06-20 15:32:20,479 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Glucose_MD_Simulation', 'molecule': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 15:32:21,055 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:32:21,414 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:32:26,802 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:32:32,202 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:32:37,599 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:32:42,967 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:32:48,346 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:32:53,714 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:32:59,090 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:04,450 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:09,810 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:15,176 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:20,548 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:25,901 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:31,284 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:36,694 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:42,074 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:47,476 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:52,879 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:33:58,269 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:03,686 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:09,078 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:14,475 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:19,892 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:25,242 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:30,658 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:36,076 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:41,504 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:46,877 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:52,259 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:34:57,644 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:03,100 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:08,511 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:13,902 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:19,271 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:24,654 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:30,018 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:35,446 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:40,828 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:46,185 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:51,549 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:35:56,907 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:02,305 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:07,696 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:13,065 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:18,425 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:23,796 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:29,157 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:34,533 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:39,945 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:45,307 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:45,696 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d0f37ee9-fe56-4030-84e2-d1819c3b1d5e "HTTP/1.1 200 OK"
+2025-06-20 15:36:45,697 - src.server - INFO - 🎯 Rowan API submission successful: molecular_dynamics (265.22s)
+2025-06-20 15:36:45,697 - src.server - INFO - 📋 Job UUID: d0f37ee9-fe56-4030-84e2-d1819c3b1d5e
+2025-06-20 15:36:45,697 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:36:45,697 - src.server - INFO - ✅ rowan_molecular_dynamics completed successfully in 265.22s
+2025-06-20 15:36:55,812 - src.server - INFO - 🔧 MCP Tool Called: rowan_multistage_opt
+2025-06-20 15:36:55,812 - src.server - INFO - 📝 Parameters: {'name': 'Glucose_Optimization', 'molecule': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O'}
+2025-06-20 15:36:55,812 - src.server - INFO - 🚀 Starting multistage optimization: Glucose_Optimization
+2025-06-20 15:36:55,812 - src.server - INFO - ⏱️  Using ping_interval: 30s (longer for multi-stage calculation)
+2025-06-20 15:36:55,812 - src.server - INFO - 🌐 Rowan API Call: multistage_opt
+2025-06-20 15:36:55,812 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Glucose_Optimization', 'molecule': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', 'folder_uuid': None, 'blocking': True, 'ping_interval': 30}
+2025-06-20 15:36:55,812 - src.server - INFO - ⏳ Multi-stage optimization may take several minutes...
+2025-06-20 15:36:55,812 - src.server - INFO - 🔄 Progress will be checked every 30 seconds
+2025-06-20 15:36:56,484 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:36:56,849 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78935eda-0905-4553-bb5d-6de1bf0400c5 "HTTP/1.1 200 OK"
+2025-06-20 15:37:27,323 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78935eda-0905-4553-bb5d-6de1bf0400c5 "HTTP/1.1 200 OK"
+2025-06-20 15:37:57,815 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78935eda-0905-4553-bb5d-6de1bf0400c5 "HTTP/1.1 200 OK"
+2025-06-20 15:38:28,329 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78935eda-0905-4553-bb5d-6de1bf0400c5 "HTTP/1.1 200 OK"
+2025-06-20 15:38:58,916 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78935eda-0905-4553-bb5d-6de1bf0400c5 "HTTP/1.1 200 OK"
+2025-06-20 15:39:29,438 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78935eda-0905-4553-bb5d-6de1bf0400c5 "HTTP/1.1 200 OK"
+2025-06-20 15:39:30,009 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/78935eda-0905-4553-bb5d-6de1bf0400c5 "HTTP/1.1 200 OK"
+2025-06-20 15:39:30,205 - src.server - INFO - 🎯 Rowan API submission successful: multistage_opt (154.39s)
+2025-06-20 15:39:30,205 - src.server - INFO - 📋 Job UUID: 78935eda-0905-4553-bb5d-6de1bf0400c5
+2025-06-20 15:39:30,205 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:39:30,206 - src.server - INFO - ✅ rowan_multistage_opt completed successfully in 154.39s
+2025-06-20 15:42:29,252 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 15:42:29,266 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 15:42:29,266 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 15:42:52,022 - src.server - INFO - 🔧 MCP Tool Called: rowan_molecular_dynamics
+2025-06-20 15:42:52,039 - src.server - INFO - 📝 Parameters: {'name': 'Glucose MD Simulation', 'molecule': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', 'temperature': 300, 'num_steps': 10000, 'ensemble': 'NVT', 'timestep': 1, 'save_interval': 100, 'blocking': False}
+2025-06-20 15:42:52,039 - src.server - WARNING - ⚠️ No SMILES found for 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', using as-is
+2025-06-20 15:42:52,039 - src.server - INFO - 🔬 Molecular Dynamics Debug:
+2025-06-20 15:42:52,039 - src.server - INFO -    Name: Glucose MD Simulation
+2025-06-20 15:42:52,039 - src.server - INFO -    Input: C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O
+2025-06-20 15:42:52,039 - src.server - INFO -    Using SMILES: C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O
+2025-06-20 15:42:52,039 - src.server - INFO -    Ensemble: NVT
+2025-06-20 15:42:52,039 - src.server - INFO -    Temperature: 300 K
+2025-06-20 15:42:52,039 - src.server - INFO -    Timestep: 1 fs
+2025-06-20 15:42:52,039 - src.server - INFO -    Steps: 10000 (10.0 ps total)
+2025-06-20 15:42:52,039 - src.server - INFO -    Save interval: every 100 steps
+2025-06-20 15:42:52,039 - src.server - INFO -    Initialization: random
+2025-06-20 15:42:52,039 - src.server - INFO - 🌐 Rowan API Call: molecular_dynamics
+2025-06-20 15:42:52,039 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Glucose MD Simulation', 'molecule': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', 'settings': {'ensemble': 'nvt', 'initialization': 'random', 'timestep': 1, 'num_steps': 10000, 'save_interval': 100, 'temperature': 300, 'langevin_thermostat_timescale': 100.0, 'berendsen_barostat_timescale': 1000.0, 'constraints': []}, 'calc_settings': {'charge': 0, 'multiplicity': 1}, 'folder_uuid': None, 'blocking': False, 'ping_interval': 5}
+2025-06-20 15:42:52,765 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:42:52,766 - src.server - INFO - 🎯 Rowan API submission successful: molecular_dynamics (0.73s)
+2025-06-20 15:42:52,766 - src.server - INFO - 📋 Job UUID: bd961394-8577-45a2-b6eb-3cef6acb1466
+2025-06-20 15:42:52,766 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:42:52,766 - src.server - INFO - ✅ rowan_molecular_dynamics completed successfully in 0.74s
+2025-06-20 15:47:53,379 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 15:47:53,389 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 15:47:53,389 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 15:48:22,559 - src.server - INFO - 🔧 MCP Tool Called: rowan_molecular_dynamics
+2025-06-20 15:48:22,573 - src.server - INFO - 📝 Parameters: {'name': 'glucose_md_simulation', 'molecule': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', 'temperature': 300, 'num_steps': 1000, 'timestep': 1, 'ensemble': 'NVT', 'save_interval': 10}
+2025-06-20 15:48:22,573 - src.server - WARNING - ⚠️ No SMILES found for 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', using as-is
+2025-06-20 15:48:22,573 - src.server - INFO - 🚀 No engine specified, defaulting to xTB for fast MD forces
+2025-06-20 15:48:22,573 - src.server - INFO - 🔬 Molecular Dynamics Debug:
+2025-06-20 15:48:22,573 - src.server - INFO -    Name: glucose_md_simulation
+2025-06-20 15:48:22,573 - src.server - INFO -    Input: C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O
+2025-06-20 15:48:22,573 - src.server - INFO -    Using SMILES: C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O
+2025-06-20 15:48:22,573 - src.server - INFO -    Ensemble: NVT
+2025-06-20 15:48:22,573 - src.server - INFO -    Temperature: 300 K
+2025-06-20 15:48:22,573 - src.server - INFO -    Timestep: 1 fs
+2025-06-20 15:48:22,573 - src.server - INFO -    Steps: 1000 (1.0 ps total)
+2025-06-20 15:48:22,573 - src.server - INFO -    Save interval: every 10 steps
+2025-06-20 15:48:22,573 - src.server - INFO -    Initialization: random
+2025-06-20 15:48:22,573 - src.server - INFO - 🌐 Rowan API Call: molecular_dynamics
+2025-06-20 15:48:22,573 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'glucose_md_simulation', 'molecule': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', 'settings': {'ensemble': 'nvt', 'initialization': 'random', 'timestep': 1, 'num_steps': 1000, 'save_interval': 10, 'temperature': 300, 'langevin_thermostat_timescale': 100.0, 'berendsen_barostat_timescale': 1000.0, 'constraints': []}, 'calc_settings': {'charge': 0, 'multiplicity': 1, 'engine': 'xtb'}, 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 15:48:23,177 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:48:23,571 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:48:28,983 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:48:34,363 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:48:39,767 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:48:45,156 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:48:50,532 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:48:55,940 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:01,431 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:06,941 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:12,359 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:17,751 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:23,127 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:28,617 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:34,048 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:39,428 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:44,818 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:50,167 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:49:55,515 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:00,912 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:06,333 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:11,688 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:17,075 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:22,443 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:27,851 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:33,234 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:38,583 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:43,927 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:49,280 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:50:54,658 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:51:00,014 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:51:05,398 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:51:10,794 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:51:16,188 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:51:21,566 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:51:21,909 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1ed7c73c-cf88-4422-bdd9-fabc14023b0c "HTTP/1.1 200 OK"
+2025-06-20 15:51:21,910 - src.server - INFO - 🎯 Rowan API submission successful: molecular_dynamics (179.34s)
+2025-06-20 15:51:21,911 - src.server - INFO - 📋 Job UUID: 1ed7c73c-cf88-4422-bdd9-fabc14023b0c
+2025-06-20 15:51:21,911 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:51:21,911 - src.server - INFO - ✅ rowan_molecular_dynamics completed successfully in 179.35s
+2025-06-20 15:56:05,160 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 15:56:05,161 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 15:56:05,162 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 15:56:36,927 - src.server - INFO - 🔧 MCP Tool Called: rowan_molecular_dynamics
+2025-06-20 15:56:36,942 - src.server - INFO - 📝 Parameters: {'name': 'Glucose_MD_Simulation', 'molecule': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', 'temperature': 298.15, 'num_steps': 10000, 'save_interval': 100, 'ensemble': 'NVT', 'timestep': 1, 'blocking': True}
+2025-06-20 15:56:36,942 - src.server - WARNING - ⚠️ No SMILES found for 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', using as-is
+2025-06-20 15:56:36,942 - src.server - INFO - 🚀 No engine specified, defaulting to xTB for fast MD forces
+2025-06-20 15:56:36,942 - src.server - INFO - 🔬 Molecular Dynamics Debug:
+2025-06-20 15:56:36,942 - src.server - INFO -    Name: Glucose_MD_Simulation
+2025-06-20 15:56:36,942 - src.server - INFO -    Input: C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O
+2025-06-20 15:56:36,942 - src.server - INFO -    Using SMILES: C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O
+2025-06-20 15:56:36,942 - src.server - INFO -    Ensemble: NVT
+2025-06-20 15:56:36,942 - src.server - INFO -    Temperature: 298.15 K
+2025-06-20 15:56:36,942 - src.server - INFO -    Timestep: 1 fs
+2025-06-20 15:56:36,942 - src.server - INFO -    Steps: 10000 (10.0 ps total)
+2025-06-20 15:56:36,942 - src.server - INFO -    Save interval: every 100 steps
+2025-06-20 15:56:36,942 - src.server - INFO -    Initialization: random
+2025-06-20 15:56:36,942 - src.server - INFO - 🌐 Rowan API Call: molecular_dynamics
+2025-06-20 15:56:36,942 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Glucose_MD_Simulation', 'molecule': 'C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O', 'settings': {'ensemble': 'nvt', 'initialization': 'random', 'timestep': 1, 'num_steps': 10000, 'save_interval': 100, 'temperature': 298.15, 'langevin_thermostat_timescale': 100.0, 'berendsen_barostat_timescale': 1000.0, 'constraints': []}, 'calc_settings': {'charge': 0, 'multiplicity': 1, 'engine': 'xtb'}, 'folder_uuid': None, 'blocking': True, 'ping_interval': 5, 'calc_engine': 'xtb'}
+2025-06-20 15:56:37,531 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 15:56:37,878 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:56:43,257 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:56:48,620 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:56:53,994 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:56:59,430 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:04,846 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:10,255 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:15,650 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:21,016 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:26,399 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:31,788 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:37,175 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:42,576 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:47,937 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:53,313 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:57:58,683 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:04,056 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:09,421 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:14,812 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:20,221 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:25,667 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:31,101 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:36,540 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:42,530 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:47,929 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:53,310 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:58:58,904 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:04,287 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:09,679 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:15,058 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:20,417 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:25,776 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:31,191 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:36,588 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:42,124 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:47,486 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:52,859 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:53,270 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/194dcc2e-8167-49ba-8d61-305b84a80df1 "HTTP/1.1 200 OK"
+2025-06-20 15:59:53,271 - src.server - INFO - 🎯 Rowan API submission successful: molecular_dynamics (196.33s)
+2025-06-20 15:59:53,271 - src.server - INFO - 📋 Job UUID: 194dcc2e-8167-49ba-8d61-305b84a80df1
+2025-06-20 15:59:53,271 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 15:59:53,271 - src.server - INFO - ✅ rowan_molecular_dynamics completed successfully in 196.34s
+2025-06-20 16:05:27,229 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 16:05:27,230 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 16:05:27,231 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 16:05:52,527 - src.server - INFO - 🔧 MCP Tool Called: rowan_molecular_dynamics
+2025-06-20 16:05:52,543 - src.server - INFO - 📝 Parameters: {'name': 'glucose_md_simulation', 'molecule': 'glucose', 'temperature': 300, 'num_steps': 10000, 'ensemble': 'NVT', 'timestep': 0.5, 'save_interval': 100}
+2025-06-20 16:05:52,543 - src.server - INFO - 🔍 SMILES Lookup: 'glucose' → 'OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O'
+2025-06-20 16:05:52,543 - src.server - INFO - 🚀 No engine/method specified, defaulting to xTB engine for fast MD forces
+2025-06-20 16:05:52,544 - src.server - INFO - 🔬 Molecular Dynamics Debug:
+2025-06-20 16:05:52,544 - src.server - INFO -    Name: glucose_md_simulation
+2025-06-20 16:05:52,544 - src.server - INFO -    Input: glucose
+2025-06-20 16:05:52,544 - src.server - INFO -    Using SMILES: OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O
+2025-06-20 16:05:52,544 - src.server - INFO -    Ensemble: NVT
+2025-06-20 16:05:52,544 - src.server - INFO -    Temperature: 300 K
+2025-06-20 16:05:52,544 - src.server - INFO -    Timestep: 0.5 fs
+2025-06-20 16:05:52,544 - src.server - INFO -    Steps: 10000 (5.0 ps total)
+2025-06-20 16:05:52,544 - src.server - INFO -    Save interval: every 100 steps
+2025-06-20 16:05:52,544 - src.server - INFO -    Initialization: random
+2025-06-20 16:05:52,544 - src.server - INFO -    Thermostat timescale: 100.0 fs
+2025-06-20 16:05:52,544 - src.server - INFO -    Barostat timescale: 1000.0 fs
+2025-06-20 16:05:52,544 - src.server - INFO - 🌐 Rowan API Call: molecular_dynamics
+2025-06-20 16:05:52,544 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'glucose_md_simulation', 'molecule': 'OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O', 'settings': {'ensemble': 'nvt', 'initialization': 'random', 'timestep': 0.5, 'num_steps': 10000, 'save_interval': 100, 'temperature': 300, 'langevin_thermostat_timescale': 100.0, 'berendsen_barostat_timescale': 1000.0, 'constraints': []}, 'calc_settings': {'charge': 0, 'multiplicity': 1, 'engine': 'xtb'}, 'folder_uuid': None, 'blocking': True, 'ping_interval': 5, 'calc_engine': 'xtb'}
+2025-06-20 16:05:53,164 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 16:05:53,517 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:05:58,890 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:04,305 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:09,685 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:15,064 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:20,468 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:25,839 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:31,223 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:36,593 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:41,991 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:47,403 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:52,852 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:06:58,262 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:03,652 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:09,032 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:14,447 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:19,875 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:25,383 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:30,805 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:36,208 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:41,572 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:46,989 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:52,396 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:07:57,835 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:03,217 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:08,612 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:14,000 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:19,392 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:24,777 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:30,198 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:35,565 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:40,930 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:46,309 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:51,676 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:08:57,058 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:02,485 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:07,855 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:13,286 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:18,682 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:24,083 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:29,466 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:34,898 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:40,262 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:45,635 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:51,017 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:09:56,390 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:10:01,821 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:10:07,250 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:10:12,627 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:10:18,025 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:10:23,426 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:10:23,814 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/89ef9c2e-68e1-4271-a705-a409666d17d4 "HTTP/1.1 200 OK"
+2025-06-20 16:10:23,816 - src.server - INFO - 🎯 Rowan API submission successful: molecular_dynamics (271.27s)
+2025-06-20 16:10:23,816 - src.server - INFO - 📋 Job UUID: 89ef9c2e-68e1-4271-a705-a409666d17d4
+2025-06-20 16:10:23,816 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 16:10:23,816 - src.server - INFO - ✅ rowan_molecular_dynamics completed successfully in 271.29s
+2025-06-20 16:10:23,819 - src.server - INFO - 🔧 MCP Tool Called: rowan_fukui
+2025-06-20 16:10:23,820 - src.server - INFO - 📝 Parameters: {'name': 'phenol_reactivity_analysis', 'molecule': 'Oc1ccccc1'}
+2025-06-20 16:10:23,820 - src.server - WARNING - ⚠️ No SMILES found for 'Oc1ccccc1', using as-is
+2025-06-20 16:10:23,820 - src.server - INFO - 🚀 No optimization method specified, defaulting to GFN2-xTB
+2025-06-20 16:10:23,820 - src.server - INFO - 🔬 Fukui Analysis Debug:
+2025-06-20 16:10:23,820 - src.server - INFO -    Name: phenol_reactivity_analysis
+2025-06-20 16:10:23,820 - src.server - INFO -    Input: Oc1ccccc1
+2025-06-20 16:10:23,820 - src.server - INFO -    Using SMILES: Oc1ccccc1
+2025-06-20 16:10:23,820 - src.server - INFO -    Optimization: Enabled
+2025-06-20 16:10:23,820 - src.server - INFO -    Opt Method: gfn2_xtb
+2025-06-20 16:10:23,821 - src.server - INFO -    Fukui Method: gfn1_xtb
+2025-06-20 16:10:23,821 - src.server - INFO -    Charge: 0, Multiplicity: 1
+2025-06-20 16:10:23,821 - src.server - INFO - 🌐 Rowan API Call: fukui
+2025-06-20 16:10:23,821 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'phenol_reactivity_analysis', 'molecule': 'Oc1ccccc1', 'fukui_settings': {'method': 'gfn1_xtb', 'charge': 0, 'multiplicity': 1}, 'folder_uuid': None, 'blocking': True, 'ping_interval': 5, 'opt_settings': {'charge': 0, 'multiplicity': 1, 'method': 'gfn2_xtb'}}
+2025-06-20 16:10:24,554 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 16:10:24,950 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e00a461e-e99b-41f6-bc0e-e65ab0eaec02 "HTTP/1.1 200 OK"
+2025-06-20 16:10:30,323 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e00a461e-e99b-41f6-bc0e-e65ab0eaec02 "HTTP/1.1 200 OK"
+2025-06-20 16:10:35,692 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e00a461e-e99b-41f6-bc0e-e65ab0eaec02 "HTTP/1.1 200 OK"
+2025-06-20 16:10:41,069 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e00a461e-e99b-41f6-bc0e-e65ab0eaec02 "HTTP/1.1 200 OK"
+2025-06-20 16:10:41,429 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e00a461e-e99b-41f6-bc0e-e65ab0eaec02 "HTTP/1.1 200 OK"
+2025-06-20 16:10:41,430 - src.server - INFO - 🎯 Rowan API submission successful: fukui (17.61s)
+2025-06-20 16:10:41,430 - src.server - INFO - 📋 Job UUID: e00a461e-e99b-41f6-bc0e-e65ab0eaec02
+2025-06-20 16:10:41,430 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 16:10:41,430 - src.server - INFO - ✅ rowan_fukui completed successfully in 17.61s
+2025-06-20 16:15:16,340 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 16:15:16,353 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 16:15:16,353 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 16:15:50,599 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:15:50,614 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_water_solubility', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water'}
+2025-06-20 16:15:50,614 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:15:50,614 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-20 16:15:50,614 - src.server - INFO -    Name: acetaminophen_water_solubility
+2025-06-20 16:15:50,614 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:15:50,614 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:15:50,614 - src.server - INFO -    Solvents: water
+2025-06-20 16:15:50,614 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+2025-06-20 16:15:50,614 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-20 16:15:50,614 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-20 16:15:50,614 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_water_solubility', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water', 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 16:15:51,288 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 16:15:51,668 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b284cb96-0efb-432d-8972-ccaa5ffe07ec "HTTP/1.1 200 OK"
+2025-06-20 16:15:57,042 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b284cb96-0efb-432d-8972-ccaa5ffe07ec "HTTP/1.1 200 OK"
+2025-06-20 16:16:02,463 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b284cb96-0efb-432d-8972-ccaa5ffe07ec "HTTP/1.1 200 OK"
+2025-06-20 16:16:07,842 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b284cb96-0efb-432d-8972-ccaa5ffe07ec "HTTP/1.1 200 OK"
+2025-06-20 16:16:08,177 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b284cb96-0efb-432d-8972-ccaa5ffe07ec "HTTP/1.1 200 OK"
+2025-06-20 16:16:08,183 - src.server - INFO - 🎯 Rowan API submission successful: solubility (17.57s)
+2025-06-20 16:16:08,183 - src.server - INFO - 📋 Job UUID: b284cb96-0efb-432d-8972-ccaa5ffe07ec
+2025-06-20 16:16:08,183 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 16:16:08,183 - src.server - INFO - ✅ rowan_solubility completed successfully in 17.58s
+2025-06-20 16:16:13,369 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/b284cb96-0efb-432d-8972-ccaa5ffe07ec/stjames "HTTP/1.1 404 Not Found"
+2025-06-20 16:16:17,498 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=50&name_contains=acetaminophen "HTTP/1.1 200 OK"
+2025-06-20 16:16:27,764 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:16:27,765 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_water_solubility_v2', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water', 'blocking': True}
+2025-06-20 16:16:27,765 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:16:27,765 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-20 16:16:27,765 - src.server - INFO -    Name: acetaminophen_water_solubility_v2
+2025-06-20 16:16:27,765 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:16:27,765 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:16:27,765 - src.server - INFO -    Solvents: water
+2025-06-20 16:16:27,765 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+2025-06-20 16:16:27,765 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-20 16:16:27,766 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-20 16:16:27,766 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_water_solubility_v2', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water', 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 16:16:28,428 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 16:16:28,788 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a8c5c0d6-4a26-4dce-b2c2-5320c0c8004d "HTTP/1.1 200 OK"
+2025-06-20 16:16:34,186 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a8c5c0d6-4a26-4dce-b2c2-5320c0c8004d "HTTP/1.1 200 OK"
+2025-06-20 16:16:39,517 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a8c5c0d6-4a26-4dce-b2c2-5320c0c8004d "HTTP/1.1 200 OK"
+2025-06-20 16:16:44,943 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a8c5c0d6-4a26-4dce-b2c2-5320c0c8004d "HTTP/1.1 200 OK"
+2025-06-20 16:16:45,321 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a8c5c0d6-4a26-4dce-b2c2-5320c0c8004d "HTTP/1.1 200 OK"
+2025-06-20 16:16:45,323 - src.server - INFO - 🎯 Rowan API submission successful: solubility (17.56s)
+2025-06-20 16:16:45,323 - src.server - INFO - 📋 Job UUID: a8c5c0d6-4a26-4dce-b2c2-5320c0c8004d
+2025-06-20 16:16:45,323 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 16:16:45,324 - src.server - INFO - ✅ rowan_solubility completed successfully in 17.56s
+2025-06-20 16:22:09,554 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 16:22:09,555 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 16:22:09,556 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 16:22:33,436 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:22:33,452 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Water Solubility', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water', 'temperatures': '298.15'}
+2025-06-20 16:22:33,453 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:22:33,453 - src.server - ERROR - ❌ rowan_solubility failed after 0.02s
+2025-06-20 16:22:33,453 - src.server - ERROR - 🚨 Error: '<=' not supported between instances of 'str' and 'int'
+2025-06-20 16:22:33,455 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1297, in rowan_solubility
+    if temp <= 0:
+       ^^^^^^^^^
+TypeError: '<=' not supported between instances of 'str' and 'int'
+
+2025-06-20 16:22:36,251 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:22:36,251 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Water Solubility', 'molecule': 'CC(=O)Nc1ccc(O)cc1'}
+2025-06-20 16:22:36,251 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:22:36,251 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-20 16:22:36,251 - src.server - INFO -    Name: Acetaminophen Water Solubility
+2025-06-20 16:22:36,251 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:22:36,251 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:22:36,251 - src.server - INFO -    Solvents: ['O']
+2025-06-20 16:22:36,251 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+2025-06-20 16:22:36,251 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-20 16:22:36,252 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-20 16:22:36,252 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen Water Solubility', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 16:22:36,252 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-20 16:22:36,252 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:22:36,252 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-20 16:22:36,252 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-20 16:22:36,252 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-20 16:22:36,252 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-20 16:22:36,252 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 16:22:36,252 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 16:22:36,252 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:22:36,252 - src.server - ERROR - ❌ rowan_solubility failed after 0.00s
+2025-06-20 16:22:36,252 - src.server - ERROR - 🚨 Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:22:36,252 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1347, in rowan_solubility
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1326, in rowan_solubility
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 238, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-20 16:22:45,145 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:22:45,145 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen_Water_Solubility', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water', 'blocking': True}
+2025-06-20 16:22:45,145 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:22:45,145 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-20 16:22:45,145 - src.server - INFO -    Name: Acetaminophen_Water_Solubility
+2025-06-20 16:22:45,145 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:22:45,145 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:22:45,145 - src.server - INFO -    Solvents: ['O']
+2025-06-20 16:22:45,145 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+2025-06-20 16:22:45,145 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-20 16:22:45,145 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-20 16:22:45,145 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen_Water_Solubility', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 16:22:45,145 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-20 16:22:45,145 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:22:45,145 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-20 16:22:45,145 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-20 16:22:45,146 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-20 16:22:45,146 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-20 16:22:45,146 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 16:22:45,146 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 16:22:45,146 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:22:45,146 - src.server - ERROR - ❌ rowan_solubility failed after 0.00s
+2025-06-20 16:22:45,146 - src.server - ERROR - 🚨 Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:22:45,146 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1347, in rowan_solubility
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1326, in rowan_solubility
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 238, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-20 16:22:51,354 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/folder "HTTP/1.1 200 OK"
+2025-06-20 16:22:55,039 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:22:55,039 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen_Water_Solubility', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'folder_uuid': '0a00a259-3d94-482e-b937-c981c6a12803', 'blocking': True}
+2025-06-20 16:22:55,039 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:22:55,039 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-20 16:22:55,039 - src.server - INFO -    Name: Acetaminophen_Water_Solubility
+2025-06-20 16:22:55,039 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:22:55,039 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:22:55,039 - src.server - INFO -    Solvents: ['O']
+2025-06-20 16:22:55,039 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+2025-06-20 16:22:55,039 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-20 16:22:55,039 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-20 16:22:55,039 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen_Water_Solubility', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': '0a00a259-3d94-482e-b937-c981c6a12803', 'blocking': True, 'ping_interval': 5}
+2025-06-20 16:22:55,039 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-20 16:22:55,039 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:22:55,040 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-20 16:22:55,040 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-20 16:22:55,040 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-20 16:22:55,040 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-20 16:22:55,040 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 16:22:55,040 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 16:22:55,040 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:22:55,040 - src.server - ERROR - ❌ rowan_solubility failed after 0.00s
+2025-06-20 16:22:55,040 - src.server - ERROR - 🚨 Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:22:55,040 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1347, in rowan_solubility
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1326, in rowan_solubility
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 238, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-20 16:23:01,168 - src.server - INFO - 🌐 Rowan API Call: descriptors
+2025-06-20 16:23:01,168 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen_Descriptors', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'folder_uuid': '0a00a259-3d94-482e-b937-c981c6a12803', 'blocking': True, 'ping_interval': 5}
+2025-06-20 16:23:01,994 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 16:23:02,415 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/bd722e22-9f1e-447e-b2b5-09373b1242d9 "HTTP/1.1 200 OK"
+2025-06-20 16:23:07,841 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/bd722e22-9f1e-447e-b2b5-09373b1242d9 "HTTP/1.1 200 OK"
+2025-06-20 16:23:13,291 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/bd722e22-9f1e-447e-b2b5-09373b1242d9 "HTTP/1.1 200 OK"
+2025-06-20 16:23:18,707 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/bd722e22-9f1e-447e-b2b5-09373b1242d9 "HTTP/1.1 200 OK"
+2025-06-20 16:23:24,149 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/bd722e22-9f1e-447e-b2b5-09373b1242d9 "HTTP/1.1 200 OK"
+2025-06-20 16:23:24,626 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/bd722e22-9f1e-447e-b2b5-09373b1242d9 "HTTP/1.1 200 OK"
+2025-06-20 16:23:24,730 - src.server - INFO - 🎯 Rowan API submission successful: descriptors (23.56s)
+2025-06-20 16:23:24,730 - src.server - INFO - 📋 Job UUID: bd722e22-9f1e-447e-b2b5-09373b1242d9
+2025-06-20 16:23:24,730 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 16:23:30,165 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:23:30,165 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen_Water_Solubility', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'folder_uuid': '0a00a259-3d94-482e-b937-c981c6a12803', 'blocking': True}
+2025-06-20 16:23:30,166 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:23:30,166 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-20 16:23:30,166 - src.server - INFO -    Name: Acetaminophen_Water_Solubility
+2025-06-20 16:23:30,166 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:23:30,166 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:23:30,166 - src.server - INFO -    Solvents: ['O']
+2025-06-20 16:23:30,166 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+2025-06-20 16:23:30,166 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-20 16:23:30,166 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-20 16:23:30,166 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen_Water_Solubility', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': '0a00a259-3d94-482e-b937-c981c6a12803', 'blocking': True, 'ping_interval': 5}
+2025-06-20 16:23:30,166 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-20 16:23:30,166 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:23:30,167 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-20 16:23:30,167 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-20 16:23:30,167 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-20 16:23:30,167 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-20 16:23:30,167 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 16:23:30,167 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 16:23:30,167 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:23:30,167 - src.server - ERROR - ❌ rowan_solubility failed after 0.00s
+2025-06-20 16:23:30,167 - src.server - ERROR - 🚨 Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:23:30,168 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1347, in rowan_solubility
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1326, in rowan_solubility
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 238, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-20 16:23:37,018 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=50 "HTTP/1.1 200 OK"
+2025-06-20 16:23:47,050 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=10 "HTTP/1.1 200 OK"
+2025-06-20 16:23:58,431 - src.server - INFO - 🔧 MCP Tool Called: rowan_admet
+2025-06-20 16:23:58,431 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen_ADMET_Properties', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'folder_uuid': '0a00a259-3d94-482e-b937-c981c6a12803'}
+2025-06-20 16:23:58,431 - src.server - INFO - 🌐 Rowan API Call: admet
+2025-06-20 16:23:58,431 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen_ADMET_Properties', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'folder_uuid': '0a00a259-3d94-482e-b937-c981c6a12803', 'blocking': True, 'ping_interval': 5}
+2025-06-20 16:23:59,064 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 16:23:59,424 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9803516d-e6a5-44f8-b3bc-4a618f2f8f96 "HTTP/1.1 200 OK"
+2025-06-20 16:24:04,787 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9803516d-e6a5-44f8-b3bc-4a618f2f8f96 "HTTP/1.1 200 OK"
+2025-06-20 16:24:10,194 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9803516d-e6a5-44f8-b3bc-4a618f2f8f96 "HTTP/1.1 200 OK"
+2025-06-20 16:24:15,623 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9803516d-e6a5-44f8-b3bc-4a618f2f8f96 "HTTP/1.1 200 OK"
+2025-06-20 16:24:16,004 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9803516d-e6a5-44f8-b3bc-4a618f2f8f96 "HTTP/1.1 200 OK"
+2025-06-20 16:24:16,006 - src.server - INFO - 🎯 Rowan API submission successful: admet (17.58s)
+2025-06-20 16:24:16,006 - src.server - INFO - 📋 Job UUID: 9803516d-e6a5-44f8-b3bc-4a618f2f8f96
+2025-06-20 16:24:16,007 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 16:24:16,007 - src.server - INFO - ✅ rowan_admet completed successfully in 17.58s
+2025-06-20 16:31:07,784 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:31:07,784 - src.server - INFO - 📝 Parameters: {'name': 'aceto', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water', 'temperatures': '298.15'}
+2025-06-20 16:31:07,784 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:31:07,784 - src.server - ERROR - ❌ rowan_solubility failed after 0.00s
+2025-06-20 16:31:07,784 - src.server - ERROR - 🚨 Error: '<=' not supported between instances of 'str' and 'int'
+2025-06-20 16:31:07,785 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1297, in rowan_solubility
+    if temp <= 0:
+       ^^^^^^^^^
+TypeError: '<=' not supported between instances of 'str' and 'int'
+
+2025-06-20 16:33:30,218 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:33:30,218 - src.server - INFO - 📝 Parameters: {'name': 'aceto', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water', 'temperatures': '298.15'}
+2025-06-20 16:33:30,218 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:33:30,218 - src.server - ERROR - ❌ rowan_solubility failed after 0.00s
+2025-06-20 16:33:30,218 - src.server - ERROR - 🚨 Error: '<=' not supported between instances of 'str' and 'int'
+2025-06-20 16:33:30,220 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 82, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1297, in rowan_solubility
+    return f"❌ Invalid temperature value: {temperatures}"
+    ^^^^^^^^^
+TypeError: '<=' not supported between instances of 'str' and 'int'
+
+2025-06-20 16:33:51,042 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 16:33:51,051 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 16:33:51,051 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 16:34:23,970 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:34:23,974 - src.server - INFO - 📝 Parameters: {'name': 'a', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water', 'temperatures': '298.15'}
+2025-06-20 16:34:23,974 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:34:23,974 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-20 16:34:23,974 - src.server - INFO -    Name: a
+2025-06-20 16:34:23,974 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:34:23,974 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:34:23,974 - src.server - INFO -    Solvents: ['O']
+2025-06-20 16:34:23,974 - src.server - INFO -    Temperatures: [298.15] K
+2025-06-20 16:34:23,975 - src.server - INFO -    Temperature range: 298.1-298.1 K
+2025-06-20 16:34:23,975 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-20 16:34:23,975 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'a', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O'], 'temperatures': [298.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 16:34:23,975 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-20 16:34:23,975 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:34:23,975 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-20 16:34:23,975 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-20 16:34:23,975 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-20 16:34:23,977 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 171, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-20 16:34:23,977 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-20 16:34:23,977 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-20 16:34:23,977 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-20 16:34:23,977 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.01s
+2025-06-20 16:43:31,848 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-20 16:43:31,860 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-20 16:43:31,860 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-20 16:44:16,627 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-20 16:44:16,630 - src.server - INFO - 📝 Parameters: {'name': 'ace', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water', 'temperatures': '298.15'}
+2025-06-20 16:44:16,630 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-20 16:44:16,631 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-20 16:44:16,631 - src.server - INFO -    Name: ace
+2025-06-20 16:44:16,631 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:44:16,631 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-20 16:44:16,631 - src.server - INFO -    Solvents: ['O']
+2025-06-20 16:44:16,631 - src.server - INFO -    Temperatures: [298.15] K
+2025-06-20 16:44:16,631 - src.server - INFO -    Temperature range: 298.1-298.1 K
+2025-06-20 16:44:16,631 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-20 16:44:16,631 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ace', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O'], 'temperatures': [298.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-20 16:44:17,368 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-20 16:44:17,709 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:44:23,097 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:44:28,492 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:44:33,945 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:44:39,305 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:44:44,668 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:44:50,048 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:44:55,406 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:45:00,781 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:45:06,189 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:45:11,594 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:45:16,986 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:45:22,353 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:45:22,733 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1132ab52-8427-4cd5-94e6-20a68f870df6 "HTTP/1.1 200 OK"
+2025-06-20 16:45:22,733 - src.server - INFO - 🎯 Rowan API submission successful: solubility (66.10s)
+2025-06-20 16:45:22,734 - src.server - INFO - 📋 Job UUID: 1132ab52-8427-4cd5-94e6-20a68f870df6
+2025-06-20 16:45:22,734 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-20 16:45:22,734 - src.server - INFO - ✅ rowan_solubility completed successfully in 66.11s
