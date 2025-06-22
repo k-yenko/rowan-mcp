@@ -17,13 +17,13 @@ load_dotenv()
 # Import all our Rowan functions
 from .server import (
     # Basic Calculations
-    rowan_admet, rowan_quantum_chemistry, rowan_qc_guide, rowan_multistage_opt, rowan_electronic_properties,
+    rowan_admet, rowan_multistage_opt, rowan_electronic_properties,
     
     # Molecular Analysis  
     rowan_conformers, rowan_descriptors, rowan_tautomers,
     
     # Chemical Properties
-    rowan_pka, rowan_bde, rowan_redox_potential, rowan_solubility,
+    rowan_pka, rowan_bde, rowan_redox_potential,
     
     # Advanced Analysis
     rowan_scan, rowan_fukui, rowan_spin_states, rowan_irc, 
@@ -42,12 +42,13 @@ from .server import (
     api_key
 )
 
+# Import the new solubility function
+from .functions.solubility import rowan_solubility as rowan_solubility_new
+
 # Mapping of tool names to functions
 TOOL_FUNCTIONS = {
     # Basic Calculations
     "rowan_admet": rowan_admet.fn if hasattr(rowan_admet, 'fn') else rowan_admet,
-    "rowan_quantum_chemistry": rowan_quantum_chemistry.fn if hasattr(rowan_quantum_chemistry, 'fn') else rowan_quantum_chemistry,
-    "rowan_qc_guide": rowan_qc_guide.fn if hasattr(rowan_qc_guide, 'fn') else rowan_qc_guide,
     "rowan_multistage_opt": rowan_multistage_opt.fn if hasattr(rowan_multistage_opt, 'fn') else rowan_multistage_opt,
     "rowan_electronic_properties": rowan_electronic_properties.fn if hasattr(rowan_electronic_properties, 'fn') else rowan_electronic_properties,
     
@@ -60,7 +61,7 @@ TOOL_FUNCTIONS = {
     "rowan_pka": rowan_pka.fn if hasattr(rowan_pka, 'fn') else rowan_pka,
     "rowan_bde": rowan_bde.fn if hasattr(rowan_bde, 'fn') else rowan_bde,
     "rowan_redox_potential": rowan_redox_potential.fn if hasattr(rowan_redox_potential, 'fn') else rowan_redox_potential,
-    "rowan_solubility": rowan_solubility.fn if hasattr(rowan_solubility, 'fn') else rowan_solubility,
+    "rowan_solubility": rowan_solubility_new,  # New solubility function from functions/solubility.py
     
     # Advanced Analysis
     "rowan_scan": rowan_scan.fn if hasattr(rowan_scan, 'fn') else rowan_scan,
