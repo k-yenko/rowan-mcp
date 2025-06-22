@@ -4849,3 +4849,1183 @@ TypeError: compute() missing 1 required positional argument: 'molecule'
 2025-06-20 16:45:22,734 - src.server - INFO - 📋 Job UUID: 1132ab52-8427-4cd5-94e6-20a68f870df6
 2025-06-20 16:45:22,734 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
 2025-06-20 16:45:22,734 - src.server - INFO - ✅ rowan_solubility completed successfully in 66.11s
+2025-06-21 13:08:14,772 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 13:08:14,785 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 13:08:14,785 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 13:10:22,303 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 13:10:22,317 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 13:10:22,317 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 13:11:54,424 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 13:11:54,426 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 13:11:54,426 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 13:12:31,131 - src.server - INFO - 🔧 MCP Tool Called: rowan_electronic_properties
+2025-06-21 13:12:31,149 - src.server - INFO - 📝 Parameters: {'name': 'benzene_homo_lumo', 'molecule': 'c1ccccc1', 'blocking': True}
+2025-06-21 13:12:31,149 - src.server - WARNING - ⚠️ No SMILES found for 'c1ccccc1', using as-is
+2025-06-21 13:12:31,149 - src.server - INFO - 🔬 Electronic Properties Calculation: benzene_homo_lumo
+2025-06-21 13:12:31,149 - src.server - INFO - ⚗️ Method: b3lyp
+2025-06-21 13:12:31,149 - src.server - INFO - 📐 Basis Set: def2-svp
+2025-06-21 13:12:31,149 - src.server - INFO - 🖥️ Engine: psi4
+2025-06-21 13:12:31,149 - src.server - INFO - ⚡ Charge: 0, Multiplicity: 1
+2025-06-21 13:12:31,149 - src.server - INFO - 📊 Density Cube: True
+2025-06-21 13:12:31,149 - src.server - INFO - 🔋 ESP Cube: True
+2025-06-21 13:12:31,149 - src.server - INFO - 🎯 Occupied MOs: 1, Virtual MOs: 1
+2025-06-21 13:12:31,149 - src.server - INFO - 🌐 Rowan API Call: electronic_properties
+2025-06-21 13:12:31,149 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'benzene_homo_lumo', 'molecule': 'c1ccccc1', 'initial_molecule': 'c1ccccc1', 'settings': {'method': 'b3lyp', 'basis_set': 'def2-svp', 'engine': 'psi4', 'charge': 0, 'multiplicity': 1}, 'compute_density_cube': True, 'compute_electrostatic_potential_cube': True, 'compute_num_occupied_orbitals': 1, 'compute_num_virtual_orbitals': 1, 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 13:12:31,943 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 13:12:32,301 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:12:37,682 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:12:43,066 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:12:48,467 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:12:53,819 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:12:59,208 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:04,608 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:09,984 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:15,385 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:20,758 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:26,133 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:31,569 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:36,954 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:42,424 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:47,827 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:53,259 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:13:58,634 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:04,013 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:09,385 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:14,754 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:20,143 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:25,534 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:30,883 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:36,227 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:41,623 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:46,995 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:52,434 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:14:57,894 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:03,721 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:09,152 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:14,557 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:19,974 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:25,355 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:30,745 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:36,684 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:42,260 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:47,681 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:53,066 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:15:58,504 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:03,878 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:09,274 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:14,678 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:20,090 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:25,472 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:30,865 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:36,256 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:41,674 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:48,080 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:53,484 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:16:58,854 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:17:04,221 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:17:09,593 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:17:14,977 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:17:20,827 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:17:22,454 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:17:23,162 - src.server - INFO - 🎯 Rowan API submission successful: electronic_properties (292.01s)
+2025-06-21 13:17:23,162 - src.server - INFO - 📋 Job UUID: ba304156-5190-4861-90b1-519cfcd75619
+2025-06-21 13:17:23,162 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 13:17:23,164 - src.server - INFO - ✅ rowan_electronic_properties completed successfully in 292.03s
+2025-06-21 13:17:28,340 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:17:36,423 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:17:46,465 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:19:32,711 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:19:37,919 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/ba304156-5190-4861-90b1-519cfcd75619/stjames "HTTP/1.1 404 Not Found"
+2025-06-21 13:19:47,200 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:30:43,889 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 13:30:43,898 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 13:30:43,898 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 13:31:30,741 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:32:46,923 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:32:52,042 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/ba304156-5190-4861-90b1-519cfcd75619/stjames "HTTP/1.1 404 Not Found"
+2025-06-21 13:32:56,333 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=50&name_contains=benzene_homo_lumo "HTTP/1.1 200 OK"
+2025-06-21 13:33:04,169 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=50 "HTTP/1.1 200 OK"
+2025-06-21 13:33:11,324 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:45:50,092 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 13:45:50,107 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 13:45:50,108 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 13:46:12,534 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ba304156-5190-4861-90b1-519cfcd75619 "HTTP/1.1 200 OK"
+2025-06-21 13:46:13,821 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/ba304156-5190-4861-90b1-519cfcd75619/stjames "HTTP/1.1 404 Not Found"
+2025-06-21 13:46:19,202 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/ba304156-5190-4861-90b1-519cfcd75619/stjames "HTTP/1.1 404 Not Found"
+2025-06-21 13:49:38,771 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=50&name_contains=benzene "HTTP/1.1 200 OK"
+2025-06-21 13:49:43,923 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=20 "HTTP/1.1 200 OK"
+2025-06-21 13:49:49,291 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=50&object_type=electronic_properties "HTTP/1.1 200 OK"
+2025-06-21 13:49:54,889 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=50&name_contains=homo "HTTP/1.1 200 OK"
+2025-06-21 13:49:55,623 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=50&name_contains=lumo "HTTP/1.1 200 OK"
+2025-06-21 13:50:02,845 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=2&size=50 "HTTP/1.1 200 OK"
+2025-06-21 13:50:28,736 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/6f68137f-0e04-4f3e-a0ce-8293081047d3/stjames "HTTP/1.1 404 Not Found"
+2025-06-21 13:53:05,586 - src.server - INFO - 🔧 MCP Tool Called: rowan_multistage_opt
+2025-06-21 13:53:05,586 - src.server - INFO - 📝 Parameters: {'name': 'ethanol_optimization', 'molecule': 'CCO', 'blocking': True}
+2025-06-21 13:53:05,586 - src.server - INFO - 🚀 Starting multistage optimization: ethanol_optimization
+2025-06-21 13:53:05,586 - src.server - INFO - ⏱️  Using ping_interval: 30s (longer for multi-stage calculation)
+2025-06-21 13:53:05,586 - src.server - INFO - 🌐 Rowan API Call: multistage_opt
+2025-06-21 13:53:05,586 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethanol_optimization', 'molecule': 'CCO', 'folder_uuid': None, 'blocking': True, 'ping_interval': 30}
+2025-06-21 13:53:05,586 - src.server - INFO - ⏳ Multi-stage optimization may take several minutes...
+2025-06-21 13:53:05,586 - src.server - INFO - 🔄 Progress will be checked every 30 seconds
+2025-06-21 13:53:06,275 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 13:53:06,730 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/32682988-a4ca-4e1f-b7d0-d1f9a58cd93a "HTTP/1.1 200 OK"
+2025-06-21 13:53:37,185 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/32682988-a4ca-4e1f-b7d0-d1f9a58cd93a "HTTP/1.1 200 OK"
+2025-06-21 13:54:07,939 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/32682988-a4ca-4e1f-b7d0-d1f9a58cd93a "HTTP/1.1 200 OK"
+2025-06-21 13:54:08,997 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/32682988-a4ca-4e1f-b7d0-d1f9a58cd93a "HTTP/1.1 200 OK"
+2025-06-21 13:54:09,134 - src.server - INFO - 🎯 Rowan API submission successful: multistage_opt (63.55s)
+2025-06-21 13:54:09,134 - src.server - INFO - 📋 Job UUID: 32682988-a4ca-4e1f-b7d0-d1f9a58cd93a
+2025-06-21 13:54:09,134 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 13:54:09,134 - src.server - INFO - ✅ rowan_multistage_opt completed successfully in 63.55s
+2025-06-21 13:54:09,135 - src.server - INFO - 🔧 MCP Tool Called: rowan_multistage_opt
+2025-06-21 13:54:09,135 - src.server - INFO - 📝 Parameters: {'name': 'ethanol_structure_optimization', 'molecule': 'CCO'}
+2025-06-21 13:54:09,135 - src.server - INFO - 🚀 Starting multistage optimization: ethanol_structure_optimization
+2025-06-21 13:54:09,135 - src.server - INFO - ⏱️  Using ping_interval: 30s (longer for multi-stage calculation)
+2025-06-21 13:54:09,135 - src.server - INFO - 🌐 Rowan API Call: multistage_opt
+2025-06-21 13:54:09,135 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'ethanol_structure_optimization', 'molecule': 'CCO', 'folder_uuid': None, 'blocking': True, 'ping_interval': 30}
+2025-06-21 13:54:09,135 - src.server - INFO - ⏳ Multi-stage optimization may take several minutes...
+2025-06-21 13:54:09,136 - src.server - INFO - 🔄 Progress will be checked every 30 seconds
+2025-06-21 13:54:09,916 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 13:54:10,318 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/846e7fa9-dfc3-4486-9d4b-cecff2778d78 "HTTP/1.1 200 OK"
+2025-06-21 13:54:40,724 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/846e7fa9-dfc3-4486-9d4b-cecff2778d78 "HTTP/1.1 200 OK"
+2025-06-21 13:54:41,232 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/846e7fa9-dfc3-4486-9d4b-cecff2778d78 "HTTP/1.1 200 OK"
+2025-06-21 13:54:41,348 - src.server - INFO - 🎯 Rowan API submission successful: multistage_opt (32.21s)
+2025-06-21 13:54:41,348 - src.server - INFO - 📋 Job UUID: 846e7fa9-dfc3-4486-9d4b-cecff2778d78
+2025-06-21 13:54:41,349 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 13:54:41,350 - src.server - INFO - ✅ rowan_multistage_opt completed successfully in 32.22s
+2025-06-21 13:57:46,528 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 13:57:46,530 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility_screening', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,DMSO,methanol,acetone', 'temperatures': '25', 'blocking': True}
+2025-06-21 13:57:46,530 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 13:57:46,530 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 13:57:52,576 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 13:57:52,576 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility_screening', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,DMSO,methanol,acetone', 'temperatures': '298', 'blocking': True}
+2025-06-21 13:57:52,576 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 13:57:52,576 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 13:57:52,576 - src.server - INFO -    Name: acetaminophen_solubility_screening
+2025-06-21 13:57:52,576 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 13:57:52,576 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 13:57:52,576 - src.server - INFO -    Solvents: ['water,ethanol,DMSO,methanol,acetone']
+2025-06-21 13:57:52,576 - src.server - INFO -    Temperatures: [298.0] K
+2025-06-21 13:57:52,576 - src.server - INFO -    Temperature range: 298.0-298.0 K
+2025-06-21 13:57:52,576 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 13:57:52,576 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_solubility_screening', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['water,ethanol,DMSO,methanol,acetone'], 'temperatures': [298.0], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 13:57:53,229 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 13:57:53,630 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2aec883b-97b8-4817-a9c1-55c2d1076a91 "HTTP/1.1 200 OK"
+2025-06-21 13:57:58,992 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2aec883b-97b8-4817-a9c1-55c2d1076a91 "HTTP/1.1 200 OK"
+2025-06-21 13:58:04,393 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2aec883b-97b8-4817-a9c1-55c2d1076a91 "HTTP/1.1 200 OK"
+2025-06-21 13:58:09,842 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2aec883b-97b8-4817-a9c1-55c2d1076a91 "HTTP/1.1 200 OK"
+2025-06-21 13:58:15,219 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2aec883b-97b8-4817-a9c1-55c2d1076a91 "HTTP/1.1 200 OK"
+2025-06-21 13:58:15,609 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/2aec883b-97b8-4817-a9c1-55c2d1076a91 "HTTP/1.1 200 OK"
+2025-06-21 13:58:15,610 - src.server - INFO - 🎯 Rowan API submission successful: solubility (23.03s)
+2025-06-21 13:58:15,610 - src.server - INFO - 📋 Job UUID: 2aec883b-97b8-4817-a9c1-55c2d1076a91
+2025-06-21 13:58:15,611 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 13:58:15,611 - src.server - INFO - ✅ rowan_solubility completed successfully in 23.03s
+2025-06-21 14:06:04,184 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:06:04,184 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Prediction', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,methanol,DMSO,acetone', 'temperatures': '25', 'blocking': True}
+2025-06-21 14:06:04,185 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:06:04,185 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:06:09,504 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:06:09,504 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Prediction', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,methanol,DMSO,acetone', 'temperatures': '298', 'blocking': True}
+2025-06-21 14:06:09,504 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:06:09,504 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:06:09,504 - src.server - INFO -    Name: Acetaminophen Solubility Prediction
+2025-06-21 14:06:09,504 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:06:09,504 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:06:09,504 - src.server - INFO -    Solvents: ['water,ethanol,methanol,DMSO,acetone']
+2025-06-21 14:06:09,504 - src.server - INFO -    Temperatures: [298.0] K
+2025-06-21 14:06:09,504 - src.server - INFO -    Temperature range: 298.0-298.0 K
+2025-06-21 14:06:09,504 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:06:09,504 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen Solubility Prediction', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['water,ethanol,methanol,DMSO,acetone'], 'temperatures': [298.0], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:06:10,148 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 14:06:10,520 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c246053f-6b51-4e32-95f3-94d34a7df6b9 "HTTP/1.1 200 OK"
+2025-06-21 14:06:15,888 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c246053f-6b51-4e32-95f3-94d34a7df6b9 "HTTP/1.1 200 OK"
+2025-06-21 14:06:21,244 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c246053f-6b51-4e32-95f3-94d34a7df6b9 "HTTP/1.1 200 OK"
+2025-06-21 14:06:26,629 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c246053f-6b51-4e32-95f3-94d34a7df6b9 "HTTP/1.1 200 OK"
+2025-06-21 14:06:26,986 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c246053f-6b51-4e32-95f3-94d34a7df6b9 "HTTP/1.1 200 OK"
+2025-06-21 14:06:26,987 - src.server - INFO - 🎯 Rowan API submission successful: solubility (17.48s)
+2025-06-21 14:06:26,988 - src.server - INFO - 📋 Job UUID: c246053f-6b51-4e32-95f3-94d34a7df6b9
+2025-06-21 14:06:26,988 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 14:06:26,988 - src.server - INFO - ✅ rowan_solubility completed successfully in 17.48s
+2025-06-21 14:06:31,792 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/c246053f-6b51-4e32-95f3-94d34a7df6b9/stjames "HTTP/1.1 404 Not Found"
+2025-06-21 14:06:35,924 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:06:35,924 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Multi-Solvent Analysis', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'blocking': True}
+2025-06-21 14:06:35,924 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:06:35,924 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:06:35,925 - src.server - INFO -    Name: Acetaminophen Multi-Solvent Analysis
+2025-06-21 14:06:35,925 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:06:35,925 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:06:35,925 - src.server - INFO -    Solvents: ['O']
+2025-06-21 14:06:35,925 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+2025-06-21 14:06:35,925 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-21 14:06:35,925 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:06:35,925 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen Multi-Solvent Analysis', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:06:36,628 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 14:06:36,983 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:06:42,423 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:06:47,788 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:06:53,162 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:06:58,510 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:03,909 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:09,285 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:14,650 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:20,030 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:25,387 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:30,770 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:36,173 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:41,538 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:46,889 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:47,227 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d3e000ca-9abe-46f4-95a2-1e0171587888 "HTTP/1.1 200 OK"
+2025-06-21 14:07:47,228 - src.server - INFO - 🎯 Rowan API submission successful: solubility (71.30s)
+2025-06-21 14:07:47,228 - src.server - INFO - 📋 Job UUID: d3e000ca-9abe-46f4-95a2-1e0171587888
+2025-06-21 14:07:47,228 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 14:07:47,228 - src.server - INFO - ✅ rowan_solubility completed successfully in 71.30s
+2025-06-21 14:07:57,185 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:07:57,185 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen in Ethanol', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'ethanol', 'blocking': True}
+2025-06-21 14:07:57,185 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:07:57,186 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:07:57,186 - src.server - INFO -    Name: Acetaminophen in Ethanol
+2025-06-21 14:07:57,186 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:07:57,186 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:07:57,186 - src.server - INFO -    Solvents: ['ethanol']
+2025-06-21 14:07:57,186 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+2025-06-21 14:07:57,186 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-21 14:07:57,186 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:07:57,186 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen in Ethanol', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['ethanol'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:07:57,785 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 14:07:58,137 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fdadd1b4-8ae3-420a-8b47-9f7e7226e3f4 "HTTP/1.1 200 OK"
+2025-06-21 14:08:03,506 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fdadd1b4-8ae3-420a-8b47-9f7e7226e3f4 "HTTP/1.1 200 OK"
+2025-06-21 14:08:08,910 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fdadd1b4-8ae3-420a-8b47-9f7e7226e3f4 "HTTP/1.1 200 OK"
+2025-06-21 14:08:14,296 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fdadd1b4-8ae3-420a-8b47-9f7e7226e3f4 "HTTP/1.1 200 OK"
+2025-06-21 14:08:14,683 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fdadd1b4-8ae3-420a-8b47-9f7e7226e3f4 "HTTP/1.1 200 OK"
+2025-06-21 14:08:14,684 - src.server - INFO - 🎯 Rowan API submission successful: solubility (17.50s)
+2025-06-21 14:08:14,684 - src.server - INFO - 📋 Job UUID: fdadd1b4-8ae3-420a-8b47-9f7e7226e3f4
+2025-06-21 14:08:14,684 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 14:08:14,684 - src.server - INFO - ✅ rowan_solubility completed successfully in 17.50s
+2025-06-21 14:08:14,815 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:08:14,815 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen in Methanol', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'methanol', 'blocking': True}
+2025-06-21 14:08:14,815 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:08:14,815 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:08:14,815 - src.server - INFO -    Name: Acetaminophen in Methanol
+2025-06-21 14:08:14,815 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:08:14,815 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:08:14,815 - src.server - INFO -    Solvents: ['methanol']
+2025-06-21 14:08:14,815 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+2025-06-21 14:08:14,815 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-21 14:08:14,815 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:08:14,815 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen in Methanol', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['methanol'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:08:15,442 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 14:08:15,813 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c27e0c0d-fa2e-4897-ac75-027504b967ea "HTTP/1.1 200 OK"
+2025-06-21 14:08:21,226 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c27e0c0d-fa2e-4897-ac75-027504b967ea "HTTP/1.1 200 OK"
+2025-06-21 14:08:26,625 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c27e0c0d-fa2e-4897-ac75-027504b967ea "HTTP/1.1 200 OK"
+2025-06-21 14:08:32,005 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c27e0c0d-fa2e-4897-ac75-027504b967ea "HTTP/1.1 200 OK"
+2025-06-21 14:08:37,361 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c27e0c0d-fa2e-4897-ac75-027504b967ea "HTTP/1.1 200 OK"
+2025-06-21 14:08:37,781 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c27e0c0d-fa2e-4897-ac75-027504b967ea "HTTP/1.1 200 OK"
+2025-06-21 14:08:37,786 - src.server - INFO - 🎯 Rowan API submission successful: solubility (22.97s)
+2025-06-21 14:08:37,787 - src.server - INFO - 📋 Job UUID: c27e0c0d-fa2e-4897-ac75-027504b967ea
+2025-06-21 14:08:37,787 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 14:08:37,788 - src.server - INFO - ✅ rowan_solubility completed successfully in 22.97s
+2025-06-21 14:08:37,900 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:08:37,900 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen in DMSO', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'DMSO', 'blocking': True}
+2025-06-21 14:08:37,900 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:08:37,900 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:08:37,900 - src.server - INFO -    Name: Acetaminophen in DMSO
+2025-06-21 14:08:37,900 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:08:37,900 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:08:37,900 - src.server - INFO -    Solvents: ['DMSO']
+2025-06-21 14:08:37,900 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
+2025-06-21 14:08:37,901 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-21 14:08:37,901 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:08:37,901 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen in DMSO', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['DMSO'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:08:38,590 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 14:08:38,955 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/42759c99-f67f-44d8-9a00-20afe672ee13 "HTTP/1.1 200 OK"
+2025-06-21 14:08:44,342 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/42759c99-f67f-44d8-9a00-20afe672ee13 "HTTP/1.1 200 OK"
+2025-06-21 14:08:49,739 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/42759c99-f67f-44d8-9a00-20afe672ee13 "HTTP/1.1 200 OK"
+2025-06-21 14:08:55,088 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/42759c99-f67f-44d8-9a00-20afe672ee13 "HTTP/1.1 200 OK"
+2025-06-21 14:08:55,469 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/42759c99-f67f-44d8-9a00-20afe672ee13 "HTTP/1.1 200 OK"
+2025-06-21 14:08:55,470 - src.server - INFO - 🎯 Rowan API submission successful: solubility (17.57s)
+2025-06-21 14:08:55,471 - src.server - INFO - 📋 Job UUID: 42759c99-f67f-44d8-9a00-20afe672ee13
+2025-06-21 14:08:55,471 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 14:08:55,471 - src.server - INFO - ✅ rowan_solubility completed successfully in 17.57s
+2025-06-21 14:20:30,960 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:20:30,960 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility_screening', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,methanol,acetone,dimethylsulfoxide', 'temperatures': '25,37,50,60,80', 'blocking': True}
+2025-06-21 14:20:30,960 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:20:30,960 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:20:36,549 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:20:36,549 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility_screening', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,methanol,acetone,dimethylsulfoxide', 'temperatures': '25', 'blocking': True}
+2025-06-21 14:20:36,549 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:20:36,549 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:20:41,493 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:20:41,493 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility_screening', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,methanol,acetone,dimethylsulfoxide', 'temperatures': '298,310,323,333,353', 'blocking': True}
+2025-06-21 14:20:41,493 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:20:41,493 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:20:46,666 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:20:46,666 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility_298K', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,methanol,acetone,dimethylsulfoxide', 'temperatures': '298', 'blocking': True}
+2025-06-21 14:20:46,667 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:20:46,667 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:20:46,667 - src.server - INFO -    Name: acetaminophen_solubility_298K
+2025-06-21 14:20:46,667 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:20:46,667 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:20:46,667 - src.server - INFO -    Solvents: ['water,ethanol,methanol,acetone,dimethylsulfoxide']
+2025-06-21 14:20:46,667 - src.server - INFO -    Temperatures: [298.0] K
+2025-06-21 14:20:46,667 - src.server - INFO -    Temperature range: 298.0-298.0 K
+2025-06-21 14:20:46,667 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:20:46,667 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_solubility_298K', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['water,ethanol,methanol,acetone,dimethylsulfoxide'], 'temperatures': [298.0], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:20:47,369 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 14:20:47,764 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/930c3621-da5a-4d08-a550-de1377affe12 "HTTP/1.1 200 OK"
+2025-06-21 14:20:53,143 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/930c3621-da5a-4d08-a550-de1377affe12 "HTTP/1.1 200 OK"
+2025-06-21 14:20:58,527 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/930c3621-da5a-4d08-a550-de1377affe12 "HTTP/1.1 200 OK"
+2025-06-21 14:20:58,897 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/930c3621-da5a-4d08-a550-de1377affe12 "HTTP/1.1 200 OK"
+2025-06-21 14:20:58,898 - src.server - INFO - 🎯 Rowan API submission successful: solubility (12.23s)
+2025-06-21 14:20:58,899 - src.server - INFO - 📋 Job UUID: 930c3621-da5a-4d08-a550-de1377affe12
+2025-06-21 14:20:58,899 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 14:20:58,899 - src.server - INFO - ✅ rowan_solubility completed successfully in 12.23s
+2025-06-21 14:22:35,463 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:22:35,464 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_25C', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,methanol,acetone,dimethylsulfoxide', 'temperatures': '298', 'blocking': True}
+2025-06-21 14:22:35,464 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:22:35,464 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:22:35,464 - src.server - INFO -    Name: acetaminophen_25C
+2025-06-21 14:22:35,464 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:22:35,464 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:22:35,464 - src.server - INFO -    Solvents: ['water,ethanol,methanol,acetone,dimethylsulfoxide']
+2025-06-21 14:22:35,464 - src.server - INFO -    Temperatures: [298.0] K
+2025-06-21 14:22:35,464 - src.server - INFO -    Temperature range: 298.0-298.0 K
+2025-06-21 14:22:35,464 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:22:35,464 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_25C', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['water,ethanol,methanol,acetone,dimethylsulfoxide'], 'temperatures': [298.0], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:22:37,173 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 14:22:37,581 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:22:42,972 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:22:48,341 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:22:53,697 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:22:59,055 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:04,433 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:09,793 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:15,148 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:20,530 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:25,898 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:31,329 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:36,684 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:42,075 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:47,451 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:52,787 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:58,163 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:58,547 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/cf331a5b-41d2-4844-8f26-87b80c2f132a "HTTP/1.1 200 OK"
+2025-06-21 14:23:58,548 - src.server - INFO - 🎯 Rowan API submission successful: solubility (83.08s)
+2025-06-21 14:23:58,548 - src.server - INFO - 📋 Job UUID: cf331a5b-41d2-4844-8f26-87b80c2f132a
+2025-06-21 14:23:58,548 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 14:23:58,548 - src.server - INFO - ✅ rowan_solubility completed successfully in 83.08s
+2025-06-21 14:23:58,552 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:23:58,552 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_37C', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,methanol,acetone,dimethylsulfoxide', 'temperatures': '310', 'blocking': True}
+2025-06-21 14:23:58,552 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:23:58,552 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:23:58,552 - src.server - INFO -    Name: acetaminophen_37C
+2025-06-21 14:23:58,552 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:23:58,553 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:23:58,553 - src.server - INFO -    Solvents: ['water,ethanol,methanol,acetone,dimethylsulfoxide']
+2025-06-21 14:23:58,553 - src.server - INFO -    Temperatures: [310.0] K
+2025-06-21 14:23:58,553 - src.server - INFO -    Temperature range: 310.0-310.0 K
+2025-06-21 14:23:58,553 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:23:58,553 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_37C', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['water,ethanol,methanol,acetone,dimethylsulfoxide'], 'temperatures': [310.0], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:23:59,239 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 14:23:59,591 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:24:05,695 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:24:11,060 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:24:16,458 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:24:22,818 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:24:28,218 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:24:33,594 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:24:38,990 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:24:44,346 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:24:49,721 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:24:55,126 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:01,064 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:07,509 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:12,885 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:19,731 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:25,103 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:30,485 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:35,874 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:41,221 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:47,278 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:52,665 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:25:58,059 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:03,475 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:08,831 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:14,505 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:19,867 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:25,872 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:31,219 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:36,595 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:41,965 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:47,361 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:52,722 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:26:59,462 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:27:04,817 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:27:10,206 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:27:15,593 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:27:20,976 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:27:27,421 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:27:32,801 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:27:39,250 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:27:44,608 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:27:49,979 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/609fa2a8-de08-486c-a163-2d1046a51f7d "HTTP/1.1 200 OK"
+2025-06-21 14:27:54,636 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 14:27:54,646 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 14:27:54,646 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 14:28:42,507 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:28:42,525 - src.server - INFO -    🧪 PROCESSED solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (type: <class 'list'>)
+2025-06-21 14:28:42,525 - src.server - INFO -    🌡️ PROCESSED temperatures: 25,37,10,50,70 (type: <class 'str'>)
+2025-06-21 14:28:42,525 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:28:42,525 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': '25,37,10,50,70', 'blocking': True}
+2025-06-21 14:28:42,525 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:28:42,525 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:28:47,730 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:28:47,730 - src.server - INFO -    🧪 PROCESSED solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (type: <class 'list'>)
+2025-06-21 14:28:47,730 - src.server - INFO -    🌡️ PROCESSED temperatures: 298,310,283,323,343 (type: <class 'str'>)
+2025-06-21 14:28:47,730 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:28:47,730 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': '298,310,283,323,343', 'blocking': True}
+2025-06-21 14:28:47,730 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:28:47,730 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:28:53,711 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:28:53,712 - src.server - INFO -    🧪 PROCESSED solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (type: <class 'list'>)
+2025-06-21 14:28:53,712 - src.server - INFO -    🌡️ PROCESSED temperatures: 298.15,310.15,283.15,323.15,343.15 (type: <class 'str'>)
+2025-06-21 14:28:53,712 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:28:53,712 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': '298.15,310.15,283.15,323.15,343.15', 'blocking': True}
+2025-06-21 14:28:53,712 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:28:53,712 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:28:59,308 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:28:59,308 - src.server - INFO -    🧪 PROCESSED solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (type: <class 'list'>)
+2025-06-21 14:28:59,308 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:28:59,308 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'blocking': True}
+2025-06-21 14:28:59,308 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:28:59,308 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:28:59,308 - src.server - INFO -    Name: Acetaminophen Solubility Study
+2025-06-21 14:28:59,308 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:28:59,308 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:28:59,308 - src.server - INFO -    Solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (count: 5)
+2025-06-21 14:28:59,308 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K (count: 7)
+2025-06-21 14:28:59,308 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-21 14:28:59,308 - src.server - INFO -    🎯 Single job for 5 solvents × 7 temperatures
+2025-06-21 14:28:59,308 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:28:59,308 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen Solubility Study', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:28:59,308 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:28:59,308 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:28:59,308 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:28:59,308 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:28:59,308 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:28:59,310 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:28:59,310 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:28:59,310 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:28:59,310 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:28:59,310 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:29:09,770 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:29:09,772 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:29:09,772 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen_Solubility_Test', 'molecule': 'CC(=O)Nc1ccc(O)cc1'}
+2025-06-21 14:29:09,773 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:29:09,773 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:29:09,773 - src.server - INFO -    Name: Acetaminophen_Solubility_Test
+2025-06-21 14:29:09,773 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:29:09,773 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:29:09,773 - src.server - INFO -    Solvents: ['O'] (count: 1)
+2025-06-21 14:29:09,773 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K (count: 7)
+2025-06-21 14:29:09,773 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-21 14:29:09,773 - src.server - INFO -    🎯 Single job for 1 solvents × 7 temperatures
+2025-06-21 14:29:09,773 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:29:09,774 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen_Solubility_Test', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:29:09,776 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:29:09,777 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:29:09,777 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:29:09,777 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:29:09,777 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:29:09,777 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:29:09,778 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:29:09,778 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:29:09,778 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:29:09,778 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.01s
+2025-06-21 14:31:42,461 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 14:31:42,463 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 14:31:42,464 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 14:33:00,764 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:33:00,782 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70', 'blocking': True}
+2025-06-21 14:33:00,782 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:33:00,782 - src.server - INFO -    🧪 PROCESSED solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (type: <class 'list'>)
+2025-06-21 14:33:00,782 - src.server - INFO -    🌡️ PROCESSED temperatures: 25,37,10,50,70 (type: <class 'str'>)
+2025-06-21 14:33:00,782 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:33:00,782 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.02s
+2025-06-21 14:33:06,852 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:33:06,853 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '298.15,310.15,283.15,323.15,343.15', 'blocking': True}
+2025-06-21 14:33:06,853 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:33:06,853 - src.server - INFO -    🧪 PROCESSED solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (type: <class 'list'>)
+2025-06-21 14:33:06,853 - src.server - INFO -    🌡️ PROCESSED temperatures: 298.15,310.15,283.15,323.15,343.15 (type: <class 'str'>)
+2025-06-21 14:33:06,853 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:33:06,853 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:33:12,458 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:33:12,458 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water ethanol dmso acetone hexane', 'temperatures': '298 310 283 323 343', 'blocking': True}
+2025-06-21 14:33:12,458 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:33:12,458 - src.server - INFO -    🧪 PROCESSED solvents: ['water ethanol dmso acetone hexane'] (type: <class 'list'>)
+2025-06-21 14:33:12,458 - src.server - INFO -    🌡️ PROCESSED temperatures: 298 310 283 323 343 (type: <class 'str'>)
+2025-06-21 14:33:12,459 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:33:12,459 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:33:22,923 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:33:22,923 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'blocking': True}
+2025-06-21 14:33:22,923 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:33:22,923 - src.server - INFO -    🧪 PROCESSED solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (type: <class 'list'>)
+2025-06-21 14:33:22,923 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:33:22,923 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:33:22,923 - src.server - INFO -    Name: Acetaminophen Solubility Study
+2025-06-21 14:33:22,923 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:33:22,923 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:33:22,923 - src.server - INFO -    Solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (count: 5)
+2025-06-21 14:33:22,923 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K (count: 7)
+2025-06-21 14:33:22,923 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-21 14:33:22,923 - src.server - INFO -    🎯 Single job for 5 solvents × 7 temperatures
+2025-06-21 14:33:22,923 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:33:22,923 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen Solubility Study', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:33:22,923 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:33:22,923 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:33:22,923 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:33:22,923 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:33:22,923 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:33:22,926 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:33:22,926 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:33:22,926 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:33:22,926 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:33:22,926 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:33:35,271 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:33:35,272 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '283.15,298.15,310.15,323.15,343.15', 'blocking': True}
+2025-06-21 14:33:35,272 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:33:35,272 - src.server - INFO -    🧪 PROCESSED solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (type: <class 'list'>)
+2025-06-21 14:33:35,272 - src.server - INFO -    🌡️ PROCESSED temperatures: 283.15,298.15,310.15,323.15,343.15 (type: <class 'str'>)
+2025-06-21 14:33:35,272 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:33:35,272 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:33:45,922 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:33:45,922 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane'}
+2025-06-21 14:33:45,922 - src.server - INFO - 🔧 PREPROCESSING APPLIED for rowan_solubility:
+2025-06-21 14:33:45,922 - src.server - INFO -    🧪 PROCESSED solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (type: <class 'list'>)
+2025-06-21 14:33:45,922 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:33:45,923 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:33:45,923 - src.server - INFO -    Name: Acetaminophen Solubility Study
+2025-06-21 14:33:45,923 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:33:45,923 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:33:45,923 - src.server - INFO -    Solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (count: 5)
+2025-06-21 14:33:45,923 - src.server - INFO -    Temperatures: [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K (count: 7)
+2025-06-21 14:33:45,923 - src.server - INFO -    Temperature range: 273.1-423.1 K
+2025-06-21 14:33:45,923 - src.server - INFO -    🎯 Single job for 5 solvents × 7 temperatures
+2025-06-21 14:33:45,923 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:33:45,923 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen Solubility Study', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:33:45,923 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:33:45,923 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:33:45,923 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:33:45,923 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:33:45,923 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:33:45,923 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:33:45,923 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:33:45,923 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:33:45,923 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:33:45,923 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:39:41,616 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 14:39:41,618 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 14:39:41,618 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 14:40:04,521 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:40:04,539 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility_analysis', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70', 'blocking': True}
+2025-06-21 14:40:04,539 - src.server - INFO - 🔧 PREPROCESSING SOLVENTS: Input = water,ethanol,dmso,acetone,hexane (type: <class 'str'>)
+2025-06-21 14:40:04,539 - src.server - INFO - 🧪 PROCESSED SOLVENTS: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC']
+2025-06-21 14:40:04,539 - src.server - INFO - 🔧 PREPROCESSING TEMPERATURES: Input = 25,37,10,50,70 (type: <class 'str'>)
+2025-06-21 14:40:04,539 - src.server - INFO - 🌡️ PROCESSED TEMPERATURES: [298.15, 310.15, 283.15, 323.15, 343.15]
+2025-06-21 14:40:04,539 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:40:04,539 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:40:04,539 - src.server - INFO -    Name: acetaminophen_solubility_analysis
+2025-06-21 14:40:04,539 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:40:04,539 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:40:04,539 - src.server - INFO -    Solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (count: 5)
+2025-06-21 14:40:04,539 - src.server - INFO -    Temperatures: [298.15, 310.15, 283.15, 323.15, 343.15] K (count: 5)
+2025-06-21 14:40:04,539 - src.server - INFO -    Temperature range: 283.1-343.1 K
+2025-06-21 14:40:04,539 - src.server - INFO -    🎯 Single job for 5 solvents × 5 temperatures
+2025-06-21 14:40:04,539 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:40:04,539 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_solubility_analysis', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [298.15, 310.15, 283.15, 323.15, 343.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:40:04,540 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:40:04,540 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:40:04,540 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:40:04,540 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:40:04,540 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:40:04,541 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:40:04,542 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:40:04,542 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:40:04,542 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:40:04,542 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.02s
+2025-06-21 14:40:10,211 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:40:10,211 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility_test', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70', 'blocking': True}
+2025-06-21 14:40:10,211 - src.server - INFO - 🔧 PREPROCESSING SOLVENTS: Input = water,ethanol,dmso,acetone,hexane (type: <class 'str'>)
+2025-06-21 14:40:10,211 - src.server - INFO - 🧪 PROCESSED SOLVENTS: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC']
+2025-06-21 14:40:10,211 - src.server - INFO - 🔧 PREPROCESSING TEMPERATURES: Input = 25,37,10,50,70 (type: <class 'str'>)
+2025-06-21 14:40:10,211 - src.server - INFO - 🌡️ PROCESSED TEMPERATURES: [298.15, 310.15, 283.15, 323.15, 343.15]
+2025-06-21 14:40:10,211 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:40:10,211 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:40:10,211 - src.server - INFO -    Name: acetaminophen_solubility_test
+2025-06-21 14:40:10,211 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:40:10,211 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:40:10,211 - src.server - INFO -    Solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (count: 5)
+2025-06-21 14:40:10,211 - src.server - INFO -    Temperatures: [298.15, 310.15, 283.15, 323.15, 343.15] K (count: 5)
+2025-06-21 14:40:10,211 - src.server - INFO -    Temperature range: 283.1-343.1 K
+2025-06-21 14:40:10,211 - src.server - INFO -    🎯 Single job for 5 solvents × 5 temperatures
+2025-06-21 14:40:10,211 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:40:10,211 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_solubility_test', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [298.15, 310.15, 283.15, 323.15, 343.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:40:10,211 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:40:10,211 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:40:10,211 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:40:10,211 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:40:10,211 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:40:10,212 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:40:10,212 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:40:10,212 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:40:10,212 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:40:10,212 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:40:15,550 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:40:15,550 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility_study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70'}
+2025-06-21 14:40:15,550 - src.server - INFO - 🔧 PREPROCESSING SOLVENTS: Input = water,ethanol,dmso,acetone,hexane (type: <class 'str'>)
+2025-06-21 14:40:15,550 - src.server - INFO - 🧪 PROCESSED SOLVENTS: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC']
+2025-06-21 14:40:15,550 - src.server - INFO - 🔧 PREPROCESSING TEMPERATURES: Input = 25,37,10,50,70 (type: <class 'str'>)
+2025-06-21 14:40:15,550 - src.server - INFO - 🌡️ PROCESSED TEMPERATURES: [298.15, 310.15, 283.15, 323.15, 343.15]
+2025-06-21 14:40:15,550 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:40:15,550 - src.server - INFO - 🧪 Solubility Analysis Debug:
+2025-06-21 14:40:15,550 - src.server - INFO -    Name: acetaminophen_solubility_study
+2025-06-21 14:40:15,550 - src.server - INFO -    Input: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:40:15,550 - src.server - INFO -    Using SMILES: CC(=O)Nc1ccc(O)cc1
+2025-06-21 14:40:15,550 - src.server - INFO -    Solvents: ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'] (count: 5)
+2025-06-21 14:40:15,551 - src.server - INFO -    Temperatures: [298.15, 310.15, 283.15, 323.15, 343.15] K (count: 5)
+2025-06-21 14:40:15,551 - src.server - INFO -    Temperature range: 283.1-343.1 K
+2025-06-21 14:40:15,551 - src.server - INFO -    🎯 Single job for 5 solvents × 5 temperatures
+2025-06-21 14:40:15,551 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:40:15,551 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_solubility_study', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [298.15, 310.15, 283.15, 323.15, 343.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:40:15,551 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:40:15,551 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:40:15,551 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:40:15,551 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:40:15,551 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:40:15,551 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:40:15,551 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:40:15,551 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:40:15,551 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:40:15,551 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:47:49,355 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 14:47:49,371 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 14:47:49,371 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 14:48:14,147 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:48:14,165 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70', 'blocking': True}
+2025-06-21 14:48:14,165 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:48:14,165 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:48:14,165 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen Solubility Study', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [298.15, 310.15, 283.15, 323.15, 343.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:48:14,165 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:48:14,165 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:48:14,165 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:48:14,165 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:48:14,165 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:48:14,167 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:48:14,167 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:48:14,168 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:48:14,168 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:48:14,168 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.02s
+2025-06-21 14:48:19,686 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:48:19,686 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen_Solubility_Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70'}
+2025-06-21 14:48:19,687 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:48:19,688 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:48:19,688 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen_Solubility_Study', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [298.15, 310.15, 283.15, 323.15, 343.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:48:19,688 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:48:19,688 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:48:19,689 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:48:19,689 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:48:19,689 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:48:19,690 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:48:19,690 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:48:19,691 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:48:19,691 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:48:19,691 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.01s
+2025-06-21 14:48:38,106 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:48:38,106 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility', 'molecule': 'CC(=O)Nc1ccc(O)cc1'}
+2025-06-21 14:48:38,106 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:48:38,106 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:48:38,106 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_solubility', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O'], 'temperatures': [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:48:38,106 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:48:38,106 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:48:38,106 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:48:38,106 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:48:38,106 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:48:38,107 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:48:38,107 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:48:38,107 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:48:38,107 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:48:38,107 - src.server - INFO - ✅ rowan_solubility completed successfully in 0.00s
+2025-06-21 14:52:42,594 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 14:52:42,596 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 14:52:42,596 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 14:53:03,706 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:53:03,725 - src.server - INFO - 📝 Parameters: {'name': 'acetaminophen_solubility_test', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70', 'blocking': True}
+2025-06-21 14:53:03,725 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:53:03,725 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:53:03,725 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'acetaminophen_solubility_test', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [298.15, 310.15, 283.15, 323.15, 343.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:53:04,424 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 14:53:04,819 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b371e1c9-1e82-4218-9c46-72cd1c1a8b3e "HTTP/1.1 200 OK"
+2025-06-21 14:53:10,226 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b371e1c9-1e82-4218-9c46-72cd1c1a8b3e "HTTP/1.1 200 OK"
+2025-06-21 14:53:15,614 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b371e1c9-1e82-4218-9c46-72cd1c1a8b3e "HTTP/1.1 200 OK"
+2025-06-21 14:53:20,974 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b371e1c9-1e82-4218-9c46-72cd1c1a8b3e "HTTP/1.1 200 OK"
+2025-06-21 14:53:21,340 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/b371e1c9-1e82-4218-9c46-72cd1c1a8b3e "HTTP/1.1 200 OK"
+2025-06-21 14:53:21,348 - src.server - INFO - 🎯 Rowan API submission successful: solubility (17.62s)
+2025-06-21 14:53:21,349 - src.server - INFO - 📋 Job UUID: b371e1c9-1e82-4218-9c46-72cd1c1a8b3e
+2025-06-21 14:53:21,349 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-21 14:53:21,349 - src.server - INFO - ✅ rowan_solubility completed successfully in 17.64s
+2025-06-21 14:59:29,668 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 14:59:29,670 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 14:59:29,670 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 14:59:50,429 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 14:59:50,449 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70', 'blocking': True}
+2025-06-21 14:59:50,449 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 14:59:50,450 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 14:59:50,450 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen Solubility Study', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [298.15, 310.15, 283.15, 323.15, 343.15], 'folder_uuid': None, 'blocking': True, 'ping_interval': 5}
+2025-06-21 14:59:50,450 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 14:59:50,450 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:59:50,450 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 14:59:50,450 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 14:59:50,450 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 14:59:50,452 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 14:59:50,452 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 14:59:50,452 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 14:59:50,452 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:59:50,452 - src.server - ERROR - ❌ rowan_solubility failed after 0.02s
+2025-06-21 14:59:50,452 - src.server - ERROR - 🚨 Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 14:59:50,452 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 223, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1872, in rowan_solubility
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1866, in rowan_solubility
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 379, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 15:00:02,441 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 15:00:02,441 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'molecule': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70', 'blocking': False}
+2025-06-21 15:00:02,441 - src.server - WARNING - ⚠️ No SMILES found for 'CC(=O)Nc1ccc(O)cc1', using as-is
+2025-06-21 15:00:02,441 - src.server - INFO - 🌐 Rowan API Call: solubility
+2025-06-21 15:00:02,441 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'Acetaminophen Solubility Study', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': ['O', 'CCO', 'CS(=O)C', 'CC(=O)C', 'CCCCCC'], 'temperatures': [298.15, 310.15, 283.15, 323.15, 343.15], 'folder_uuid': None, 'blocking': False, 'ping_interval': 5}
+2025-06-21 15:00:02,441 - src.server - ERROR - 🌐 Rowan API failed: solubility (0.00s)
+2025-06-21 15:00:02,441 - src.server - ERROR - 🚨 Rowan Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 15:00:02,441 - src.server - ERROR - 📋 Exception Type: TypeError
+2025-06-21 15:00:02,441 - src.server - ERROR - 📄 Full Exception: TypeError("compute() missing 1 required positional argument: 'molecule'")
+2025-06-21 15:00:02,441 - src.server - ERROR - 🔍 Exception Args: ("compute() missing 1 required positional argument: 'molecule'",)
+2025-06-21 15:00:02,442 - src.server - ERROR - 📍 Full Stack Trace:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 15:00:02,442 - src.server - ERROR - 🔍 Exception attributes: []
+2025-06-21 15:00:02,442 - src.server - ERROR - ⚠️ No HTTP response data found in exception
+2025-06-21 15:00:02,442 - src.server - ERROR - 📝 Exception message: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 15:00:02,442 - src.server - ERROR - ❌ rowan_solubility failed after 0.00s
+2025-06-21 15:00:02,442 - src.server - ERROR - 🚨 Error: compute() missing 1 required positional argument: 'molecule'
+2025-06-21 15:00:02,443 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 223, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1872, in rowan_solubility
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1866, in rowan_solubility
+    result = log_rowan_api_call(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 379, in log_rowan_api_call
+    raise e
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 312, in log_rowan_api_call
+    result = rowan.compute(workflow_type=workflow_type, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: compute() missing 1 required positional argument: 'molecule'
+
+2025-06-21 15:02:08,784 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:02:08,786 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:02:08,786 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:02:39,425 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 15:02:39,446 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70', 'blocking': True}
+2025-06-21 15:02:39,446 - src.server - ERROR - ❌ rowan_solubility failed after 0.02s
+2025-06-21 15:02:39,446 - src.server - ERROR - 🚨 Error: name 'molecule' is not defined
+2025-06-21 15:02:39,448 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 223, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1816, in rowan_solubility
+    canonical_smiles = lookup_molecule_smiles(molecule)
+                                              ^^^^^^^^
+NameError: name 'molecule' is not defined
+
+2025-06-21 15:02:44,329 - src.server - INFO - 🔧 MCP Tool Called: rowan_solubility
+2025-06-21 15:02:44,329 - src.server - INFO - 📝 Parameters: {'name': 'Acetaminophen Solubility Study', 'initial_smiles': 'CC(=O)Nc1ccc(O)cc1', 'solvents': 'water,ethanol,dmso,acetone,hexane', 'temperatures': '25,37,10,50,70'}
+2025-06-21 15:02:44,329 - src.server - ERROR - ❌ rowan_solubility failed after 0.00s
+2025-06-21 15:02:44,329 - src.server - ERROR - 🚨 Error: name 'molecule' is not defined
+2025-06-21 15:02:44,330 - src.server - ERROR - 📍 Traceback:
+Traceback (most recent call last):
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 223, in wrapper
+    result = func(**kwargs)
+             ^^^^^^^^^^^^^^
+  File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 1816, in rowan_solubility
+    canonical_smiles = lookup_molecule_smiles(molecule)
+                                              ^^^^^^^^
+NameError: name 'molecule' is not defined
+
+2025-06-21 15:02:55,301 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow?page=1&size=5 "HTTP/1.1 200 OK"
+2025-06-21 15:28:11,223 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:28:11,232 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:28:11,232 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:29:18,163 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:29:18,163 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:29:18,165 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:29:18,165 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:29:18,165 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:29:18,165 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:31:15,498 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:31:15,503 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:31:15,503 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:32:57,302 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 15:32:57,712 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/566ccd6d-f112-4122-8b8f-6eb6f222cc57 "HTTP/1.1 200 OK"
+2025-06-21 15:33:03,109 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/566ccd6d-f112-4122-8b8f-6eb6f222cc57 "HTTP/1.1 200 OK"
+2025-06-21 15:33:08,496 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/566ccd6d-f112-4122-8b8f-6eb6f222cc57 "HTTP/1.1 200 OK"
+2025-06-21 15:33:13,853 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/566ccd6d-f112-4122-8b8f-6eb6f222cc57 "HTTP/1.1 200 OK"
+2025-06-21 15:33:14,223 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/566ccd6d-f112-4122-8b8f-6eb6f222cc57 "HTTP/1.1 200 OK"
+2025-06-21 15:35:25,356 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:35:25,358 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:35:25,358 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:36:12,191 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 15:36:12,581 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fff533b2-cac8-41be-917f-d1ebd71d37ca "HTTP/1.1 200 OK"
+2025-06-21 15:36:17,977 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fff533b2-cac8-41be-917f-d1ebd71d37ca "HTTP/1.1 200 OK"
+2025-06-21 15:36:23,506 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fff533b2-cac8-41be-917f-d1ebd71d37ca "HTTP/1.1 200 OK"
+2025-06-21 15:36:28,919 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fff533b2-cac8-41be-917f-d1ebd71d37ca "HTTP/1.1 200 OK"
+2025-06-21 15:36:29,333 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fff533b2-cac8-41be-917f-d1ebd71d37ca "HTTP/1.1 200 OK"
+2025-06-21 15:41:05,695 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:41:05,706 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:41:05,706 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:42:26,837 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 15:42:27,276 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/317cdde4-56cb-486d-abfe-e6a1eb2a0e88 "HTTP/1.1 200 OK"
+2025-06-21 15:42:32,688 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/317cdde4-56cb-486d-abfe-e6a1eb2a0e88 "HTTP/1.1 200 OK"
+2025-06-21 15:42:38,047 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/317cdde4-56cb-486d-abfe-e6a1eb2a0e88 "HTTP/1.1 200 OK"
+2025-06-21 15:42:43,400 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/317cdde4-56cb-486d-abfe-e6a1eb2a0e88 "HTTP/1.1 200 OK"
+2025-06-21 15:42:43,772 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/317cdde4-56cb-486d-abfe-e6a1eb2a0e88 "HTTP/1.1 200 OK"
+2025-06-21 15:47:33,257 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:47:33,274 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:47:33,274 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:48:20,842 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 15:48:21,261 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ada1888d-504e-4f2f-87a2-47bada910863 "HTTP/1.1 200 OK"
+2025-06-21 15:48:26,660 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ada1888d-504e-4f2f-87a2-47bada910863 "HTTP/1.1 200 OK"
+2025-06-21 15:48:32,068 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ada1888d-504e-4f2f-87a2-47bada910863 "HTTP/1.1 200 OK"
+2025-06-21 15:48:32,441 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/ada1888d-504e-4f2f-87a2-47bada910863 "HTTP/1.1 200 OK"
+2025-06-21 15:50:54,425 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 15:50:54,816 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e99b3732-3c37-4ca6-aff6-a29726b3634e "HTTP/1.1 200 OK"
+2025-06-21 15:51:00,230 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e99b3732-3c37-4ca6-aff6-a29726b3634e "HTTP/1.1 200 OK"
+2025-06-21 15:51:05,679 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e99b3732-3c37-4ca6-aff6-a29726b3634e "HTTP/1.1 200 OK"
+2025-06-21 15:51:11,072 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e99b3732-3c37-4ca6-aff6-a29726b3634e "HTTP/1.1 200 OK"
+2025-06-21 15:51:11,435 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e99b3732-3c37-4ca6-aff6-a29726b3634e "HTTP/1.1 200 OK"
+2025-06-21 15:54:48,077 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:54:48,079 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:54:48,079 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:55:23,941 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 15:55:24,299 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/528ab7ac-547c-4451-b3b0-f6c8573946b2 "HTTP/1.1 200 OK"
+2025-06-21 15:55:29,690 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/528ab7ac-547c-4451-b3b0-f6c8573946b2 "HTTP/1.1 200 OK"
+2025-06-21 15:55:35,060 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/528ab7ac-547c-4451-b3b0-f6c8573946b2 "HTTP/1.1 200 OK"
+2025-06-21 15:55:35,423 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/528ab7ac-547c-4451-b3b0-f6c8573946b2 "HTTP/1.1 200 OK"
+2025-06-21 15:57:55,413 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:57:55,422 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:57:55,422 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:58:45,957 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 24)
+2025-06-21 15:58:45,960 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:58:45,960 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:58:46,383 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 401 Unauthorized"
+2025-06-21 15:59:28,665 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 15:59:28,668 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 15:59:28,668 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 15:59:29,352 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 15:59:29,736 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 15:59:35,123 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 15:59:40,508 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 15:59:45,903 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 15:59:51,327 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 15:59:56,728 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 16:00:02,193 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 16:00:07,605 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 16:00:13,044 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 16:00:18,473 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 16:00:23,990 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 16:00:29,568 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 16:00:35,159 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 16:00:35,573 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d5a56d9a-805e-4d5c-8f30-24100321d295 "HTTP/1.1 200 OK"
+2025-06-21 16:03:39,358 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:03:39,376 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:03:39,377 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:03:40,148 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:03:40,499 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:03:45,942 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:03:51,444 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:03:56,907 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:04:02,313 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:04:07,713 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:04:13,404 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:04:18,789 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:04:24,165 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:04:29,557 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:04:34,920 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:04:35,318 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/49873b65-712f-4c4f-8e14-ae596a06b1f6 "HTTP/1.1 200 OK"
+2025-06-21 16:04:56,101 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:04:56,110 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:04:56,110 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:14:05,209 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:14:05,231 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:14:05,231 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:16:25,168 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:16:25,566 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5a69cc61-46b5-4be2-ab81-0c998c1921c0 "HTTP/1.1 200 OK"
+2025-06-21 16:16:30,975 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5a69cc61-46b5-4be2-ab81-0c998c1921c0 "HTTP/1.1 200 OK"
+2025-06-21 16:16:36,375 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5a69cc61-46b5-4be2-ab81-0c998c1921c0 "HTTP/1.1 200 OK"
+2025-06-21 16:16:41,755 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5a69cc61-46b5-4be2-ab81-0c998c1921c0 "HTTP/1.1 200 OK"
+2025-06-21 16:16:42,138 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5a69cc61-46b5-4be2-ab81-0c998c1921c0 "HTTP/1.1 200 OK"
+2025-06-21 16:19:56,328 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:19:56,329 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:19:56,329 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:19:57,012 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:19:57,387 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:02,857 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:08,243 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:13,651 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:19,043 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:24,439 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:29,797 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:35,206 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:40,586 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:45,942 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:51,312 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:20:56,706 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:21:02,123 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:21:02,485 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0978fe4-07f7-4f1e-b6de-373030115b13 "HTTP/1.1 200 OK"
+2025-06-21 16:22:20,828 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:22:20,850 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:22:20,850 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:22:21,537 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:22:21,900 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:22:27,324 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:22:32,696 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:22:38,072 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:22:43,483 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:22:48,844 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:22:54,214 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:22:59,610 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:23:05,034 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:23:10,420 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:23:15,795 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:23:21,139 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:23:26,513 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:23:26,851 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3db2be74-9e64-4d55-9333-e809909ceddb "HTTP/1.1 200 OK"
+2025-06-21 16:23:52,921 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:23:52,923 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:23:52,923 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:24:44,904 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:24:45,333 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:24:50,767 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:24:56,187 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:25:01,607 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:25:07,029 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:25:12,429 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:25:17,861 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:25:23,267 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:25:28,666 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:25:34,058 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:25:39,462 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:25:39,851 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/8000b8ad-a16f-44c3-bc27-a0da2644fd97 "HTTP/1.1 200 OK"
+2025-06-21 16:28:31,625 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:28:31,625 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:28:31,625 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:28:32,325 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:29:00,334 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:29:00,353 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:29:00,353 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:29:34,539 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:29:34,559 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:29:34,559 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:29:51,653 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:29:52,016 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:29:57,394 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:02,877 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:08,241 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:13,637 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:19,014 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:24,385 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:29,741 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:35,097 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:40,496 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:45,874 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:51,265 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:56,634 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:30:56,994 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/66261cb1-90a7-4124-a29f-096ba8f3b824 "HTTP/1.1 200 OK"
+2025-06-21 16:33:02,591 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:33:02,603 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:33:02,603 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:33:03,415 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:33:11,037 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:33:11,041 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:33:11,041 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:33:21,520 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:33:21,521 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:33:21,521 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:33:27,850 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:33:27,852 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:33:27,853 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:33:28,287 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3f4468d6-60f9-4d8c-a392-7311cd465df2 "HTTP/1.1 200 OK"
+2025-06-21 16:33:41,887 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:33:41,889 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:33:41,889 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:33:42,664 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:33:43,305 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:33:43,896 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:34:22,601 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:34:22,608 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:34:22,609 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:35:12,690 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:35:55,201 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:49:27,401 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:49:27,402 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:49:27,402 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:49:28,126 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:49:28,521 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1d84834d-3379-416a-b613-433a17afd64a "HTTP/1.1 200 OK"
+2025-06-21 16:49:33,895 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1d84834d-3379-416a-b613-433a17afd64a "HTTP/1.1 200 OK"
+2025-06-21 16:49:39,239 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1d84834d-3379-416a-b613-433a17afd64a "HTTP/1.1 200 OK"
+2025-06-21 16:49:44,609 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1d84834d-3379-416a-b613-433a17afd64a "HTTP/1.1 200 OK"
+2025-06-21 16:49:44,968 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1d84834d-3379-416a-b613-433a17afd64a "HTTP/1.1 200 OK"
+2025-06-21 16:49:52,362 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:49:52,379 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:49:52,379 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:49:52,809 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/1d84834d-3379-416a-b613-433a17afd64a "HTTP/1.1 200 OK"
+2025-06-21 16:49:59,505 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:49:59,507 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:49:59,507 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:49:59,899 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/1d84834d-3379-416a-b613-433a17afd64a/stjames "HTTP/1.1 404 Not Found"
+2025-06-21 16:50:18,441 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:50:18,442 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:50:18,443 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:50:19,213 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:51:12,499 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:51:12,501 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:51:12,501 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:51:13,219 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:52:34,352 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:52:34,354 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:52:34,354 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:53:01,327 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:53:01,738 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:07,103 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:12,542 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:17,940 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:23,338 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:28,734 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:34,142 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:39,526 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:44,919 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:50,316 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:55,717 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:53:56,080 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/6f303baf-b196-46ce-a02f-e98aa54b625d "HTTP/1.1 200 OK"
+2025-06-21 16:55:42,228 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:55:42,228 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:55:42,228 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:55:42,925 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:56:01,726 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:56:01,727 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:56:01,727 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:56:02,535 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:57:17,569 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-21 16:57:17,583 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-21 16:57:17,583 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-21 16:57:51,090 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:57:51,554 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:57:56,974 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:02,419 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:07,809 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:13,166 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:18,564 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:23,979 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:29,366 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:34,754 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:40,106 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:45,485 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:50,818 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:51,181 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/5ed12e70-0af7-4352-8d7e-93942c008e04 "HTTP/1.1 200 OK"
+2025-06-21 16:58:51,824 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-21 16:59:34,813 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9ebcc095-dea5-4407-b772-f8555b7d34b6 "HTTP/1.1 200 OK"
+2025-06-21 17:00:02,351 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9ebcc095-dea5-4407-b772-f8555b7d34b6 "HTTP/1.1 200 OK"
+2025-06-21 17:00:24,421 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/9ebcc095-dea5-4407-b772-f8555b7d34b6 "HTTP/1.1 200 OK"
+2025-06-21 17:00:24,835 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/9ebcc095-dea5-4407-b772-f8555b7d34b6/stjames "HTTP/1.1 404 Not Found"
+2025-06-21 17:00:29,875 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/9ebcc095-dea5-4407-b772-f8555b7d34b6/stjames "HTTP/1.1 404 Not Found"

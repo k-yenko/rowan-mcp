@@ -64,6 +64,147 @@ rowan.api_key = api_key
 logger.info("🔗 Rowan API key configured")
 
 
+def preprocess_solubility_args(func):
+    """Decorator to preprocess solubility function arguments before execution."""
+    import functools
+    
+    def convert_solvent_to_smiles(solvent_name: str) -> str:
+        """Convert common solvent names to SMILES strings."""
+        solvent_map = {
+            # Water variants
+            "water": "O",
+            "h2o": "O",
+            "h₂o": "O",
+            
+            # Alcohols
+            "methanol": "CO",
+            "meoh": "CO",
+            "ethanol": "CCO", 
+            "etoh": "CCO",
+            "propanol": "CCCO",
+            "isopropanol": "CC(C)O",
+            "ipa": "CC(C)O",
+            "butanol": "CCCCO",
+            "tert-butanol": "CC(C)(C)O",
+            "t-buoh": "CC(C)(C)O",
+            
+            # Ethers
+            "diethyl ether": "CCOCC",
+            "ether": "CCOCC",
+            "et2o": "CCOCC",
+            "thf": "C1CCOC1",
+            "tetrahydrofuran": "C1CCOC1",
+            "dme": "COCOC",
+            "glyme": "COCOC",
+            
+            # Aprotic solvents
+            "dmso": "CS(=O)C",
+            "dimethyl sulfoxide": "CS(=O)C",
+            "dimethylsulfoxide": "CS(=O)C",
+            "dmf": "CN(C)C=O",
+            "dimethylformamide": "CN(C)C=O",
+            "acetonitrile": "CC#N",
+            "mecn": "CC#N",
+            "acetone": "CC(=O)C",
+            "butanone": "CCC(=O)C",
+            "mek": "CCC(=O)C",
+            
+            # Chlorinated solvents
+            "dichloromethane": "ClCCl",
+            "dcm": "ClCCl",
+            "chloroform": "ClC(Cl)Cl",
+            "chcl3": "ClC(Cl)Cl",
+            "carbon tetrachloride": "ClC(Cl)(Cl)Cl",
+            "ccl4": "ClC(Cl)(Cl)Cl",
+            
+            # Aromatic solvents
+            "benzene": "c1ccccc1",
+            "toluene": "Cc1ccccc1",
+            "xylene": "Cc1ccccc1C",  # o-xylene as default
+            "mesitylene": "Cc1cc(C)cc(C)c1",
+            
+            # Esters
+            "ethyl acetate": "CC(=O)OCC",
+            "etoac": "CC(=O)OCC",
+            "methyl acetate": "CC(=O)OC",
+            
+            # Other common solvents
+            "hexane": "CCCCCC",
+            "cyclohexane": "C1CCCCC1",
+            "heptane": "CCCCCCC",
+            "pentane": "CCCCC",
+            "octane": "CCCCCCCC",
+            "nitromethane": "C[N+](=O)[O-]",
+            "pyridine": "c1ccncc1",
+            "dioxane": "C1COCCO1",
+            "1,4-dioxane": "C1COCCO1",
+        }
+        
+        return solvent_map.get(solvent_name.lower().strip(), solvent_name)
+    
+    @functools.wraps(func)
+    def wrapper(**kwargs):
+        # Process solvents parameter
+        if 'solvents' in kwargs and kwargs['solvents'] is not None:
+            solvents = kwargs['solvents']
+            
+            if isinstance(solvents, str):
+                # Split comma-separated string into list and convert names to SMILES
+                if "," in solvents:
+                    solvent_list = [s.strip() for s in solvents.split(",")]
+                    kwargs['solvents'] = [convert_solvent_to_smiles(s) for s in solvent_list]
+                else:
+                    # Single solvent
+                    kwargs['solvents'] = [convert_solvent_to_smiles(solvents)]
+            elif isinstance(solvents, list):
+                # Convert each solvent name in the list to SMILES
+                kwargs['solvents'] = [convert_solvent_to_smiles(s) if isinstance(s, str) else s for s in solvents]
+        
+        # Process temperatures parameter - convert Celsius to Kelvin
+        if 'temperatures' in kwargs and kwargs['temperatures'] is not None:
+            temperatures = kwargs['temperatures']
+            
+            if isinstance(temperatures, str):
+                # Handle single temperature as string
+                try:
+                    temp_celsius = float(temperatures)
+                    kwargs['temperatures'] = [temp_celsius + 273.15]
+                except (ValueError, TypeError):
+                    pass  # Let the function handle the error
+            elif isinstance(temperatures, (int, float)):
+                # Handle single temperature as number
+                kwargs['temperatures'] = [float(temperatures) + 273.15]
+            elif isinstance(temperatures, list):
+                # Convert list of temperatures from Celsius to Kelvin
+                converted_temps = []
+                for temp in temperatures:
+                    try:
+                        if isinstance(temp, str):
+                            temp_celsius = float(temp)
+                        else:
+                            temp_celsius = float(temp)
+                        
+                        # Check if temperature looks like it's already in Kelvin (> 200)
+                        if temp_celsius > 200:
+                            converted_temps.append(temp_celsius)  # Assume already Kelvin
+                        else:
+                            converted_temps.append(temp_celsius + 273.15)  # Convert from Celsius
+                    except (ValueError, TypeError):
+                        converted_temps.append(temp)  # Keep original if conversion fails
+                kwargs['temperatures'] = converted_temps
+        
+        # Log the final processed parameters for debugging
+        logger.info(f"🔧 PREPROCESSING APPLIED for {func.__name__}:")
+        if 'solvents' in kwargs:
+            logger.info(f"   🧪 PROCESSED solvents: {kwargs['solvents']} (type: {type(kwargs['solvents'])})")
+        if 'temperatures' in kwargs:
+            logger.info(f"   🌡️ PROCESSED temperatures: {kwargs['temperatures']} (type: {type(kwargs['temperatures'])})")
+        
+        return func(**kwargs)
+    
+    return wrapper
+
+
 def log_mcp_call(func):
     """Decorator to log MCP tool calls with detailed information."""
     import functools
@@ -1137,48 +1278,287 @@ def rowan_multistage_opt(
 
 # Electronic Properties - HOMO/LUMO, Orbitals
 @mcp.tool()
+@log_mcp_call
 def rowan_electronic_properties(
     name: str,
     molecule: str,
+    # Settings parameters (quantum chemistry calculation settings)
+    method: Optional[str] = None,
+    basis_set: Optional[str] = None,
+    engine: Optional[str] = None,
+    charge: int = 0,
+    multiplicity: int = 1,
+    # Cube computation control parameters
+    compute_density_cube: bool = True,
+    compute_electrostatic_potential_cube: bool = True,
+    compute_num_occupied_orbitals: int = 1,
+    compute_num_virtual_orbitals: int = 1,
+    # Workflow control parameters
+    mode: Optional[str] = None,
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
     ping_interval: int = 5
 ) -> str:
-    """Calculate electronic structure properties.
+    """Calculate comprehensive electronic structure properties using Rowan's ElectronicPropertiesWorkflow.
     
-    Computes electronic properties including:
-    - HOMO/LUMO energies and orbitals
-    - Molecular orbital analysis
-    - Electronic density distributions
-    - Band gaps and frontier orbital properties
+    Implements the ElectronicPropertiesWorkflow class for computing detailed electronic properties including:
+    - **Molecular Orbitals**: HOMO/LUMO energies, orbital cubes, occupation numbers
+    - **Electron Density**: Total, α/β spin densities, spin density differences
+    - **Electrostatic Properties**: Dipole moments, quadrupole moments, electrostatic potential
+    - **Population Analysis**: Mulliken charges, Löwdin charges
+    - **Bond Analysis**: Wiberg bond orders, Mayer bond orders
+    - **Visualization Data**: Cube files for density, ESP, and molecular orbitals
     
-    Use this for: Electronic structure analysis, orbital visualization, reactivity prediction
+    **🔬 ElectronicPropertiesWorkflow Parameters:**
+    - **settings**: QM calculation settings (method, basis_set, engine)
+    - **compute_density_cube**: Generate electron density cube files
+    - **compute_electrostatic_potential_cube**: Generate ESP cube files
+    - **compute_num_occupied_orbitals**: Number of occupied MOs to save
+    - **compute_num_virtual_orbitals**: Number of virtual MOs to save
+    
+    **📊 Output Results Include:**
+    - **dipole**: Dipole moment vector (Vector3D)
+    - **quadrupole**: Quadrupole moment tensor (Matrix3x3)
+    - **mulliken_charges/lowdin_charges**: Atomic partial charges
+    - **wiberg_bond_orders/mayer_bond_orders**: Bond order analysis
+    - **density_cube**: Electron density visualization data
+    - **electrostatic_potential_cube**: ESP visualization data
+    - **molecular_orbitals**: MO energies, occupations, and cube data
+    
+    **⚙️ Smart Defaults:**
+    - Method: B3LYP (hybrid DFT, good for electronic properties)
+    - Basis Set: def2-SVP (balanced accuracy/cost for properties)
+    - Engine: Psi4 (robust quantum chemistry package)
+    - Cube Generation: Enabled for density and ESP
+    - Orbital Saving: 1 occupied + 1 virtual (HOMO/LUMO)
+    
+    Use this for: Electronic structure analysis, orbital visualization, reactivity prediction,
+    charge analysis, electrostatic property calculation, molecular orbital theory studies
     
     Args:
         name: Name for the calculation
-        molecule: Molecule SMILES string
+        molecule: Molecule SMILES string or common name
+        method: QM method (default: b3lyp for electronic properties)
+        basis_set: Basis set (default: def2-svp for balanced accuracy)
+        engine: Computational engine (default: psi4)
+        charge: Molecular charge (default: 0)
+        multiplicity: Spin multiplicity (default: 1 for singlet)
+        compute_density_cube: Generate electron density cube (default: True)
+        compute_electrostatic_potential_cube: Generate ESP cube (default: True)
+        compute_num_occupied_orbitals: Number of occupied MOs to save (default: 1)
+        compute_num_virtual_orbitals: Number of virtual MOs to save (default: 1)
+        mode: Calculation mode/precision (optional)
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
         ping_interval: Check status interval in seconds (default: 5)
     
     Returns:
-        Electronic properties results
+        Comprehensive electronic properties results following ElectronicPropertiesWorkflow format
     """
-    # Electronic properties workflow might need basic QC settings
-    # Try with minimal required parameters based on error analysis
-    result = log_rowan_api_call(
-        workflow_type="electronic_properties",
-        name=name,
-        molecule=Molecule.from_smiles(molecule),
-        folder_uuid=folder_uuid,
-        blocking=blocking,
-        ping_interval=ping_interval,
-        # Add minimal QC settings that the workflow expects
-        method="b3lyp",  # Common default method
-        basis_set="sto-3g",  # Minimal basis set to start
-        tasks=["energy", "orbitals"]  # Needed for electronic properties
-    )
-    return str(result)
+    # Look up SMILES if a common name was provided
+    canonical_smiles = lookup_molecule_smiles(molecule)
+    
+    # Apply smart defaults for electronic properties calculations
+    if method is None:
+        method = "b3lyp"  # Good for electronic properties
+    if basis_set is None:
+        basis_set = "def2-svp"  # Balanced accuracy/cost for properties
+    if engine is None:
+        engine = "psi4"  # Robust for electronic properties
+    
+    # Validate orbital count parameters
+    if compute_num_occupied_orbitals < 0:
+        return f"❌ compute_num_occupied_orbitals must be non-negative (got {compute_num_occupied_orbitals})"
+    if compute_num_virtual_orbitals < 0:
+        return f"❌ compute_num_virtual_orbitals must be non-negative (got {compute_num_virtual_orbitals})"
+    
+    logger.info(f"🔬 Electronic Properties Calculation: {name}")
+    logger.info(f"⚗️ Method: {method}")
+    logger.info(f"📐 Basis Set: {basis_set}")
+    logger.info(f"🖥️ Engine: {engine}")
+    logger.info(f"⚡ Charge: {charge}, Multiplicity: {multiplicity}")
+    logger.info(f"📊 Density Cube: {compute_density_cube}")
+    logger.info(f"🔋 ESP Cube: {compute_electrostatic_potential_cube}")
+    logger.info(f"🎯 Occupied MOs: {compute_num_occupied_orbitals}, Virtual MOs: {compute_num_virtual_orbitals}")
+    
+    # Build parameters following ElectronicPropertiesWorkflow specification
+    electronic_params = {
+        "name": name,
+        "molecule": canonical_smiles,  # API interface requirement
+        "initial_molecule": canonical_smiles,  # ElectronicPropertiesWorkflow requirement
+        # Settings (quantum chemistry parameters)
+        "settings": {
+            "method": method.lower(),
+            "basis_set": basis_set.lower(),
+            "engine": engine.lower(),
+            "charge": charge,
+            "multiplicity": multiplicity
+        },
+        # Cube computation control
+        "compute_density_cube": compute_density_cube,
+        "compute_electrostatic_potential_cube": compute_electrostatic_potential_cube,
+        "compute_num_occupied_orbitals": compute_num_occupied_orbitals,
+        "compute_num_virtual_orbitals": compute_num_virtual_orbitals,
+        # Workflow parameters
+        "folder_uuid": folder_uuid,
+        "blocking": blocking,
+        "ping_interval": ping_interval
+    }
+    
+    # Add mode if specified
+    if mode:
+        electronic_params["mode"] = mode
+    
+    try:
+        result = log_rowan_api_call(
+            workflow_type="electronic_properties",
+            **electronic_params
+        )
+        
+        # Enhanced result formatting for electronic properties
+        if blocking:
+            status = result.get('status', result.get('object_status', 'Unknown'))
+            
+            if status == 2:  # Completed successfully
+                formatted = f"✅ Electronic properties calculation for '{name}' completed successfully!\n\n"
+            elif status == 3:  # Failed
+                formatted = f"❌ Electronic properties calculation for '{name}' failed!\n\n"
+            else:
+                formatted = f"📊 Electronic properties calculation for '{name}' submitted!\n\n"
+            
+            formatted += f"🧪 Molecule: {molecule}\n"
+            formatted += f"🔬 SMILES: {canonical_smiles}\n"
+            formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
+            formatted += f"📊 Status: {status}\n\n"
+            
+            formatted += f"⚙️ **Calculation Settings:**\n"
+            formatted += f"• Method: {method.upper()}\n"
+            formatted += f"• Basis Set: {basis_set}\n"
+            formatted += f"• Engine: {engine.upper()}\n"
+            formatted += f"• Charge: {charge}, Multiplicity: {multiplicity}\n\n"
+            
+            formatted += f"📊 **Property Calculations:**\n"
+            formatted += f"• Density Cube: {'✅ Enabled' if compute_density_cube else '❌ Disabled'}\n"
+            formatted += f"• ESP Cube: {'✅ Enabled' if compute_electrostatic_potential_cube else '❌ Disabled'}\n"
+            formatted += f"• Occupied MOs: {compute_num_occupied_orbitals}\n"
+            formatted += f"• Virtual MOs: {compute_num_virtual_orbitals}\n\n"
+            
+            if status == 2:
+                # Try to retrieve and display the actual calculation results
+                try:
+                    calc_result = rowan.Calculation.retrieve(uuid=result.get('uuid'))
+                    
+                    formatted += f"🎯 **Electronic Properties Results:**\n\n"
+                    
+                    # Extract key electronic properties from the result
+                    object_data = calc_result.get('object_data', {})
+                    
+                    # Molecular orbital energies (HOMO/LUMO)
+                    if 'molecular_orbitals' in object_data:
+                        mo_data = object_data['molecular_orbitals']
+                        if isinstance(mo_data, dict):
+                            if 'energies' in mo_data:
+                                energies = mo_data['energies']
+                                if isinstance(energies, list) and len(energies) > 0:
+                                    # Find HOMO/LUMO
+                                    occupations = mo_data.get('occupations', [])
+                                    if occupations:
+                                        homo_idx = None
+                                        lumo_idx = None
+                                        for i, occ in enumerate(occupations):
+                                            if occ > 0.5:  # Occupied
+                                                homo_idx = i
+                                            elif occ < 0.5 and lumo_idx is None:  # First unoccupied
+                                                lumo_idx = i
+                                                break
+                                        
+                                        if homo_idx is not None and lumo_idx is not None:
+                                            homo_energy = energies[homo_idx]
+                                            lumo_energy = energies[lumo_idx]
+                                            gap = lumo_energy - homo_energy
+                                            
+                                            formatted += f"🔋 **Molecular Orbitals:**\n"
+                                            formatted += f"• HOMO Energy: {homo_energy:.4f} hartree ({homo_energy * 27.2114:.2f} eV)\n"
+                                            formatted += f"• LUMO Energy: {lumo_energy:.4f} hartree ({lumo_energy * 27.2114:.2f} eV)\n"
+                                            formatted += f"• HOMO-LUMO Gap: {gap:.4f} hartree ({gap * 27.2114:.2f} eV)\n\n"
+                    
+                    # Dipole moment
+                    if 'dipole' in object_data:
+                        dipole = object_data['dipole']
+                        if isinstance(dipole, dict):
+                            if 'magnitude' in dipole:
+                                formatted += f"🧲 **Dipole Moment:** {dipole['magnitude']:.4f} Debye\n"
+                            if 'vector' in dipole:
+                                vector = dipole['vector']
+                                formatted += f"   Vector: ({vector[0]:.4f}, {vector[1]:.4f}, {vector[2]:.4f})\n\n"
+                        elif isinstance(dipole, (int, float)):
+                            formatted += f"🧲 **Dipole Moment:** {dipole:.4f} Debye\n\n"
+                    
+                    # Atomic charges
+                    if 'mulliken_charges' in object_data:
+                        charges = object_data['mulliken_charges']
+                        if isinstance(charges, list) and len(charges) > 0:
+                            formatted += f"⚡ **Mulliken Charges:**\n"
+                            for i, charge in enumerate(charges[:10]):  # Show first 10 atoms
+                                formatted += f"   Atom {i+1}: {charge:+.4f}\n"
+                            if len(charges) > 10:
+                                formatted += f"   ... and {len(charges) - 10} more atoms\n"
+                            formatted += "\n"
+                    
+                    # Bond orders
+                    if 'wiberg_bond_orders' in object_data:
+                        bond_orders = object_data['wiberg_bond_orders']
+                        if isinstance(bond_orders, dict) and bond_orders:
+                            formatted += f"🔗 **Wiberg Bond Orders:**\n"
+                            count = 0
+                            for bond, order in list(bond_orders.items())[:10]:  # Show first 10 bonds
+                                formatted += f"   {bond}: {order:.4f}\n"
+                                count += 1
+                            if len(bond_orders) > 10:
+                                formatted += f"   ... and {len(bond_orders) - 10} more bonds\n"
+                            formatted += "\n"
+                    
+                    # If no specific data found, show available keys
+                    if not any(key in object_data for key in ['molecular_orbitals', 'dipole', 'mulliken_charges', 'wiberg_bond_orders']):
+                        if object_data:
+                            formatted += f"📋 **Available Properties:** {', '.join(object_data.keys())}\n\n"
+                        else:
+                            formatted += f"⚠️ **No electronic properties data found in results**\n\n"
+                    
+                except Exception as retrieve_error:
+                    formatted += f"⚠️ **Results retrieval failed:** {str(retrieve_error)}\n"
+                    formatted += f"💡 Use rowan_calculation_retrieve('{result.get('uuid')}') to get detailed results\n\n"
+                
+                formatted += f"💡 **Additional Analysis:**\n"
+                formatted += f"• Use rowan_calculation_retrieve('{result.get('uuid')}') for full calculation details\n"
+                formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for workflow metadata\n"
+                
+            elif status == 3:
+                formatted += f"🔧 **Troubleshooting:**\n"
+                formatted += f"• Try simpler method/basis: method='hf', basis_set='sto-3g'\n"
+                formatted += f"• Check molecular charge and multiplicity\n"
+                formatted += f"• Disable cube generation for faster calculations\n"
+                formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for error details\n"
+            else:
+                formatted += f"⏳ **Next Steps:**\n"
+                formatted += f"• Monitor status with rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}')\n"
+                formatted += f"• Electronic properties calculations may take several minutes\n"
+            
+            return formatted
+        else:
+            return str(result)
+            
+    except Exception as e:
+        error_msg = f"❌ Electronic properties calculation failed: {str(e)}\n\n"
+        error_msg += f"🧪 Molecule: {molecule}\n"
+        error_msg += f"🔬 SMILES: {canonical_smiles}\n"
+        error_msg += f"⚙️ Settings: {method}/{basis_set}/{engine}\n\n"
+        error_msg += f"🔧 **Common Issues:**\n"
+        error_msg += f"• Invalid method/basis set combination\n"
+        error_msg += f"• Incorrect charge/multiplicity for molecule\n"
+        error_msg += f"• Engine compatibility issues\n"
+        error_msg += f"• Try with default parameters first\n"
+        return error_msg
 
 
 # Descriptors - Molecular Feature Vectors
@@ -1220,286 +1600,6 @@ def rowan_descriptors(
     )
     return str(result)
 
-
-# Solubility Prediction
-@mcp.tool()
-@log_mcp_call
-def rowan_solubility(
-    name: str,
-    molecule: str,
-    solvents: Optional[List[str]] = None,
-    temperatures: Optional[List[float]] = None,
-    folder_uuid: Optional[str] = None,
-    blocking: bool = True,
-    ping_interval: int = 5
-) -> str:
-    """Predict solubility in various solvents and temperatures using Rowan's SolubilityWorkflow.
-    
-    Implements the SolubilityWorkflow class for predicting molecular solubility across
-    multiple solvents and temperature ranges. Critical for:
-    - Drug formulation and bioavailability optimization
-    - Environmental fate and transport modeling
-    - Process chemistry and purification design
-    - Crystallization and precipitation studies
-    
-    **🌡️ Temperature Control (SolubilityWorkflow.temperatures):**
-    - Default: 0-150°C range [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15] K
-    - Custom: Specify any temperatures in Kelvin as list[float]
-    - Results: log(S) solubility values with uncertainties for each temperature
-    
-    **🧪 Solvent Support (SolubilityWorkflow.solvents):**
-    - Water (default): "O" SMILES for aqueous solubility
-    - Organic solvents: Any valid SMILES strings (e.g., "CCO" for ethanol)
-    - Multiple solvents: Comparative solubility analysis across solvents
-    
-    **📊 Output Format (SolubilityResult):**
-    - solubilities: log(S) values in mol/L units (list[float])
-    - uncertainties: Prediction confidence intervals (list[float])
-    - Temperature dependence: Results for each temperature point
-    - Per-solvent results: dict[solvent_smiles, SolubilityResult]
-    
-    **🔬 SolubilityWorkflow Parameters:**
-    - initial_smiles: Target molecule SMILES string
-    - solvents: List of solvent SMILES strings
-    - temperatures: Temperature points in Kelvin (default 0-150°C)
-    
-    Use this for: Drug development, environmental assessment, process optimization,
-    crystallization studies, solvent selection
-    
-    Args:
-        name: Name for the calculation
-        molecule: Molecule SMILES string or common name (converted to initial_smiles)
-        solvents: List of solvent SMILES strings (default: ["O"] for water)
-        temperatures: Temperatures in Kelvin (default: 0-150°C range as per SolubilityWorkflow)
-        folder_uuid: Optional folder UUID for organization
-        blocking: Whether to wait for completion (default: True)
-        ping_interval: Check status interval in seconds (default: 5)
-    
-    Returns:
-        Comprehensive solubility prediction results following SolubilityWorkflow output format
-    """
-    # Look up SMILES if a common name was provided
-    canonical_smiles = lookup_molecule_smiles(molecule)
-    
-    # Handle solvents parameter - fix string to list conversion issue
-    if solvents is None:
-        solvents = ["O"]  # Water SMILES
-    elif isinstance(solvents, str):
-        # Handle common solvent names
-        if solvents.lower() in ["water", "h2o"]:
-            solvents = ["O"]  # Water SMILES
-        else:
-            # Assume it's a SMILES string for a custom solvent
-            solvents = [solvents]
-    
-    # Set default temperature range (0-150°C) if not provided
-    if temperatures is None:
-        temperatures = [273.15, 298.15, 323.15, 348.15, 373.15, 398.15, 423.15]  # 0-150°C
-    elif isinstance(temperatures, (int, float, str)):
-        # Handle single temperature value
-        try:
-            temp_val = float(temperatures)
-            temperatures = [temp_val]
-        except (ValueError, TypeError):
-            return f"❌ Invalid temperature value: {temperatures}"
-    
-    # Validate temperatures
-    if not temperatures or len(temperatures) == 0:
-        return "❌ At least one temperature must be specified"
-    
-    # Convert all temperatures to float and validate
-    validated_temps = []
-    for temp in temperatures:
-        try:
-            temp_val = float(temp)
-            if temp_val <= 0:
-                return f"❌ Temperature must be positive (got {temp_val} K)"
-            if temp_val < 200 or temp_val > 500:
-                return f"⚠️ Temperature {temp_val} K is outside typical range (200-500 K)"
-            validated_temps.append(temp_val)
-        except (ValueError, TypeError):
-            return f"❌ Invalid temperature value: {temp} (must be numeric)"
-    
-    temperatures = validated_temps
-    
-    # Validate solvents
-    if not solvents or len(solvents) == 0:
-        return "❌ At least one solvent must be specified"
-    
-    # Basic validation for solvent SMILES strings
-    for i, solvent in enumerate(solvents):
-        if not isinstance(solvent, str) or len(solvent.strip()) == 0:
-            return f"❌ Solvent {i+1} must be a non-empty string (SMILES format)"
-        # Check for obviously invalid SMILES characters (basic check)
-        if any(char in solvent for char in [' ', '\t', '\n']):
-            return f"❌ Solvent {i+1} contains invalid whitespace characters: '{solvent}'"
-    
-    logger.info(f"🧪 Solubility Analysis Debug:")
-    logger.info(f"   Name: {name}")
-    logger.info(f"   Input: {molecule}")
-    logger.info(f"   Using SMILES: {canonical_smiles}")
-    logger.info(f"   Solvents: {solvents}")
-    logger.info(f"   Temperatures: {temperatures} K")
-    logger.info(f"   Temperature range: {min(temperatures):.1f}-{max(temperatures):.1f} K")
-    
-    # Build parameters for Rowan API following SolubilityWorkflow specification
-    solubility_params = {
-        "name": name,
-        "molecule": canonical_smiles,  # Required by compute() function interface
-        "initial_smiles": canonical_smiles,  # Required by SolubilityWorkflow class
-        "solvents": solvents,  # List of solvent SMILES strings
-        "temperatures": temperatures,  # Temperatures in Kelvin
-        "folder_uuid": folder_uuid,
-        "blocking": blocking,
-        "ping_interval": ping_interval
-    }
-    
-    try:
-        result = log_rowan_api_call(
-            workflow_type="solubility",
-            **solubility_params
-        )
-    except Exception as e:
-        # Handle all errors gracefully with detailed reporting
-        error_msg = str(e)
-        error_type = type(e).__name__
-        
-        formatted = f"❌ Solubility analysis for '{name}' failed!\n\n"
-        formatted += f"🚨 Error Type: {error_type}\n"
-        formatted += f"🚨 Error Details: {error_msg}\n\n"
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"🧪 Solvents: {solvents}\n"
-        formatted += f"🌡️ Temperatures: {temperatures} K\n\n"
-        
-        # Provide specific guidance based on error type
-        if "typeerror" in error_msg.lower() or error_type == "TypeError":
-            formatted += f"🔧 **TypeError Detected:**\n"
-            formatted += f"• This usually indicates a parameter type mismatch\n"
-            formatted += f"• Check that temperatures are numeric (not strings)\n"
-            formatted += f"• Verify solvents are provided as a list of strings\n"
-        elif "validation error" in error_msg.lower():
-            formatted += f"🔧 **Validation Error:**\n"
-            formatted += f"• Invalid SMILES string format\n"
-            formatted += f"• Incorrect parameter types\n"
-            formatted += f"• Missing required parameters\n"
-        else:
-            formatted += f"🔧 **General Troubleshooting:**\n"
-            formatted += f"• Check molecule SMILES format\n"
-            formatted += f"• Verify parameter types and values\n"
-            formatted += f"• Ensure all required fields are provided\n"
-        
-        return formatted
-    
-    if blocking:
-        status = result.get('status', result.get('object_status', 'Unknown'))
-        
-        # Check for explicit failure indicators
-        has_failed = False
-        failure_reason = None
-        
-        if status == 3:  # Explicit failure status
-            has_failed = True
-        elif status is None or status == 'Unknown':
-            # Check for validation errors or other failure indicators
-            if isinstance(result, dict):
-                error_msg = result.get('error', result.get('message', ''))
-                if error_msg and ('validation error' in str(error_msg).lower() or 'failed' in str(error_msg).lower()):
-                    has_failed = True
-                    failure_reason = str(error_msg)
-        
-        if has_failed:
-            formatted = f"❌ Solubility analysis for '{name}' failed!\n\n"
-            if failure_reason:
-                formatted += f"🚨 Error: {failure_reason}\n\n"
-        elif status == 2:  # Completed successfully
-            formatted = f"✅ Solubility analysis for '{name}' completed successfully!\n\n"
-        else:
-            formatted = f"⚠️ Solubility analysis for '{name}' finished with status {status}\n\n"
-            
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {status}\n"
-        
-        # Format solvent information
-        solvent_names = []
-        for solvent in solvents:
-            if solvent == "O":
-                solvent_names.append("Water")
-            else:
-                solvent_names.append(f"Custom ({solvent})")
-        formatted += f"🧪 Solvents: {', '.join(solvent_names)}\n"
-        
-        # Format temperature information
-        temp_celsius = [f"{t-273.15:.1f}°C" for t in temperatures]
-        formatted += f"🌡️ Temperatures: {', '.join(temp_celsius)}\n"
-        formatted += f"📏 Temperature Range: {min(temperatures)-273.15:.1f}-{max(temperatures)-273.15:.1f}°C\n"
-        
-        # Try to extract solubility results
-        if isinstance(result, dict) and 'object_data' in result and result['object_data']:
-            data = result['object_data']
-            
-            if 'solubilities' in data and data['solubilities']:
-                formatted += f"\n🎯 **Solubility Results:**\n"
-                
-                for solvent, solub_data in data['solubilities'].items():
-                    solvent_name = "Water" if solvent == "O" else f"Solvent ({solvent})"
-                    formatted += f"\n💧 **{solvent_name}:**\n"
-                    
-                    if 'solubilities' in solub_data and 'uncertainties' in solub_data:
-                        solubilities = solub_data['solubilities']
-                        uncertainties = solub_data['uncertainties']
-                        
-                        for i, (temp, sol, unc) in enumerate(zip(temperatures, solubilities, uncertainties)):
-                            temp_c = temp - 273.15
-                            formatted += f"  • {temp_c:.1f}°C: log(S) = {sol:.3f} ± {unc:.3f} L\n"
-                        
-                        # Show solubility interpretation
-                        avg_sol = sum(solubilities) / len(solubilities)
-                        if avg_sol > -2:
-                            interp = "Highly soluble"
-                        elif avg_sol > -4:
-                            interp = "Moderately soluble"
-                        elif avg_sol > -6:
-                            interp = "Poorly soluble"
-                        else:
-                            interp = "Very poorly soluble"
-                        formatted += f"  📊 Average: {avg_sol:.3f} log(S) ({interp})\n"
-        
-        if has_failed:
-            formatted += f"\n🔧 **Troubleshooting:**\n"
-            formatted += f"• Check that molecule SMILES is valid\n"
-            formatted += f"• Verify solvent specifications (use 'water' or SMILES)\n"
-            formatted += f"• Ensure temperature range is reasonable (200-500 K)\n"
-            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed error logs\n"
-        elif status == 2:
-            formatted += f"\n🎯 **Analysis Complete:**\n"
-            formatted += f"• Solubilities in log(S) units (mol/L)\n"
-            formatted += f"• Higher values = more soluble\n"
-            formatted += f"• Uncertainties indicate prediction confidence\n"
-            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed data\n"
-        
-        return formatted
-    else:
-        formatted = f"🚀 Solubility analysis for '{name}' submitted!\n\n"
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
-        
-        solvent_names = []
-        for solvent in solvents:
-            if solvent == "O":
-                solvent_names.append("Water")
-            else:
-                solvent_names.append(f"Custom ({solvent})")
-        formatted += f"🧪 Solvents: {', '.join(solvent_names)}\n"
-        
-        temp_celsius = [f"{t-273.15:.1f}°C" for t in temperatures]
-        formatted += f"🌡️ Temperatures: {', '.join(temp_celsius)}\n"
-        
-        return formatted
 
 
 # Redox Potential
@@ -3685,18 +3785,160 @@ def rowan_workflow_management(
             
             workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
             
+            # Get status and interpret it
+            status = workflow.get('object_status', 'Unknown')
+            status_names = {
+                0: "Queued",
+                1: "Running", 
+                2: "Completed",
+                3: "Failed",
+                4: "Stopped",
+                5: "Awaiting Queue"
+            }
+            status_name = status_names.get(status, f"Unknown ({status})")
+            
             formatted = f"🔬 Workflow Details:\n\n"
             formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
             formatted += f"🆔 UUID: {workflow.get('uuid', 'N/A')}\n"
             formatted += f"⚗️ Type: {workflow.get('object_type', 'N/A')}\n"
-            formatted += f"📊 Status: {workflow.get('object_status', 'Unknown')}\n"
+            formatted += f"📊 Status: {status_name} ({status})\n"
             formatted += f"📂 Parent: {workflow.get('parent_uuid', 'Root')}\n"
             formatted += f"⭐ Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
             formatted += f"🌐 Public: {'Yes' if workflow.get('public') else 'No'}\n"
             formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
             formatted += f"⏱️ Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
             formatted += f"💰 Credits: {workflow.get('credits_charged', 0)}\n"
-            formatted += f"📝 Notes: {workflow.get('notes', 'None')}\n"
+            formatted += f"📝 Notes: {workflow.get('notes', 'None')}\n\n"
+            
+            # If workflow is completed (status 2), automatically retrieve calculation results
+            if status == 2:
+                formatted += f"✅ **Workflow Completed Successfully!**\n\n"
+                
+                # Try to retrieve calculation results
+                try:
+                    calc_result = rowan.Calculation.retrieve(uuid=workflow_uuid)
+                    
+                    # Extract workflow type to provide specific result formatting
+                    workflow_type = workflow.get('object_type', '')
+                    
+                    if workflow_type == 'electronic_properties':
+                        formatted += f"🎯 **Electronic Properties Results:**\n\n"
+                        
+                        # Extract key electronic properties from the result
+                        object_data = calc_result.get('object_data', {})
+                        
+                        # Molecular orbital energies (HOMO/LUMO)
+                        if 'molecular_orbitals' in object_data:
+                            mo_data = object_data['molecular_orbitals']
+                            if isinstance(mo_data, dict) and 'energies' in mo_data:
+                                energies = mo_data['energies']
+                                if isinstance(energies, list) and len(energies) > 0:
+                                    # Find HOMO/LUMO
+                                    occupations = mo_data.get('occupations', [])
+                                    if occupations:
+                                        homo_idx = None
+                                        lumo_idx = None
+                                        for i, occ in enumerate(occupations):
+                                            if occ > 0.5:  # Occupied
+                                                homo_idx = i
+                                            elif occ < 0.5 and lumo_idx is None:  # First unoccupied
+                                                lumo_idx = i
+                                                break
+                                        
+                                        if homo_idx is not None and lumo_idx is not None:
+                                            homo_energy = energies[homo_idx]
+                                            lumo_energy = energies[lumo_idx]
+                                            gap = lumo_energy - homo_energy
+                                            
+                                            formatted += f"🔋 **Molecular Orbitals:**\n"
+                                            formatted += f"• HOMO Energy: {homo_energy:.4f} hartree ({homo_energy * 27.2114:.2f} eV)\n"
+                                            formatted += f"• LUMO Energy: {lumo_energy:.4f} hartree ({lumo_energy * 27.2114:.2f} eV)\n"
+                                            formatted += f"• HOMO-LUMO Gap: {gap:.4f} hartree ({gap * 27.2114:.2f} eV)\n\n"
+                        
+                        # Dipole moment
+                        if 'dipole' in object_data:
+                            dipole = object_data['dipole']
+                            if isinstance(dipole, dict):
+                                if 'magnitude' in dipole:
+                                    formatted += f"🧲 **Dipole Moment:** {dipole['magnitude']:.4f} Debye\n"
+                                if 'vector' in dipole:
+                                    vector = dipole['vector']
+                                    formatted += f"   Vector: ({vector[0]:.4f}, {vector[1]:.4f}, {vector[2]:.4f})\n\n"
+                            elif isinstance(dipole, (int, float)):
+                                formatted += f"🧲 **Dipole Moment:** {dipole:.4f} Debye\n\n"
+                        
+                        # Atomic charges
+                        if 'mulliken_charges' in object_data:
+                            charges = object_data['mulliken_charges']
+                            if isinstance(charges, list) and len(charges) > 0:
+                                formatted += f"⚡ **Mulliken Charges:**\n"
+                                for i, charge in enumerate(charges[:6]):  # Show first 6 atoms
+                                    formatted += f"   Atom {i+1}: {charge:+.4f}\n"
+                                if len(charges) > 6:
+                                    formatted += f"   ... and {len(charges) - 6} more atoms\n"
+                                formatted += "\n"
+                        
+                        # If no specific electronic properties found, show available keys
+                        if not any(key in object_data for key in ['molecular_orbitals', 'dipole', 'mulliken_charges']):
+                            if object_data:
+                                formatted += f"📋 **Available Properties:** {', '.join(object_data.keys())}\n\n"
+                            else:
+                                formatted += f"⚠️ **No electronic properties data found in results**\n\n"
+                    
+                    else:
+                        # For other workflow types, show general calculation results
+                        formatted += f"📊 **Calculation Results:**\n\n"
+                        
+                        object_data = calc_result.get('object_data', {})
+                        if object_data:
+                            # Show first few key-value pairs
+                            count = 0
+                            for key, value in object_data.items():
+                                if count >= 10:  # Limit to first 10 items
+                                    formatted += f"   ... and {len(object_data) - 10} more properties\n"
+                                    break
+                                
+                                # Format the value nicely
+                                if isinstance(value, (int, float)):
+                                    formatted += f"• **{key}**: {value}\n"
+                                elif isinstance(value, str):
+                                    formatted += f"• **{key}**: {value[:100]}{'...' if len(value) > 100 else ''}\n"
+                                elif isinstance(value, list):
+                                    formatted += f"• **{key}**: {len(value)} items\n"
+                                elif isinstance(value, dict):
+                                    formatted += f"• **{key}**: {len(value)} properties\n"
+                                else:
+                                    formatted += f"• **{key}**: {type(value).__name__}\n"
+                                count += 1
+                            formatted += "\n"
+                        else:
+                            formatted += f"⚠️ **No calculation data found in results**\n\n"
+                    
+                    formatted += f"💡 **Additional Details:**\n"
+                    formatted += f"• Use rowan_calculation_retrieve('{workflow_uuid}') for raw calculation data\n"
+                    
+                except Exception as retrieve_error:
+                    formatted += f"⚠️ **Results retrieval failed:** {str(retrieve_error)}\n"
+                    formatted += f"💡 Use rowan_calculation_retrieve('{workflow_uuid}') to manually get detailed results\n\n"
+            
+            elif status == 3:  # Failed
+                formatted += f"❌ **Workflow Failed**\n\n"
+                formatted += f"💡 **Next Steps:**\n"
+                formatted += f"• Check the workflow parameters and try again\n"
+                formatted += f"• Use rowan_calculation_retrieve('{workflow_uuid}') for error details\n"
+            
+            elif status in [0, 1, 5]:  # Queued, Running, or Awaiting Queue
+                formatted += f"⏳ **Workflow In Progress**\n\n"
+                formatted += f"💡 **Next Steps:**\n"
+                formatted += f"• Check back later - workflow is still {status_name.lower()}\n"
+                formatted += f"• Use rowan_workflow_management(action='status', workflow_uuid='{workflow_uuid}') to check status\n"
+            
+            elif status == 4:  # Stopped
+                formatted += f"⏹️ **Workflow Stopped**\n\n"
+                formatted += f"💡 **Next Steps:**\n"
+                formatted += f"• Workflow was manually stopped before completion\n"
+                formatted += f"• You may need to restart the calculation\n"
+            
             return formatted
             
         elif action == "update":
@@ -4065,20 +4307,148 @@ def rowan_system_management(
             if not job_uuid:
                 return "❌ Error: 'job_uuid' is required for job_redirect action"
             
-            formatted = f"📊 Legacy Job Query for {job_uuid}:\n\n"
-            formatted += f"⚠️ **Important Note:**\n"
-            formatted += f"Rowan manages computations through workflows, not individual jobs.\n"
-            formatted += f"The job/results concept is legacy from older versions.\n\n"
-            formatted += f"💡 **To find your workflow:**\n"
-            formatted += f"• Use `rowan_workflow_management(action='list')` to see all workflows\n"
-            formatted += f"• Look for workflows with similar names or recent creation times\n"
-            formatted += f"• Use `rowan_workflow_management(action='status', workflow_uuid='UUID')` to check status\n"
-            formatted += f"• Use `rowan_workflow_management(action='retrieve', workflow_uuid='UUID')` to get results\n\n"
-            formatted += f"🔄 **Migration Guide:**\n"
-            formatted += f"• Old: `rowan_job_status('{job_uuid}')` → New: `rowan_workflow_management(action='status', workflow_uuid='UUID')`\n"
-            formatted += f"• Old: `rowan_job_results('{job_uuid}')` → New: `rowan_workflow_management(action='retrieve', workflow_uuid='UUID')`\n"
-            
-            return formatted
+            # Try to treat the job_uuid as a workflow_uuid and retrieve results directly
+            try:
+                workflow = rowan.Workflow.retrieve(uuid=job_uuid)
+                
+                # Get status and interpret it
+                status = workflow.get('object_status', 'Unknown')
+                status_names = {
+                    0: "Queued",
+                    1: "Running", 
+                    2: "Completed",
+                    3: "Failed",
+                    4: "Stopped",
+                    5: "Awaiting Queue"
+                }
+                status_name = status_names.get(status, f"Unknown ({status})")
+                
+                formatted = f"✅ **Found Workflow {job_uuid}:**\n\n"
+                formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
+                formatted += f"⚗️ Type: {workflow.get('object_type', 'N/A')}\n"
+                formatted += f"📊 Status: {status_name} ({status})\n"
+                formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
+                formatted += f"⏱️ Elapsed: {workflow.get('elapsed', 0):.2f}s\n\n"
+                
+                if status == 2:  # Completed
+                    formatted += f"🎯 **Getting Results...**\n\n"
+                    
+                    # Try to retrieve calculation results
+                    try:
+                        calc_result = rowan.Calculation.retrieve(uuid=job_uuid)
+                        
+                        # Extract workflow type to provide specific result formatting
+                        workflow_type = workflow.get('object_type', '')
+                        
+                        if workflow_type == 'electronic_properties':
+                            formatted += f"🔋 **Electronic Properties Results:**\n\n"
+                            
+                            # Extract key electronic properties from the result
+                            object_data = calc_result.get('object_data', {})
+                            
+                            # Molecular orbital energies (HOMO/LUMO)
+                            if 'molecular_orbitals' in object_data:
+                                mo_data = object_data['molecular_orbitals']
+                                if isinstance(mo_data, dict) and 'energies' in mo_data:
+                                    energies = mo_data['energies']
+                                    if isinstance(energies, list) and len(energies) > 0:
+                                        # Find HOMO/LUMO
+                                        occupations = mo_data.get('occupations', [])
+                                        if occupations:
+                                            homo_idx = None
+                                            lumo_idx = None
+                                            for i, occ in enumerate(occupations):
+                                                if occ > 0.5:  # Occupied
+                                                    homo_idx = i
+                                                elif occ < 0.5 and lumo_idx is None:  # First unoccupied
+                                                    lumo_idx = i
+                                                    break
+                                            
+                                            if homo_idx is not None and lumo_idx is not None:
+                                                homo_energy = energies[homo_idx]
+                                                lumo_energy = energies[lumo_idx]
+                                                gap = lumo_energy - homo_energy
+                                                
+                                                formatted += f"• HOMO Energy: {homo_energy:.4f} hartree ({homo_energy * 27.2114:.2f} eV)\n"
+                                                formatted += f"• LUMO Energy: {lumo_energy:.4f} hartree ({lumo_energy * 27.2114:.2f} eV)\n"
+                                                formatted += f"• HOMO-LUMO Gap: {gap:.4f} hartree ({gap * 27.2114:.2f} eV)\n\n"
+                            
+                            # Dipole moment
+                            if 'dipole' in object_data:
+                                dipole = object_data['dipole']
+                                if isinstance(dipole, dict) and 'magnitude' in dipole:
+                                    formatted += f"🧲 **Dipole Moment:** {dipole['magnitude']:.4f} Debye\n\n"
+                                elif isinstance(dipole, (int, float)):
+                                    formatted += f"🧲 **Dipole Moment:** {dipole:.4f} Debye\n\n"
+                            
+                            # If no specific electronic properties found, show available keys
+                            if not any(key in object_data for key in ['molecular_orbitals', 'dipole']):
+                                if object_data:
+                                    formatted += f"📋 **Available Properties:** {', '.join(object_data.keys())}\n\n"
+                                else:
+                                    formatted += f"⚠️ **No electronic properties data found in results**\n\n"
+                        
+                        else:
+                            # For other workflow types, show general calculation results
+                            formatted += f"📊 **{workflow_type.replace('_', ' ').title()} Results:**\n\n"
+                            
+                            object_data = calc_result.get('object_data', {})
+                            if object_data:
+                                # Show first few key-value pairs
+                                count = 0
+                                for key, value in object_data.items():
+                                    if count >= 5:  # Limit to first 5 items for job_redirect
+                                        formatted += f"   ... and {len(object_data) - 5} more properties\n"
+                                        break
+                                    
+                                    # Format the value nicely
+                                    if isinstance(value, (int, float)):
+                                        formatted += f"• **{key}**: {value}\n"
+                                    elif isinstance(value, str):
+                                        formatted += f"• **{key}**: {value[:50]}{'...' if len(value) > 50 else ''}\n"
+                                    elif isinstance(value, list):
+                                        formatted += f"• **{key}**: {len(value)} items\n"
+                                    elif isinstance(value, dict):
+                                        formatted += f"• **{key}**: {len(value)} properties\n"
+                                    else:
+                                        formatted += f"• **{key}**: {type(value).__name__}\n"
+                                    count += 1
+                                formatted += "\n"
+                            else:
+                                formatted += f"⚠️ **No calculation data found in results**\n\n"
+                        
+                    except Exception as retrieve_error:
+                        formatted += f"⚠️ **Results retrieval failed:** {str(retrieve_error)}\n\n"
+                
+                elif status in [0, 1, 5]:  # Still running
+                    formatted += f"⏳ **Workflow is still {status_name.lower()}**\n"
+                    formatted += f"💡 Check back later for results\n\n"
+                
+                elif status == 3:  # Failed
+                    formatted += f"❌ **Workflow failed**\n"
+                    formatted += f"💡 Check the workflow parameters and try again\n\n"
+                
+                formatted += f"💡 **For more details:**\n"
+                formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{job_uuid}') for full workflow details\n"
+                formatted += f"• Use rowan_calculation_retrieve('{job_uuid}') for raw calculation data\n"
+                
+                return formatted
+                
+            except Exception as e:
+                # If workflow retrieval fails, provide the legacy guidance
+                formatted = f"❌ **Could not find workflow {job_uuid}:** {str(e)}\n\n"
+                formatted += f"⚠️ **Important Note:**\n"
+                formatted += f"Rowan manages computations through workflows, not individual jobs.\n"
+                formatted += f"The job/results concept is legacy from older versions.\n\n"
+                formatted += f"💡 **To find your workflow:**\n"
+                formatted += f"• Use rowan_workflow_management(action='list') to see all workflows\n"
+                formatted += f"• Look for workflows with similar names or recent creation times\n"
+                formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='UUID') to get results\n\n"
+                formatted += f"🔄 **Migration Guide:**\n"
+                formatted += f"• Old: rowan_job_status('{job_uuid}') → New: rowan_workflow_management(action='status', workflow_uuid='UUID')\n"
+                formatted += f"• Old: rowan_job_results('{job_uuid}') → New: rowan_workflow_management(action='retrieve', workflow_uuid='UUID')\n"
+                
+                return formatted
             
         else:
             return f"❌ Error: Unknown action '{action}'. Available actions: help, set_log_level, job_redirect"
