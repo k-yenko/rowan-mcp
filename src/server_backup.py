@@ -64,6 +64,147 @@ rowan.api_key = api_key
 logger.info("🔗 Rowan API key configured")
 
 
+def preprocess_solubility_args(func):
+    """Decorator to preprocess solubility function arguments before execution."""
+    import functools
+    
+    def convert_solvent_to_smiles(solvent_name: str) -> str:
+        """Convert common solvent names to SMILES strings."""
+        solvent_map = {
+            # Water variants
+            "water": "O",
+            "h2o": "O",
+            "h₂o": "O",
+            
+            # Alcohols
+            "methanol": "CO",
+            "meoh": "CO",
+            "ethanol": "CCO", 
+            "etoh": "CCO",
+            "propanol": "CCCO",
+            "isopropanol": "CC(C)O",
+            "ipa": "CC(C)O",
+            "butanol": "CCCCO",
+            "tert-butanol": "CC(C)(C)O",
+            "t-buoh": "CC(C)(C)O",
+            
+            # Ethers
+            "diethyl ether": "CCOCC",
+            "ether": "CCOCC",
+            "et2o": "CCOCC",
+            "thf": "C1CCOC1",
+            "tetrahydrofuran": "C1CCOC1",
+            "dme": "COCOC",
+            "glyme": "COCOC",
+            
+            # Aprotic solvents
+            "dmso": "CS(=O)C",
+            "dimethyl sulfoxide": "CS(=O)C",
+            "dimethylsulfoxide": "CS(=O)C",
+            "dmf": "CN(C)C=O",
+            "dimethylformamide": "CN(C)C=O",
+            "acetonitrile": "CC#N",
+            "mecn": "CC#N",
+            "acetone": "CC(=O)C",
+            "butanone": "CCC(=O)C",
+            "mek": "CCC(=O)C",
+            
+            # Chlorinated solvents
+            "dichloromethane": "ClCCl",
+            "dcm": "ClCCl",
+            "chloroform": "ClC(Cl)Cl",
+            "chcl3": "ClC(Cl)Cl",
+            "carbon tetrachloride": "ClC(Cl)(Cl)Cl",
+            "ccl4": "ClC(Cl)(Cl)Cl",
+            
+            # Aromatic solvents
+            "benzene": "c1ccccc1",
+            "toluene": "Cc1ccccc1",
+            "xylene": "Cc1ccccc1C",  # o-xylene as default
+            "mesitylene": "Cc1cc(C)cc(C)c1",
+            
+            # Esters
+            "ethyl acetate": "CC(=O)OCC",
+            "etoac": "CC(=O)OCC",
+            "methyl acetate": "CC(=O)OC",
+            
+            # Other common solvents
+            "hexane": "CCCCCC",
+            "cyclohexane": "C1CCCCC1",
+            "heptane": "CCCCCCC",
+            "pentane": "CCCCC",
+            "octane": "CCCCCCCC",
+            "nitromethane": "C[N+](=O)[O-]",
+            "pyridine": "c1ccncc1",
+            "dioxane": "C1COCCO1",
+            "1,4-dioxane": "C1COCCO1",
+        }
+        
+        return solvent_map.get(solvent_name.lower().strip(), solvent_name)
+    
+    @functools.wraps(func)
+    def wrapper(**kwargs):
+        # Process solvents parameter
+        if 'solvents' in kwargs and kwargs['solvents'] is not None:
+            solvents = kwargs['solvents']
+            
+            if isinstance(solvents, str):
+                # Split comma-separated string into list and convert names to SMILES
+                if "," in solvents:
+                    solvent_list = [s.strip() for s in solvents.split(",")]
+                    kwargs['solvents'] = [convert_solvent_to_smiles(s) for s in solvent_list]
+                else:
+                    # Single solvent
+                    kwargs['solvents'] = [convert_solvent_to_smiles(solvents)]
+            elif isinstance(solvents, list):
+                # Convert each solvent name in the list to SMILES
+                kwargs['solvents'] = [convert_solvent_to_smiles(s) if isinstance(s, str) else s for s in solvents]
+        
+        # Process temperatures parameter - convert Celsius to Kelvin
+        if 'temperatures' in kwargs and kwargs['temperatures'] is not None:
+            temperatures = kwargs['temperatures']
+            
+            if isinstance(temperatures, str):
+                # Handle single temperature as string
+                try:
+                    temp_celsius = float(temperatures)
+                    kwargs['temperatures'] = [temp_celsius + 273.15]
+                except (ValueError, TypeError):
+                    pass  # Let the function handle the error
+            elif isinstance(temperatures, (int, float)):
+                # Handle single temperature as number
+                kwargs['temperatures'] = [float(temperatures) + 273.15]
+            elif isinstance(temperatures, list):
+                # Convert list of temperatures from Celsius to Kelvin
+                converted_temps = []
+                for temp in temperatures:
+                    try:
+                        if isinstance(temp, str):
+                            temp_celsius = float(temp)
+                        else:
+                            temp_celsius = float(temp)
+                        
+                        # Check if temperature looks like it's already in Kelvin (> 200)
+                        if temp_celsius > 200:
+                            converted_temps.append(temp_celsius)  # Assume already Kelvin
+                        else:
+                            converted_temps.append(temp_celsius + 273.15)  # Convert from Celsius
+                    except (ValueError, TypeError):
+                        converted_temps.append(temp)  # Keep original if conversion fails
+                kwargs['temperatures'] = converted_temps
+        
+        # Log the final processed parameters for debugging
+        logger.info(f"🔧 PREPROCESSING APPLIED for {func.__name__}:")
+        if 'solvents' in kwargs:
+            logger.info(f"   🧪 PROCESSED solvents: {kwargs['solvents']} (type: {type(kwargs['solvents'])})")
+        if 'temperatures' in kwargs:
+            logger.info(f"   🌡️ PROCESSED temperatures: {kwargs['temperatures']} (type: {type(kwargs['temperatures'])})")
+        
+        return func(**kwargs)
+    
+    return wrapper
+
+
 def log_mcp_call(func):
     """Decorator to log MCP tool calls with detailed information."""
     import functools
@@ -3545,7 +3686,523 @@ def rowan_folder_management(
         return f"❌ Error in folder {action}: {str(e)}"
 
 
-# Workflow management and calculation retrieve functions moved to src/functions/
+@mcp.tool()
+def rowan_workflow_management(
+    action: str,
+    workflow_uuid: Optional[str] = None,
+    name: Optional[str] = None,
+    workflow_type: Optional[str] = None,
+    initial_molecule: Optional[str] = None,
+    parent_uuid: Optional[str] = None,
+    notes: Optional[str] = None,
+    starred: Optional[bool] = None,
+    public: Optional[bool] = None,
+    email_when_complete: Optional[bool] = None,
+    workflow_data: Optional[Dict[str, Any]] = None,
+    name_contains: Optional[str] = None,
+    object_status: Optional[int] = None,
+    object_type: Optional[str] = None,
+    page: int = 1,
+    size: int = 50
+) -> str:
+    """Unified workflow management tool for all workflow operations.
+    
+    **Available Actions:**
+    - **create**: Create a new workflow (requires: name, workflow_type, initial_molecule)
+    - **retrieve**: Get workflow details (requires: workflow_uuid)
+    - **update**: Update workflow properties (requires: workflow_uuid, optional: name, parent_uuid, notes, starred, public, email_when_complete)
+    - **stop**: Stop a running workflow (requires: workflow_uuid)
+    - **status**: Check workflow status (requires: workflow_uuid)
+    - **is_finished**: Check if workflow is finished (requires: workflow_uuid)
+    - **delete**: Delete a workflow (requires: workflow_uuid)
+    - **list**: List workflows with filters (optional: name_contains, parent_uuid, starred, public, object_status, object_type, page, size)
+    
+    Args:
+        action: Action to perform ('create', 'retrieve', 'update', 'stop', 'status', 'is_finished', 'delete', 'list')
+        workflow_uuid: UUID of the workflow (required for retrieve, update, stop, status, is_finished, delete)
+        name: Workflow name (required for create, optional for update)
+        workflow_type: Type of workflow (required for create)
+        initial_molecule: Initial molecule SMILES (required for create)
+        parent_uuid: Parent folder UUID (optional for create/update)
+        notes: Workflow notes (optional for create/update)
+        starred: Star the workflow (optional for create/update)
+        public: Make workflow public (optional for create/update)
+        email_when_complete: Email when complete (optional for create/update)
+        workflow_data: Additional workflow data (optional for create)
+        name_contains: Filter by name containing text (optional for list)
+        object_status: Filter by status (0=queued, 1=running, 2=completed, 3=failed, 4=stopped, optional for list)
+        object_type: Filter by workflow type (optional for list)
+        page: Page number for pagination (default: 1, for list)
+        size: Results per page (default: 50, for list)
+    
+    Returns:
+        Results of the workflow operation
+    """
+    
+    action = action.lower()
+    
+    try:
+        if action == "create":
+            if not all([name, workflow_type, initial_molecule]):
+                return "❌ Error: 'name', 'workflow_type', and 'initial_molecule' are required for creating a workflow"
+            
+            # Validate workflow type
+            VALID_WORKFLOWS = {
+                "admet", "basic_calculation", "bde", "conformer_search", "descriptors", 
+                "docking", "electronic_properties", "fukui", "hydrogen_bond_basicity", 
+                "irc", "molecular_dynamics", "multistage_opt", "pka", "redox_potential", 
+                "scan", "solubility", "spin_states", "tautomers"
+            }
+            
+            if workflow_type not in VALID_WORKFLOWS:
+                error_msg = f"❌ Invalid workflow_type '{workflow_type}'.\n\n"
+                error_msg += "🔧 **Available Rowan Workflow Types:**\n"
+                error_msg += f"{', '.join(sorted(VALID_WORKFLOWS))}"
+                return error_msg
+            
+            workflow = rowan.Workflow.create(
+                name=name,
+                workflow_type=workflow_type,
+                initial_molecule=initial_molecule,
+                parent_uuid=parent_uuid,
+                notes=notes or "",
+                starred=starred or False,
+                public=public or False,
+                email_when_complete=email_when_complete or False,
+                workflow_data=workflow_data or {}
+            )
+            
+            formatted = f"✅ Workflow '{name}' created successfully!\n\n"
+            formatted += f"🔬 UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f"⚗️ Type: {workflow_type}\n"
+            formatted += f"📊 Status: {workflow.get('object_status', 'Unknown')}\n"
+            formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
+            return formatted
+            
+        elif action == "retrieve":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for retrieving a workflow"
+            
+            workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
+            
+            # Get status and interpret it
+            status = workflow.get('object_status', 'Unknown')
+            status_names = {
+                0: "Queued",
+                1: "Running", 
+                2: "Completed",
+                3: "Failed",
+                4: "Stopped",
+                5: "Awaiting Queue"
+            }
+            status_name = status_names.get(status, f"Unknown ({status})")
+            
+            formatted = f"🔬 Workflow Details:\n\n"
+            formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
+            formatted += f"🆔 UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f"⚗️ Type: {workflow.get('object_type', 'N/A')}\n"
+            formatted += f"📊 Status: {status_name} ({status})\n"
+            formatted += f"📂 Parent: {workflow.get('parent_uuid', 'Root')}\n"
+            formatted += f"⭐ Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
+            formatted += f"🌐 Public: {'Yes' if workflow.get('public') else 'No'}\n"
+            formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
+            formatted += f"⏱️ Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
+            formatted += f"💰 Credits: {workflow.get('credits_charged', 0)}\n"
+            formatted += f"📝 Notes: {workflow.get('notes', 'None')}\n\n"
+            
+            # If workflow is completed (status 2), automatically retrieve calculation results
+            if status == 2:
+                formatted += f"✅ **Workflow Completed Successfully!**\n\n"
+                
+                # Try to retrieve calculation results
+                try:
+                    calc_result = rowan.Calculation.retrieve(uuid=workflow_uuid)
+                    
+                    # Extract workflow type to provide specific result formatting
+                    workflow_type = workflow.get('object_type', '')
+                    
+                    if workflow_type == 'electronic_properties':
+                        formatted += f"🎯 **Electronic Properties Results:**\n\n"
+                        
+                        # Extract key electronic properties from the result
+                        object_data = calc_result.get('object_data', {})
+                        
+                        # Molecular orbital energies (HOMO/LUMO)
+                        if 'molecular_orbitals' in object_data:
+                            mo_data = object_data['molecular_orbitals']
+                            if isinstance(mo_data, dict) and 'energies' in mo_data:
+                                energies = mo_data['energies']
+                                if isinstance(energies, list) and len(energies) > 0:
+                                    # Find HOMO/LUMO
+                                    occupations = mo_data.get('occupations', [])
+                                    if occupations:
+                                        homo_idx = None
+                                        lumo_idx = None
+                                        for i, occ in enumerate(occupations):
+                                            if occ > 0.5:  # Occupied
+                                                homo_idx = i
+                                            elif occ < 0.5 and lumo_idx is None:  # First unoccupied
+                                                lumo_idx = i
+                                                break
+                                        
+                                        if homo_idx is not None and lumo_idx is not None:
+                                            homo_energy = energies[homo_idx]
+                                            lumo_energy = energies[lumo_idx]
+                                            gap = lumo_energy - homo_energy
+                                            
+                                            formatted += f"🔋 **Molecular Orbitals:**\n"
+                                            formatted += f"• HOMO Energy: {homo_energy:.4f} hartree ({homo_energy * 27.2114:.2f} eV)\n"
+                                            formatted += f"• LUMO Energy: {lumo_energy:.4f} hartree ({lumo_energy * 27.2114:.2f} eV)\n"
+                                            formatted += f"• HOMO-LUMO Gap: {gap:.4f} hartree ({gap * 27.2114:.2f} eV)\n\n"
+                        
+                        # Dipole moment
+                        if 'dipole' in object_data:
+                            dipole = object_data['dipole']
+                            if isinstance(dipole, dict):
+                                if 'magnitude' in dipole:
+                                    formatted += f"🧲 **Dipole Moment:** {dipole['magnitude']:.4f} Debye\n"
+                                if 'vector' in dipole:
+                                    vector = dipole['vector']
+                                    formatted += f"   Vector: ({vector[0]:.4f}, {vector[1]:.4f}, {vector[2]:.4f})\n\n"
+                            elif isinstance(dipole, (int, float)):
+                                formatted += f"🧲 **Dipole Moment:** {dipole:.4f} Debye\n\n"
+                        
+                        # Atomic charges
+                        if 'mulliken_charges' in object_data:
+                            charges = object_data['mulliken_charges']
+                            if isinstance(charges, list) and len(charges) > 0:
+                                formatted += f"⚡ **Mulliken Charges:**\n"
+                                for i, charge in enumerate(charges[:6]):  # Show first 6 atoms
+                                    formatted += f"   Atom {i+1}: {charge:+.4f}\n"
+                                if len(charges) > 6:
+                                    formatted += f"   ... and {len(charges) - 6} more atoms\n"
+                                formatted += "\n"
+                        
+                        # If no specific electronic properties found, show available keys
+                        if not any(key in object_data for key in ['molecular_orbitals', 'dipole', 'mulliken_charges']):
+                            if object_data:
+                                formatted += f"📋 **Available Properties:** {', '.join(object_data.keys())}\n\n"
+                            else:
+                                formatted += f"⚠️ **No electronic properties data found in results**\n\n"
+                    
+                    else:
+                        # For other workflow types, show general calculation results
+                        formatted += f"📊 **Calculation Results:**\n\n"
+                        
+                        object_data = calc_result.get('object_data', {})
+                        if object_data:
+                            # Show first few key-value pairs
+                            count = 0
+                            for key, value in object_data.items():
+                                if count >= 10:  # Limit to first 10 items
+                                    formatted += f"   ... and {len(object_data) - 10} more properties\n"
+                                    break
+                                
+                                # Format the value nicely
+                                if isinstance(value, (int, float)):
+                                    formatted += f"• **{key}**: {value}\n"
+                                elif isinstance(value, str):
+                                    formatted += f"• **{key}**: {value[:100]}{'...' if len(value) > 100 else ''}\n"
+                                elif isinstance(value, list):
+                                    formatted += f"• **{key}**: {len(value)} items\n"
+                                elif isinstance(value, dict):
+                                    formatted += f"• **{key}**: {len(value)} properties\n"
+                                else:
+                                    formatted += f"• **{key}**: {type(value).__name__}\n"
+                                count += 1
+                            formatted += "\n"
+                        else:
+                            formatted += f"⚠️ **No calculation data found in results**\n\n"
+                    
+                    formatted += f"💡 **Additional Details:**\n"
+                    formatted += f"• Use rowan_calculation_retrieve('{workflow_uuid}') for raw calculation data\n"
+                    
+                except Exception as retrieve_error:
+                    formatted += f"⚠️ **Results retrieval failed:** {str(retrieve_error)}\n"
+                    formatted += f"💡 Use rowan_calculation_retrieve('{workflow_uuid}') to manually get detailed results\n\n"
+            
+            elif status == 3:  # Failed
+                formatted += f"❌ **Workflow Failed**\n\n"
+                formatted += f"💡 **Next Steps:**\n"
+                formatted += f"• Check the workflow parameters and try again\n"
+                formatted += f"• Use rowan_calculation_retrieve('{workflow_uuid}') for error details\n"
+            
+            elif status in [0, 1, 5]:  # Queued, Running, or Awaiting Queue
+                formatted += f"⏳ **Workflow In Progress**\n\n"
+                formatted += f"💡 **Next Steps:**\n"
+                formatted += f"• Check back later - workflow is still {status_name.lower()}\n"
+                formatted += f"• Use rowan_workflow_management(action='status', workflow_uuid='{workflow_uuid}') to check status\n"
+            
+            elif status == 4:  # Stopped
+                formatted += f"⏹️ **Workflow Stopped**\n\n"
+                formatted += f"💡 **Next Steps:**\n"
+                formatted += f"• Workflow was manually stopped before completion\n"
+                formatted += f"• You may need to restart the calculation\n"
+            
+            return formatted
+            
+        elif action == "update":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for updating a workflow"
+            
+            # Build update parameters
+            update_params = {"uuid": workflow_uuid}
+            if name is not None:
+                update_params["name"] = name
+            if parent_uuid is not None:
+                update_params["parent_uuid"] = parent_uuid
+            if notes is not None:
+                update_params["notes"] = notes
+            if starred is not None:
+                update_params["starred"] = starred
+            if public is not None:
+                update_params["public"] = public
+            if email_when_complete is not None:
+                update_params["email_when_complete"] = email_when_complete
+                
+            workflow = rowan.Workflow.update(**update_params)
+            
+            formatted = f"✅ Workflow '{workflow.get('name')}' updated successfully!\n\n"
+            formatted += f"🔬 UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
+            formatted += f"⭐ Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
+            formatted += f"🌐 Public: {'Yes' if workflow.get('public') else 'No'}\n"
+            return formatted
+            
+        elif action == "stop":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for stopping a workflow"
+            
+            rowan.Workflow.stop(uuid=workflow_uuid)
+            return f"⏹️ Workflow {workflow_uuid} stopped successfully."
+            
+        elif action == "status":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for checking workflow status"
+            
+            status = rowan.Workflow.status(uuid=workflow_uuid)
+            
+            status_names = {
+                0: "Queued",
+                1: "Running", 
+                2: "Completed",
+                3: "Failed",
+                4: "Stopped",
+                5: "Awaiting Queue"
+            }
+            
+            status_name = status_names.get(status, f"Unknown ({status})")
+            
+            formatted = f"📊 Workflow Status:\n\n"
+            formatted += f"🆔 UUID: {workflow_uuid}\n"
+            formatted += f"📈 Status: {status_name} ({status})\n"
+            return formatted
+            
+        elif action == "is_finished":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for checking if workflow is finished"
+            
+            is_finished = rowan.Workflow.is_finished(uuid=workflow_uuid)
+            
+            formatted = f"✅ Workflow Status:\n\n"
+            formatted += f"🆔 UUID: {workflow_uuid}\n"
+            formatted += f"🏁 Finished: {'Yes' if is_finished else 'No'}\n"
+            return formatted
+            
+        elif action == "delete":
+            if not workflow_uuid:
+                return "❌ Error: 'workflow_uuid' is required for deleting a workflow"
+            
+            rowan.Workflow.delete(uuid=workflow_uuid)
+            return f"🗑️ Workflow {workflow_uuid} deleted successfully."
+            
+        elif action == "list":
+            # Build filter parameters
+            filter_params = {"page": page, "size": size}
+            if name_contains is not None:
+                filter_params["name_contains"] = name_contains
+            if parent_uuid is not None:
+                filter_params["parent_uuid"] = parent_uuid
+            if starred is not None:
+                filter_params["starred"] = starred
+            if public is not None:
+                filter_params["public"] = public
+            if object_status is not None:
+                filter_params["object_status"] = object_status
+            if object_type is not None:
+                filter_params["object_type"] = object_type
+                
+            result = rowan.Workflow.list(**filter_params)
+            workflows = result.get("workflows", [])
+            num_pages = result.get("num_pages", 1)
+            
+            if not workflows:
+                return "🔬 No workflows found matching criteria."
+            
+            status_names = {0: "⏳", 1: "🔄", 2: "✅", 3: "❌", 4: "⏹️", 5: "⏸️"}
+            
+            formatted = f"🔬 Found {len(workflows)} workflows (Page {page}/{num_pages}):\n\n"
+            for workflow in workflows:
+                status_icon = status_names.get(workflow.get('object_status'), "❓")
+                starred_icon = "⭐" if workflow.get('starred') else ""
+                public_icon = "🌐" if workflow.get('public') else ""
+                
+                formatted += f"{status_icon} {workflow.get('name', 'Unnamed')} {starred_icon}{public_icon}\n"
+                formatted += f"   Type: {workflow.get('object_type', 'N/A')}\n"
+                formatted += f"   UUID: {workflow.get('uuid', 'N/A')}\n"
+                formatted += f"   Created: {workflow.get('created_at', 'N/A')}\n"
+                if workflow.get('elapsed'):
+                    formatted += f"   Duration: {workflow.get('elapsed', 0):.2f}s\n"
+                formatted += "\n"
+            
+            return formatted
+            
+        else:
+            return f"❌ Error: Unknown action '{action}'. Available actions: create, retrieve, update, stop, status, is_finished, delete, list"
+            
+    except Exception as e:
+        return f"❌ Error in workflow {action}: {str(e)}"
+
+
+@mcp.tool()
+def rowan_calculation_retrieve(calculation_uuid: str) -> str:
+    """Retrieve details of a specific calculation.
+    
+    Args:
+        calculation_uuid: UUID of the calculation to retrieve
+    
+    Returns:
+        Calculation details
+    """
+    try:
+        calculation = rowan.Calculation.retrieve(uuid=calculation_uuid)
+        
+        formatted = f"⚙️ Calculation Details:\n\n"
+        formatted += f"📝 Name: {calculation.get('name', 'N/A')}\n"
+        formatted += f"🆔 UUID: {calculation_uuid}\n"
+        formatted += f"📊 Status: {calculation.get('status', 'Unknown')}\n"
+        formatted += f"⏱️ Elapsed: {calculation.get('elapsed', 0):.3f}s\n"
+        
+        settings = calculation.get('settings', {})
+        if settings:
+            formatted += f"\n⚙️ Settings:\n"
+            formatted += f"   Method: {settings.get('method', 'N/A')}\n"
+            if settings.get('basis_set'):
+                formatted += f"   Basis Set: {settings.get('basis_set')}\n"
+            if settings.get('tasks'):
+                formatted += f"   Tasks: {', '.join(settings.get('tasks', []))}\n"
+        
+        molecules = calculation.get('molecules', [])
+        if molecules:
+            formatted += f"\n🧪 Molecules: {len(molecules)} structure(s)\n"
+        
+        return formatted
+        
+    except Exception as e:
+        return f"❌ Error retrieving calculation: {str(e)}"
+
+
+@mcp.tool()
+def rowan_docking(
+    name: str,
+    protein: str,
+    ligand: str,
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5,
+    additional_params: Optional[Dict[str, Any]] = None
+) -> str:
+    """Run protein-ligand docking calculations.
+    
+    Args:
+        name: Name for the docking calculation
+        protein: Protein specification (PDB ID like '1ABC', PDB content, or protein sequence)
+        ligand: Ligand SMILES string
+        folder_uuid: UUID of folder to organize calculation in
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: Check status interval in seconds (default: 5)
+        additional_params: Additional docking-specific parameters
+    
+    Returns:
+        Formatted docking results
+    """
+    try:
+        # For docking workflows in Rowan, we need to check the exact format expected
+        # Let's try different approaches based on what the API might accept
+        
+        approaches = []
+        
+        # Approach 1: Try PDB ID format (4-character codes)
+        if len(protein) == 4 and protein.isalnum():
+            approaches.append(("PDB ID", protein))
+        
+        # Approach 2: Try just the ligand SMILES (for small molecule only calculations)
+        approaches.append(("Ligand only", ligand))
+        
+        # Approach 3: Try a structured format if docking supports it
+        if len(protein) > 4:
+            approaches.append(("Combined format", f"protein:{protein}|ligand:{ligand}"))
+        
+        last_error = None
+        
+        for approach_name, molecule_input in approaches:
+            try:
+                # Prepare kwargs for rowan.compute
+                compute_kwargs = {
+                    "name": f"{name} ({approach_name})",
+                    "molecule": molecule_input,
+                    "workflow_type": "docking",
+                    "blocking": blocking,
+                    "ping_interval": ping_interval
+                }
+                
+                if folder_uuid:
+                    compute_kwargs["folder_uuid"] = folder_uuid
+                if additional_params:
+                    compute_kwargs.update(additional_params)
+                    
+                result = rowan.compute(**compute_kwargs)
+                
+                # Format result for display
+                formatted = f"✅ Docking calculation '{name}' completed successfully!\n\n"
+                formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
+                formatted += f"📊 Status: {result.get('status', 'Unknown')}\n"
+                formatted += f"🧬 Approach: {approach_name}\n"
+                formatted += f"🧬 Protein: {protein[:50]}{'...' if len(protein) > 50 else ''}\n"
+                formatted += f"💊 Ligand: {ligand}\n"
+                
+                docking_data = result.get("object_data", {})
+                if "binding_affinity" in docking_data:
+                    formatted += f"🔗 Binding Affinity: {docking_data['binding_affinity']:.2f} kcal/mol\n"
+                if "poses" in docking_data:
+                    formatted += f"📐 Poses Generated: {len(docking_data['poses'])}\n"
+                
+                return formatted
+                
+            except Exception as e:
+                last_error = e
+                continue
+        
+        # If all approaches failed, provide helpful guidance
+        error_msg = f"❌ Docking failed with all approaches. Last error: {str(last_error)}\n\n"
+        error_msg += "🔧 **Troubleshooting Protein-Ligand Docking:**\n\n"
+        error_msg += "**For protein input, try:**\n"
+        error_msg += "• PDB ID (4 characters): `1ABC`\n"
+        error_msg += "• Direct PDB file content\n\n"
+        error_msg += "**For ligand input:**\n"
+        error_msg += "• Valid SMILES string like: `CC(C)c1nc(cs1)CN(C)C(=O)N`\n\n"
+        error_msg += "**Alternative approaches:**\n"
+        error_msg += "• Use `rowan_compute()` with workflow_type='docking' and experiment with different molecule formats\n"
+        error_msg += "• Check if your protein needs to be prepared/processed first\n"
+        error_msg += "• Consider using PDB IDs from the Protein Data Bank\n\n"
+        error_msg += "**Example working formats:**\n"
+        error_msg += "• Protein: `1ABC` (PDB ID)\n"
+        error_msg += "• Ligand: `CCO` (ethanol SMILES)\n"
+        
+        return error_msg
+        
+    except Exception as e:
+        return f"❌ Error running docking: {str(e)}"
 
 
 @mcp.tool()
@@ -3598,7 +4255,8 @@ def rowan_system_management(
             result += "• `rowan_solubility` - Solubility prediction\n\n"
             
             result += "**🧪 Drug Discovery:**\n"
-            result += "• `rowan_admet` - ADME-Tox properties\n\n"
+            result += "• `rowan_admet` - ADME-Tox properties\n"
+            result += "• `rowan_docking` - Protein-ligand docking\n\n"
             
             result += "**🔬 Advanced Analysis:**\n"
             result += "• `rowan_scan` - Potential energy surface scans (bond/angle/dihedral)\n"
