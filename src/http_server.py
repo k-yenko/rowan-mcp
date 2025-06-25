@@ -29,21 +29,22 @@ from .server import (
     rowan_scan, rowan_fukui, rowan_spin_states, rowan_irc, 
     rowan_molecular_dynamics, rowan_hydrogen_bond_basicity,
     
-    # Drug Discovery
-    rowan_docking,
     
     # Unified Management Tools (NEW - replaces 4 old tools)
-    rowan_folder_management, rowan_workflow_management, rowan_system_management,
+    rowan_folder_management, rowan_system_management,
     
-    # Calculation Management
-    rowan_calculation_retrieve,
+    # Note: rowan_workflow_management and rowan_calculation_retrieve now imported from functions/
     
     # API key
     api_key
 )
 
-# Import the new solubility function
+# Import the new standalone functions
 from .functions.solubility import rowan_solubility as rowan_solubility_new
+from .functions.workflow_management import rowan_workflow_management as rowan_workflow_management_new
+from .functions.calculation_retrieve import rowan_calculation_retrieve as rowan_calculation_retrieve_new
+from .functions.docking import rowan_docking as rowan_docking_new
+from .functions.spin_states import rowan_spin_states as rowan_spin_states_new
 
 # Mapping of tool names to functions
 TOOL_FUNCTIONS = {
@@ -66,21 +67,21 @@ TOOL_FUNCTIONS = {
     # Advanced Analysis
     "rowan_scan": rowan_scan.fn if hasattr(rowan_scan, 'fn') else rowan_scan,
     "rowan_fukui": rowan_fukui.fn if hasattr(rowan_fukui, 'fn') else rowan_fukui,
-    "rowan_spin_states": rowan_spin_states.fn if hasattr(rowan_spin_states, 'fn') else rowan_spin_states,
+    "rowan_spin_states": rowan_spin_states_new,  # New spin states function from functions/spin_states.py
     "rowan_irc": rowan_irc.fn if hasattr(rowan_irc, 'fn') else rowan_irc,
     "rowan_molecular_dynamics": rowan_molecular_dynamics.fn if hasattr(rowan_molecular_dynamics, 'fn') else rowan_molecular_dynamics,
     "rowan_hydrogen_bond_basicity": rowan_hydrogen_bond_basicity.fn if hasattr(rowan_hydrogen_bond_basicity, 'fn') else rowan_hydrogen_bond_basicity,
     
     # Drug Discovery
-    "rowan_docking": rowan_docking.fn if hasattr(rowan_docking, 'fn') else rowan_docking,
+    "rowan_docking": rowan_docking_new,  # New docking function from functions/docking.py
     
     # Unified Management Tools (NEW - consolidated from 4 old tools)
     "rowan_folder_management": rowan_folder_management.fn if hasattr(rowan_folder_management, 'fn') else rowan_folder_management,
-    "rowan_workflow_management": rowan_workflow_management.fn if hasattr(rowan_workflow_management, 'fn') else rowan_workflow_management,
+    "rowan_workflow_management": rowan_workflow_management_new,  # New workflow management from functions/
     "rowan_system_management": rowan_system_management.fn if hasattr(rowan_system_management, 'fn') else rowan_system_management,
     
     # Calculation Management
-    "rowan_calculation_retrieve": rowan_calculation_retrieve.fn if hasattr(rowan_calculation_retrieve, 'fn') else rowan_calculation_retrieve,
+    "rowan_calculation_retrieve": rowan_calculation_retrieve_new,  # New calculation retrieve from functions/
 }
 
 def create_app():
