@@ -8405,3 +8405,38 @@ atoms
 2025-06-25 14:34:12,922 - src.functions.spin_states - INFO - ✅ Generated manual octahedral geometry for 7 atoms
 2025-06-25 14:34:12,922 - src.functions.spin_states - INFO - 🧬 Created stjames.Molecule object with multiplicity=2
 2025-06-25 14:34:13,583 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-25 14:41:36,015 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-25 14:41:36,041 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-25 14:41:36,041 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-25 14:41:40,262 - src.functions.molecular_converter - INFO - 🔄 Unicode normalized: 'CoCl63-'
+2025-06-25 14:41:40,267 - src.functions.spin_states - INFO - 🔄 Converted input 'CoCl₆³⁻' → SMILES: '[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Co+3]'
+2025-06-25 14:41:40,267 - src.functions.spin_states - INFO - ✅ SpinStatesWorkflow created: <SpinStatesWorkflow [2, 4, 6] RAPID>
+2025-06-25 14:41:40,267 - src.functions.spin_states - INFO - 🔬 Starting spin states calculation: cocl6_coordinate_test
+2025-06-25 14:41:40,267 - src.functions.spin_states - INFO - 🧪 Molecule SMILES: [Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Co+3]
+2025-06-25 14:41:40,267 - src.functions.spin_states - INFO - ⚡ Spin multiplicities: [2, 4, 6]
+2025-06-25 14:41:40,267 - src.functions.spin_states - INFO - ⚙️ Mode: rapid
+2025-06-25 14:41:40,267 - src.functions.spin_states - INFO - 🔧 Using initial_multiplicity = 2 for states [2, 4, 6]
+2025-06-25 14:41:40,267 - src.functions.spin_states - INFO - 🚀 Submitting spin states calculation to Rowan
+2025-06-25 14:41:40,275 - src.functions.spin_states - WARNING - ⚠️ molSimplify not available, trying manual geometry generation
+2025-06-25 14:41:40,275 - src.functions.spin_states - INFO - ✅ Generated spherical coordination geometry for 63 ligands
+2025-06-25 14:41:40,277 - src.functions.spin_states - WARNING - ⚠️ stjames.molecule.Molecule creation failed: 1 validation error for Molecule
+  Value error, The combination of 1098 electrons, charge 0, and multiplicity 2 is impossible. Double-check the charge and multiplicity values given and verify that they are correct. [type=value_error, input_value={'atoms': [Atom(17, [2.07...l-].[Cl-].[Cl-].[Co+3]'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/value_error
+2025-06-25 14:41:40,277 - src.functions.spin_states - WARNING - ⚠️ Rowan may default to multiplicity=1 instead of 2
+2025-06-25 14:41:41,549 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-25 14:42:57,489 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-25 14:42:57,513 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-25 14:42:57,513 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-25 14:43:01,395 - src.functions.molecular_converter - INFO - 🔄 Unicode normalized: 'CoCl63-'
+2025-06-25 14:43:01,399 - src.functions.spin_states - INFO - 🔄 Converted input 'CoCl₆³⁻' → SMILES: '[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Co+3]'
+2025-06-25 14:43:01,399 - src.functions.spin_states - INFO - ✅ SpinStatesWorkflow created: <SpinStatesWorkflow [2, 4, 6] RAPID>
+2025-06-25 14:43:01,399 - src.functions.spin_states - INFO - 🔬 Starting spin states calculation: cocl6_fixed_test
+2025-06-25 14:43:01,400 - src.functions.spin_states - INFO - 🧪 Molecule SMILES: [Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Co+3]
+2025-06-25 14:43:01,400 - src.functions.spin_states - INFO - ⚡ Spin multiplicities: [2, 4, 6]
+2025-06-25 14:43:01,400 - src.functions.spin_states - INFO - ⚙️ Mode: rapid
+2025-06-25 14:43:01,400 - src.functions.spin_states - INFO - 🔧 Using initial_multiplicity = 2 for states [2, 4, 6]
+2025-06-25 14:43:01,400 - src.functions.spin_states - INFO - 🚀 Submitting spin states calculation to Rowan
+2025-06-25 14:43:01,406 - src.functions.spin_states - WARNING - ⚠️ molSimplify not available, trying manual geometry generation
+2025-06-25 14:43:01,406 - src.functions.spin_states - INFO - ✅ Generated manual octahedral geometry for 7 atoms
+2025-06-25 14:43:01,407 - src.functions.spin_states - INFO - 🧬 Created stjames.Molecule object with multiplicity=2
+2025-06-25 14:43:02,151 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"

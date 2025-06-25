@@ -308,8 +308,28 @@ class MolecularConverter:
                 ox_state = 2 if metal == 'Mn' else 3
                 return f"{'[Cl-].' * ligand_count}[{metal}+{ox_state}]".rstrip('.')
         
-        # Simple MnCl6 pattern
-        match = re.match(r'([A-Z][a-z]?)([A-Z][a-z]?)(\d+)', formula)
+        # CoCl6³⁻ pattern (with charge at end) - MUST come before simple MnCl6 pattern
+        match = re.match(r'([A-Z][a-z]?)([A-Z][a-z]?)(\d+)(\d+)([+-])', formula)
+        if match:
+            metal, ligand, ligand_count, charge_value, charge_sign = match.groups()
+            ligand_count = int(ligand_count)
+            charge_value = int(charge_value)
+            
+            if metal in self.transition_metals and ligand == 'Cl':
+                # For negatively charged complexes, use standard oxidation states
+                if charge_sign == '-':
+                    ox_state = 3 if metal == 'Co' else 2
+                else:
+                    ox_state = charge_value + 2
+                
+                # Cap oxidation state at reasonable values
+                ox_state = min(ox_state, 7)
+                ox_state = max(ox_state, 1)
+                
+                return f"{'[Cl-].' * ligand_count}[{metal}+{ox_state}]".rstrip('.')
+        
+        # Simple MnCl6 pattern (without charge)
+        match = re.match(r'([A-Z][a-z]?)([A-Z][a-z]?)(\d+)$', formula)  # Added $ to ensure end of string
         if match:
             metal, ligand, ligand_count = match.groups()
             ligand_count = int(ligand_count)

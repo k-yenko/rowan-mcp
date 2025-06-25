@@ -1,7 +1,7 @@
-2025-06-25 14:34:08,798 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
-2025-06-25 14:34:08,807 - src.server - INFO - ✅ rowan-python package loaded successfully
-2025-06-25 14:34:08,807 - src.server - INFO - 🔗 Rowan API key configured
-INFO:     Started server process [1706]
+2025-06-25 14:42:57,489 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-25 14:42:57,513 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-25 14:42:57,513 - src.server - INFO - 🔗 Rowan API key configured
+INFO:     Started server process [2176]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:6276 (Press CTRL+C to quit)
@@ -10,23 +10,23 @@ INFO:     Uvicorn running on http://127.0.0.1:6276 (Press CTRL+C to quit)
 🌐 Server will be available at: http://127.0.0.1:6276/mcp
 🔗 Connect your MCP client to this endpoint!
 🔧 Available tools: 21
-INFO:     127.0.0.1:54185 - "GET / HTTP/1.1" 200 OK
-2025-06-25 14:34:12,900 - src.functions.molecular_converter - INFO - 🔄 Unicode normalized: 'Mn(Cl)6+4'
-[14:34:12] SMILES Parse Error: syntax error while parsing: Mn(Cl)6+4
-[14:34:12] SMILES Parse Error: check for mistakes around position 1:
-[14:34:12] Mn(Cl)6+4
-[14:34:12] ^
-[14:34:12] SMILES Parse Error: Failed parsing SMILES 'Mn(Cl)6+4' for input: 'Mn(Cl)6+4'
-2025-06-25 14:34:12,910 - src.functions.spin_states - INFO - 🔄 Converted input 'Mn(Cl)₆⁺⁴' → SMILES: '[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Mn+6]'
-2025-06-25 14:34:12,911 - src.functions.spin_states - INFO - ✅ SpinStatesWorkflow created: <SpinStatesWorkflow [2, 4, 6] RAPID>
-2025-06-25 14:34:12,911 - src.functions.spin_states - INFO - 🔬 Starting spin states calculation: mn_hexachloride_coordinate_test
-2025-06-25 14:34:12,911 - src.functions.spin_states - INFO - 🧪 Molecule SMILES: [Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Mn+6]
-2025-06-25 14:34:12,911 - src.functions.spin_states - INFO - ⚡ Spin multiplicities: [2, 4, 6]
-2025-06-25 14:34:12,911 - src.functions.spin_states - INFO - ⚙️ Mode: rapid
-2025-06-25 14:34:12,911 - src.functions.spin_states - INFO - 🔧 Using initial_multiplicity = 2 for states [2, 4, 6]
-2025-06-25 14:34:12,911 - src.functions.spin_states - INFO - 🚀 Submitting spin states calculation to Rowan
-2025-06-25 14:34:12,922 - src.functions.spin_states - WARNING - ⚠️ molSimplify not available, trying manual geometry generation
-2025-06-25 14:34:12,922 - src.functions.spin_states - INFO - ✅ Generated manual octahedral geometry for 7 atoms
-2025-06-25 14:34:12,922 - src.functions.spin_states - INFO - 🧬 Created stjames.Molecule object with multiplicity=2
-2025-06-25 14:34:13,583 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
-INFO:     127.0.0.1:54186 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54938 - "GET / HTTP/1.1" 200 OK
+2025-06-25 14:43:01,395 - src.functions.molecular_converter - INFO - 🔄 Unicode normalized: 'CoCl63-'
+[14:43:01] SMILES Parse Error: syntax error while parsing: CoCl63-
+[14:43:01] SMILES Parse Error: check for mistakes around position 7:
+[14:43:01] CoCl63-
+[14:43:01] ~~~~~~^
+[14:43:01] SMILES Parse Error: Failed parsing SMILES 'CoCl63-' for input: 'CoCl63-'
+2025-06-25 14:43:01,399 - src.functions.spin_states - INFO - 🔄 Converted input 'CoCl₆³⁻' → SMILES: '[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Co+3]'
+2025-06-25 14:43:01,399 - src.functions.spin_states - INFO - ✅ SpinStatesWorkflow created: <SpinStatesWorkflow [2, 4, 6] RAPID>
+2025-06-25 14:43:01,399 - src.functions.spin_states - INFO - 🔬 Starting spin states calculation: cocl6_fixed_test
+2025-06-25 14:43:01,400 - src.functions.spin_states - INFO - 🧪 Molecule SMILES: [Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Co+3]
+2025-06-25 14:43:01,400 - src.functions.spin_states - INFO - ⚡ Spin multiplicities: [2, 4, 6]
+2025-06-25 14:43:01,400 - src.functions.spin_states - INFO - ⚙️ Mode: rapid
+2025-06-25 14:43:01,400 - src.functions.spin_states - INFO - 🔧 Using initial_multiplicity = 2 for states [2, 4, 6]
+2025-06-25 14:43:01,400 - src.functions.spin_states - INFO - 🚀 Submitting spin states calculation to Rowan
+2025-06-25 14:43:01,406 - src.functions.spin_states - WARNING - ⚠️ molSimplify not available, trying manual geometry generation
+2025-06-25 14:43:01,406 - src.functions.spin_states - INFO - ✅ Generated manual octahedral geometry for 7 atoms
+2025-06-25 14:43:01,407 - src.functions.spin_states - INFO - 🧬 Created stjames.Molecule object with multiplicity=2
+2025-06-25 14:43:02,151 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:54939 - "POST /mcp HTTP/1.1" 200 OK
