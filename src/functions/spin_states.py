@@ -93,172 +93,136 @@ class SpinStatesWorkflow(MoleculeWorkflow):
 
 
 def _generate_3d_coordinates_for_coordination_complex(smiles: str, rdkit_mol):
-    """Generate realistic 3D coordinates using specialized coordination chemistry approach."""
-    
-    # First try molSimplify for coordination complexes
-    if '[Cl-]' in smiles and any(metal in smiles for metal in ['[Mn', '[Fe', '[Co', '[Ni', '[Cu', '[Cr']):
-        coords = _try_molsimplify_geometry(smiles, rdkit_mol)
-        if coords:
-            return coords
-    
-    # Fallback to manual octahedral geometry for coordination complexes
-    if '[Cl-]' in smiles and any(metal in smiles for metal in ['[Mn', '[Fe', '[Co', '[Ni', '[Cu', '[Cr']):
-        coords = _generate_manual_octahedral_geometry(rdkit_mol)
-        if coords:
-            return coords
-    
-    # For organic molecules, try RDKit
-    coords = _try_rdkit_organic_geometry(rdkit_mol)
-    if coords:
-        return coords
-    
-    # Final fallback: linear arrangement (but spaced out)
-    logger.warning("⚠️ All coordinate generation methods failed, using spaced linear fallback")
-    num_atoms = rdkit_mol.GetNumAtoms()
-    coords = []
-    for i in range(num_atoms):
-        coords.append([i * 2.5, 0.0, 0.0])  # Space atoms 2.5 Å apart
-    return coords
-
-def _try_molsimplify_geometry(smiles: str, rdkit_mol):
-    """Try to use molSimplify for coordination complex geometry generation."""
+    """Generate clean 3D coordinates for coordination complexes."""
     try:
-        # Try to import molSimplify
-        from molSimplify.Scripts.geometry import generate_octahedral_complex
-        from molSimplify.Classes.mol3D import mol3D
+        import numpy as np
         
-        # Parse the coordination complex
-        metal_symbol = None
-        ligand_count = 0
-        
-        # Extract metal and count ligands
-        for metal in ['Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Cr']:
-            if f'[{metal}' in smiles:
-                metal_symbol = metal
-                break
-        
-        ligand_count = smiles.count('[Cl-]')
-        
-        if metal_symbol and ligand_count == 6:
-            # Generate octahedral complex with molSimplify
-            complex_mol = generate_octahedral_complex(
-                metal=metal_symbol,
-                ligands=['Cl'] * 6,
-                geometry='oct'
-            )
-            
-            # Extract coordinates
-            coords = []
-            for i in range(complex_mol.natoms):
-                pos = complex_mol.getAtom(i).coords()
-                coords.append([pos[0], pos[1], pos[2]])
-            
-            logger.info(f"✅ Generated octahedral geometry using molSimplify for {metal_symbol}Cl6")
-            return coords
-            
-    except ImportError:
-        logger.warning("⚠️ molSimplify not available, trying manual geometry generation")
-    except Exception as e:
-        logger.warning(f"⚠️ molSimplify failed: {e}, trying manual geometry generation")
-    
-    return None
-
-def _generate_manual_octahedral_geometry(rdkit_mol):
-    """Generate octahedral geometry manually for coordination complexes."""
-    try:
+        # Get number of atoms
         num_atoms = rdkit_mol.GetNumAtoms()
-        coords = []
         
-        # Identify metal and ligands by atomic number
+        # Find metal center and ligands
         metal_idx = None
         ligand_indices = []
         
         for i, atom in enumerate(rdkit_mol.GetAtoms()):
             atomic_num = atom.GetAtomicNum()
-            if atomic_num in [25, 26, 27, 28, 29, 24]:  # Transition metals
+            if atomic_num in [25, 26, 27, 28, 29, 24, 46]:  # Transition metals
                 metal_idx = i
             else:
                 ligand_indices.append(i)
         
-        # Initialize coordinate array
+        if metal_idx is None:
+            return None
+        
+        # Initialize coordinates
         coords = [[0.0, 0.0, 0.0] for _ in range(num_atoms)]
         
-        if metal_idx is not None and len(ligand_indices) == 6:
-            # Place metal at origin
-            coords[metal_idx] = [0.0, 0.0, 0.0]
-            
-            # Octahedral positions (bond length ~2.4 Å for M-Cl)
-            bond_length = 2.4
-            octahedral_positions = [
-                [bond_length, 0.0, 0.0],      # +x
-                [-bond_length, 0.0, 0.0],     # -x  
-                [0.0, bond_length, 0.0],      # +y
-                [0.0, -bond_length, 0.0],     # -y
-                [0.0, 0.0, bond_length],      # +z
-                [0.0, 0.0, -bond_length]      # -z
-            ]
-            
-            # Place ligands at octahedral positions
-            for i, ligand_idx in enumerate(ligand_indices[:6]):
-                coords[ligand_idx] = octahedral_positions[i]
-            
-            logger.info(f"✅ Generated manual octahedral geometry for {num_atoms} atoms")
-            return coords
+        # Place metal at origin
+        coords[metal_idx] = [0.0, 0.0, 0.0]
         
-        # For other coordination numbers, distribute on sphere
-        elif metal_idx is not None and len(ligand_indices) > 0:
-            coords[metal_idx] = [0.0, 0.0, 0.0]
-            
-            import math
-            bond_length = 2.4
-            for i, ligand_idx in enumerate(ligand_indices):
-                # Distribute ligands around sphere
-                phi = 2 * math.pi * i / len(ligand_indices)
-                theta = math.pi / 3  # ~60 degrees from z-axis
-                
-                x = bond_length * math.sin(theta) * math.cos(phi)
-                y = bond_length * math.sin(theta) * math.sin(phi) 
-                z = bond_length * math.cos(theta)
-                
-                coords[ligand_idx] = [x, y, z]
-            
-            logger.info(f"✅ Generated spherical coordination geometry for {len(ligand_indices)} ligands")
+        # Set appropriate bond length for M-Cl bonds
+        bond_length = 2.4  # Standard M-Cl bond length in Å
+        
+        # Generate geometry based on coordination number
+        num_ligands = len(ligand_indices)
+        
+        if num_ligands == 4:
+            # Square planar for Pd(II) complexes
+            if any(atom.GetAtomicNum() == 46 for atom in rdkit_mol.GetAtoms()):
+                positions = np.array([
+                    [bond_length, 0, 0],
+                    [-bond_length, 0, 0],
+                    [0, bond_length, 0],
+                    [0, -bond_length, 0]
+                ])
+            else:
+                # Tetrahedral for other metals
+                a = bond_length / np.sqrt(3)
+                positions = np.array([
+                    [a, a, a],
+                    [a, -a, -a],
+                    [-a, a, -a],
+                    [-a, -a, a]
+                ])
+        
+        elif num_ligands == 6:
+            # Octahedral geometry
+            positions = np.array([
+                [bond_length, 0, 0],
+                [-bond_length, 0, 0],
+                [0, bond_length, 0],
+                [0, -bond_length, 0],
+                [0, 0, bond_length],
+                [0, 0, -bond_length]
+            ])
+        
+        else:
+            # General spherical distribution
+            angles = np.linspace(0, 2*np.pi, num_ligands, endpoint=False)
+            positions = []
+            for angle in angles:
+                x = bond_length * np.cos(angle)
+                y = bond_length * np.sin(angle)
+                z = 0.0
+                positions.append([x, y, z])
+            positions = np.array(positions)
+        
+        # Assign positions to ligands
+        for i, ligand_idx in enumerate(ligand_indices):
+            if i < len(positions):
+                coords[ligand_idx] = positions[i].tolist()
+        
+        # Validate minimum distances
+        min_distance = float('inf')
+        for i in range(num_atoms):
+            for j in range(i+1, num_atoms):
+                dist = np.linalg.norm(np.array(coords[i]) - np.array(coords[j]))
+                min_distance = min(min_distance, dist)
+        
+        if min_distance > 1.0:  # At least 1.0 Å separation
             return coords
+        else:
+            return None
             
     except Exception as e:
-        logger.warning(f"⚠️ Manual octahedral generation failed: {e}")
-    
-    return None
+        logger.warning(f"Coordinate generation failed: {e}")
+        return None
 
-def _try_rdkit_organic_geometry(rdkit_mol):
-    """Try RDKit coordinate generation for organic molecules."""
-    try:
-        from rdkit import Chem
-        from rdkit.Chem import AllChem
-        
-        # Add hydrogens for better 3D structure
-        mol_with_h = Chem.AddHs(rdkit_mol)
-        
-        # Generate 3D coordinates
-        AllChem.EmbedMolecule(mol_with_h, randomSeed=42)
-        
-        # Optimize geometry with force field
-        AllChem.MMFFOptimizeMolecule(mol_with_h)
-        
-        # Extract coordinates for original atoms (without added hydrogens)
-        conformer = mol_with_h.GetConformer()
-        coords = []
-        for i in range(rdkit_mol.GetNumAtoms()):  # Only original atoms
-            pos = conformer.GetAtomPosition(i)
-            coords.append([pos.x, pos.y, pos.z])
-        
-        logger.info(f"✅ Generated 3D coordinates for {rdkit_mol.GetNumAtoms()} atoms using RDKit")
-        return coords
-        
-    except Exception as e:
-        logger.warning(f"⚠️ RDKit 3D generation failed: {e}")
+# Removed old complex coordinate generation functions - simplified to single clean function above
+
+def _calculate_molecular_charge(smiles: str) -> int:
+    """Calculate the total molecular charge from SMILES string."""
+    total_charge = 0
     
-    return None
+    # Count negative ions
+    if '[Cl-]' in smiles:
+        total_charge -= smiles.count('[Cl-]')
+    if '[F-]' in smiles:
+        total_charge -= smiles.count('[F-]')
+    if '[Br-]' in smiles:
+        total_charge -= smiles.count('[Br-]')
+    if '[I-]' in smiles:
+        total_charge -= smiles.count('[I-]')
+    
+    # Count positive metal ions - common oxidation states
+    positive_ions = {
+        '[Pd+2]': 2, '[Pd+4]': 4,
+        '[Mn+2]': 2, '[Mn+3]': 3, '[Mn+4]': 4, '[Mn+7]': 7,
+        '[Fe+2]': 2, '[Fe+3]': 3,
+        '[Co+2]': 2, '[Co+3]': 3,
+        '[Ni+2]': 2, '[Ni+3]': 3,
+        '[Cu+1]': 1, '[Cu+2]': 2,
+        '[Cr+2]': 2, '[Cr+3]': 3, '[Cr+6]': 6,
+        '[V+2]': 2, '[V+3]': 3, '[V+4]': 4, '[V+5]': 5,
+        '[Ti+2]': 2, '[Ti+3]': 3, '[Ti+4]': 4,
+        '[Zn+2]': 2
+    }
+    
+    for ion, charge in positive_ions.items():
+        if ion in smiles:
+            total_charge += charge * smiles.count(ion)
+    
+    return total_charge
 
 
 def rowan_spin_states(
@@ -336,7 +300,7 @@ def rowan_spin_states(
     
     # Log the conversion if it happened
     if molecule != original_input:
-        logger.info(f"🔄 Converted input '{original_input}' → SMILES: '{molecule}'")
+        logger.info(f"Converted input '{original_input}' to SMILES: '{molecule}'")
     
     # Check for unsupported formats
     if molecule.startswith("UNSUPPORTED_"):
@@ -401,40 +365,40 @@ def rowan_spin_states(
         (']' in molecule and ('+' in molecule[molecule.rfind(']'):] or '-' in molecule[molecule.rfind(']'):])),
         # Simple molecular formula without proper charge specification
         (not any(char in molecule for char in ['[', ']', '+', '-']) and 
-         any(metal in molecule.upper() for metal in ['MN', 'FE', 'CO', 'NI', 'CU', 'CR', 'V', 'TI'])),
+         any(metal in molecule.upper() for metal in ['MN', 'FE', 'CO', 'NI', 'CU', 'CR', 'V', 'TI', 'PD'])),
         # Invalid complex notation like [MnCl6] without proper ion separation
         ('[' in molecule and ']' in molecule and 'Cl' in molecule.upper() and 
          not ('.' in molecule and '[Cl-]' in molecule))
     ]
     
-    if any(invalid_patterns) and any(metal in molecule.upper() for metal in ['MN', 'FE', 'CO', 'NI', 'CU', 'CR', 'V', 'TI']):
+    if any(invalid_patterns) and any(metal in molecule.upper() for metal in ['MN', 'FE', 'CO', 'NI', 'CU', 'CR', 'V', 'TI', 'PD']):
         needs_charge_info = True
         molecular_formula = molecule
     
     # Ensure we have states - provide intelligent defaults based on electron parity rules
     if states is None:
         # Auto-assign reasonable default states based on the molecule and electron count
-        if any(metal in molecule.upper() for metal in ['MN', 'FE', 'CO', 'NI', 'CU', 'CR', 'V', 'TI']):
+        if any(metal in molecule.upper() for metal in ['MN', 'FE', 'CO', 'NI', 'CU', 'CR', 'V', 'TI', 'PD']):
             # For transition metals, assign states based on electron parity rules
             # Even electrons (Fe=26, Ni=28, Cr=24, Ti=22, V=23, Zn=30) need ODD multiplicities
             # Odd electrons (Mn=25, Co=27, Cu=29) need EVEN multiplicities
             
-            if any(metal in molecule.upper() for metal in ['FE', 'NI', 'CR', 'TI', 'ZN']):
+            if any(metal in molecule.upper() for metal in ['FE', 'NI', 'CR', 'TI', 'ZN', 'PD']):
                 # Even electron metals → odd multiplicities
                 states_list = [1, 3, 5]  # Singlet, triplet, quintet
-                logger.info(f"🤖 Auto-assigned odd multiplicities for even-electron metal: {states_list}")
+                logger.info(f"Auto-assigned odd multiplicities for even-electron metal: {states_list}")
             elif any(metal in molecule.upper() for metal in ['MN', 'CO', 'CU', 'V']):
                 # Odd electron metals → even multiplicities  
                 states_list = [2, 4, 6]  # Doublet, quartet, sextet
-                logger.info(f"🤖 Auto-assigned even multiplicities for odd-electron metal: {states_list}")
+                logger.info(f"Auto-assigned even multiplicities for odd-electron metal: {states_list}")
             else:
                 # Default fallback for other transition metals
                 states_list = [1, 3, 5]  # Conservative choice
-                logger.info(f"🤖 Auto-assigned default states for transition metal: {states_list}")
+                logger.info(f"Auto-assigned default states for transition metal: {states_list}")
         else:
             # For organic molecules, use singlet/triplet (most have even electrons)
             states_list = [1, 3]  # Singlet, triplet
-            logger.info(f"🤖 Auto-assigned default states for organic molecule: {states_list}")
+            logger.info(f"Auto-assigned default states for organic molecule: {states_list}")
     
     # Handle states input - convert to list of integers
     if states is not None and isinstance(states, str):
@@ -557,7 +521,7 @@ def rowan_spin_states(
             transition_state=transition_state,
             frequencies=frequencies
         )
-        logger.info(f"✅ SpinStatesWorkflow created: {spin_workflow}")
+        logger.info(f"SpinStatesWorkflow created: {spin_workflow}")
     except ValueError as e:
         error_response = {
             "success": False,
@@ -569,18 +533,18 @@ def rowan_spin_states(
         }
         return str(error_response)
     
-    logger.info(f"🔬 Starting spin states calculation: {name}")
-    logger.info(f"🧪 Molecule SMILES: {molecule}")
-    logger.info(f"⚡ Spin multiplicities: {states_list}")
-    logger.info(f"⚙️ Mode: {mode}")
+    logger.info(f"Starting spin states calculation: {name}")
+    logger.info(f"Molecule SMILES: {molecule}")
+    logger.info(f"Spin multiplicities: {states_list}")
+    logger.info(f"Mode: {mode}")
     if solvent:
-        logger.info(f"💧 Solvent: {solvent}")
+        logger.info(f"Solvent: {solvent}")
     if xtb_preopt:
-        logger.info("🔧 xTB pre-optimization: enabled")
+        logger.info("xTB pre-optimization: enabled")
     if frequencies:
-        logger.info("🎵 Frequency calculation: enabled")
+        logger.info("Frequency calculation: enabled")
     if transition_state:
-        logger.info("🎯 Transition state optimization: enabled")
+        logger.info("Transition state optimization: enabled")
     
     # For spin states, we need to provide an initial multiplicity
     # Use the first state in the list as the starting multiplicity
@@ -588,7 +552,7 @@ def rowan_spin_states(
     
     # CRITICAL FIX: Ensure initial_multiplicity follows electron parity rules
     # Rowan uses initial_multiplicity as the starting point, so it must be valid
-    logger.info(f"🔧 Using initial_multiplicity = {initial_multiplicity} for states {states_list}")
+    logger.info(f"Using initial_multiplicity = {initial_multiplicity} for states {states_list}")
     
     # Prepare workflow parameters - rowan.compute() wants core params separate from workflow_data
     workflow_params = {
@@ -629,7 +593,7 @@ def rowan_spin_states(
         else:
             workflow_params["constraints"] = [str(constraints)]
     
-    logger.info("🚀 Submitting spin states calculation to Rowan")
+    logger.info("Submitting spin states calculation to Rowan")
     
     try:
         # CRITICAL FIX: Create Molecule object with correct multiplicity instead of string
@@ -658,19 +622,24 @@ def rowan_spin_states(
                     position=coords_3d[i]
                 ))
             
-            # Create Molecule object directly with correct multiplicity
+            # Calculate total charge from SMILES string
+            total_charge = _calculate_molecular_charge(molecule)
+            
+            logger.info(f"Calculated molecular charge: {total_charge} (from SMILES: {molecule})")
+            
+            # Create Molecule object directly with correct multiplicity and charge
             molecule_obj = SjamesMolecule(
                 atoms=atoms,
-                charge=0,  # Assume neutral unless specified otherwise
+                charge=total_charge,  # Calculate proper charge from SMILES
                 multiplicity=initial_multiplicity,  # This is the key fix!
                 smiles=molecule  # Keep original SMILES
             )
             workflow_params["molecule"] = molecule_obj
-            logger.info(f"🧬 Created stjames.Molecule object with multiplicity={initial_multiplicity}")
+            logger.info(f"Created stjames.Molecule object with multiplicity={initial_multiplicity}")
         except (ImportError, Exception) as e:
             # If stjames not available, use string but log the limitation
-            logger.warning(f"⚠️ stjames.molecule.Molecule creation failed: {e}")
-            logger.warning(f"⚠️ Rowan may default to multiplicity=1 instead of {initial_multiplicity}")
+            logger.warning(f"stjames.molecule.Molecule creation failed: {e}")
+            logger.warning(f"Rowan may default to multiplicity=1 instead of {initial_multiplicity}")
         
         # Submit spin states calculation to Rowan
         result = rowan.compute(**workflow_params)
@@ -738,7 +707,7 @@ def rowan_spin_states(
                     "name": name,
                     "molecule": molecule,
                     "status": status_text,
-                    "message": f"✅ Spin states calculation submitted successfully! Use tracking_id to monitor progress.",
+                    "message": f"Spin states calculation submitted successfully! Use tracking_id to monitor progress.",
                     "calculation_details": {
                         "spin_multiplicities": states_list,
                         "mode": mode,
@@ -773,7 +742,7 @@ def rowan_spin_states(
             "molecule": molecule,
             "states": states_list
         }
-        logger.error(f"❌ Spin states calculation failed: {str(e)}")
+        logger.error(f"Spin states calculation failed: {str(e)}")
         return str(error_response)
 
 
