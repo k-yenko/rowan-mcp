@@ -23,11 +23,11 @@ from .server import (
     rowan_conformers, rowan_descriptors, rowan_tautomers,
     
     # Chemical Properties
-    rowan_pka, rowan_bde, rowan_redox_potential,
+    rowan_bde, rowan_redox_potential,
     
     # Advanced Analysis
     rowan_scan, rowan_fukui, rowan_spin_states, rowan_irc, 
-    rowan_molecular_dynamics, rowan_hydrogen_bond_basicity,
+    rowan_hydrogen_bond_basicity,
     
     
     # Unified Management Tools (NEW - replaces 4 old tools)
@@ -45,6 +45,7 @@ from .functions.workflow_management import rowan_workflow_management as rowan_wo
 from .functions.calculation_retrieve import rowan_calculation_retrieve as rowan_calculation_retrieve_new
 from .functions.docking import rowan_docking as rowan_docking_new
 from .functions.spin_states import rowan_spin_states as rowan_spin_states_new
+from .functions.molecular_dynamics import rowan_molecular_dynamics as rowan_molecular_dynamics_new
 
 # Mapping of tool names to functions
 TOOL_FUNCTIONS = {
@@ -59,7 +60,6 @@ TOOL_FUNCTIONS = {
     "rowan_tautomers": rowan_tautomers.fn if hasattr(rowan_tautomers, 'fn') else rowan_tautomers,
     
     # Chemical Properties
-    "rowan_pka": rowan_pka.fn if hasattr(rowan_pka, 'fn') else rowan_pka,
     "rowan_bde": rowan_bde.fn if hasattr(rowan_bde, 'fn') else rowan_bde,
     "rowan_redox_potential": rowan_redox_potential.fn if hasattr(rowan_redox_potential, 'fn') else rowan_redox_potential,
     "rowan_solubility": rowan_solubility_new,  # New solubility function from functions/solubility.py
@@ -69,7 +69,7 @@ TOOL_FUNCTIONS = {
     "rowan_fukui": rowan_fukui.fn if hasattr(rowan_fukui, 'fn') else rowan_fukui,
     "rowan_spin_states": rowan_spin_states_new,  # New spin states function from functions/spin_states.py
     "rowan_irc": rowan_irc.fn if hasattr(rowan_irc, 'fn') else rowan_irc,
-    "rowan_molecular_dynamics": rowan_molecular_dynamics.fn if hasattr(rowan_molecular_dynamics, 'fn') else rowan_molecular_dynamics,
+    "rowan_molecular_dynamics": rowan_molecular_dynamics_new,  # New molecular dynamics function from functions/molecular_dynamics.py
     "rowan_hydrogen_bond_basicity": rowan_hydrogen_bond_basicity.fn if hasattr(rowan_hydrogen_bond_basicity, 'fn') else rowan_hydrogen_bond_basicity,
     
     # Drug Discovery
