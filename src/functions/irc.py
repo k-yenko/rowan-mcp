@@ -31,7 +31,7 @@ def rowan_irc(
     Args:
         name: Name for the calculation
         molecule: Molecule SMILES string (should be a transition state)
-        mode: Calculation mode ("rapid", "balanced", "thorough") - controls accuracy/speed tradeoff
+        mode: Calculation mode ("rapid", "careful", "meticulous") - controls accuracy/speed tradeoff
         solvent: Solvent for the calculation (optional)
         preopt: Whether to pre-optimize the structure before IRC (default: False)
         max_irc_steps: Maximum number of IRC steps to take (default: 10)
@@ -45,7 +45,7 @@ def rowan_irc(
         result = rowan_irc(
             name="ts_irc_analysis",
             molecule="C1C[CH]C1",  # Example transition state SMILES
-            mode="rapid",
+            mode="careful",  # Valid modes: rapid, careful, meticulous
             max_irc_steps=15,
             preopt=False,
             blocking=True
@@ -54,17 +54,16 @@ def rowan_irc(
     Returns:
         IRC pathway results
     """
-    # Parameter validation
-    valid_modes = ["rapid", "balanced", "thorough", "reckless"]
+    # Parameter validation - using actual IRCWorkflow enum values from stjames
+    # Based on: https://github.com/rowansci/stjames-public/blob/master/stjames/workflows/irc.py
+    valid_modes = ["rapid", "careful", "meticulous"]
     
     # Validate mode
     mode_lower = mode.lower()
     if mode_lower not in valid_modes:
         return f"❌ Error: Invalid mode '{mode}'. Valid options: {', '.join(valid_modes)}"
     
-    # Validate mode restrictions
-    if mode_lower == "reckless":
-        return f"❌ Error: 'reckless' mode is not allowed for IRC calculations"
+    # IRC workflow only supports these 3 modes as defined in stjames
     
     # Validate numeric parameters
     if max_irc_steps <= 0:
@@ -77,28 +76,24 @@ def rowan_irc(
     if level_of_theory.lower() not in [theory.lower() for theory in valid_theories]:
         return f"❌ Warning: Unusual level_of_theory '{level_of_theory}'. Common options: {', '.join(valid_theories)}"
     
-    # Build IRC settings
-    irc_settings = {
-        "mode": mode_lower,
-        "preopt": preopt,
-        "max_irc_steps": max_irc_steps,
-        "level_of_theory": level_of_theory.lower()
-    }
-    
-    # Add solvent if specified
-    if solvent:
-        irc_settings["solvent"] = solvent.lower()
-    
-    # Build parameters for Rowan API
+    # Build parameters for Rowan API - following stjames IRCWorkflow structure
+    # IRCWorkflow expects mode as top-level parameter with other params also at top-level
     workflow_params = {
         "name": name,
         "molecule": molecule,
         "workflow_type": "irc",
-        "settings": irc_settings,
+        "mode": mode_lower,  # Mode is top-level parameter (required by IRCWorkflow)
+        "preopt": preopt,    # IRC-specific parameters at top-level
+        "max_irc_steps": max_irc_steps,
+        "level_of_theory": level_of_theory.lower(),
         "folder_uuid": folder_uuid,
         "blocking": blocking,
         "ping_interval": ping_interval
     }
+    
+    # Add solvent if specified
+    if solvent:
+        workflow_params["solvent"] = solvent.lower()
     
     try:
         # Submit IRC calculation to Rowan
@@ -115,21 +110,37 @@ def rowan_irc(
 
 
 def test_rowan_irc():
-    """Test the rowan_irc function."""
+    """Test the rowan_irc function with actual Rowan API response."""
     try:
-        # Test with minimal parameters
+        print("🧪 Testing IRC with actual Rowan API call...")
+        
+        # Test with minimal parameters - actually wait for result
         result = rowan_irc(
-            name="test_irc_ts",
-            molecule="CC[CH]C",  # Simple transition state example
-            mode="rapid",
+            name="test_irc_valid_modes",
+            molecule="C=C",  # Simple molecule that should work
+            mode="rapid",    # Valid mode from IRCWorkflow enum
             max_irc_steps=5,  # Short for testing
-            blocking=False
+            blocking=True,   # Actually wait for completion
+            ping_interval=2  # Check every 2 seconds
         )
-        print("✅ IRC test successful!")
-        print(f"Result: {result}")
-        return True
+        
+        print(f"📊 Raw result: {result}")
+        
+        # Check if result contains error
+        if "Error" in str(result) or "failed" in str(result).lower():
+            print(f"❌ IRC test failed with error: {result}")
+            return False
+        
+        # Try to parse the result to check for success indicators
+        if "uuid" in str(result).lower() and ("status" in str(result).lower() or "object_status" in str(result).lower()):
+            print("✅ IRC test successful - workflow submitted and processed!")
+            return True
+        else:
+            print(f"⚠️ IRC test completed but result unclear: {result}")
+            return False
+            
     except Exception as e:
-        print(f"❌ IRC test failed: {e}")
+        print(f"❌ IRC test failed with exception: {e}")
         return False
 
 

@@ -1815,15 +1815,25 @@ def rowan_scan(
         
         logger.info(f"🔗 Concerted Scan: {len(concerted_coordinates)} coordinates with {num} steps each")
     
-    # Set intelligent defaults based on coordinate type and method preferences
+    # ENFORCE REQUIRED PARAMETERS FOR SCANWORKFLOW - Always provide robust defaults for IRC
+    # These defaults ensure scan ALWAYS works for IRC workflow
+    
     if method is None:
-        method = "hf-3c"  # Fast default for scans as recommended in docs
+        method = "hf-3c"  # Fast, reliable default for scans - always required
+        logger.info("🚀 Using default method 'hf-3c' for scan (recommended for speed)")
         
     if engine is None:
-        engine = "psi4"  # Required by Rowan API
+        engine = "psi4"  # REQUIRED by ScanWorkflow - must not be None
+        logger.info("🚀 Using default engine 'psi4' for scan (required by Rowan)")
         
     if mode is None:
-        mode = "rapid"  # Good balance for scans
+        mode = "rapid"  # Good balance for scans - always required
+        logger.info("🚀 Using default mode 'rapid' for scan (good balance)")
+    
+    # Ensure all required defaults are lowercase for API consistency
+    method = method.lower()
+    engine = engine.lower()
+    mode = mode.lower()
         
     # Validate QC parameters if provided (reuse existing validation logic)
     if method and method.lower() not in QC_METHODS and method.lower() != "hf-3c":
@@ -1874,37 +1884,43 @@ def rowan_scan(
         # Build scan coordinate specification based on scan type
         scan_coordinates = []
         
-        # Primary coordinate
+        # BUILD PRIMARY SCAN_SETTINGS - EXACTLY MATCHING STJAMES SCANSETTINGS
+        # This structure is REQUIRED by ScanWorkflow for IRC to work
         primary_coord = {
-            "coordinate_type": coord_type_lower,
-            "atoms": atoms,
-            "start": start,
-            "stop": stop,
-            "num": num
+            "type": coord_type_lower,    # REQUIRED: matches stjames ScanSettings.type
+            "atoms": atoms,              # REQUIRED: list of 1-indexed atom numbers
+            "start": float(start),       # REQUIRED: starting coordinate value
+            "stop": float(stop),         # REQUIRED: ending coordinate value  
+            "num": int(num)              # REQUIRED: number of scan points
         }
         scan_coordinates.append(primary_coord)
         
-        # Add 2D coordinate if specified
+        logger.info(f"✅ Primary scan_settings built: type='{coord_type_lower}', atoms={atoms}, range={start}→{stop}, num={num}")
+        
+        # ADD 2D COORDINATE IF SPECIFIED - EXACT STJAMES FORMAT
         if is_2d_scan:
             secondary_coord = {
-                "coordinate_type": coord_type_2d_lower,
-                "atoms": atoms_2d,
-                "start": start_2d,
-                "stop": stop_2d,
-                "num": num_2d
+                "type": coord_type_2d_lower,     # REQUIRED: matches stjames ScanSettings.type
+                "atoms": atoms_2d,               # REQUIRED: list of 1-indexed atom numbers
+                "start": float(start_2d),        # REQUIRED: starting coordinate value
+                "stop": float(stop_2d),          # REQUIRED: ending coordinate value
+                "num": int(num_2d)               # REQUIRED: number of scan points
             }
             scan_coordinates.append(secondary_coord)
+            logger.info(f"✅ Secondary scan_settings built: type='{coord_type_2d_lower}', atoms={atoms_2d}, range={start_2d}→{stop_2d}, num={num_2d}")
         
-        # Add concerted coordinates if specified
+        # ADD CONCERTED COORDINATES IF SPECIFIED - EXACT STJAMES FORMAT
         if concerted_coordinates:
-            for coord in concerted_coordinates:
-                scan_coordinates.append({
-                    "coordinate_type": coord["coordinate_type"].lower(),
-                    "atoms": coord["atoms"],
-                    "start": coord["start"],
-                    "stop": coord["stop"],
-                    "num": coord["num"]
-                })
+            for i, coord in enumerate(concerted_coordinates):
+                concerted_coord = {
+                    "type": coord["coordinate_type"].lower(),   # REQUIRED: matches stjames ScanSettings.type
+                    "atoms": coord["atoms"],                    # REQUIRED: list of 1-indexed atom numbers
+                    "start": float(coord["start"]),            # REQUIRED: starting coordinate value
+                    "stop": float(coord["stop"]),              # REQUIRED: ending coordinate value
+                    "num": int(coord["num"])                   # REQUIRED: number of scan points
+                }
+                scan_coordinates.append(concerted_coord)
+                logger.info(f"✅ Concerted coordinate {i+1} built: type='{coord['coordinate_type'].lower()}', atoms={coord['atoms']}, range={coord['start']}→{coord['stop']}, num={coord['num']}")
         
         # Build parameters for rowan.compute call
         compute_params = {
@@ -1915,38 +1931,52 @@ def rowan_scan(
             "ping_interval": ping_interval
         }
         
-        # Handle different scan coordinate formats based on what Rowan API expects
+        # SCAN_SETTINGS CONSTRUCTION - STRICTLY FOLLOWING STJAMES SCANWORKFLOW REQUIREMENTS
+        # This is the CRITICAL section for IRC compatibility
         if len(scan_coordinates) == 1:
-            # Single coordinate scan - use the existing format
-            compute_params["scan_coordinate"] = scan_coordinates[0]
+            # SINGLE COORDINATE SCAN: scan_settings is a ScanSettings object
+            compute_params["scan_settings"] = scan_coordinates[0]
+            logger.info(f"✅ Single scan_settings configured: {scan_coordinates[0]}")
         else:
-            # Multiple coordinates - use scan_settings format
-            compute_params["scan_settings"] = scan_coordinates
             if is_2d_scan:
-                # For 2D scans, separate primary and secondary coordinates
-                compute_params["scan_settings"] = scan_coordinates[0]
-                compute_params["scan_settings_2d"] = scan_coordinates[1]
+                # 2D SCAN: separate scan_settings and scan_settings_2d fields
+                compute_params["scan_settings"] = scan_coordinates[0]      # Primary coordinate
+                compute_params["scan_settings_2d"] = scan_coordinates[1]   # Secondary coordinate  
+                logger.info(f"✅ 2D scan_settings configured: primary={scan_coordinates[0]}, secondary={scan_coordinates[1]}")
+            else:
+                # CONCERTED SCAN: scan_settings is a list of ScanSettings
+                compute_params["scan_settings"] = scan_coordinates
+                logger.info(f"✅ Concerted scan_settings configured: {len(scan_coordinates)} coordinates")
         
         # Add wavefront propagation setting
         compute_params["wavefront_propagation"] = wavefront_propagation
         
-        # Add QC parameters
-        if method:
-            compute_params["method"] = method.lower()
-        if basis_set:
-            compute_params["basis_set"] = basis_set.lower()
-        if engine:
-            compute_params["engine"] = engine.lower()
-        if corrections:
-            compute_params["corrections"] = [corr.lower() for corr in corrections]
+        # BUILD REQUIRED CALC_SETTINGS - ALWAYS COMPLETE FOR IRC
+        # ScanWorkflow requires calc_settings to be present and well-formed
+        calc_settings = {
+            "method": method,  # Always present due to defaults above
+            "mode": mode,      # Always present due to defaults above
+        }
+        
+        # Add charge/multiplicity only if non-default (reduces clutter)
         if charge != 0:
-            compute_params["charge"] = charge
+            calc_settings["charge"] = charge
         if multiplicity != 1:
-            compute_params["multiplicity"] = multiplicity
-        if mode:
-            compute_params["mode"] = mode.lower()
+            calc_settings["multiplicity"] = multiplicity
+            
+        # Add optional parameters if provided
+        if basis_set:
+            calc_settings["basis_set"] = basis_set.lower()
+        if corrections:
+            calc_settings["corrections"] = [corr.lower() for corr in corrections]
         if constraints:
-            compute_params["constraints"] = constraints
+            calc_settings["constraints"] = constraints
+        
+        # REQUIRED FIELDS - ScanWorkflow validation will fail without these
+        compute_params["calc_settings"] = calc_settings
+        compute_params["calc_engine"] = engine  # Always present due to defaults above
+        
+        logger.info(f"✅ Required ScanWorkflow parameters guaranteed: calc_settings={calc_settings}, calc_engine={engine}")
         
         # Use "scan" workflow type
         result = log_rowan_api_call(
@@ -1967,19 +1997,19 @@ def rowan_scan(
                 job_status = None
         
         status_names = {
-            0: ("⏳", "Queued"),
-            1: ("🔄", "Running"), 
-            2: ("✅", "Completed Successfully"),
-            3: ("❌", "Failed"),
-            4: ("⏹️", "Stopped"),
-            5: ("⏸️", "Awaiting Queue")
+            0: "Queued",
+            1: "Running", 
+            2: "Completed Successfully",
+            3: "Failed",
+            4: "Stopped",
+            5: "Awaiting Queue"
         }
         
-        status_icon, status_text = status_names.get(job_status, ("❓", f"Unknown ({job_status})"))
+        status_text = status_names.get(job_status, f"Unknown ({job_status})")
         
         # Handle None status
         if job_status is None:
-            status_icon, status_text = ("📝", "Submitted (status pending)")
+            status_text = "Submitted (status pending)"
         
         # Determine scan type for display
         scan_type = "1D Scan"
@@ -1993,119 +2023,34 @@ def rowan_scan(
         
         # Format response
         if job_status == 2:
-            formatted = f"✅ {scan_type} '{name}' completed successfully!\n\n"
+            formatted = f"{scan_type} '{name}' completed successfully\n\n"
         elif job_status == 3:
-            formatted = f"❌ {scan_type} '{name}' failed!\n\n"
+            formatted = f"{scan_type} '{name}' failed\n\n"
         elif job_status in [0, 1, 5]:
-            formatted = f"🔄 {scan_type} '{name}' submitted and running!\n\n"
+            formatted = f"{scan_type} '{name}' submitted and running\n\n"
         elif job_status == 4:
-            formatted = f"⏹️ {scan_type} '{name}' was stopped!\n\n"
+            formatted = f"{scan_type} '{name}' was stopped\n\n"
         else:
-            formatted = f"📊 {scan_type} '{name}' status unknown!\n\n"
+            formatted = f"{scan_type} '{name}' status unknown\n\n"
             
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {status_icon} {status_text} ({job_status})\n"
+        formatted += f"Molecule: {molecule}\n"
+        formatted += f"SMILES: {canonical_smiles}\n"
+        formatted += f"Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f"Status: {status_text} ({job_status})\n"
         
-        # Scan coordinate details
-        formatted += f"\n📐 **Scan Coordinates:**\n"
-        formatted += f"   Type: {scan_type}\n"
-        formatted += f"   Primary: {coordinate_type.upper()} on atoms {atoms} ({start} → {stop}, {num} points)\n"
+        # Basic scan info
+        formatted += f"\nScan Type: {scan_type}\n"
+        formatted += f"Coordinate: {coordinate_type.upper()} on atoms {atoms} ({start} to {stop}, {num} points)\n"
         if is_2d_scan:
-            formatted += f"   Secondary: {coordinate_type_2d.upper()} on atoms {atoms_2d} ({start_2d} → {stop_2d}, {num_2d} points)\n"
-            formatted += f"   Grid Size: {num} × {num_2d} = {total_points} total points\n"
-        elif concerted_coordinates:
-            for i, coord in enumerate(concerted_coordinates):
-                formatted += f"   Coordinate {i+2}: {coord['coordinate_type'].upper()} on atoms {coord['atoms']} ({coord['start']} → {coord['stop']})\n"
-        formatted += f"   Total Points: {total_points}\n"
+            formatted += f"Secondary: {coordinate_type_2d.upper()} on atoms {atoms_2d} ({start_2d} to {stop_2d}, {num_2d} points)\n"
+        formatted += f"Total Points: {total_points}\n"
         
-        # Applied settings
-        formatted += f"\n⚙️ **Computational Settings:**\n"
-        if method:
-            method_desc = QC_METHODS.get(method.lower(), "Fast composite method" if "3c" in method else "Custom method")
-            formatted += f"   Method: {method.upper()} - {method_desc}\n"
-        if basis_set:
-            basis_desc = QC_BASIS_SETS.get(basis_set.lower(), "Custom basis set")
-            formatted += f"   Basis Set: {basis_set} - {basis_desc}\n"
-        if engine:
-            engine_desc = QC_ENGINES.get(engine.lower(), "Custom engine")
-            formatted += f"   Engine: {engine.upper()} - {engine_desc}\n"
-        if corrections:
-            formatted += f"   Corrections: {', '.join(corrections)}\n"
-        if charge != 0 or multiplicity != 1:
-            formatted += f"   Charge: {charge}, Multiplicity: {multiplicity}\n"
-        if mode:
-            formatted += f"   Mode: {mode.title()}\n"
-        if constraints:
-            formatted += f"   Additional Constraints: {len(constraints)} applied\n"
-        formatted += f"   Wavefront Propagation: {'Enabled' if wavefront_propagation else 'Disabled'}\n"
-        
-        # Status-specific guidance
-        formatted += f"\n💡 **Next Steps:**\n"
-        if job_status == 2:  # Completed
-            formatted += f"• Use `rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid', 'UUID')}')` for detailed results\n"
-            if is_2d_scan:
-                formatted += f"• 2D scan creates energy surface - look for minima, maxima, and saddle points\n"
-                formatted += f"• Results can be visualized as contour plots or 3D surfaces\n"
-            else:
-                formatted += f"• Scan shows energy profile along coordinate(s)\n"
-                formatted += f"• Look for energy maxima (potential transition states) and minima (stable conformers)\n"
-            formatted += f"• High-energy points can be used as starting guesses for transition state optimizations\n"
-        elif job_status == 3:  # Failed
-            formatted += f"• Use `rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid', 'UUID')}')` for error details\n"
-            formatted += f"• **Troubleshooting:**\n"
-            formatted += f"  - Check atom indices are correct and within molecule range\n"
-            formatted += f"  - Try smaller scan range or fewer points\n"
-            formatted += f"  - Use faster method: method='hf-3c' (recommended for scans)\n"
-            formatted += f"  - For 2D scans: consider reducing grid size ({num}×{num_2d} = {total_points} points)\n"
-            formatted += f"  - Ensure coordinate ranges are chemically reasonable\n"
-        elif job_status in [0, 1, 5]:  # Running
-            formatted += f"• Check progress: `rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid', 'UUID')}')`\n"
-            if is_2d_scan:
-                formatted += f"• 2D scan with {total_points} points may take several hours depending on method and molecule size\n"
-            else:
-                formatted += f"• Scan with {total_points} points may take 10-60 minutes depending on method and molecule size\n"
-            formatted += f"• Each scan point involves a constrained geometry optimization\n"
-            if wavefront_propagation:
-                formatted += f"• Wavefront propagation helps avoid local minima by using previous geometries\n"
-        elif job_status == 4:  # Stopped
-            formatted += f"• Check why stopped: `rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid', 'UUID')}')`\n"
-            formatted += f"• You can restart with same or modified parameters\n"
-        else:  # Unknown
-            formatted += f"• Check status: `rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid', 'UUID')}')`\n"
-            formatted += f"• Get details: `rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid', 'UUID')}')`\n"
-        
-        # Add examples and guidance
-        formatted += f"\n📚 **Scan Examples:**\n"
-        formatted += f"• **1D Bond scan**: coordinate_type='bond', atoms=[1,2], start=1.0, stop=3.0\n"
-        formatted += f"• **1D Angle scan**: coordinate_type='angle', atoms=[1,2,3], start=90, stop=180\n"
-        formatted += f"• **1D Dihedral scan**: coordinate_type='dihedral', atoms=[1,2,3,4], start=0, stop=360\n"
-        formatted += f"• **2D Bond+Dihedral**: Add coordinate_type_2d='dihedral', atoms_2d=[1,2,3,4], etc.\n"
-        formatted += f"• **Concerted scan**: Use concerted_coordinates=[{{...}}, {{...}}] for multiple coordinates\n"
-        formatted += f"• For atropisomerism studies: Use dihedral scans with 15-30 points over 360°\n"
-        formatted += f"• For reaction mechanisms: 1D scans first, then 2D near transition states\n"
+
         
         return formatted
         
     except Exception as e:
-        error_msg = f"❌ PES scan submission failed: {str(e)}\n\n"
-        error_msg += "🔧 **Enhanced Scan Troubleshooting:**\n"
-        error_msg += "• **Atom indices**: Check that atom numbers exist in the molecule (1-indexed)\n"
-        error_msg += "• **Coordinate range**: Ensure start < stop and range is chemically reasonable\n"
-        error_msg += "• **Method compatibility**: Some methods may not support scan calculations\n"
-        error_msg += "• **Parameter format**: Use atoms=[1,2,3,4] or atoms='1,2,3,4'\n"
-        error_msg += "• **2D scans**: All 2D parameters required if any are specified\n"
-        error_msg += "• **Concerted scans**: All coordinates must have same number of steps\n\n"
-        error_msg += "💡 **Quick Fix Examples:**\n"
-        error_msg += f"• **1D scan**: rowan_scan('{name}', '{molecule}', '{coordinate_type}', [1,2,3,4], {start}, {stop}, {num})\n"
-        error_msg += f"• **2D scan**: Add coordinate_type_2d='dihedral', atoms_2d=[1,2,3,4], start_2d=0, stop_2d=180, num_2d={num}\n"
-        error_msg += f"• **With method**: rowan_scan(..., method='hf-3c', wavefront_propagation=True)\n\n"
-        error_msg += "📚 **New Features:**\n"
-        error_msg += "• **2D Scans**: Create potential energy surfaces with two coordinates\n"
-        error_msg += "• **Concerted Scans**: Multiple coordinates changing simultaneously\n"
-        error_msg += "• **Wavefront Propagation**: Better convergence using previous scan point geometries\n"
-        return error_msg
+        return f"PES scan submission failed: {str(e)}"
 
 
 # Fukui Indices - Reactivity Analysis

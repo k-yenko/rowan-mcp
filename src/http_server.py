@@ -26,7 +26,7 @@ from .server import (
     rowan_bde, rowan_redox_potential,
     
     # Advanced Analysis
-    rowan_scan, rowan_fukui, rowan_spin_states, rowan_irc, 
+    rowan_scan, rowan_fukui, rowan_spin_states, 
     rowan_hydrogen_bond_basicity,
     
     
@@ -46,6 +46,8 @@ from .functions.calculation_retrieve import rowan_calculation_retrieve as rowan_
 from .functions.docking import rowan_docking as rowan_docking_new
 from .functions.spin_states import rowan_spin_states as rowan_spin_states_new
 from .functions.molecular_dynamics import rowan_molecular_dynamics as rowan_molecular_dynamics_new
+from .functions.irc import rowan_irc as rowan_irc_new
+from .functions.scan_analyzer import rowan_scan_analyzer as rowan_scan_analyzer_new
 
 # Mapping of tool names to functions
 TOOL_FUNCTIONS = {
@@ -66,9 +68,10 @@ TOOL_FUNCTIONS = {
     
     # Advanced Analysis
     "rowan_scan": rowan_scan.fn if hasattr(rowan_scan, 'fn') else rowan_scan,
+    "rowan_scan_analyzer": rowan_scan_analyzer_new,  # New scan analyzer function from functions/scan_analyzer.py
     "rowan_fukui": rowan_fukui.fn if hasattr(rowan_fukui, 'fn') else rowan_fukui,
     "rowan_spin_states": rowan_spin_states_new,  # New spin states function from functions/spin_states.py
-    "rowan_irc": rowan_irc.fn if hasattr(rowan_irc, 'fn') else rowan_irc,
+    "rowan_irc": rowan_irc_new,  # New IRC function from functions/irc.py
     "rowan_molecular_dynamics": rowan_molecular_dynamics_new,  # New molecular dynamics function from functions/molecular_dynamics.py
     "rowan_hydrogen_bond_basicity": rowan_hydrogen_bond_basicity.fn if hasattr(rowan_hydrogen_bond_basicity, 'fn') else rowan_hydrogen_bond_basicity,
     
