@@ -8798,3 +8798,339 @@ Cl    0.000000   -2.280000    0.000000'
 2025-06-27 20:10:21,581 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a73e4193-3266-41f8-84a4-dbb30ae90f8f "HTTP/1.1 200 OK"
 2025-06-27 20:13:19,140 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a73e4193-3266-41f8-84a4-dbb30ae90f8f "HTTP/1.1 200 OK"
 2025-06-27 20:13:25,822 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a73e4193-3266-41f8-84a4-dbb30ae90f8f "HTTP/1.1 200 OK"
+2025-06-27 20:27:14,079 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-27 20:27:14,080 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-27 20:27:14,080 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-27 20:27:14,093 - __main__ - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-27 20:27:14,093 - __main__ - INFO - ✅ rowan-python package loaded successfully
+2025-06-27 20:27:14,093 - __main__ - INFO - 🔗 Rowan API key configured
+2025-06-27 20:27:14,104 - __main__ - INFO - 🚀 Starting Rowan MCP Server...
+2025-06-27 20:27:14,104 - __main__ - INFO - 📊 Log level: 0
+2025-06-27 20:27:14,104 - __main__ - INFO - 📁 Log file: rowan_mcp.log
+2025-06-27 20:27:14,104 - __main__ - INFO - 🔑 API Key loaded: ✅
+2025-06-27 20:27:14,104 - __main__ - INFO - 🔗 Server ready for MCP connections!
+2025-06-27 20:27:14,108 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'FastMCP' with transport 'stdio'
+2025-06-27 20:32:29,368 - __main__ - ERROR - ❌ Server startup error: unhandled errors in a TaskGroup (1 sub-exception)
+2025-06-27 20:32:29,379 - __main__ - ERROR - 📍 Traceback:
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/src/server.py", line 3370, in main
+  |     mcp.run()
+  |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/fastmcp/server/server.py", line 296, in run
+  |     anyio.run(partial(self.run_async, transport, **transport_kwargs))
+  |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/anyio/_core/_eventloop.py", line 74, in run
+  |     return async_backend.run(func, args, {}, backend_options)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 2310, in run
+  |     return runner.run(wrapper())
+  |            ^^^^^^^^^^^^^^^^^^^^^
+  |   File "/opt/homebrew/Cellar/python@3.11/3.11.10/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+  |     return self._loop.run_until_complete(task)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/opt/homebrew/Cellar/python@3.11/3.11.10/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+  |     return future.result()
+  |            ^^^^^^^^^^^^^^^
+  |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 2298, in wrapper
+  |     return await func(*args)
+  |            ^^^^^^^^^^^^^^^^^
+  |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/fastmcp/server/server.py", line 279, in run_async
+  |     await self.run_stdio_async(**transport_kwargs)
+  |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/fastmcp/server/server.py", line 1158, in run_stdio_async
+  |     async with stdio_server() as (read_stream, write_stream):
+  |   File "/opt/homebrew/Cellar/python@3.11/3.11.10/Frameworks/Python.framework/Versions/3.11/lib/python3.11/contextlib.py", line 231, in __aexit__
+  |     await self.gen.athrow(typ, value, traceback)
+  |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/mcp/server/stdio.py", line 87, in stdio_server
+  |     async with anyio.create_task_group() as tg:
+  |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/mcp/server/stdio.py", line 67, in stdin_reader
+    |     await read_stream_writer.send(exc)
+    |   File "/Users/katherineyenko/Desktop/sandbox/rowan-mcp/.venv/lib/python3.11/site-packages/anyio/streams/memory.py", line 255, in send
+    |     raise BrokenResourceError from None
+    | anyio.BrokenResourceError
+    +------------------------------------
+
+2025-06-27 20:32:48,707 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-27 20:32:48,736 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-27 20:32:48,737 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-27 20:33:37,213 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-27 20:33:37,248 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-27 20:33:37,248 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-27 20:34:07,266 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-27 20:40:33,420 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-27 20:40:33,449 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-27 20:40:33,449 - server - INFO - 🔗 Rowan API key configured
+2025-06-27 20:40:51,656 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-27 20:40:51,659 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-27 20:40:51,659 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-27 20:41:00,059 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 500 Internal Server Error"
+2025-06-27 20:45:53,678 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-27 20:45:53,710 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-27 20:45:53,710 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-27 20:46:03,008 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 500 Internal Server Error"
+2025-06-27 20:59:26,651 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-27 20:59:26,676 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-27 20:59:26,676 - server - INFO - 🔗 Rowan API key configured
+2025-06-27 20:59:27,471 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 500 Internal Server Error"
+2025-06-27 20:59:28,236 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 500 Internal Server Error"
+2025-06-27 20:59:28,802 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 500 Internal Server Error"
+2025-06-27 20:59:40,553 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-27 20:59:40,561 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-27 20:59:40,561 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-27 20:59:48,851 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 500 Internal Server Error"
+2025-06-28 16:54:05,058 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-28 16:54:05,088 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-28 16:54:05,088 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 12:52:15,957 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 12:52:15,995 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 12:52:15,995 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 12:52:41,764 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 12:52:41,795 - src.server - INFO - 📝 Parameters: {'name': 'h2o2_oo_rotation_scan', 'molecule': 'OO', 'coordinate_type': 'dihedral', 'atoms': '1,2,3,4', 'start': 0, 'stop': 360, 'num': 36, 'method': 'gfn2-xtb', 'engine': 'xtb', 'blocking': False}
+2025-06-29 12:52:41,795 - src.server - WARNING - ⚠️ No SMILES found for 'OO', using as-is
+2025-06-29 12:52:41,795 - src.server - INFO - 🔍 Parsed atom string '[1, 2, 3, 4]' to list: [1, 2, 3, 4]
+2025-06-29 12:52:41,795 - src.server - INFO - ✅ rowan_scan completed successfully in 0.03s
+2025-06-29 12:52:50,808 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 12:52:50,808 - src.server - INFO - 📝 Parameters: {'name': 'h2o2_oo_rotation_scan', 'molecule': 'OO', 'coordinate_type': 'dihedral', 'atoms': '1,2,3,4', 'start': 0, 'stop': 360, 'num': 36, 'method': 'b3lyp', 'basis_set': '6-31g*', 'engine': 'psi4', 'blocking': False}
+2025-06-29 12:52:50,808 - src.server - WARNING - ⚠️ No SMILES found for 'OO', using as-is
+2025-06-29 12:52:50,808 - src.server - INFO - 🔍 Parsed atom string '[1, 2, 3, 4]' to list: [1, 2, 3, 4]
+2025-06-29 12:52:50,808 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-29 12:52:50,808 - src.server - INFO -    Name: h2o2_oo_rotation_scan
+2025-06-29 12:52:50,808 - src.server - INFO -    Input: OO
+2025-06-29 12:52:50,808 - src.server - INFO -    Using SMILES: OO
+2025-06-29 12:52:50,808 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-29 12:52:50,808 - src.server - INFO -    Primary Atoms: [1, 2, 3, 4]
+2025-06-29 12:52:50,808 - src.server - INFO -    Primary Range: 0 to 360 in 36 steps
+2025-06-29 12:52:50,808 - src.server - INFO -    Method: b3lyp
+2025-06-29 12:52:50,808 - src.server - INFO -    Basis Set: 6-31g*
+2025-06-29 12:52:50,808 - src.server - INFO -    Engine: psi4
+2025-06-29 12:52:50,808 - src.server - INFO -    Mode: rapid
+2025-06-29 12:52:50,808 - src.server - INFO -    Wavefront Propagation: True
+2025-06-29 12:52:50,808 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-29 12:52:50,808 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'h2o2_oo_rotation_scan', 'molecule': 'OO', 'folder_uuid': None, 'blocking': False, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [1, 2, 3, 4], 'start': 0, 'stop': 360, 'num': 36}, 'wavefront_propagation': True, 'method': 'b3lyp', 'basis_set': '6-31g*', 'engine': 'psi4', 'mode': 'rapid'}
+2025-06-29 12:52:51,615 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 12:52:51,619 - src.server - INFO - 🎯 Rowan API submission successful: scan (0.81s)
+2025-06-29 12:52:51,620 - src.server - INFO - 📋 Job UUID: f433c25b-e26d-4e0d-9dc1-e0f5a0bd6bd8
+2025-06-29 12:52:51,620 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 12:52:51,994 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/f433c25b-e26d-4e0d-9dc1-e0f5a0bd6bd8 "HTTP/1.1 200 OK"
+2025-06-29 12:52:51,996 - src.server - INFO - 📊 Retrieved scan status via API: 1
+2025-06-29 12:52:51,996 - src.server - INFO - ✅ rowan_scan completed successfully in 1.19s
+2025-06-29 12:53:12,738 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/f433c25b-e26d-4e0d-9dc1-e0f5a0bd6bd8 "HTTP/1.1 200 OK"
+2025-06-29 12:53:18,834 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/f433c25b-e26d-4e0d-9dc1-e0f5a0bd6bd8 "HTTP/1.1 200 OK"
+2025-06-29 12:53:28,408 - src.server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 12:53:28,408 - src.server - INFO - 📝 Parameters: {'name': 'h2o2_oo_scan_xtb', 'molecule': 'OO', 'coordinate_type': 'dihedral', 'atoms': '1,2,3,4', 'start': 0, 'stop': 180, 'num': 19, 'engine': 'xtb', 'blocking': False}
+2025-06-29 12:53:28,408 - src.server - WARNING - ⚠️ No SMILES found for 'OO', using as-is
+2025-06-29 12:53:28,409 - src.server - INFO - 🔍 Parsed atom string '[1, 2, 3, 4]' to list: [1, 2, 3, 4]
+2025-06-29 12:53:28,409 - src.server - INFO - 🔬 PES Scan Debug:
+2025-06-29 12:53:28,409 - src.server - INFO -    Name: h2o2_oo_scan_xtb
+2025-06-29 12:53:28,409 - src.server - INFO -    Input: OO
+2025-06-29 12:53:28,409 - src.server - INFO -    Using SMILES: OO
+2025-06-29 12:53:28,409 - src.server - INFO -    Primary Coordinate: dihedral
+2025-06-29 12:53:28,409 - src.server - INFO -    Primary Atoms: [1, 2, 3, 4]
+2025-06-29 12:53:28,409 - src.server - INFO -    Primary Range: 0 to 180 in 19 steps
+2025-06-29 12:53:28,409 - src.server - INFO -    Method: hf-3c
+2025-06-29 12:53:28,409 - src.server - INFO -    Basis Set: auto-selected
+2025-06-29 12:53:28,409 - src.server - INFO -    Engine: xtb
+2025-06-29 12:53:28,409 - src.server - INFO -    Mode: rapid
+2025-06-29 12:53:28,409 - src.server - INFO -    Wavefront Propagation: True
+2025-06-29 12:53:28,409 - src.server - INFO - 🌐 Rowan API Call: scan
+2025-06-29 12:53:28,409 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'h2o2_oo_scan_xtb', 'molecule': 'OO', 'folder_uuid': None, 'blocking': False, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [1, 2, 3, 4], 'start': 0, 'stop': 180, 'num': 19}, 'wavefront_propagation': True, 'method': 'hf-3c', 'engine': 'xtb', 'mode': 'rapid'}
+2025-06-29 12:53:29,063 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 12:53:29,068 - src.server - INFO - 🎯 Rowan API submission successful: scan (0.66s)
+2025-06-29 12:53:29,069 - src.server - INFO - 📋 Job UUID: fbfc9457-98ae-49ca-be8f-b5fa86bf1a85
+2025-06-29 12:53:29,071 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 12:53:29,448 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fbfc9457-98ae-49ca-be8f-b5fa86bf1a85 "HTTP/1.1 200 OK"
+2025-06-29 12:53:29,449 - src.server - INFO - 📊 Retrieved scan status via API: 1
+2025-06-29 12:53:29,449 - src.server - INFO - ✅ rowan_scan completed successfully in 1.04s
+2025-06-29 12:53:41,805 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/fbfc9457-98ae-49ca-be8f-b5fa86bf1a85 "HTTP/1.1 200 OK"
+2025-06-29 12:53:51,393 - src.server - INFO - 🔧 MCP Tool Called: rowan_multistage_opt
+2025-06-29 12:53:51,393 - src.server - INFO - 📝 Parameters: {'name': 'h2o2_optimization', 'molecule': 'OO', 'blocking': True}
+2025-06-29 12:53:51,393 - src.server - INFO - 🚀 Starting multistage optimization: h2o2_optimization
+2025-06-29 12:53:51,393 - src.server - INFO - ⏱️  Using ping_interval: 30s (longer for multi-stage calculation)
+2025-06-29 12:53:51,393 - src.server - INFO - 🌐 Rowan API Call: multistage_opt
+2025-06-29 12:53:51,393 - src.server - INFO - 🔍 Rowan Parameters: {'name': 'h2o2_optimization', 'molecule': 'OO', 'folder_uuid': None, 'blocking': True, 'ping_interval': 30}
+2025-06-29 12:53:51,393 - src.server - INFO - ⏳ Multi-stage optimization may take several minutes...
+2025-06-29 12:53:51,394 - src.server - INFO - 🔄 Progress will be checked every 30 seconds
+2025-06-29 12:53:52,092 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 12:53:52,474 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/44dcfc70-2e48-4e4d-842f-0b840f5ee157 "HTTP/1.1 200 OK"
+2025-06-29 12:54:22,836 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/44dcfc70-2e48-4e4d-842f-0b840f5ee157 "HTTP/1.1 200 OK"
+2025-06-29 12:54:23,329 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/44dcfc70-2e48-4e4d-842f-0b840f5ee157 "HTTP/1.1 200 OK"
+2025-06-29 12:54:23,452 - src.server - INFO - 🎯 Rowan API submission successful: multistage_opt (32.06s)
+2025-06-29 12:54:23,452 - src.server - INFO - 📋 Job UUID: 44dcfc70-2e48-4e4d-842f-0b840f5ee157
+2025-06-29 12:54:23,452 - src.server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 12:54:23,454 - src.server - INFO - ✅ rowan_multistage_opt completed successfully in 32.06s
+2025-06-29 13:06:00,257 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 13:06:00,259 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 13:06:00,259 - server - INFO - 🔗 Rowan API key configured
+2025-06-29 13:06:35,791 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 13:06:35,820 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 13:06:35,820 - server - INFO - 🔗 Rowan API key configured
+2025-06-29 13:06:35,832 - server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 13:06:35,832 - server - INFO - 📝 Parameters: {'name': 'h2o2_dihedral_test', 'molecule': '[H]OO[H]', 'coordinate_type': 'dihedral', 'atoms': [1, 2, 3, 4], 'start': 0, 'stop': 180, 'num': 10, 'method': 'hf-3c', 'blocking': False}
+2025-06-29 13:06:35,832 - server - WARNING - ⚠️ No SMILES found for '[H]OO[H]', using as-is
+2025-06-29 13:06:35,832 - server - INFO - 🔬 PES Scan Debug:
+2025-06-29 13:06:35,832 - server - INFO -    Name: h2o2_dihedral_test
+2025-06-29 13:06:35,832 - server - INFO -    Input: [H]OO[H]
+2025-06-29 13:06:35,832 - server - INFO -    Using SMILES: [H]OO[H]
+2025-06-29 13:06:35,832 - server - INFO -    Primary Coordinate: dihedral
+2025-06-29 13:06:35,832 - server - INFO -    Primary Atoms: [1, 2, 3, 4]
+2025-06-29 13:06:35,832 - server - INFO -    Primary Range: 0 to 180 in 10 steps
+2025-06-29 13:06:35,832 - server - INFO -    Method: hf-3c
+2025-06-29 13:06:35,832 - server - INFO -    Basis Set: auto-selected
+2025-06-29 13:06:35,832 - server - INFO -    Engine: psi4
+2025-06-29 13:06:35,832 - server - INFO -    Mode: rapid
+2025-06-29 13:06:35,832 - server - INFO -    Wavefront Propagation: True
+2025-06-29 13:06:35,832 - server - INFO - 🌐 Rowan API Call: scan
+2025-06-29 13:06:35,832 - server - INFO - 🔍 Rowan Parameters: {'name': 'h2o2_dihedral_test', 'molecule': '[H]OO[H]', 'folder_uuid': None, 'blocking': False, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'dihedral', 'atoms': [1, 2, 3, 4], 'start': 0, 'stop': 180, 'num': 10}, 'wavefront_propagation': True, 'calc_settings': {'method': 'hf-3c', 'mode': 'rapid'}, 'calc_engine': 'psi4'}
+2025-06-29 13:06:36,458 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 13:06:36,459 - server - INFO - 🎯 Rowan API submission successful: scan (0.63s)
+2025-06-29 13:06:36,459 - server - INFO - 📋 Job UUID: 82b5c50d-f5df-4431-ad31-e2b90fab0cc7
+2025-06-29 13:06:36,459 - server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 13:06:36,830 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/82b5c50d-f5df-4431-ad31-e2b90fab0cc7 "HTTP/1.1 200 OK"
+2025-06-29 13:06:36,830 - server - INFO - 📊 Retrieved scan status via API: 0
+2025-06-29 13:06:36,831 - server - INFO - ✅ rowan_scan completed successfully in 1.00s
+2025-06-29 13:06:36,831 - server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 13:06:36,831 - server - INFO - 📝 Parameters: {'name': 'oo_bond_test', 'molecule': '[H]OO[H]', 'coordinate_type': 'bond', 'atoms': [2, 3], 'start': 1.2, 'stop': 2.0, 'num': 8, 'method': 'hf-3c', 'blocking': False}
+2025-06-29 13:06:36,831 - server - WARNING - ⚠️ No SMILES found for '[H]OO[H]', using as-is
+2025-06-29 13:06:36,831 - server - INFO - 🔬 PES Scan Debug:
+2025-06-29 13:06:36,831 - server - INFO -    Name: oo_bond_test
+2025-06-29 13:06:36,831 - server - INFO -    Input: [H]OO[H]
+2025-06-29 13:06:36,831 - server - INFO -    Using SMILES: [H]OO[H]
+2025-06-29 13:06:36,831 - server - INFO -    Primary Coordinate: bond
+2025-06-29 13:06:36,831 - server - INFO -    Primary Atoms: [2, 3]
+2025-06-29 13:06:36,831 - server - INFO -    Primary Range: 1.2 to 2.0 in 8 steps
+2025-06-29 13:06:36,831 - server - INFO -    Method: hf-3c
+2025-06-29 13:06:36,831 - server - INFO -    Basis Set: auto-selected
+2025-06-29 13:06:36,831 - server - INFO -    Engine: psi4
+2025-06-29 13:06:36,831 - server - INFO -    Mode: rapid
+2025-06-29 13:06:36,831 - server - INFO -    Wavefront Propagation: True
+2025-06-29 13:06:36,831 - server - INFO - 🌐 Rowan API Call: scan
+2025-06-29 13:06:36,831 - server - INFO - 🔍 Rowan Parameters: {'name': 'oo_bond_test', 'molecule': '[H]OO[H]', 'folder_uuid': None, 'blocking': False, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'bond', 'atoms': [2, 3], 'start': 1.2, 'stop': 2.0, 'num': 8}, 'wavefront_propagation': True, 'calc_settings': {'method': 'hf-3c', 'mode': 'rapid'}, 'calc_engine': 'psi4'}
+2025-06-29 13:06:37,362 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 13:06:37,363 - server - INFO - 🎯 Rowan API submission successful: scan (0.53s)
+2025-06-29 13:06:37,363 - server - INFO - 📋 Job UUID: dae7e689-a63d-4e9b-88fd-6d4ed5f183a2
+2025-06-29 13:06:37,363 - server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 13:06:37,819 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/dae7e689-a63d-4e9b-88fd-6d4ed5f183a2 "HTTP/1.1 200 OK"
+2025-06-29 13:06:37,822 - server - INFO - 📊 Retrieved scan status via API: 0
+2025-06-29 13:06:37,822 - server - INFO - ✅ rowan_scan completed successfully in 0.99s
+2025-06-29 13:09:40,304 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 13:09:40,335 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 13:09:40,336 - server - INFO - 🔗 Rowan API key configured
+2025-06-29 13:09:40,347 - server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 13:09:40,347 - server - INFO - 📝 Parameters: {'name': 'ethane_bond_test', 'molecule': 'CC', 'coordinate_type': 'bond', 'atoms': [1, 2], 'start': 1.3, 'stop': 2.0, 'num': 5, 'method': 'hf-3c', 'blocking': False}
+2025-06-29 13:09:40,347 - server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-29 13:09:40,347 - server - INFO - 🔬 PES Scan Debug:
+2025-06-29 13:09:40,347 - server - INFO -    Name: ethane_bond_test
+2025-06-29 13:09:40,347 - server - INFO -    Input: CC
+2025-06-29 13:09:40,347 - server - INFO -    Using SMILES: CC
+2025-06-29 13:09:40,348 - server - INFO -    Primary Coordinate: bond
+2025-06-29 13:09:40,348 - server - INFO -    Primary Atoms: [1, 2]
+2025-06-29 13:09:40,348 - server - INFO -    Primary Range: 1.3 to 2.0 in 5 steps
+2025-06-29 13:09:40,348 - server - INFO -    Method: hf-3c
+2025-06-29 13:09:40,348 - server - INFO -    Basis Set: auto-selected
+2025-06-29 13:09:40,348 - server - INFO -    Engine: psi4
+2025-06-29 13:09:40,348 - server - INFO -    Mode: rapid
+2025-06-29 13:09:40,348 - server - INFO -    Wavefront Propagation: True
+2025-06-29 13:09:40,348 - server - INFO - 🌐 Rowan API Call: scan
+2025-06-29 13:09:40,348 - server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_bond_test', 'molecule': 'CC', 'folder_uuid': None, 'blocking': False, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'bond', 'atoms': [1, 2], 'start': 1.3, 'stop': 2.0, 'num': 5}, 'wavefront_propagation': True, 'calc_settings': {'method': 'hf-3c', 'mode': 'rapid'}, 'calc_engine': 'psi4'}
+2025-06-29 13:09:41,000 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 13:09:41,003 - server - INFO - 🎯 Rowan API submission successful: scan (0.66s)
+2025-06-29 13:09:41,003 - server - INFO - 📋 Job UUID: f8eed9a5-e57e-40b8-9e1b-48c7e4069d88
+2025-06-29 13:09:41,003 - server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 13:09:41,377 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/f8eed9a5-e57e-40b8-9e1b-48c7e4069d88 "HTTP/1.1 200 OK"
+2025-06-29 13:09:41,378 - server - INFO - 📊 Retrieved scan status via API: 0
+2025-06-29 13:09:41,378 - server - INFO - ✅ rowan_scan completed successfully in 1.03s
+2025-06-29 13:09:43,774 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/f8eed9a5-e57e-40b8-9e1b-48c7e4069d88 "HTTP/1.1 200 OK"
+2025-06-29 13:09:44,138 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/f8eed9a5-e57e-40b8-9e1b-48c7e4069d88 "HTTP/1.1 200 OK"
+2025-06-29 13:10:31,228 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 13:10:31,254 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 13:10:31,254 - server - INFO - 🔗 Rowan API key configured
+2025-06-29 13:10:31,266 - server - INFO - 🔧 MCP Tool Called: rowan_admet
+2025-06-29 13:10:31,266 - server - INFO - 📝 Parameters: {'name': 'ethane_admet_test', 'molecule': 'CC', 'blocking': False}
+2025-06-29 13:10:31,266 - server - INFO - 🌐 Rowan API Call: admet
+2025-06-29 13:10:31,266 - server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_admet_test', 'molecule': 'CC', 'folder_uuid': None, 'blocking': False, 'ping_interval': 5}
+2025-06-29 13:10:31,964 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 13:10:31,965 - server - INFO - 🎯 Rowan API submission successful: admet (0.70s)
+2025-06-29 13:10:31,965 - server - INFO - 📋 Job UUID: afee630d-e198-461b-8f0c-23dd512d78f3
+2025-06-29 13:10:31,966 - server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 13:10:31,966 - server - INFO - ✅ rowan_admet completed successfully in 0.70s
+2025-06-29 13:10:31,966 - server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 13:10:31,966 - server - INFO - 📝 Parameters: {'name': 'ethane_bond_test2', 'molecule': 'CC', 'coordinate_type': 'bond', 'atoms': [1, 2], 'start': 1.3, 'stop': 2.0, 'num': 5, 'method': 'hf-3c', 'blocking': False}
+2025-06-29 13:10:31,966 - server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-29 13:10:31,966 - server - INFO - 🔬 PES Scan Debug:
+2025-06-29 13:10:31,966 - server - INFO -    Name: ethane_bond_test2
+2025-06-29 13:10:31,966 - server - INFO -    Input: CC
+2025-06-29 13:10:31,966 - server - INFO -    Using SMILES: CC
+2025-06-29 13:10:31,966 - server - INFO -    Primary Coordinate: bond
+2025-06-29 13:10:31,966 - server - INFO -    Primary Atoms: [1, 2]
+2025-06-29 13:10:31,966 - server - INFO -    Primary Range: 1.3 to 2.0 in 5 steps
+2025-06-29 13:10:31,966 - server - INFO -    Method: hf-3c
+2025-06-29 13:10:31,966 - server - INFO -    Basis Set: auto-selected
+2025-06-29 13:10:31,966 - server - INFO -    Engine: psi4
+2025-06-29 13:10:31,966 - server - INFO -    Mode: rapid
+2025-06-29 13:10:31,966 - server - INFO -    Wavefront Propagation: True
+2025-06-29 13:10:31,966 - server - INFO - 🌐 Rowan API Call: scan
+2025-06-29 13:10:31,966 - server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_bond_test2', 'molecule': 'CC', 'folder_uuid': None, 'blocking': False, 'ping_interval': 10, 'scan_coordinate': {'coordinate_type': 'bond', 'atoms': [1, 2], 'start': 1.3, 'stop': 2.0, 'num': 5}, 'wavefront_propagation': True, 'calc_settings': {'method': 'hf-3c', 'mode': 'rapid'}, 'calc_engine': 'psi4'}
+2025-06-29 13:10:32,504 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 13:10:32,505 - server - INFO - 🎯 Rowan API submission successful: scan (0.54s)
+2025-06-29 13:10:32,505 - server - INFO - 📋 Job UUID: f9aadcb7-b48a-4074-81c5-af156c9fe0d2
+2025-06-29 13:10:32,505 - server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 13:10:32,864 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/f9aadcb7-b48a-4074-81c5-af156c9fe0d2 "HTTP/1.1 200 OK"
+2025-06-29 13:10:32,865 - server - INFO - 📊 Retrieved scan status via API: 0
+2025-06-29 13:10:32,865 - server - INFO - ✅ rowan_scan completed successfully in 0.90s
+2025-06-29 13:13:09,356 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 13:13:09,390 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 13:13:09,390 - server - INFO - 🔗 Rowan API key configured
+2025-06-29 13:13:09,402 - server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 13:13:09,403 - server - INFO - 📝 Parameters: {'name': 'ethane_bond_FIXED', 'molecule': 'CC', 'coordinate_type': 'bond', 'atoms': [1, 2], 'start': 1.3, 'stop': 2.0, 'num': 5, 'method': 'hf-3c', 'blocking': False}
+2025-06-29 13:13:09,403 - server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-29 13:13:09,403 - server - INFO - 🔬 PES Scan Debug:
+2025-06-29 13:13:09,403 - server - INFO -    Name: ethane_bond_FIXED
+2025-06-29 13:13:09,403 - server - INFO -    Input: CC
+2025-06-29 13:13:09,403 - server - INFO -    Using SMILES: CC
+2025-06-29 13:13:09,403 - server - INFO -    Primary Coordinate: bond
+2025-06-29 13:13:09,403 - server - INFO -    Primary Atoms: [1, 2]
+2025-06-29 13:13:09,403 - server - INFO -    Primary Range: 1.3 to 2.0 in 5 steps
+2025-06-29 13:13:09,403 - server - INFO -    Method: hf-3c
+2025-06-29 13:13:09,403 - server - INFO -    Basis Set: auto-selected
+2025-06-29 13:13:09,403 - server - INFO -    Engine: psi4
+2025-06-29 13:13:09,403 - server - INFO -    Mode: rapid
+2025-06-29 13:13:09,403 - server - INFO -    Wavefront Propagation: True
+2025-06-29 13:13:09,403 - server - INFO - 🌐 Rowan API Call: scan
+2025-06-29 13:13:09,403 - server - INFO - 🔍 Rowan Parameters: {'name': 'ethane_bond_FIXED', 'molecule': 'CC', 'folder_uuid': None, 'blocking': False, 'ping_interval': 10, 'scan_settings': {'type': 'bond', 'atoms': [1, 2], 'start': 1.3, 'stop': 2.0, 'num': 5}, 'wavefront_propagation': True, 'calc_settings': {'method': 'hf-3c', 'mode': 'rapid'}, 'calc_engine': 'psi4'}
+2025-06-29 13:13:10,094 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 13:13:10,095 - server - INFO - 🎯 Rowan API submission successful: scan (0.69s)
+2025-06-29 13:13:10,095 - server - INFO - 📋 Job UUID: 3429f8cf-44f0-468e-8e63-4759bcf34612
+2025-06-29 13:13:10,095 - server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 13:13:10,498 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3429f8cf-44f0-468e-8e63-4759bcf34612 "HTTP/1.1 200 OK"
+2025-06-29 13:13:10,500 - server - INFO - 📊 Retrieved scan status via API: 0
+2025-06-29 13:13:10,501 - server - INFO - ✅ rowan_scan completed successfully in 1.10s
+2025-06-29 13:13:18,894 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/3429f8cf-44f0-468e-8e63-4759bcf34612 "HTTP/1.1 200 OK"
+2025-06-29 13:14:53,767 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 13:14:53,799 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 13:14:53,799 - server - INFO - 🔗 Rowan API key configured
+2025-06-29 13:14:53,811 - server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 13:14:53,811 - server - INFO - 📝 Parameters: {'name': 'h2o2_dihedral_FIXED', 'molecule': '[H]OO[H]', 'coordinate_type': 'dihedral', 'atoms': [3, 1, 2, 4], 'start': 0, 'stop': 180, 'num': 10, 'method': 'hf-3c', 'blocking': False}
+2025-06-29 13:14:53,811 - server - WARNING - ⚠️ No SMILES found for '[H]OO[H]', using as-is
+2025-06-29 13:14:53,811 - server - INFO - 🔬 PES Scan Debug:
+2025-06-29 13:14:53,811 - server - INFO -    Name: h2o2_dihedral_FIXED
+2025-06-29 13:14:53,811 - server - INFO -    Input: [H]OO[H]
+2025-06-29 13:14:53,811 - server - INFO -    Using SMILES: [H]OO[H]
+2025-06-29 13:14:53,811 - server - INFO -    Primary Coordinate: dihedral
+2025-06-29 13:14:53,811 - server - INFO -    Primary Atoms: [3, 1, 2, 4]
+2025-06-29 13:14:53,811 - server - INFO -    Primary Range: 0 to 180 in 10 steps
+2025-06-29 13:14:53,811 - server - INFO -    Method: hf-3c
+2025-06-29 13:14:53,811 - server - INFO -    Basis Set: auto-selected
+2025-06-29 13:14:53,811 - server - INFO -    Engine: psi4
+2025-06-29 13:14:53,811 - server - INFO -    Mode: rapid
+2025-06-29 13:14:53,811 - server - INFO -    Wavefront Propagation: True
+2025-06-29 13:14:53,811 - server - INFO - 🌐 Rowan API Call: scan
+2025-06-29 13:14:53,811 - server - INFO - 🔍 Rowan Parameters: {'name': 'h2o2_dihedral_FIXED', 'molecule': '[H]OO[H]', 'folder_uuid': None, 'blocking': False, 'ping_interval': 10, 'scan_settings': {'type': 'dihedral', 'atoms': [3, 1, 2, 4], 'start': 0, 'stop': 180, 'num': 10}, 'wavefront_propagation': True, 'calc_settings': {'method': 'hf-3c', 'mode': 'rapid'}, 'calc_engine': 'psi4'}
+2025-06-29 13:14:54,391 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 13:14:54,392 - server - INFO - 🎯 Rowan API submission successful: scan (0.58s)
+2025-06-29 13:14:54,392 - server - INFO - 📋 Job UUID: c7dd0424-da4e-428f-a0ed-c4ac26e73b80
+2025-06-29 13:14:54,392 - server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 13:14:54,759 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c7dd0424-da4e-428f-a0ed-c4ac26e73b80 "HTTP/1.1 200 OK"
+2025-06-29 13:14:54,761 - server - INFO - 📊 Retrieved scan status via API: 0
+2025-06-29 13:14:54,761 - server - INFO - ✅ rowan_scan completed successfully in 0.95s
