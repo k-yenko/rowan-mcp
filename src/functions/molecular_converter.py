@@ -80,7 +80,7 @@ class MolecularConverter:
         for unicode_char, ascii_char in superscript_map.items():
             formula = formula.replace(unicode_char, ascii_char)
         
-        logger.info(f"🔄 Unicode normalized: '{formula}'")
+        logger.info(f" Unicode normalized: '{formula}'")
         return formula
     
     def _is_valid_smiles(self, smiles: str) -> bool:
@@ -369,7 +369,6 @@ class MolecularConverter:
         
         return conversions.get(formula, f"UNKNOWN_FORMULA: {formula}")
 
-
 # Global converter instance
 _converter = MolecularConverter()
 
@@ -384,7 +383,6 @@ def convert_to_smiles(molecule_input: str) -> str:
         SMILES string representation
     """
     return _converter.convert_to_smiles(molecule_input)
-
 
 def test_molecular_converter():
     """Test the molecular converter with various inputs."""
@@ -416,11 +414,10 @@ def test_molecular_converter():
     print("Testing molecular converter:")
     for input_mol, expected in test_cases:
         result = convert_to_smiles(input_mol)
-        status = "✅" if result == expected else "❌"
+        status = "" if result == expected else ""
         print(f"{status} '{input_mol[:30]}...' → '{result}'")
         if result != expected:
             print(f"   Expected: '{expected}'")
-
 
 if __name__ == "__main__":
     test_molecular_converter()

@@ -5,7 +5,6 @@ Rowan solubility prediction function for MCP tool integration.
 from typing import Optional, Union, List, Dict, Any
 import rowan
 
-
 def rowan_solubility(
     name: str,
     molecule: str,
@@ -192,7 +191,7 @@ def rowan_solubility(
                     "name": name,
                     "molecule": molecule,
                     "status": status_text,
-                    "message": f"✅ Solubility calculation submitted successfully! Use tracking_id to monitor progress.",
+                    "message": f" Solubility calculation submitted successfully! Use tracking_id to monitor progress.",
                     "calculation_details": {
                         "solvents_count": len(solvents) if solvents else 0,
                         "temperatures_count": len(processed_temps),
@@ -223,7 +222,6 @@ def rowan_solubility(
         }
         return str(error_response)
 
-
 # Solvent name to SMILES mapping for convenience
 SOLVENT_SMILES = {
     "water": "O",
@@ -241,7 +239,6 @@ SOLVENT_SMILES = {
     "chloroform": "ClCCl",
     "dichloromethane": "ClCCl"
 }
-
 
 def convert_solvent_names_to_smiles(solvents: List[str]) -> List[str]:
     """
@@ -265,18 +262,16 @@ def convert_solvent_names_to_smiles(solvents: List[str]) -> List[str]:
     
     return converted
 
-
 def test_rowan_solubility():
     """Test the rowan_solubility function with hardcoded values."""
     try:
         result = rowan_solubility("test_acetaminophen_solubility", "dummy_molecule")
-        print("✅ Solubility test successful!")
+        print(" Solubility test successful!")
         print(f"Result: {result}")
         return True
     except Exception as e:
-        print(f"❌ Solubility test failed: {e}")
+        print(f" Solubility test failed: {e}")
         return False
-
 
 if __name__ == "__main__":
     test_rowan_solubility()

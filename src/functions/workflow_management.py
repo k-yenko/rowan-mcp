@@ -5,7 +5,6 @@ Rowan workflow management functions for MCP tool integration.
 from typing import Optional, Dict, Any, Union, List
 import rowan
 
-
 def rowan_workflow_management(
     action: str,
     workflow_uuid: Optional[str] = None,
@@ -63,7 +62,7 @@ def rowan_workflow_management(
     try:
         if action == "create":
             if not all([name, workflow_type, initial_molecule]):
-                return "❌ Error: 'name', 'workflow_type', and 'initial_molecule' are required for creating a workflow"
+                return " Error: 'name', 'workflow_type', and 'initial_molecule' are required for creating a workflow"
             
             # Validate workflow type
             VALID_WORKFLOWS = {
@@ -74,8 +73,8 @@ def rowan_workflow_management(
             }
             
             if workflow_type not in VALID_WORKFLOWS:
-                error_msg = f"❌ Invalid workflow_type '{workflow_type}'.\n\n"
-                error_msg += "🔧 **Available Rowan Workflow Types:**\n"
+                error_msg = f" Invalid workflow_type '{workflow_type}'.\n\n"
+                error_msg += " **Available Rowan Workflow Types:**\n"
                 error_msg += f"{', '.join(sorted(VALID_WORKFLOWS))}"
                 return error_msg
             
@@ -91,16 +90,16 @@ def rowan_workflow_management(
                 workflow_data=workflow_data or {}
             )
             
-            formatted = f"✅ Workflow '{name}' created successfully!\n\n"
-            formatted += f"🔬 UUID: {workflow.get('uuid', 'N/A')}\n"
-            formatted += f"⚗️ Type: {workflow_type}\n"
-            formatted += f"📊 Status: {workflow.get('object_status', 'Unknown')}\n"
+            formatted = f" Workflow '{name}' created successfully!\n\n"
+            formatted += f" UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f" Type: {workflow_type}\n"
+            formatted += f" Status: {workflow.get('object_status', 'Unknown')}\n"
             formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
             return formatted
             
         elif action == "retrieve":
             if not workflow_uuid:
-                return "❌ Error: 'workflow_uuid' is required for retrieving a workflow"
+                return " Error: 'workflow_uuid' is required for retrieving a workflow"
             
             workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
             
@@ -116,51 +115,51 @@ def rowan_workflow_management(
             }
             status_name = status_names.get(status, f"Unknown ({status})")
             
-            formatted = f"🔬 Workflow Details:\n\n"
-            formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
+            formatted = f" Workflow Details:\n\n"
+            formatted += f" Name: {workflow.get('name', 'N/A')}\n"
             formatted += f"🆔 UUID: {workflow.get('uuid', 'N/A')}\n"
-            formatted += f"⚗️ Type: {workflow.get('object_type', 'N/A')}\n"
-            formatted += f"📊 Status: {status_name} ({status})\n"
+            formatted += f" Type: {workflow.get('object_type', 'N/A')}\n"
+            formatted += f" Status: {status_name} ({status})\n"
             formatted += f"📂 Parent: {workflow.get('parent_uuid', 'Root')}\n"
-            formatted += f"⭐ Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
-            formatted += f"🌐 Public: {'Yes' if workflow.get('public') else 'No'}\n"
+            formatted += f" Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
+            formatted += f" Public: {'Yes' if workflow.get('public') else 'No'}\n"
             formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
-            formatted += f"⏱️ Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
+            formatted += f" Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
             formatted += f"💰 Credits: {workflow.get('credits_charged', 0)}\n"
-            formatted += f"📝 Notes: {workflow.get('notes', 'None')}\n\n"
+            formatted += f" Notes: {workflow.get('notes', 'None')}\n\n"
             
             # If workflow is completed (status 2), extract and show results
             if status == 2:
-                formatted += f"✅ **Workflow Completed Successfully!**\n\n"
+                formatted += f" **Workflow Completed Successfully!**\n\n"
                 
                 # Show basic completion details
                 if workflow.get('credits_charged'):
-                    formatted += f"✅ Workflow used {workflow.get('credits_charged')} credits and ran for {workflow.get('elapsed', 0):.2f}s\n\n"
+                    formatted += f" Workflow used {workflow.get('credits_charged')} credits and ran for {workflow.get('elapsed', 0):.2f}s\n\n"
                 
                 # Extract actual results from object_data
                 object_data = workflow.get('object_data', {})
                 if object_data:
                     formatted += extract_workflow_results(workflow.get('object_type', ''), object_data)
                 else:
-                    formatted += f"⚠️ No results data found in workflow object_data\n"
+                    formatted += f" No results data found in workflow object_data\n"
             
             elif status == 1:  # Running
-                formatted += f"🔄 **Workflow is currently running...**\n"
-                formatted += f"💡 Check back later or use `rowan_workflow_management(action='status', workflow_uuid='{workflow_uuid}')` for updates\n"
+                formatted += f" **Workflow is currently running...**\n"
+                formatted += f" Check back later or use `rowan_workflow_management(action='status', workflow_uuid='{workflow_uuid}')` for updates\n"
             elif status == 0:  # Queued
-                formatted += f"⏳ **Workflow is queued and waiting to start**\n"
-                formatted += f"💡 Use `rowan_workflow_management(action='status', workflow_uuid='{workflow_uuid}')` to check progress\n"
+                formatted += f" **Workflow is queued and waiting to start**\n"
+                formatted += f" Use `rowan_workflow_management(action='status', workflow_uuid='{workflow_uuid}')` to check progress\n"
             elif status == 3:  # Failed
-                formatted += f"❌ **Workflow failed**\n"
-                formatted += f"💡 Check the workflow details in the Rowan web interface for error messages\n"
+                formatted += f" **Workflow failed**\n"
+                formatted += f" Check the workflow details in the Rowan web interface for error messages\n"
             elif status == 4:  # Stopped
-                formatted += f"⏹️ **Workflow was stopped**\n"
+                formatted += f"⏹ **Workflow was stopped**\n"
                 
             return formatted
             
         elif action == "update":
             if not workflow_uuid:
-                return "❌ Error: 'workflow_uuid' is required for updating a workflow"
+                return " Error: 'workflow_uuid' is required for updating a workflow"
             
             update_data = {}
             if name is not None:
@@ -177,24 +176,24 @@ def rowan_workflow_management(
                 update_data['email_when_complete'] = email_when_complete
             
             if not update_data:
-                return "❌ Error: At least one field must be provided for updating (name, parent_uuid, notes, starred, public, email_when_complete)"
+                return " Error: At least one field must be provided for updating (name, parent_uuid, notes, starred, public, email_when_complete)"
             
             workflow = rowan.Workflow.update(uuid=workflow_uuid, **update_data)
             
-            formatted = f"✅ Workflow updated successfully!\n\n"
+            formatted = f" Workflow updated successfully!\n\n"
             formatted += f"🆔 UUID: {workflow_uuid}\n"
             for key, value in update_data.items():
-                formatted += f"📝 {key.replace('_', ' ').title()}: {value}\n"
+                formatted += f" {key.replace('_', ' ').title()}: {value}\n"
             
             return formatted
             
         elif action in ["stop", "status", "is_finished"]:
             if not workflow_uuid:
-                return f"❌ Error: 'workflow_uuid' is required for {action} action"
+                return f" Error: 'workflow_uuid' is required for {action} action"
             
             if action == "stop":
                 result = rowan.Workflow.stop(uuid=workflow_uuid)
-                return f"⏹️ Workflow stop request submitted. Result: {result}"
+                return f"⏹ Workflow stop request submitted. Result: {result}"
             elif action == "status":
                 workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
                 status = workflow.get('object_status', 'Unknown')
@@ -208,21 +207,21 @@ def rowan_workflow_management(
                 }
                 status_name = status_names.get(status, f"Unknown ({status})")
                 
-                formatted = f"📊 **Workflow Status**: {status_name} ({status})\n"
+                formatted = f" **Workflow Status**: {status_name} ({status})\n"
                 formatted += f"🆔 UUID: {workflow_uuid}\n"
-                formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
-                formatted += f"⏱️ Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
+                formatted += f" Name: {workflow.get('name', 'N/A')}\n"
+                formatted += f" Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
                 
                 if status == 2:
-                    formatted += f"✅ **Completed successfully!** Use 'retrieve' action to get results.\n"
+                    formatted += f" **Completed successfully!** Use 'retrieve' action to get results.\n"
                 elif status == 1:
-                    formatted += f"🔄 **Currently running...** Check back later for results.\n"
+                    formatted += f" **Currently running...** Check back later for results.\n"
                 elif status == 0:
-                    formatted += f"⏳ **Queued and waiting to start**\n"
+                    formatted += f" **Queued and waiting to start**\n"
                 elif status == 3:
-                    formatted += f"❌ **Failed** - Check workflow details for error information.\n"
+                    formatted += f" **Failed** - Check workflow details for error information.\n"
                 elif status == 4:
-                    formatted += f"⏹️ **Stopped**\n"
+                    formatted += f"⏹ **Stopped**\n"
                     
                 return formatted
             elif action == "is_finished":
@@ -230,29 +229,29 @@ def rowan_workflow_management(
                 status = workflow.get('object_status', 'Unknown')
                 is_finished = status in [2, 3, 4]  # Completed, Failed, or Stopped
                 
-                formatted = f"🔍 **Workflow Finished Check**\n"
+                formatted = f" **Workflow Finished Check**\n"
                 formatted += f"🆔 UUID: {workflow_uuid}\n"
-                formatted += f"📊 Status: {status}\n"
-                formatted += f"✅ Finished: {'Yes' if is_finished else 'No'}\n"
+                formatted += f" Status: {status}\n"
+                formatted += f" Finished: {'Yes' if is_finished else 'No'}\n"
                 
                 if is_finished:
                     if status == 2:
-                        formatted += f"💡 Use 'retrieve' action to get results\n"
+                        formatted += f" Use 'retrieve' action to get results\n"
                     elif status == 3:
-                        formatted += f"💡 Workflow failed - check details for error info\n"
+                        formatted += f" Workflow failed - check details for error info\n"
                     elif status == 4:
-                        formatted += f"💡 Workflow was stopped\n"
+                        formatted += f" Workflow was stopped\n"
                 else:
-                    formatted += f"💡 Workflow is still {['queued', 'running'][status] if status in [0, 1] else 'in progress'}\n"
+                    formatted += f" Workflow is still {['queued', 'running'][status] if status in [0, 1] else 'in progress'}\n"
                     
                 return formatted
                 
         elif action == "delete":
             if not workflow_uuid:
-                return "❌ Error: 'workflow_uuid' is required for deleting a workflow"
+                return " Error: 'workflow_uuid' is required for deleting a workflow"
             
             result = rowan.Workflow.delete(uuid=workflow_uuid)
-            return f"🗑️ Workflow deletion request submitted. Result: {result}"
+            return f" Workflow deletion request submitted. Result: {result}"
             
         elif action == "list":
             # Build filters
@@ -277,12 +276,12 @@ def rowan_workflow_management(
             workflows = rowan.Workflow.list(**filters)
             
             if not workflows or 'results' not in workflows:
-                return "📋 No workflows found matching the criteria"
+                return " No workflows found matching the criteria"
             
             results = workflows['results']
             total_count = workflows.get('total_count', len(results))
             
-            formatted = f"📋 **Workflows** (showing {len(results)} of {total_count} total)\n\n"
+            formatted = f" **Workflows** (showing {len(results)} of {total_count} total)\n\n"
             
             status_names = {
                 0: "Queued",
@@ -297,10 +296,10 @@ def rowan_workflow_management(
                 status = workflow.get('object_status', 'Unknown')
                 status_name = status_names.get(status, f"Unknown ({status})")
                 
-                formatted += f"🔬 **{workflow.get('name', 'Unnamed')}**\n"
+                formatted += f" **{workflow.get('name', 'Unnamed')}**\n"
                 formatted += f"   🆔 {workflow.get('uuid', 'N/A')}\n"
-                formatted += f"   ⚗️ {workflow.get('object_type', 'N/A')} | 📊 {status_name}\n"
-                formatted += f"   📅 {workflow.get('created_at', 'N/A')} | ⏱️ {workflow.get('elapsed', 0):.1f}s\n\n"
+                formatted += f"    {workflow.get('object_type', 'N/A')} |  {status_name}\n"
+                formatted += f"   📅 {workflow.get('created_at', 'N/A')} |  {workflow.get('elapsed', 0):.1f}s\n\n"
             
             # Pagination info
             if total_count > len(results):
@@ -309,18 +308,17 @@ def rowan_workflow_management(
             return formatted
             
         else:
-            return f"❌ Error: Unknown action '{action}'. Available actions: create, retrieve, update, stop, status, is_finished, delete, list"
+            return f" Error: Unknown action '{action}'. Available actions: create, retrieve, update, stop, status, is_finished, delete, list"
             
     except Exception as e:
-        return f"❌ Error in workflow management: {str(e)}"
-
+        return f" Error in workflow management: {str(e)}"
 
 def extract_workflow_results(workflow_type: str, object_data: Dict[str, Any]) -> str:
     """Extract and format workflow results based on type."""
     
     if workflow_type == 'solubility':
         if 'solubilities' in object_data:
-            formatted = f"🧪 **Solubility Results (log S):**\n\n"
+            formatted = f" **Solubility Results (log S):**\n\n"
             solubilities = object_data['solubilities']
             
             if isinstance(solubilities, dict):
@@ -360,7 +358,7 @@ def extract_workflow_results(workflow_type: str, object_data: Dict[str, Any]) ->
             return formatted
     
     elif workflow_type == 'electronic_properties':
-        formatted = f"🔋 **Electronic Properties:**\n\n"
+        formatted = f" **Electronic Properties:**\n\n"
         
         # HOMO/LUMO energies
         if 'molecular_orbitals' in object_data:
@@ -400,7 +398,7 @@ def extract_workflow_results(workflow_type: str, object_data: Dict[str, Any]) ->
     
     else:
         # Generic formatting for other workflow types
-        formatted = f"📋 **{workflow_type.replace('_', ' ').title()} Results:**\n\n"
+        formatted = f" **{workflow_type.replace('_', ' ').title()} Results:**\n\n"
         
         # Show key-value pairs if they're simple
         for key, value in list(object_data.items())[:5]:
@@ -418,19 +416,17 @@ def extract_workflow_results(workflow_type: str, object_data: Dict[str, Any]) ->
         
         return formatted
 
-
 def test_rowan_workflow_management():
     """Test the workflow management function."""
     try:
         # Test list action
         result = rowan_workflow_management("list", size=5)
-        print("✅ Workflow management test successful!")
+        print(" Workflow management test successful!")
         print(f"Sample result: {result[:200]}...")
         return True
     except Exception as e:
-        print(f"❌ Workflow management test failed: {e}")
+        print(f" Workflow management test failed: {e}")
         return False
-
 
 if __name__ == "__main__":
     test_rowan_workflow_management() 

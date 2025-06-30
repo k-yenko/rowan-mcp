@@ -14,7 +14,6 @@ import time
 # Set up logging
 logger = logging.getLogger(__name__)
 
-
 def _upload_pdb_to_rowan(pdb_content: str, pdb_name: str = "uploaded_protein") -> Optional[str]:
     """
     Upload PDB content to Rowan and return the protein UUID.
@@ -27,7 +26,7 @@ def _upload_pdb_to_rowan(pdb_content: str, pdb_name: str = "uploaded_protein") -
         UUID of uploaded protein, or None if upload fails
     """
     if not rowan.api_key:
-        logger.error("❌ No Rowan API key configured")
+        logger.error(" No Rowan API key configured")
         return None
     
     # Create a unique name based on content hash to avoid duplicates
@@ -74,7 +73,7 @@ def _upload_pdb_to_rowan(pdb_content: str, pdb_name: str = "uploaded_protein") -
     
     for i, method in enumerate(upload_methods, 1):
         try:
-            logger.info(f"🔄 Trying upload method {i}: {method['url']}")
+            logger.info(f" Trying upload method {i}: {method['url']}")
             
             response = requests.post(
                 method["url"],
@@ -83,21 +82,21 @@ def _upload_pdb_to_rowan(pdb_content: str, pdb_name: str = "uploaded_protein") -
                 timeout=30
             )
             
-            logger.info(f"📊 Method {i} response: {response.status_code}")
+            logger.info(f" Method {i} response: {response.status_code}")
             
             if response.status_code in [200, 201]:
                 result = response.json()
                 protein_uuid = result.get('uuid') or result.get('id') or result.get('protein_id')
                 
                 if protein_uuid:
-                    logger.info(f"✅ Upload successful! Protein UUID: {protein_uuid}")
+                    logger.info(f" Upload successful! Protein UUID: {protein_uuid}")
                     return protein_uuid
                 else:
-                    logger.warning(f"⚠️ Method {i} success but no UUID in response: {result}")
+                    logger.warning(f" Method {i} success but no UUID in response: {result}")
                     
             elif response.status_code == 409:
                 # Conflict - protein might already exist
-                logger.info(f"🔄 Method {i}: Protein might already exist (409)")
+                logger.info(f" Method {i}: Protein might already exist (409)")
                 # Try to find existing protein by name
                 try:
                     list_response = requests.get(
@@ -110,22 +109,22 @@ def _upload_pdb_to_rowan(pdb_content: str, pdb_name: str = "uploaded_protein") -
                         if proteins and len(proteins) > 0:
                             existing_uuid = proteins[0].get('uuid') or proteins[0].get('id')
                             if existing_uuid:
-                                logger.info(f"✅ Found existing protein UUID: {existing_uuid}")
+                                logger.info(f" Found existing protein UUID: {existing_uuid}")
                                 return existing_uuid
                 except Exception:
                     pass
                     
             else:
-                logger.warning(f"❌ Method {i} failed: {response.status_code} - {response.text[:200]}")
+                logger.warning(f" Method {i} failed: {response.status_code} - {response.text[:200]}")
                 
         except requests.exceptions.Timeout:
             logger.warning(f"⏰ Method {i} timed out")
         except Exception as e:
-            logger.warning(f"❌ Method {i} error: {e}")
+            logger.warning(f" Method {i} error: {e}")
     
     # If all methods failed, try rowan's internal API (if available)
     try:
-        logger.info(f"🔄 Trying rowan.protein internal methods...")
+        logger.info(f" Trying rowan.protein internal methods...")
         
         # Check if rowan has protein creation methods
         if hasattr(rowan, 'protein') and hasattr(rowan.protein, 'create'):
@@ -135,15 +134,14 @@ def _upload_pdb_to_rowan(pdb_content: str, pdb_name: str = "uploaded_protein") -
             )
             if result and result.get('uuid'):
                 protein_uuid = result['uuid']
-                logger.info(f"✅ Rowan internal upload successful! UUID: {protein_uuid}")
+                logger.info(f" Rowan internal upload successful! UUID: {protein_uuid}")
                 return protein_uuid
                 
     except Exception as e:
-        logger.warning(f"❌ Rowan internal method failed: {e}")
+        logger.warning(f" Rowan internal method failed: {e}")
     
-    logger.error(f"❌ All upload methods failed for PDB content")
+    logger.error(f" All upload methods failed for PDB content")
     return None
-
 
 def _detect_pdb_file_path(protein_input: str) -> Optional[str]:
     """
@@ -170,7 +168,6 @@ def _detect_pdb_file_path(protein_input: str) -> Optional[str]:
     
     return None
 
-
 def rowan_docking(
     name: str,
     ligand: Optional[str] = None,
@@ -192,7 +189,7 @@ def rowan_docking(
     blocking: bool = False,  # Changed to False to avoid timeouts
     ping_interval: int = 5
 ) -> str:
-    """Perform protein-ligand docking using machine learning-enhanced workflow.
+    """Perform protein-ligand docking using an ML workflow.
     
     This tool performs comprehensive protein-ligand docking with the following features:
     - **Conformer generation**: ETKDG conformer search with ML optimization
@@ -201,12 +198,12 @@ def rowan_docking(
     - **Pose refinement**: ML-based pose optimization with harmonic constraints
     - **Comprehensive results**: Docking scores, strain energies, and binding poses
     
-    **🧬 Hardcoded for GFP-Water System:**
+    **hard code for gfp/water:**
     - **Protein**: Green Fluorescent Protein (PDB: 1EMA) - automatically fetched
     - **Ligand**: Water molecule (SMILES: O) - unless specified otherwise
     - **Default pocket**: Center of binding site with 20Å search box
     
-    **📊 Workflow Details:**
+    ** Workflow Details:**
     1. Generate ligand conformers with ETKDG → screen with GFN2-xTB → optimize with AIMNet2
     2. Compute conformer energies with AIMNet2 + CPCMX(water) solvation
     3. Dock each conformer with AutoDock Vina using Vinardo scoring
@@ -214,7 +211,7 @@ def rowan_docking(
     5. Calculate strain energies (Epose - Emin) and flag high-strain poses (>5 kcal/mol)
     6. Return ranked poses with docking scores and strain analysis
     
-    **⚡ Smart Defaults:**
+    ** Smart Defaults:**
     - Mode: 'rapid' (balanced speed/accuracy for drug discovery)
     - Conformer search: Enabled (essential for flexible ligands)
     - Optimization: Enabled (improves pose quality)
@@ -293,21 +290,16 @@ def rowan_docking(
     primary_ligand = None
     if ligand is not None:
         primary_ligand = ligand
-        logger.info(f"💧 Using ligand parameter: {ligand}")
     elif smiles is not None:
         if isinstance(smiles, list):
             primary_ligand = smiles[0]  # Use first SMILES if list
-            logger.info(f"💧 Using first SMILES from list: {primary_ligand}")
         else:
             primary_ligand = smiles
-            logger.info(f"💧 Using smiles parameter: {primary_ligand}")
     elif molecules is not None and len(molecules) > 0:
         primary_ligand = molecules[0]  # Use first molecule if list
-        logger.info(f"💧 Using first molecule from list: {primary_ligand}")
     else:
         # Apply hardcoded default for GFP-water system
         primary_ligand = "O"  # Water molecule
-        logger.info("💧 Using default ligand: water (O)")
     
     # Handle protein/target specification with automatic PDB file detection and upload
     target_specification = None
@@ -329,14 +321,14 @@ def rowan_docking(
                     
                     if uploaded_protein_uuid:
                         target_specification = uploaded_protein_uuid
-                        logger.info(f"✅ Auto-uploaded PDB file, using UUID: {uploaded_protein_uuid}")
+                        logger.info(f" Auto-uploaded PDB file, using UUID: {uploaded_protein_uuid}")
                     else:
-                        logger.error(f"❌ Failed to upload PDB file: {pdb_file_path}")
+                        logger.error(f" Failed to upload PDB file: {pdb_file_path}")
                         # Fallback to treating as raw content (will likely fail)
                         target_specification = pdb_content
-                        logger.warning("⚠️ Fallback: using raw PDB content (may fail validation)")
+                        logger.warning(" Fallback: using raw PDB content (may fail validation)")
                 except Exception as e:
-                    logger.error(f"❌ Error reading PDB file {pdb_file_path}: {e}")
+                    logger.error(f" Error reading PDB file {pdb_file_path}: {e}")
                     target_specification = target
             else:
                 # Check if target looks like PDB content (starts with HEADER, ATOM, etc.)
@@ -359,22 +351,19 @@ def rowan_docking(
                     
                     if uploaded_protein_uuid:
                         target_specification = uploaded_protein_uuid
-                        logger.info(f"✅ Auto-uploaded PDB content, using UUID: {uploaded_protein_uuid}")
+                        logger.info(f" Auto-uploaded PDB content, using UUID: {uploaded_protein_uuid}")
                     else:
-                        logger.error(f"❌ Failed to upload PDB content")
+                        logger.error(f" Failed to upload PDB content")
                         # Fallback to raw content (will likely fail)
                         target_specification = target
-                        logger.warning("⚠️ Fallback: using raw PDB content (may fail validation)")
+                        logger.warning(" Fallback: using raw PDB content (may fail validation)")
                 else:
                     target_specification = target
-                    logger.info("🧬 Using target as-is (not PDB content)")
         else:
             target_specification = target
-            logger.info("🧬 Using non-string target parameter")
             
     elif target_uuid is not None:
         target_specification = target_uuid
-        logger.info(f"🧬 Using target UUID: {target_uuid}")
         
     elif protein is not None:
         # Check if protein parameter is a file path
@@ -391,40 +380,35 @@ def rowan_docking(
                 
                 if uploaded_protein_uuid:
                     target_specification = uploaded_protein_uuid
-                    logger.info(f"✅ Auto-uploaded PDB file, using UUID: {uploaded_protein_uuid}")
+                    logger.info(f" Auto-uploaded PDB file, using UUID: {uploaded_protein_uuid}")
                 else:
-                    logger.error(f"❌ Failed to upload PDB file: {pdb_file_path}")
+                    logger.error(f" Failed to upload PDB file: {pdb_file_path}")
                     # Fallback to original protein parameter
                     target_specification = protein
-                    logger.warning("⚠️ Fallback: using protein parameter as-is")
+                    logger.warning(" Fallback: using protein parameter as-is")
             except Exception as e:
-                logger.error(f"❌ Error reading PDB file {pdb_file_path}: {e}")
+                logger.error(f" Error reading PDB file {pdb_file_path}: {e}")
                 target_specification = protein
         else:
             target_specification = protein
-            logger.info(f"🧬 Using protein PDB code/UUID: {protein}")
     else:
         # Apply hardcoded default for GFP-water system
         target_specification = "1EMA"  # Green Fluorescent Protein
-        logger.info("🧬 Using default protein: GFP (1EMA)")
     
     # Set initial_molecule if not provided
     if initial_molecule is None:
         initial_molecule = primary_ligand
-        logger.info(f"🔬 Using primary ligand as initial_molecule: {initial_molecule}")
     
     # Default pocket coordinates for GFP (approximate binding site)
     if pocket_center is None:
         pocket_center = [0.0, 0.0, 0.0]  # Will be refined by docking algorithm
-        logger.info("📍 Using default pocket center: (0.0, 0.0, 0.0)")
     else:
-        logger.info(f"📍 Using pocket center: {pocket_center}")
+        pass
     
     if pocket_size is None:
         pocket_size = [20.0, 20.0, 20.0]  # 20Å search box
-        logger.info("📏 Using default pocket size: (20.0, 20.0, 20.0)")
     else:
-        logger.info(f"📏 Using pocket size: {pocket_size}")
+        pass
     
     # Prepare workflow parameters following stjames DockingWorkflow pattern
     # Based on stjames-public structure, DockingWorkflow inherits from MoleculeWorkflow
@@ -451,57 +435,50 @@ def rowan_docking(
     # Priority: molecules > smiles > primary_ligand
     if molecules is not None:
         workflow_params["molecules"] = molecules if isinstance(molecules, list) else [molecules]
-        logger.info(f"🧪 Multiple molecules specified: {len(workflow_params['molecules'])} ligands")
+        logger.info(f" Multiple molecules specified: {len(workflow_params['molecules'])} ligands")
     elif smiles is not None:
         workflow_params["smiles"] = smiles if isinstance(smiles, list) else [smiles]
         if isinstance(smiles, list):
-            logger.info(f"🧪 Multiple SMILES specified: {len(smiles)} ligands")
+            logger.info(f" Multiple SMILES specified: {len(smiles)} ligands")
         else:
-            logger.info(f"🧪 SMILES specified as list: [{smiles}]")
+            logger.info(f" SMILES specified as list: [{smiles}]")
     else:
         # Use primary_ligand as smiles parameter (required) - MUST BE A LIST
         workflow_params["smiles"] = [primary_ligand]
-        logger.info(f"🧪 Using primary ligand as SMILES list: [{primary_ligand}]")
     
     if conformers is not None:
         workflow_params["conformers"] = conformers
-        logger.info(f"🧪 Pre-optimized conformers specified: {len(conformers)} UUIDs")
+        logger.info(f" Pre-optimized conformers specified: {len(conformers)} UUIDs")
     
     # Add target specification (protein input) - DockingWorkflow only accepts 'target' or 'target_uuid'
     if uploaded_protein_uuid:
         # Use uploaded protein UUID (from auto-upload process)
         workflow_params["target_uuid"] = uploaded_protein_uuid
-        logger.info(f"🧬 Using auto-uploaded protein UUID: {uploaded_protein_uuid}")
     elif target is not None and not isinstance(target, str):
         # Non-string target (should be PDB object/dict)
         workflow_params["target"] = target
-        logger.info(f"🧬 Using target object: {type(target)}")
     elif target_uuid is not None:
         # Explicit target UUID provided
         workflow_params["target_uuid"] = target_uuid  
-        logger.info(f"🧬 Using explicit target UUID: {target_uuid}")
     elif target is not None and isinstance(target, str) and len(target) > 100:
         # Long string - likely raw PDB content that failed upload
-        logger.warning("⚠️ Using raw PDB content - this will likely fail validation")
+        logger.warning(" Using raw PDB content - this will likely fail validation")
         workflow_params["target"] = target
-        logger.info(f"🧬 Using raw PDB content: {len(target)} characters")
     else:
         # For PDB codes or other identifiers, treat as target_uuid
         # Note: This requires the protein to already be uploaded to your Rowan account
         workflow_params["target_uuid"] = target_specification
-        logger.info(f"🧬 Using identifier as target_uuid: {target_specification}")
         if not uploaded_protein_uuid and len(str(target_specification)) < 10:
             # Likely a PDB code, not UUID
-            logger.info(f"⚠️ Note: '{target_specification}' appears to be a PDB code")
-            logger.info(f"💡 For PDB codes, upload the protein to Rowan first via web interface")
-            logger.info(f"💡 Or use a local PDB file path for automatic upload")
+            logger.info(f" Note: '{target_specification}' appears to be a PDB code")
+            logger.info(f" For PDB codes, upload the protein to Rowan first via web interface")
+            logger.info(f" Or use a local PDB file path for automatic upload")
     
-    logger.info(f"🚀 Submitting docking calculation: {name}")
-    logger.info(f"💧 Primary ligand: {primary_ligand}")
+    logger.info(f" Submitting docking calculation: {name}")
     logger.info(f"🧬 Target: {target_specification}")
     logger.info(f"📍 Pocket: center={pocket_center}, size={pocket_size}")
-    logger.info(f"⚙️ Settings: mode={mode}, csearch={do_csearch}, opt={do_optimization}, refine={do_pose_refinement}")
-    logger.info(f"🔬 Initial molecule: {initial_molecule}")
+    logger.info(f"⚙ Settings: mode={mode}, csearch={do_csearch}, opt={do_optimization}, refine={do_pose_refinement}")
+    logger.info(f" Initial molecule: {initial_molecule}")
     
     try:
         # Submit docking calculation to Rowan
@@ -562,7 +539,7 @@ def rowan_docking(
                     "protein": target_specification,
                     "ligand": primary_ligand,
                     "status": status_text,
-                    "message": f"✅ Docking calculation submitted successfully! Use tracking_id to monitor progress.",
+                    "message": f" Docking calculation submitted successfully! Use tracking_id to monitor progress.",
                     "calculation_details": {
                         "protein_pdb": target_specification,
                         "ligand_smiles": primary_ligand,
@@ -620,5 +597,5 @@ def rowan_docking(
                 ]
             }
         }
-        logger.error(f"❌ Docking calculation failed: {str(e)}")
+        logger.error(f" Docking calculation failed: {str(e)}")
         return str(error_response)

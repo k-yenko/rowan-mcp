@@ -5,7 +5,6 @@ Rowan scan analysis functions for MCP tool integration.
 from typing import Optional, Dict, Any, Tuple, List
 import rowan
 
-
 def rowan_scan_analyzer(
     scan_uuid: str,
     action: str = "analyze",
@@ -38,17 +37,17 @@ def rowan_scan_analyzer(
         status = workflow.get('object_status', -1)
         if status != 2:  # Not completed
             status_names = {0: "Queued", 1: "Running", 3: "Failed", 4: "Stopped"}
-            return f"❌ Scan workflow is not completed. Status: {status_names.get(status, 'Unknown')}"
+            return f" Scan workflow is not completed. Status: {status_names.get(status, 'Unknown')}"
         
         # Extract scan data from object_data
         object_data = workflow.get('object_data', {})
         if not object_data:
-            return "❌ No scan data found in workflow results"
+            return " No scan data found in workflow results"
         
         # Parse scan results
         scan_results = parse_scan_data(object_data)
         if not scan_results:
-            return "❌ Could not parse scan data"
+            return " Could not parse scan data"
         
         # Perform requested analysis
         if action == "analyze":
@@ -60,11 +59,10 @@ def rowan_scan_analyzer(
         elif action == "energy_profile":
             return format_energy_profile(scan_results)
         else:
-            return f"❌ Unknown action '{action}'. Available: analyze, extract_ts, extract_minima, energy_profile"
+            return f" Unknown action '{action}'. Available: analyze, extract_ts, extract_minima, energy_profile"
             
     except Exception as e:
-        return f"❌ Error analyzing scan: {str(e)}"
-
+        return f" Error analyzing scan: {str(e)}"
 
 def parse_scan_data(object_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Parse raw scan data into structured format."""
@@ -126,7 +124,6 @@ def parse_scan_data(object_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         print(f"Error parsing scan data: {e}")
         return None
 
-
 def extract_geometry_from_point(point_data: Dict[str, Any]) -> Optional[str]:
     """Extract XYZ geometry from a scan point."""
     
@@ -156,7 +153,6 @@ def extract_geometry_from_point(point_data: Dict[str, Any]) -> Optional[str]:
     except Exception:
         return None
 
-
 def format_atoms_to_xyz(atoms: List[Dict]) -> str:
     """Convert atoms list to XYZ format."""
     
@@ -175,7 +171,6 @@ def format_atoms_to_xyz(atoms: List[Dict]) -> str:
     except Exception:
         return ""
 
-
 def extract_ts_geometry(scan_results: Dict[str, Any], scan_uuid: str) -> str:
     """Extract the highest energy geometry (TS approximation)."""
     
@@ -184,7 +179,7 @@ def extract_ts_geometry(scan_results: Dict[str, Any], scan_uuid: str) -> str:
     coordinates = scan_results['coordinates']
     
     if not energies:
-        return "❌ No energy data found in scan results"
+        return " No energy data found in scan results"
     
     # Find highest energy point
     max_energy_idx = energies.index(max(energies))
@@ -196,25 +191,24 @@ def extract_ts_geometry(scan_results: Dict[str, Any], scan_uuid: str) -> str:
     min_energy = min(energies)
     rel_energy = (max_energy - min_energy) * 627.509  # Hartree to kcal/mol
     
-    formatted = f"🎯 **Transition State Approximation Extracted**\n\n"
+    formatted = f" **Transition State Approximation Extracted**\n\n"
     formatted += f"📍 **Scan Point:** {max_energy_idx + 1} of {len(energies)}\n"
-    formatted += f"📐 **Coordinate Value:** {max_coord:.3f}\n"
-    formatted += f"⚡ **Energy:** {max_energy:.6f} hartree\n"
-    formatted += f"🔥 **Barrier:** {rel_energy:.2f} kcal/mol above minimum\n\n"
+    formatted += f" **Coordinate Value:** {max_coord:.3f}\n"
+    formatted += f" **Energy:** {max_energy:.6f} hartree\n"
+    formatted += f" **Barrier:** {rel_energy:.2f} kcal/mol above minimum\n\n"
     
     if ts_geometry:
-        formatted += f"📋 **XYZ Geometry:**\n```\n{ts_geometry}\n```\n\n"
-        formatted += f"💡 **Next Steps:**\n"
+        formatted += f" **XYZ Geometry:**\n```\n{ts_geometry}\n```\n\n"
+        formatted += f" **Next Steps:**\n"
         formatted += f"1. Use this geometry for transition state optimization\n"
         formatted += f"2. Run: `rowan_spin_states(name='TS_opt', molecule='<geometry>', transition_state=True)`\n"
         formatted += f"3. Verify single imaginary frequency\n"
         formatted += f"4. Use optimized TS for IRC calculation\n"
     else:
-        formatted += f"⚠️ **Warning:** Could not extract geometry data\n"
-        formatted += f"💡 Check scan workflow {scan_uuid} manually for geometry data\n"
+        formatted += f" **Warning:** Could not extract geometry data\n"
+        formatted += f" Check scan workflow {scan_uuid} manually for geometry data\n"
     
     return formatted
-
 
 def extract_minima_geometries(scan_results: Dict[str, Any], energy_threshold: Optional[float] = None) -> str:
     """Extract low energy geometries (minima)."""
@@ -224,7 +218,7 @@ def extract_minima_geometries(scan_results: Dict[str, Any], energy_threshold: Op
     coordinates = scan_results['coordinates']
     
     if not energies:
-        return "❌ No energy data found in scan results"
+        return " No energy data found in scan results"
     
     min_energy = min(energies)
     threshold = energy_threshold or 2.0  # Default 2 kcal/mol above minimum
@@ -248,16 +242,15 @@ def extract_minima_geometries(scan_results: Dict[str, Any], energy_threshold: Op
     
     for point in minima_points:
         formatted += f"**Point {point['index'] + 1}:**\n"
-        formatted += f"  📐 Coordinate: {point['coordinate']:.3f}\n"
-        formatted += f"  ⚡ Energy: +{point['rel_energy']:.2f} kcal/mol\n"
+        formatted += f"   Coordinate: {point['coordinate']:.3f}\n"
+        formatted += f"   Energy: +{point['rel_energy']:.2f} kcal/mol\n"
         if point['geometry']:
             # Show first few lines of geometry
             geom_lines = point['geometry'].split('\n')[:5]
-            formatted += f"  📋 Geometry: {' | '.join(geom_lines[:2])}\n"
+            formatted += f"   Geometry: {' | '.join(geom_lines[:2])}\n"
         formatted += "\n"
     
     return formatted
-
 
 def format_energy_profile(scan_results: Dict[str, Any]) -> str:
     """Format energy profile data for plotting/analysis."""
@@ -266,11 +259,11 @@ def format_energy_profile(scan_results: Dict[str, Any]) -> str:
     coordinates = scan_results['coordinates']
     
     if not energies:
-        return "❌ No energy data found"
+        return " No energy data found"
     
     min_energy = min(energies)
     
-    formatted = f"📊 **Energy Profile Data**\n\n"
+    formatted = f" **Energy Profile Data**\n\n"
     formatted += f"Coordinate | Energy (hartree) | Rel Energy (kcal/mol)\n"
     formatted += f"-----------|------------------|--------------------\n"
     
@@ -278,11 +271,10 @@ def format_energy_profile(scan_results: Dict[str, Any]) -> str:
         rel_energy = (energy - min_energy) * 627.509
         formatted += f"{coord:10.3f} | {energy:15.6f} | {rel_energy:18.2f}\n"
     
-    formatted += f"\n📈 **Energy Range:** {(max(energies) - min_energy) * 627.509:.2f} kcal/mol\n"
-    formatted += f"🎯 **Barrier Location:** Coordinate {coordinates[energies.index(max(energies))]:.3f}\n"
+    formatted += f"\n **Energy Range:** {(max(energies) - min_energy) * 627.509:.2f} kcal/mol\n"
+    formatted += f" **Barrier Location:** Coordinate {coordinates[energies.index(max(energies))]:.3f}\n"
     
     return formatted
-
 
 def format_full_analysis(scan_results: Dict[str, Any], scan_uuid: str) -> str:
     """Provide complete scan analysis."""
@@ -291,7 +283,7 @@ def format_full_analysis(scan_results: Dict[str, Any], scan_uuid: str) -> str:
     coordinates = scan_results['coordinates']
     
     if not energies:
-        return "❌ No scan data to analyze"
+        return " No scan data to analyze"
     
     min_energy = min(energies)
     max_energy = max(energies)
@@ -301,8 +293,8 @@ def format_full_analysis(scan_results: Dict[str, Any], scan_uuid: str) -> str:
     min_idx = energies.index(min_energy)
     max_idx = energies.index(max_energy)
     
-    formatted = f"🔬 **Complete Scan Analysis**\n\n"
-    formatted += f"📊 **Overview:**\n"
+    formatted = f" **Complete Scan Analysis**\n\n"
+    formatted += f" **Overview:**\n"
     formatted += f"  • Total Points: {len(energies)}\n"
     formatted += f"  • Energy Range: {energy_range:.2f} kcal/mol\n"
     formatted += f"  • Coordinate Range: {min(coordinates):.3f} to {max(coordinates):.3f}\n\n"
@@ -311,31 +303,29 @@ def format_full_analysis(scan_results: Dict[str, Any], scan_uuid: str) -> str:
     formatted += f"  • Point {min_idx + 1}: {coordinates[min_idx]:.3f}\n"
     formatted += f"  • Energy: {min_energy:.6f} hartree\n\n"
     
-    formatted += f"⛰️ **Energy Maximum (TS Approx):**\n"
+    formatted += f"⛰ **Energy Maximum (TS Approx):**\n"
     formatted += f"  • Point {max_idx + 1}: {coordinates[max_idx]:.3f}\n"
     formatted += f"  • Energy: {max_energy:.6f} hartree\n"
     formatted += f"  • Barrier: {energy_range:.2f} kcal/mol\n\n"
     
-    formatted += f"💡 **Recommended Next Steps:**\n"
+    formatted += f" **Recommended Next Steps:**\n"
     formatted += f"1. Extract TS geometry: `rowan_scan_analyzer('{scan_uuid}', 'extract_ts')`\n"
     formatted += f"2. Optimize transition state with extracted geometry\n"
     formatted += f"3. Run IRC from optimized TS\n"
     
     return formatted
 
-
 def test_rowan_scan_analyzer():
     """Test the scan analyzer function."""
     try:
         # Test with dummy UUID 
         result = rowan_scan_analyzer("test-scan-uuid", "analyze")
-        print("✅ Scan analyzer test completed!")
+        print(" Scan analyzer test completed!")
         print(f"Result type: {type(result)}")
         return True
     except Exception as e:
-        print(f"❌ Scan analyzer test failed: {e}")
+        print(f" Scan analyzer test failed: {e}")
         return False
-
 
 if __name__ == "__main__":
     test_rowan_scan_analyzer() 

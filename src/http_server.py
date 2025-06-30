@@ -26,7 +26,7 @@ from .server import (
     rowan_bde, rowan_redox_potential,
     
     # Advanced Analysis
-    rowan_scan, rowan_fukui, rowan_spin_states, 
+    rowan_fukui, 
     rowan_hydrogen_bond_basicity,
     
     
@@ -39,15 +39,24 @@ from .server import (
     api_key
 )
 
-# Import the new standalone functions
-from .functions.solubility import rowan_solubility as rowan_solubility_new
-from .functions.workflow_management import rowan_workflow_management as rowan_workflow_management_new
-from .functions.calculation_retrieve import rowan_calculation_retrieve as rowan_calculation_retrieve_new
-from .functions.docking import rowan_docking as rowan_docking_new
-from .functions.spin_states import rowan_spin_states as rowan_spin_states_new
-from .functions.molecular_dynamics import rowan_molecular_dynamics as rowan_molecular_dynamics_new
-from .functions.irc import rowan_irc as rowan_irc_new
-from .functions.scan_analyzer import rowan_scan_analyzer as rowan_scan_analyzer_new
+# Import standalone functions from functions module
+from .functions.solubility import rowan_solubility
+from .functions.workflow_management import rowan_workflow_management
+from .functions.calculation_retrieve import rowan_calculation_retrieve
+from .functions.docking import rowan_docking
+from .functions.spin_states import rowan_spin_states
+from .functions.molecular_dynamics import rowan_molecular_dynamics
+from .functions.irc import rowan_irc
+from .functions.scan import rowan_scan
+from .functions.scan_analyzer import rowan_scan_analyzer
+from .functions.admet import rowan_admet
+from .functions.bde import rowan_bde
+from .functions.multistage_opt import rowan_multistage_opt
+from .functions.descriptors import rowan_descriptors
+from .functions.tautomers import rowan_tautomers
+from .functions.hydrogen_bond_basicity import rowan_hydrogen_bond_basicity
+from .functions.redox_potential import rowan_redox_potential
+from .functions.conformers import rowan_conformers
 
 # Mapping of tool names to functions
 TOOL_FUNCTIONS = {
@@ -62,29 +71,36 @@ TOOL_FUNCTIONS = {
     "rowan_tautomers": rowan_tautomers.fn if hasattr(rowan_tautomers, 'fn') else rowan_tautomers,
     
     # Chemical Properties
-    "rowan_bde": rowan_bde.fn if hasattr(rowan_bde, 'fn') else rowan_bde,
-    "rowan_redox_potential": rowan_redox_potential.fn if hasattr(rowan_redox_potential, 'fn') else rowan_redox_potential,
-    "rowan_solubility": rowan_solubility_new,  # New solubility function from functions/solubility.py
+    "rowan_bde": rowan_bde,  # Function from functions/bde.py
+    "rowan_redox_potential": rowan_redox_potential,  # Function from functions/redox_potential.py
+    "rowan_solubility": rowan_solubility,  # Function from functions/solubility.py
     
     # Advanced Analysis
-    "rowan_scan": rowan_scan.fn if hasattr(rowan_scan, 'fn') else rowan_scan,
-    "rowan_scan_analyzer": rowan_scan_analyzer_new,  # New scan analyzer function from functions/scan_analyzer.py
+    "rowan_scan": rowan_scan,  # Function from functions/scan.py
+    "rowan_scan_analyzer": rowan_scan_analyzer,  # Function from functions/scan_analyzer.py
     "rowan_fukui": rowan_fukui.fn if hasattr(rowan_fukui, 'fn') else rowan_fukui,
-    "rowan_spin_states": rowan_spin_states_new,  # New spin states function from functions/spin_states.py
-    "rowan_irc": rowan_irc_new,  # New IRC function from functions/irc.py
-    "rowan_molecular_dynamics": rowan_molecular_dynamics_new,  # New molecular dynamics function from functions/molecular_dynamics.py
-    "rowan_hydrogen_bond_basicity": rowan_hydrogen_bond_basicity.fn if hasattr(rowan_hydrogen_bond_basicity, 'fn') else rowan_hydrogen_bond_basicity,
+    "rowan_spin_states": rowan_spin_states,  # Function from functions/spin_states.py
+    "rowan_irc": rowan_irc,  # Function from functions/irc.py
+    "rowan_molecular_dynamics": rowan_molecular_dynamics,  # Function from functions/molecular_dynamics.py
+    "rowan_hydrogen_bond_basicity": rowan_hydrogen_bond_basicity,  # Function from functions/hydrogen_bond_basicity.py
+    
+    # Additional standalone functions
+    "rowan_admet": rowan_admet,  # Function from functions/admet.py
+    "rowan_multistage_opt": rowan_multistage_opt,  # Function from functions/multistage_opt.py
+    "rowan_descriptors": rowan_descriptors,  # Function from functions/descriptors.py
+    "rowan_tautomers": rowan_tautomers,  # Function from functions/tautomers.py
+    "rowan_conformers": rowan_conformers,  # Function from functions/conformers.py
     
     # Drug Discovery
-    "rowan_docking": rowan_docking_new,  # New docking function from functions/docking.py
+    "rowan_docking": rowan_docking,  # Function from functions/docking.py
     
     # Unified Management Tools (NEW - consolidated from 4 old tools)
     "rowan_folder_management": rowan_folder_management.fn if hasattr(rowan_folder_management, 'fn') else rowan_folder_management,
-    "rowan_workflow_management": rowan_workflow_management_new,  # New workflow management from functions/
+    "rowan_workflow_management": rowan_workflow_management,  # Function from functions/workflow_management.py
     "rowan_system_management": rowan_system_management.fn if hasattr(rowan_system_management, 'fn') else rowan_system_management,
     
     # Calculation Management
-    "rowan_calculation_retrieve": rowan_calculation_retrieve_new,  # New calculation retrieve from functions/
+    "rowan_calculation_retrieve": rowan_calculation_retrieve,  # Function from functions/calculation_retrieve.py
 }
 
 def create_app():
@@ -248,15 +264,18 @@ app = create_app()
 
 def main():
     """Run the HTTP server."""
-    print("🚀 Starting Rowan MCP HTTP Server...")
+    print("Starting Rowan MCP HTTP Server...")
+    
+    api_key = os.getenv("ROWAN_API_KEY")
     if api_key:
-        print("🔑 API Key loaded: ✅")
+        print("API Key loaded: OK")
     else:
-        print("❌ No API key found in environment")
+        print("No API key found in environment")
+        return
         
-    print("🌐 Server will be available at: http://127.0.0.1:6276/mcp")
-    print("🔗 Connect your MCP client to this endpoint!")
-    print(f"🔧 Available tools: {len(TOOL_FUNCTIONS)}")
+    print("Server will be available at: http://127.0.0.1:6276/mcp")
+    print("Connect your MCP client to this endpoint!")
+    print(f"Available tools: {len(TOOL_FUNCTIONS)}")
     
     app = create_app()
     
