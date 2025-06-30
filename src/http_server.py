@@ -14,32 +14,10 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Import all our Rowan functions
-from .server import (
-    # Basic Calculations
-    rowan_admet, rowan_multistage_opt, rowan_electronic_properties,
-    
-    # Molecular Analysis  
-    rowan_conformers, rowan_descriptors, rowan_tautomers,
-    
-    # Chemical Properties
-    rowan_bde, rowan_redox_potential,
-    
-    # Advanced Analysis
-    rowan_fukui, 
-    rowan_hydrogen_bond_basicity,
-    
-    
-    # Unified Management Tools (NEW - replaces 4 old tools)
-    rowan_folder_management, rowan_system_management,
-    
-    # Note: rowan_workflow_management and rowan_calculation_retrieve now imported from functions/
-    
-    # API key
-    api_key
-)
+# Import API key from server
+from .server import api_key
 
-# Import standalone functions from functions module
+# Import all functions from their individual files in functions/
 from .functions.solubility import rowan_solubility
 from .functions.workflow_management import rowan_workflow_management
 from .functions.calculation_retrieve import rowan_calculation_retrieve
@@ -57,50 +35,53 @@ from .functions.tautomers import rowan_tautomers
 from .functions.hydrogen_bond_basicity import rowan_hydrogen_bond_basicity
 from .functions.redox_potential import rowan_redox_potential
 from .functions.conformers import rowan_conformers
+from .functions.electronic_properties import rowan_electronic_properties
+from .functions.fukui import rowan_fukui
+
+# Import management functions from server_backup (these haven't been moved to separate files yet)
+from .server_backup import rowan_folder_management, rowan_system_management, rowan_pka
+
+# Import molecule lookup from functions
+from .functions.molecule_lookup import rowan_molecule_lookup
 
 # Mapping of tool names to functions
 TOOL_FUNCTIONS = {
     # Basic Calculations
-    "rowan_admet": rowan_admet.fn if hasattr(rowan_admet, 'fn') else rowan_admet,
-    "rowan_multistage_opt": rowan_multistage_opt.fn if hasattr(rowan_multistage_opt, 'fn') else rowan_multistage_opt,
-    "rowan_electronic_properties": rowan_electronic_properties.fn if hasattr(rowan_electronic_properties, 'fn') else rowan_electronic_properties,
+    "rowan_admet": rowan_admet,
+    "rowan_multistage_opt": rowan_multistage_opt,
+    "rowan_electronic_properties": rowan_electronic_properties,
     
     # Molecular Analysis
-    "rowan_conformers": rowan_conformers.fn if hasattr(rowan_conformers, 'fn') else rowan_conformers,
-    "rowan_descriptors": rowan_descriptors.fn if hasattr(rowan_descriptors, 'fn') else rowan_descriptors,
-    "rowan_tautomers": rowan_tautomers.fn if hasattr(rowan_tautomers, 'fn') else rowan_tautomers,
+    "rowan_conformers": rowan_conformers,
+    "rowan_descriptors": rowan_descriptors,
+    "rowan_tautomers": rowan_tautomers,
     
-    # Chemical Properties
-    "rowan_bde": rowan_bde,  # Function from functions/bde.py
-    "rowan_redox_potential": rowan_redox_potential,  # Function from functions/redox_potential.py
-    "rowan_solubility": rowan_solubility,  # Function from functions/solubility.py
+    # Chemical Properties  
+    "rowan_bde": rowan_bde,
+    "rowan_redox_potential": rowan_redox_potential,
+    "rowan_solubility": rowan_solubility,
     
     # Advanced Analysis
-    "rowan_scan": rowan_scan,  # Function from functions/scan.py
-    "rowan_scan_analyzer": rowan_scan_analyzer,  # Function from functions/scan_analyzer.py
-    "rowan_fukui": rowan_fukui.fn if hasattr(rowan_fukui, 'fn') else rowan_fukui,
-    "rowan_spin_states": rowan_spin_states,  # Function from functions/spin_states.py
-    "rowan_irc": rowan_irc,  # Function from functions/irc.py
-    "rowan_molecular_dynamics": rowan_molecular_dynamics,  # Function from functions/molecular_dynamics.py
-    "rowan_hydrogen_bond_basicity": rowan_hydrogen_bond_basicity,  # Function from functions/hydrogen_bond_basicity.py
-    
-    # Additional standalone functions
-    "rowan_admet": rowan_admet,  # Function from functions/admet.py
-    "rowan_multistage_opt": rowan_multistage_opt,  # Function from functions/multistage_opt.py
-    "rowan_descriptors": rowan_descriptors,  # Function from functions/descriptors.py
-    "rowan_tautomers": rowan_tautomers,  # Function from functions/tautomers.py
-    "rowan_conformers": rowan_conformers,  # Function from functions/conformers.py
+    "rowan_scan": rowan_scan,
+    "rowan_scan_analyzer": rowan_scan_analyzer,
+    "rowan_fukui": rowan_fukui,
+    "rowan_spin_states": rowan_spin_states,
+    "rowan_irc": rowan_irc,
+    "rowan_molecular_dynamics": rowan_molecular_dynamics,
+    "rowan_hydrogen_bond_basicity": rowan_hydrogen_bond_basicity,
     
     # Drug Discovery
-    "rowan_docking": rowan_docking,  # Function from functions/docking.py
+    "rowan_docking": rowan_docking,
     
-    # Unified Management Tools (NEW - consolidated from 4 old tools)
-    "rowan_folder_management": rowan_folder_management.fn if hasattr(rowan_folder_management, 'fn') else rowan_folder_management,
-    "rowan_workflow_management": rowan_workflow_management,  # Function from functions/workflow_management.py
-    "rowan_system_management": rowan_system_management.fn if hasattr(rowan_system_management, 'fn') else rowan_system_management,
+    # Management Tools
+    "rowan_folder_management": rowan_folder_management,
+    "rowan_workflow_management": rowan_workflow_management,
+    "rowan_system_management": rowan_system_management,
+    "rowan_calculation_retrieve": rowan_calculation_retrieve,
     
-    # Calculation Management
-    "rowan_calculation_retrieve": rowan_calculation_retrieve,  # Function from functions/calculation_retrieve.py
+    # Additional Tools
+    "rowan_pka": rowan_pka,
+    "rowan_molecule_lookup": rowan_molecule_lookup,
 }
 
 def create_app():
@@ -148,31 +129,53 @@ def create_app():
             elif method == "tools/list":
                 tools = []
                 for name, func in TOOL_FUNCTIONS.items():
-                    doc = func.__doc__ or ""
-                    first_line = doc.split('\n')[0].strip() if doc else f"Execute {name}"
-                    
-                    # Extract basic parameter info from function signature
-                    import inspect
-                    sig = inspect.signature(func)
-                    properties = {}
-                    required = []
-                    
-                    for param_name, param in sig.parameters.items():
-                        if param.annotation != inspect.Parameter.empty:
-                            # Basic type mapping
-                            param_type = "string"  # Default
-                            if param.annotation == int:
-                                param_type = "integer"
-                            elif param.annotation == bool:
-                                param_type = "boolean"
-                            elif param.annotation == float:
-                                param_type = "number"
+                    # Handle both regular functions and FunctionTool objects
+                    if hasattr(func, '__call__') and hasattr(func, '__doc__'):
+                        # Regular function
+                        doc = func.__doc__ or ""
+                        first_line = doc.split('\n')[0].strip() if doc else f"Execute {name}"
+                        
+                        # Extract basic parameter info from function signature
+                        import inspect
+                        try:
+                            sig = inspect.signature(func)
+                            properties = {}
+                            required = []
                             
-                            properties[param_name] = {"type": param_type}
-                            
-                            # Check if required (no default value)
-                            if param.default == inspect.Parameter.empty:
-                                required.append(param_name)
+                            for param_name, param in sig.parameters.items():
+                                if param.annotation != inspect.Parameter.empty:
+                                    # Basic type mapping
+                                    param_type = "string"  # Default
+                                    if param.annotation == int:
+                                        param_type = "integer"
+                                    elif param.annotation == bool:
+                                        param_type = "boolean"
+                                    elif param.annotation == float:
+                                        param_type = "number"
+                                    
+                                    properties[param_name] = {"type": param_type}
+                                    
+                                    # Check if required (no default value)
+                                    if param.default == inspect.Parameter.empty:
+                                        required.append(param_name)
+                        except (TypeError, ValueError):
+                            # If we can't get signature, provide minimal schema
+                            properties = {}
+                            required = []
+                    
+                    elif hasattr(func, 'description'):
+                        # FunctionTool object from @mcp.tool() decorator
+                        first_line = func.description.split('\n')[0].strip() if func.description else f"Execute {name}"
+                        # For FunctionTool objects, we can't easily extract parameter info
+                        # so we'll provide a minimal schema
+                        properties = {}
+                        required = []
+                    
+                    else:
+                        # Fallback for unknown object types
+                        first_line = f"Execute {name}"
+                        properties = {}
+                        required = []
                     
                     tools.append({
                         "name": name,
@@ -198,8 +201,18 @@ def create_app():
                 
                 if tool_name in TOOL_FUNCTIONS:
                     try:
-                        # Call the tool function
-                        result = TOOL_FUNCTIONS[tool_name](**arguments)
+                        func = TOOL_FUNCTIONS[tool_name]
+                        
+                        # Handle both regular functions and FunctionTool objects
+                        if hasattr(func, '__call__') and hasattr(func, '__doc__'):
+                            # Regular function - call directly
+                            result = func(**arguments)
+                        elif hasattr(func, 'fn'):
+                            # FunctionTool object - call the underlying function
+                            result = func.fn(**arguments)
+                        else:
+                            # Try to call it directly as fallback
+                            result = func(**arguments)
                         
                         response = {
                             "jsonrpc": "2.0",
