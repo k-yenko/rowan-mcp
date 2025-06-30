@@ -5,7 +5,6 @@ Rowan IRC (Intrinsic Reaction Coordinate) function for MCP tool integration.
 from typing import Any, Dict, List, Optional
 import rowan
 
-
 def rowan_irc(
     name: str,
     molecule: str,
@@ -61,20 +60,20 @@ def rowan_irc(
     # Validate mode
     mode_lower = mode.lower()
     if mode_lower not in valid_modes:
-        return f"❌ Error: Invalid mode '{mode}'. Valid options: {', '.join(valid_modes)}"
+        return f" Error: Invalid mode '{mode}'. Valid options: {', '.join(valid_modes)}"
     
     # IRC workflow only supports these 3 modes as defined in stjames
     
     # Validate numeric parameters
     if max_irc_steps <= 0:
-        return f"❌ Error: max_irc_steps must be positive (got {max_irc_steps})"
+        return f" Error: max_irc_steps must be positive (got {max_irc_steps})"
     if max_irc_steps > 100:
-        return f"❌ Error: max_irc_steps should be reasonable (got {max_irc_steps}, max recommended: 100)"
+        return f" Error: max_irc_steps should be reasonable (got {max_irc_steps}, max recommended: 100)"
     
     # Validate level of theory
     valid_theories = ["gfn2_xtb", "gfn1_xtb", "b3lyp", "pbe", "m06-2x", "mp2"]
     if level_of_theory.lower() not in [theory.lower() for theory in valid_theories]:
-        return f"❌ Warning: Unusual level_of_theory '{level_of_theory}'. Common options: {', '.join(valid_theories)}"
+        return f" Warning: Unusual level_of_theory '{level_of_theory}'. Common options: {', '.join(valid_theories)}"
     
     # Build parameters for Rowan API - following stjames IRCWorkflow structure
     # IRCWorkflow expects mode as top-level parameter with other params also at top-level
@@ -108,11 +107,10 @@ def rowan_irc(
         }
         return str(error_response)
 
-
 def test_rowan_irc():
     """Test the rowan_irc function with actual Rowan API response."""
     try:
-        print("🧪 Testing IRC with actual Rowan API call...")
+        print(" Testing IRC with actual Rowan API call...")
         
         # Test with minimal parameters - actually wait for result
         result = rowan_irc(
@@ -124,25 +122,24 @@ def test_rowan_irc():
             ping_interval=2  # Check every 2 seconds
         )
         
-        print(f"📊 Raw result: {result}")
+        print(f" Raw result: {result}")
         
         # Check if result contains error
         if "Error" in str(result) or "failed" in str(result).lower():
-            print(f"❌ IRC test failed with error: {result}")
+            print(f" IRC test failed with error: {result}")
             return False
         
         # Try to parse the result to check for success indicators
         if "uuid" in str(result).lower() and ("status" in str(result).lower() or "object_status" in str(result).lower()):
-            print("✅ IRC test successful - workflow submitted and processed!")
+            print(" IRC test successful - workflow submitted and processed!")
             return True
         else:
-            print(f"⚠️ IRC test completed but result unclear: {result}")
+            print(f" IRC test completed but result unclear: {result}")
             return False
             
     except Exception as e:
-        print(f"❌ IRC test failed with exception: {e}")
+        print(f" IRC test failed with exception: {e}")
         return False
-
 
 if __name__ == "__main__":
     test_rowan_irc() 

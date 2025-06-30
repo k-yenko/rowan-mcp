@@ -50,7 +50,7 @@ if not api_key:
         "Get your API key from https://labs.rowansci.com"
     )
 else:
-    logger.info(f"✅ ROWAN_API_KEY loaded (length: {len(api_key)})")
+    logger.info(f" ROWAN_API_KEY loaded (length: {len(api_key)})")
 
 if rowan is None:
     logger.error("rowan-python package not found")
@@ -58,11 +58,10 @@ if rowan is None:
         "rowan-python package is required. Install with: pip install rowan-python"
     )
 else:
-    logger.info("✅ rowan-python package loaded successfully")
+    logger.info(" rowan-python package loaded successfully")
 
 rowan.api_key = api_key
-logger.info("🔗 Rowan API key configured")
-
+logger.info(" Rowan API key configured")
 
 def preprocess_solubility_args(func):
     """Decorator to preprocess solubility function arguments before execution."""
@@ -194,16 +193,15 @@ def preprocess_solubility_args(func):
                 kwargs['temperatures'] = converted_temps
         
         # Log the final processed parameters for debugging
-        logger.info(f"🔧 PREPROCESSING APPLIED for {func.__name__}:")
+        logger.info(f" PREPROCESSING APPLIED for {func.__name__}:")
         if 'solvents' in kwargs:
-            logger.info(f"   🧪 PROCESSED solvents: {kwargs['solvents']} (type: {type(kwargs['solvents'])})")
+            logger.info(f"    PROCESSED solvents: {kwargs['solvents']} (type: {type(kwargs['solvents'])})")
         if 'temperatures' in kwargs:
-            logger.info(f"   🌡️ PROCESSED temperatures: {kwargs['temperatures']} (type: {type(kwargs['temperatures'])})")
+            logger.info(f"   🌡 PROCESSED temperatures: {kwargs['temperatures']} (type: {type(kwargs['temperatures'])})")
         
         return func(**kwargs)
     
     return wrapper
-
 
 def log_mcp_call(func):
     """Decorator to log MCP tool calls with detailed information."""
@@ -215,8 +213,8 @@ def log_mcp_call(func):
         start_time = time.time()
         
         # Log the incoming request
-        logger.info(f"🔧 MCP Tool Called: {func_name}")
-        logger.info(f"📝 Parameters: {kwargs}")
+        logger.info(f" MCP Tool Called: {func_name}")
+        logger.info(f" Parameters: {kwargs}")
         
         try:
             # Execute the function
@@ -226,7 +224,7 @@ def log_mcp_call(func):
             execution_time = time.time() - start_time
             
             # Log successful completion
-            logger.info(f"✅ {func_name} completed successfully in {execution_time:.2f}s")
+            logger.info(f" {func_name} completed successfully in {execution_time:.2f}s")
             logger.debug(f"📤 Response preview: {str(result)[:200]}...")
             
             return result
@@ -236,8 +234,8 @@ def log_mcp_call(func):
             execution_time = time.time() - start_time
             
             # Log the error with full traceback
-            logger.error(f"❌ {func_name} failed after {execution_time:.2f}s")
-            logger.error(f"🚨 Error: {str(e)}")
+            logger.error(f" {func_name} failed after {execution_time:.2f}s")
+            logger.error(f" Error: {str(e)}")
             logger.error(f"📍 Traceback:\n{traceback.format_exc()}")
             
             # Extract Rowan's actual error message if available
@@ -260,7 +258,7 @@ def log_mcp_call(func):
                     elif hasattr(e.response, 'content'):
                         rowan_error_msg = e.response.content.decode('utf-8', errors='ignore')
                 except Exception as extract_err:
-                    logger.error(f"⚠️ Could not extract error message: {extract_err}")
+                    logger.error(f" Could not extract error message: {extract_err}")
             
             # Build comprehensive error message for user
             error_parts = []
@@ -284,15 +282,12 @@ def log_mcp_call(func):
                 error_parts.append("This appears to be a validation error in the Rowan library")
             
             combined_error = " | ".join(error_parts)
-            return f"❌ {combined_error}"
+            return f" {combined_error}"
             
     return wrapper
 
-
 def log_rowan_api_call(workflow_type: str, **kwargs):
     """Log Rowan API calls with detailed parameters."""
-    logger.info(f"🌐 Rowan API Call: {workflow_type}")
-    logger.info(f"🔍 Rowan Parameters: {kwargs}")
     
     # Special handling for long-running calculations
     if workflow_type in ["multistage_opt", "conformer_search"]:
@@ -300,37 +295,32 @@ def log_rowan_api_call(workflow_type: str, **kwargs):
         blocking = kwargs.get('blocking', True)
         if blocking:
             if workflow_type == "multistage_opt":
-                logger.info(f"⏳ Multi-stage optimization may take several minutes...")
+                logger.info(f" Multi-stage optimization may take several minutes...")
             else:
-                logger.info(f"⏳ Conformer search may take several minutes...")
-            logger.info(f"🔄 Progress will be checked every {ping_interval} seconds")
+                logger.info(f" Conformer search may take several minutes...")
+            logger.info(f" Progress will be checked every {ping_interval} seconds")
         else:
-            logger.info(f"🚀 {workflow_type.replace('_', ' ').title()} submitted without waiting")
+            logger.info(f" {workflow_type.replace('_', ' ').title()} submitted without waiting")
     
     try:
         start_time = time.time()
         result = rowan.compute(workflow_type=workflow_type, **kwargs)
         api_time = time.time() - start_time
         
-        logger.info(f"🎯 Rowan API submission successful: {workflow_type} ({api_time:.2f}s)")
         if isinstance(result, dict) and 'uuid' in result:
-            logger.info(f"📋 Job UUID: {result.get('uuid')}")
             job_status = result.get('status', result.get('object_status', 'Unknown'))
             status_names = {0: "Queued", 1: "Running", 2: "Completed", 3: "Failed", 4: "Stopped", 5: "Awaiting Queue"}
             status_text = status_names.get(job_status, f"Unknown ({job_status})")
-            logger.info(f"📊 Job Status: {status_text} ({job_status})")
         
         return result
         
     except Exception as e:
         api_time = time.time() - start_time
-        logger.error(f"🌐 Rowan API failed: {workflow_type} ({api_time:.2f}s)")
-        logger.error(f"🚨 Rowan Error: {str(e)}")
         
         # Enhanced error logging for better debugging
-        logger.error(f"📋 Exception Type: {type(e).__name__}")
+        logger.error(f" Exception Type: {type(e).__name__}")
         logger.error(f"📄 Full Exception: {repr(e)}")
-        logger.error(f"🔍 Exception Args: {e.args}")
+        logger.error(f" Exception Args: {e.args}")
         
         # Log full stack trace for debugging
         import traceback
@@ -339,42 +329,42 @@ def log_rowan_api_call(workflow_type: str, **kwargs):
         # Log the actual response from Rowan API if available
         response_logged = False
         if hasattr(e, 'response') and e.response is not None:
-            logger.error(f"🌐 HTTP Status: {e.response.status_code}")
+            logger.error(f" HTTP Status: {e.response.status_code}")
             try:
                 if hasattr(e.response, 'text'):
                     response_text = e.response.text
-                    logger.error(f"📝 Rowan API Response Text: {response_text}")
+                    logger.error(f" Rowan API Response Text: {response_text}")
                     response_logged = True
                 elif hasattr(e.response, 'content'):
                     response_content = e.response.content.decode('utf-8', errors='ignore')
-                    logger.error(f"📝 Rowan API Response Content: {response_content}")
+                    logger.error(f" Rowan API Response Content: {response_content}")
                     response_logged = True
                 
                 # Also try to get headers for more context
                 if hasattr(e.response, 'headers'):
-                    logger.error(f"📋 Response Headers: {dict(e.response.headers)}")
+                    logger.error(f" Response Headers: {dict(e.response.headers)}")
                     
             except Exception as log_err:
-                logger.error(f"⚠️ Could not read response: {log_err}")
+                logger.error(f" Could not read response: {log_err}")
         
         # For requests exceptions, try to get more details
         if hasattr(e, '__dict__'):
-            logger.error(f"🔍 Exception attributes: {list(e.__dict__.keys())}")
+            logger.error(f" Exception attributes: {list(e.__dict__.keys())}")
             
         # Check if it's a requests exception with specific handling
         if 'requests' in str(type(e).__module__):
-            logger.error(f"🌐 This is a requests library exception")
+            logger.error(f" This is a requests library exception")
             
         # If we couldn't log a response above, try alternative approaches
         if not response_logged:
-            logger.error(f"⚠️ No HTTP response data found in exception")
+            logger.error(f" No HTTP response data found in exception")
             
             # Try to get any string representation that might contain useful info
             exception_str = str(e)
             if exception_str and exception_str != '':
-                logger.error(f"📝 Exception message: {exception_str}")
+                logger.error(f" Exception message: {exception_str}")
             else:
-                logger.error(f"📝 Exception has no message")
+                logger.error(f" Exception has no message")
         
         raise e
 
@@ -540,7 +530,6 @@ def analyze_spin_states(molecule: str) -> Dict[str, Any]:
                 "oxidation_state": data["oxidation_state"],
                 "d_electrons": data["d_electrons"]
             })
-            logger.info(f"🔍 Complex Analysis: {molecule} → {data['explanation']}")
             return analysis
     
     # Check for simple metal ions or common patterns
@@ -564,7 +553,6 @@ def analyze_spin_states(molecule: str) -> Dict[str, Any]:
                 "explanation": data["explanation"],
                 "d_electrons": data["d_electrons"]
             })
-            logger.info(f"🔍 Metal Ion Analysis: {molecule} → {data['explanation']}")
             return analysis
     
     # Check for organic radicals or common molecules
@@ -585,7 +573,6 @@ def analyze_spin_states(molecule: str) -> Dict[str, Any]:
                 "confidence": "medium",
                 "explanation": data["explanation"]
             })
-            logger.info(f"🔍 Radical Analysis: {molecule} → {data['explanation']}")
             return analysis
     
     # If no patterns match, try to infer from SMILES or molecule name
@@ -604,9 +591,7 @@ def analyze_spin_states(molecule: str) -> Dict[str, Any]:
             "explanation": "Assumed organic radical - doublet"
         })
     
-    logger.info(f"🔍 Spin Analysis: {molecule} → {analysis['explanation']} (confidence: {analysis['confidence']})")
     return analysis
-
 
 def lookup_molecule_smiles(molecule_name: str) -> str:
     """Look up canonical SMILES for common molecule names.
@@ -690,32 +675,29 @@ def lookup_molecule_smiles(molecule_name: str) -> str:
     # Direct lookup
     if normalized_name in MOLECULE_SMILES:
         smiles = MOLECULE_SMILES[normalized_name]
-        logger.info(f"🔍 SMILES Lookup: '{molecule_name}' → '{smiles}'")
         return smiles
     
     # Try partial matches for common variations
     for name, smiles in MOLECULE_SMILES.items():
         if normalized_name in name or name in normalized_name:
-            logger.info(f"🔍 SMILES Lookup (partial match): '{molecule_name}' → '{name}' → '{smiles}'")
+            logger.info(f" SMILES Lookup (partial match): '{molecule_name}' → '{name}' → '{smiles}'")
             return smiles
     
     # If no match found, return the original input (assume it's already SMILES)
-    logger.warning(f"⚠️ No SMILES found for '{molecule_name}', using as-is")
     return molecule_name
-
 
 def get_qc_guidance() -> str:
     """Generate comprehensive quantum chemistry guidance."""
-    guidance = "🔬 **Rowan Quantum Chemistry Requirements** 🔬\n\n"
+    guidance = " **Rowan Quantum Chemistry Requirements** \n\n"
     
-    guidance += "**📋 Required Parameters:**\n"
+    guidance += "** Required Parameters:**\n"
     guidance += "1. **Molecule Identity**: SMILES string (e.g., 'CC(=O)OC1=CC=CC=C1C(=O)O' for aspirin)\n"
     guidance += "2. **Level of Theory**: Method + Basis Set combination\n"
     guidance += "3. **Task**: What property to calculate\n"
     guidance += "4. **Settings**: Optional calculation-specific parameters\n"
     guidance += "5. **Corrections**: Optional post-hoc corrections (e.g., dispersion)\n\n"
     
-    guidance += "**⚗️ Available Engines:**\n"
+    guidance += "** Available Engines:**\n"
     for engine, description in QC_ENGINES.items():
         guidance += f"• **{engine.upper()}**: {description}\n"
     guidance += "\n"
@@ -736,7 +718,7 @@ def get_qc_guidance() -> str:
         guidance += f"• **{method.upper()}**: {QC_METHODS[method]}\n"
     guidance += "\n"
     
-    guidance += "**📐 Basis Sets by Type:**\n"
+    guidance += "** Basis Sets by Type:**\n"
     guidance += "**Recommended for DFT (Jensen pcseg):**\n"
     guidance += f"• **pcseg-1**: {QC_BASIS_SETS['pcseg-1']}\n"
     guidance += f"• **pcseg-2**: {QC_BASIS_SETS['pcseg-2']}\n\n"
@@ -749,17 +731,17 @@ def get_qc_guidance() -> str:
     guidance += f"• **cc-pVDZ(seg-opt)**: {QC_BASIS_SETS['cc-pvdz(seg-opt)']}\n"
     guidance += f"• **MIDI!**: {QC_BASIS_SETS['midi!']}\n\n"
     
-    guidance += "**🎯 Available Tasks:**\n"
+    guidance += "** Available Tasks:**\n"
     for task, description in QC_TASKS.items():
         guidance += f"• **{task}**: {description}\n"
     guidance += "\n"
     
-    guidance += "**🔧 Available Corrections:**\n"
+    guidance += "** Available Corrections:**\n"
     for correction, description in QC_CORRECTIONS.items():
         guidance += f"• **{correction}**: {description}\n"
     guidance += "\n"
     
-    guidance += "**💡 Rowan Guidance:**\n"
+    guidance += "** Rowan Guidance:**\n"
     guidance += "• **Smart defaults**: `rowan_quantum_chemistry()` uses B3LYP/pcseg-1 + D3BJ\n"
     guidance += "• **For geometry optimization**: Use `rowan_multistage_opt`\n"
     guidance += "• **For general QC**: Use `rowan_quantum_chemistry` (auto-defaults or custom settings)\n"
@@ -770,13 +752,13 @@ def get_qc_guidance() -> str:
     guidance += "• **For dispersion**: Use D3BJ correction with most functionals\n"
     guidance += "• **Avoid**: Generally contracted basis sets (slow), excessive augmentation\n\n"
     
-    guidance += "**⚠️ Important Notes:**\n"
+    guidance += "** Important Notes:**\n"
     guidance += "• Rowan uses spherical/pure basis functions (5d, 7f, etc.)\n"
     guidance += "• No effective core potentials (ECPs) currently supported\n"
     guidance += "• Some functionals have built-in dispersion (B97-D3, ωB97X-D3)\n"
     guidance += "• Augmentation should be avoided unless absolutely necessary\n\n"
     
-    guidance += "**🔗 Example SMILES:**\n"
+    guidance += "** Example SMILES:**\n"
     guidance += "• Aspirin: `CC(=O)OC1=CC=CC=C1C(=O)O`\n"
     guidance += "• Water: `O`\n"
     guidance += "• Methane: `C`\n"
@@ -804,21 +786,21 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
     
     # Check if we found a match or returned the input as-is
     if canonical_smiles == molecule_name:
-        formatted = f"⚠️ No SMILES lookup found for '{molecule_name}'\n\n"
-        formatted += f"📝 **Using input as-is:** {molecule_name}\n"
-        formatted += f"💡 **If this is a molecule name, try:**\n"
+        formatted = f" No SMILES lookup found for '{molecule_name}'\n\n"
+        formatted += f" **Using input as-is:** {molecule_name}\n"
+        formatted += f" **If this is a molecule name, try:**\n"
         formatted += f"• Check spelling (e.g., 'phenol', 'benzene', 'caffeine')\n"
         formatted += f"• Use rowan_molecule_lookup('') to see available molecules\n"
         formatted += f"• If it's already a SMILES string, you can use it directly\n"
     else:
-        formatted = f"✅ SMILES lookup successful!\n\n"
-        formatted += f"🧪 **Molecule:** {molecule_name}\n"
-        formatted += f"🔬 **Canonical SMILES:** {canonical_smiles}\n"
-        formatted += f"💡 **Usage:** Use '{canonical_smiles}' in Rowan calculations for consistent results\n"
+        formatted = f" SMILES lookup successful!\n\n"
+        formatted += f" **Molecule:** {molecule_name}\n"
+        formatted += f" **Canonical SMILES:** {canonical_smiles}\n"
+        formatted += f" **Usage:** Use '{canonical_smiles}' in Rowan calculations for consistent results\n"
     
     # Show available molecules if empty input
     if not molecule_name.strip():
-        formatted = f"📚 **Available Molecules for SMILES Lookup:**\n\n"
+        formatted = f" **Available Molecules for SMILES Lookup:**\n\n"
         
         categories = {
             "Aromatics": ["phenol", "benzene", "toluene", "aniline", "pyridine", "naphthalene"],
@@ -835,10 +817,9 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
                 formatted += f"• {mol}: `{smiles}`\n"
             formatted += "\n"
         
-        formatted += f"💡 **Example:** rowan_molecule_lookup('phenol') → 'Oc1ccccc1'\n"
+        formatted += f" **Example:** rowan_molecule_lookup('phenol') → 'Oc1ccccc1'\n"
     
     return formatted
-
 
 # @mcp.tool()
 # def rowan_qc_guide() -> str:
@@ -880,13 +861,13 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
 # ) -> str:
 #     """Run quantum chemistry calculations with intelligent defaults or custom settings.
 #     
-#     **🔬 Smart Defaults**: When no parameters are specified, uses Rowan's settings:
+#     ** Smart Defaults**: When no parameters are specified, uses Rowan's settings:
 #     - Method: B3LYP (popular, reliable hybrid functional)
 #     - Basis Set: pcseg-1 (better than 6-31G(d) at same cost)
 #     - Tasks: ["energy", "optimize"] (energy + geometry optimization)
 #     - Corrections: ["d3bj"] (dispersion correction for better accuracy)
 #     
-#     **⚗️ Full Customization**: All parameters can be overridden for advanced users
+#     ** Full Customization**: All parameters can be overridden for advanced users
 #     
 #     **Available Methods (16 total):**
 #     - HF: Hartree-Fock (unrestricted for open-shell)
@@ -932,6 +913,7 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
 #     
 #     # Apply intelligent defaults when no parameters specified
 #     if use_recommended_defaults and using_defaults:
+    pass
 #         method = "b3lyp"  # Popular, reliable hybrid functional
 #         basis_set = "pcseg-1"  # Better than 6-31G(d) at same cost
 #         tasks = ["energy", "optimize"]  # Energy + geometry optimization
@@ -940,11 +922,13 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
 #             engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
 #         default_msg = "Rowan's defaults"
 #     elif using_defaults:
+    pass
 #         # Fall back to Rowan's system defaults but ensure engine is set
 #         if engine is None:  # Only set default if not provided
 #             engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
 #         default_msg = "Rowan's system defaults (HF/STO-3G)"
 #     else:
+    pass
 #         # For custom settings, still ensure engine is set if not provided
 #         if engine is None:  # Only set default if not provided
 #             engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
@@ -952,42 +936,44 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
 #     
 #     # Validate inputs and provide guidance
 #     if method and method.lower() not in QC_METHODS:
+    pass
 #         available_methods = ", ".join(QC_METHODS.keys())
-#         return f"❌ Invalid method '{method}'. Available methods: {available_methods}"
+#         return f" Invalid method '{method}'. Available methods: {available_methods}"
 #     
 #     if basis_set and basis_set.lower() not in QC_BASIS_SETS:
+    pass
 #         available_basis = ", ".join(QC_BASIS_SETS.keys())
-#         return f"❌ Invalid basis set '{basis_set}'. Available basis sets: {available_basis}"
+#         return f" Invalid basis set '{basis_set}'. Available basis sets: {available_basis}"
 #     
 #     if tasks:
+    pass
 #         invalid_tasks = [task for task in tasks if task.lower() not in QC_TASKS]
 #         if invalid_tasks:
+    pass
 #             available_tasks = ", ".join(QC_TASKS.keys())
-#             return f"❌ Invalid tasks {invalid_tasks}. Available tasks: {available_tasks}"
+#             return f" Invalid tasks {invalid_tasks}. Available tasks: {available_tasks}"
 #     
 #     if engine and engine.lower() not in QC_ENGINES:
+    pass
 #         available_engines = ", ".join(QC_ENGINES.keys())
-#         return f"❌ Invalid engine '{engine}'. Available engines: {available_engines}"
+#         return f" Invalid engine '{engine}'. Available engines: {available_engines}"
 #     
 #     if corrections:
+    pass
 #         invalid_corrections = [corr for corr in corrections if corr.lower() not in QC_CORRECTIONS]
 #         if invalid_corrections:
+    pass
 #             available_corrections = ", ".join(QC_CORRECTIONS.keys())
-#             return f"❌ Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}"
+#             return f" Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}"
 #     
 #     # Engine is always required, so ensure it's set
 #     if engine is None:
+    pass
 #         engine = "psi4"  # Default to Psi4 engine (REQUIRED by Rowan API)
 #     
 #     # Log the QC parameters
-#     logger.info(f"🔬 Quantum Chemistry Calculation: {name}")
-#     logger.info(f"⚙️ Using: {default_msg}")
-#     logger.info(f"⚗️ Method: {method or 'system default'}")
-#     logger.info(f"📐 Basis Set: {basis_set or 'system default'}")
-#     logger.info(f"🎯 Tasks: {tasks or 'system default'}")
-#     logger.info(f"🔧 Corrections: {corrections or 'none'}")
-#     logger.info(f"🖥️ Engine: {engine or 'auto-selected'}")
-#     logger.info(f"⚡ Charge: {charge}, Multiplicity: {multiplicity}")
+#     logger.info(f" Tasks: {tasks or 'system default'}")
+#     logger.info(f" Corrections: {corrections or 'none'}")
 #     
 #     try:
 #         # Build parameters for rowan.compute call based on documentation
@@ -1001,22 +987,30 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
 #         
 #         # Add QC parameters directly (not in settings object)
 #         if method:
+    pass
 #             compute_params["method"] = method.lower()
 #         if basis_set:
+    pass
 #             compute_params["basis_set"] = basis_set.lower()
 #         if tasks:
+    pass
 #             compute_params["tasks"] = [task.lower() for task in tasks]
 #         if corrections:
+    pass
 #             compute_params["corrections"] = [corr.lower() for corr in corrections]
 #         if engine:
+    pass
 #             compute_params["engine"] = engine.lower()
 #         if charge != 0:
+    pass
 #             compute_params["charge"] = charge
 #         if multiplicity != 1:
+    pass
 #             compute_params["multiplicity"] = multiplicity
 #         
 #         # Add any additional settings
 #         if additional_settings:
+    pass
 #             compute_params.update(additional_settings)
 #         
 #         # Use "calculation" workflow type as shown in documentation
@@ -1031,69 +1025,81 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
 #         
 #         # If status is None (common after submission), try to check via API
 #         if job_status is None and result.get('uuid'):
+    pass
 #             try:
 #                 job_status = rowan.Workflow.status(uuid=result.get('uuid'))
-#                 logger.info(f"📊 Retrieved status via API: {job_status}")
 #             except Exception as e:
-#                 logger.warning(f"⚠️ Could not retrieve status via API: {e}")
 #                 job_status = None
 #         
 #         status_names = {
-#             0: ("⏳", "Queued"),
-#             1: ("🔄", "Running"), 
-#             2: ("✅", "Completed Successfully"),
-#             3: ("❌", "Failed"),
-#             4: ("⏹️", "Stopped"),
-#             5: ("⏸️", "Awaiting Queue")
+#             0: ("", "Queued"),
+#             1: ("", "Running"), 
+#             2: ("", "Completed Successfully"),
+#             3: ("", "Failed"),
+#             4: ("⏹", "Stopped"),
+#             5: ("⏸", "Awaiting Queue")
 #         }
 #         
 #         status_icon, status_text = status_names.get(job_status, ("❓", f"Unknown ({job_status})"))
 #         
 #         # Special handling for None status (very common case)
 #         if job_status is None:
-#             status_icon, status_text = ("📝", "Submitted (status pending)")
-#             logger.info(f"📝 Workflow submitted, status will be available shortly")
+    pass
+#             status_icon, status_text = ("", "Submitted (status pending)")
 #         
 #         # Use appropriate header based on actual status
 #         if job_status == 2:
-#             formatted = f"✅ Quantum chemistry calculation '{name}' completed successfully!\n\n"
+    pass
+#             formatted = f" Quantum chemistry calculation '{name}' completed successfully!\n\n"
 #         elif job_status == 3:
-#             formatted = f"❌ Quantum chemistry calculation '{name}' failed!\n\n"
+    pass
+#             formatted = f" Quantum chemistry calculation '{name}' failed!\n\n"
 #         elif job_status in [0, 1, 5]:
-#             formatted = f"🔄 Quantum chemistry calculation '{name}' submitted!\n\n"
+    pass
+#             formatted = f" Quantum chemistry calculation '{name}' submitted!\n\n"
 #         elif job_status == 4:
-#             formatted = f"⏹️ Quantum chemistry calculation '{name}' was stopped!\n\n"
+    pass
+#             formatted = f"⏹ Quantum chemistry calculation '{name}' was stopped!\n\n"
 #         else:
-#             formatted = f"📊 Quantum chemistry calculation '{name}' status unknown!\n\n"
+    pass
+#             formatted = f" Quantum chemistry calculation '{name}' status unknown!\n\n"
 #             
-#         formatted += f"🧪 Molecule: {molecule}\n"
-#         formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
-#         formatted += f"📊 Status: {status_icon} {status_text} ({job_status})\n"
-#         formatted += f"⚙️ Used: {default_msg}\n"
+#         formatted += f" Molecule: {molecule}\n"
+#         formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+#         formatted += f" Status: {status_icon} {status_text} ({job_status})\n"
+#         formatted += f"⚙ Used: {default_msg}\n"
 #         
 #         # Show applied settings
 #         if method or basis_set or tasks or corrections or engine or charge != 0 or multiplicity != 1:
-#             formatted += f"\n⚙️ **Applied Settings:**\n"
+    pass
+#             formatted += f"\n⚙ **Applied Settings:**\n"
 #             if method:
+    pass
 #                 formatted += f"   Method: {method.upper()} - {QC_METHODS.get(method.lower(), 'Custom method')}\n"
 #             if basis_set:
+    pass
 #                 formatted += f"   Basis Set: {basis_set} - {QC_BASIS_SETS.get(basis_set.lower(), 'Custom basis')}\n"
 #             if tasks:
+    pass
 #                 formatted += f"   Tasks: {', '.join(tasks)}\n"
 #             if corrections:
+    pass
 #                 formatted += f"   Corrections: {', '.join(corrections)} - "
 #                 formatted += ", ".join([QC_CORRECTIONS.get(corr.lower(), 'Custom correction') for corr in corrections]) + "\n"
 #             if engine:
+    pass
 #                 formatted += f"   Engine: {engine.upper()} - {QC_ENGINES.get(engine.lower(), 'Custom engine')}\n"
 #             if charge != 0 or multiplicity != 1:
+    pass
 #                 formatted += f"   Charge: {charge}, Multiplicity: {multiplicity}\n"
 #         
 #         # Add status-appropriate guidance
-#         formatted += f"\n💡 **Next Steps:**\n"
+#         formatted += f"\n **Next Steps:**\n"
 #         if job_status == 2:  # Completed successfully
 #             formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to get detailed results\n"
 #             formatted += f"• Results should include energies, geometries, and other calculated properties\n"
 #         elif job_status == 3:  # Failed
+    pass
 #             formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to see error details\n"
 #             formatted += f"• **Troubleshooting tips:**\n"
 #             formatted += f"  - Try simpler settings: method='hf', basis_set='sto-3g'\n"
@@ -1101,19 +1107,23 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
 #             formatted += f"  - Check if SMILES string is valid\n"
 #             formatted += f"  - For difficult molecules, try method='xtb' (semiempirical)\n"
 #         elif job_status in [0, 1, 5]:  # Queued/Running/Awaiting
+    pass
 #             formatted += f"• Check status: `rowan_workflow_status('{result.get('uuid', 'UUID')}')`\n"
 #             formatted += f"• Wait for completion, then retrieve results\n"
 #             formatted += f"• Calculation may take several minutes depending on molecule size\n"
 #         elif job_status == 4:  # Stopped
+    pass
 #             formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to see why it was stopped\n"
 #             formatted += f"• You can restart with the same or different parameters\n"
 #         else:  # Unknown status
+    pass
 #             formatted += f"• Use `rowan_workflow_retrieve('{result.get('uuid', 'UUID')}')` to get more information\n"
 #             formatted += f"• Check `rowan_workflow_status('{result.get('uuid', 'UUID')}')` for current status\n"
 #             
 #         # Add general guidance for successful submissions or unknown states
 #         if job_status != 3:  # Don't show alternatives if it failed
 #             if using_defaults and use_recommended_defaults:
+    pass
 #                 formatted += f"• **For future calculations:** Try different methods/basis sets for different accuracy/speed trade-offs\n"
 #         
 #         # Prepend guidance context to the result
@@ -1121,14 +1131,16 @@ def rowan_molecule_lookup(molecule_name: str) -> str:
 #         return final_result
 #         
 #     except Exception as e:
-#         error_msg = f"❌ Quantum chemistry calculation submission failed: {str(e)}\n\n"
-#         error_msg += "🔧 **This is a submission error, not a calculation failure.**\n"
+#         error_msg = f" Quantum chemistry calculation submission failed: {str(e)}\n\n"
+#         error_msg += " **This is a submission error, not a calculation failure.**\n"
 #         error_msg += "The job never started due to invalid parameters or API issues.\n\n"
 #         if "method" in str(e).lower() or "basis" in str(e).lower():
-#             error_msg += "💡 **Parameter Error**: Try using recommended defaults by calling with just name and molecule\n"
+    pass
+#             error_msg += " **Parameter Error**: Try using recommended defaults by calling with just name and molecule\n"
 #             error_msg += "Or check parameter spelling and availability\n\n"
 #         elif "engine" in str(e).lower():
-#             error_msg += "💡 **Engine Error**: The engine parameter is required. This should be auto-set to 'psi4'\n\n"
+    pass
+#             error_msg += " **Engine Error**: The engine parameter is required. This should be auto-set to 'psi4'\n\n"
 #         
 #         # Prepend guidance context even in error cases
 #         final_error_result = f"{guidance_context}\n\n" + "="*80 + "\n\n" + error_msg
@@ -1175,10 +1187,6 @@ def rowan_admet(
     )
     return str(result)
 
-
-
-
-
 # Bond Dissociation Energy
 @mcp.tool()
 @log_mcp_call
@@ -1209,7 +1217,6 @@ def rowan_bde(
         Bond dissociation energy results
     """
     # Basic SMILES formatting (no validation - let Rowan handle that)
-    logger.info(f"🔬 BDE Calculation Debug:")
     logger.info(f"   Name: {name}")
     logger.info(f"   Input molecule: {molecule}")
     logger.info(f"   Input type: {type(molecule)}")
@@ -1217,7 +1224,7 @@ def rowan_bde(
     # Just ensure it's a clean string - no validation
     molecule_to_use = str(molecule).strip()
     
-    logger.info(f"   🚀 Sending to Rowan API: '{molecule_to_use}'")
+    logger.info(f"    Sending to Rowan API: '{molecule_to_use}'")
     
     result = log_rowan_api_call(
         workflow_type="bde",
@@ -1228,7 +1235,6 @@ def rowan_bde(
         ping_interval=ping_interval
     )
     return str(result)
-
 
 # Multistage Optimization - Recommended for Geometry Optimization
 @mcp.tool()
@@ -1262,8 +1268,6 @@ def rowan_multistage_opt(
     Returns:
         Optimized geometry and energy results
     """
-    logger.info(f"🚀 Starting multistage optimization: {name}")
-    logger.info(f"⏱️  Using ping_interval: {ping_interval}s (longer for multi-stage calculation)")
     
     result = log_rowan_api_call(
         workflow_type="multistage_opt",
@@ -1274,7 +1278,6 @@ def rowan_multistage_opt(
         ping_interval=ping_interval
     )
     return str(result)
-
 
 # Electronic Properties - HOMO/LUMO, Orbitals
 @mcp.tool()
@@ -1309,14 +1312,14 @@ def rowan_electronic_properties(
     - **Bond Analysis**: Wiberg bond orders, Mayer bond orders
     - **Visualization Data**: Cube files for density, ESP, and molecular orbitals
     
-    **🔬 ElectronicPropertiesWorkflow Parameters:**
+    ** ElectronicPropertiesWorkflow Parameters:**
     - **settings**: QM calculation settings (method, basis_set, engine)
     - **compute_density_cube**: Generate electron density cube files
     - **compute_electrostatic_potential_cube**: Generate ESP cube files
     - **compute_num_occupied_orbitals**: Number of occupied MOs to save
     - **compute_num_virtual_orbitals**: Number of virtual MOs to save
     
-    **📊 Output Results Include:**
+    ** Output Results Include:**
     - **dipole**: Dipole moment vector (Vector3D)
     - **quadrupole**: Quadrupole moment tensor (Matrix3x3)
     - **mulliken_charges/lowdin_charges**: Atomic partial charges
@@ -1325,7 +1328,7 @@ def rowan_electronic_properties(
     - **electrostatic_potential_cube**: ESP visualization data
     - **molecular_orbitals**: MO energies, occupations, and cube data
     
-    **⚙️ Smart Defaults:**
+    **⚙ Smart Defaults:**
     - Method: B3LYP (hybrid DFT, good for electronic properties)
     - Basis Set: def2-SVP (balanced accuracy/cost for properties)
     - Engine: Psi4 (robust quantum chemistry package)
@@ -1368,18 +1371,9 @@ def rowan_electronic_properties(
     
     # Validate orbital count parameters
     if compute_num_occupied_orbitals < 0:
-        return f"❌ compute_num_occupied_orbitals must be non-negative (got {compute_num_occupied_orbitals})"
+        return f" compute_num_occupied_orbitals must be non-negative (got {compute_num_occupied_orbitals})"
     if compute_num_virtual_orbitals < 0:
-        return f"❌ compute_num_virtual_orbitals must be non-negative (got {compute_num_virtual_orbitals})"
-    
-    logger.info(f"🔬 Electronic Properties Calculation: {name}")
-    logger.info(f"⚗️ Method: {method}")
-    logger.info(f"📐 Basis Set: {basis_set}")
-    logger.info(f"🖥️ Engine: {engine}")
-    logger.info(f"⚡ Charge: {charge}, Multiplicity: {multiplicity}")
-    logger.info(f"📊 Density Cube: {compute_density_cube}")
-    logger.info(f"🔋 ESP Cube: {compute_electrostatic_potential_cube}")
-    logger.info(f"🎯 Occupied MOs: {compute_num_occupied_orbitals}, Virtual MOs: {compute_num_virtual_orbitals}")
+        return f" compute_num_virtual_orbitals must be non-negative (got {compute_num_virtual_orbitals})"
     
     # Build parameters following ElectronicPropertiesWorkflow specification
     electronic_params = {
@@ -1420,26 +1414,26 @@ def rowan_electronic_properties(
             status = result.get('status', result.get('object_status', 'Unknown'))
             
             if status == 2:  # Completed successfully
-                formatted = f"✅ Electronic properties calculation for '{name}' completed successfully!\n\n"
+                formatted = f" Electronic properties calculation for '{name}' completed successfully!\n\n"
             elif status == 3:  # Failed
-                formatted = f"❌ Electronic properties calculation for '{name}' failed!\n\n"
+                formatted = f" Electronic properties calculation for '{name}' failed!\n\n"
             else:
-                formatted = f"📊 Electronic properties calculation for '{name}' submitted!\n\n"
+                formatted = f" Electronic properties calculation for '{name}' submitted!\n\n"
             
-            formatted += f"🧪 Molecule: {molecule}\n"
-            formatted += f"🔬 SMILES: {canonical_smiles}\n"
-            formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-            formatted += f"📊 Status: {status}\n\n"
+            formatted += f" Molecule: {molecule}\n"
+            formatted += f" SMILES: {canonical_smiles}\n"
+            formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+            formatted += f" Status: {status}\n\n"
             
-            formatted += f"⚙️ **Calculation Settings:**\n"
+            formatted += f"⚙ **Calculation Settings:**\n"
             formatted += f"• Method: {method.upper()}\n"
             formatted += f"• Basis Set: {basis_set}\n"
             formatted += f"• Engine: {engine.upper()}\n"
             formatted += f"• Charge: {charge}, Multiplicity: {multiplicity}\n\n"
             
-            formatted += f"📊 **Property Calculations:**\n"
-            formatted += f"• Density Cube: {'✅ Enabled' if compute_density_cube else '❌ Disabled'}\n"
-            formatted += f"• ESP Cube: {'✅ Enabled' if compute_electrostatic_potential_cube else '❌ Disabled'}\n"
+            formatted += f" **Property Calculations:**\n"
+            formatted += f"• Density Cube: {' Enabled' if compute_density_cube else ' Disabled'}\n"
+            formatted += f"• ESP Cube: {' Enabled' if compute_electrostatic_potential_cube else ' Disabled'}\n"
             formatted += f"• Occupied MOs: {compute_num_occupied_orbitals}\n"
             formatted += f"• Virtual MOs: {compute_num_virtual_orbitals}\n\n"
             
@@ -1448,7 +1442,7 @@ def rowan_electronic_properties(
                 try:
                     calc_result = rowan.Calculation.retrieve(uuid=result.get('uuid'))
                     
-                    formatted += f"🎯 **Electronic Properties Results:**\n\n"
+                    formatted += f" **Electronic Properties Results:**\n\n"
                     
                     # Extract key electronic properties from the result
                     object_data = calc_result.get('object_data', {})
@@ -1477,7 +1471,7 @@ def rowan_electronic_properties(
                                             lumo_energy = energies[lumo_idx]
                                             gap = lumo_energy - homo_energy
                                             
-                                            formatted += f"🔋 **Molecular Orbitals:**\n"
+                                            formatted += f" **Molecular Orbitals:**\n"
                                             formatted += f"• HOMO Energy: {homo_energy:.4f} hartree ({homo_energy * 27.2114:.2f} eV)\n"
                                             formatted += f"• LUMO Energy: {lumo_energy:.4f} hartree ({lumo_energy * 27.2114:.2f} eV)\n"
                                             formatted += f"• HOMO-LUMO Gap: {gap:.4f} hartree ({gap * 27.2114:.2f} eV)\n\n"
@@ -1498,7 +1492,7 @@ def rowan_electronic_properties(
                     if 'mulliken_charges' in object_data:
                         charges = object_data['mulliken_charges']
                         if isinstance(charges, list) and len(charges) > 0:
-                            formatted += f"⚡ **Mulliken Charges:**\n"
+                            formatted += f" **Mulliken Charges:**\n"
                             for i, charge in enumerate(charges[:10]):  # Show first 10 atoms
                                 formatted += f"   Atom {i+1}: {charge:+.4f}\n"
                             if len(charges) > 10:
@@ -1509,7 +1503,7 @@ def rowan_electronic_properties(
                     if 'wiberg_bond_orders' in object_data:
                         bond_orders = object_data['wiberg_bond_orders']
                         if isinstance(bond_orders, dict) and bond_orders:
-                            formatted += f"🔗 **Wiberg Bond Orders:**\n"
+                            formatted += f" **Wiberg Bond Orders:**\n"
                             count = 0
                             for bond, order in list(bond_orders.items())[:10]:  # Show first 10 bonds
                                 formatted += f"   {bond}: {order:.4f}\n"
@@ -1521,26 +1515,26 @@ def rowan_electronic_properties(
                     # If no specific data found, show available keys
                     if not any(key in object_data for key in ['molecular_orbitals', 'dipole', 'mulliken_charges', 'wiberg_bond_orders']):
                         if object_data:
-                            formatted += f"📋 **Available Properties:** {', '.join(object_data.keys())}\n\n"
+                            formatted += f" **Available Properties:** {', '.join(object_data.keys())}\n\n"
                         else:
-                            formatted += f"⚠️ **No electronic properties data found in results**\n\n"
+                            formatted += f" **No electronic properties data found in results**\n\n"
                     
                 except Exception as retrieve_error:
-                    formatted += f"⚠️ **Results retrieval failed:** {str(retrieve_error)}\n"
-                    formatted += f"💡 Use rowan_calculation_retrieve('{result.get('uuid')}') to get detailed results\n\n"
+                    formatted += f" **Results retrieval failed:** {str(retrieve_error)}\n"
+                    formatted += f" Use rowan_calculation_retrieve('{result.get('uuid')}') to get detailed results\n\n"
                 
-                formatted += f"💡 **Additional Analysis:**\n"
+                formatted += f" **Additional Analysis:**\n"
                 formatted += f"• Use rowan_calculation_retrieve('{result.get('uuid')}') for full calculation details\n"
                 formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for workflow metadata\n"
                 
             elif status == 3:
-                formatted += f"🔧 **Troubleshooting:**\n"
+                formatted += f" **Troubleshooting:**\n"
                 formatted += f"• Try simpler method/basis: method='hf', basis_set='sto-3g'\n"
                 formatted += f"• Check molecular charge and multiplicity\n"
                 formatted += f"• Disable cube generation for faster calculations\n"
                 formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for error details\n"
             else:
-                formatted += f"⏳ **Next Steps:**\n"
+                formatted += f" **Next Steps:**\n"
                 formatted += f"• Monitor status with rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}')\n"
                 formatted += f"• Electronic properties calculations may take several minutes\n"
             
@@ -1549,17 +1543,16 @@ def rowan_electronic_properties(
             return str(result)
             
     except Exception as e:
-        error_msg = f"❌ Electronic properties calculation failed: {str(e)}\n\n"
-        error_msg += f"🧪 Molecule: {molecule}\n"
-        error_msg += f"🔬 SMILES: {canonical_smiles}\n"
-        error_msg += f"⚙️ Settings: {method}/{basis_set}/{engine}\n\n"
-        error_msg += f"🔧 **Common Issues:**\n"
+        error_msg = f" Electronic properties calculation failed: {str(e)}\n\n"
+        error_msg += f" Molecule: {molecule}\n"
+        error_msg += f" SMILES: {canonical_smiles}\n"
+        error_msg += f"⚙ Settings: {method}/{basis_set}/{engine}\n\n"
+        error_msg += f" **Common Issues:**\n"
         error_msg += f"• Invalid method/basis set combination\n"
         error_msg += f"• Incorrect charge/multiplicity for molecule\n"
         error_msg += f"• Engine compatibility issues\n"
         error_msg += f"• Try with default parameters first\n"
         return error_msg
-
 
 # Descriptors - Molecular Feature Vectors
 @mcp.tool()
@@ -1599,8 +1592,6 @@ def rowan_descriptors(
         ping_interval=ping_interval
     )
     return str(result)
-
-
 
 # Redox Potential
 @mcp.tool()
@@ -1646,20 +1637,17 @@ def rowan_redox_potential(
     valid_modes = ["reckless", "rapid", "careful", "meticulous"]
     mode_lower = mode.lower()
     if mode_lower not in valid_modes:
-        return f"❌ Invalid mode '{mode}'. Valid modes: {', '.join(valid_modes)}"
+        return f" Invalid mode '{mode}'. Valid modes: {', '.join(valid_modes)}"
     
     # At least one type must be selected
     if not reduction and not oxidation:
-        return f"❌ At least one of 'reduction' or 'oxidation' must be True"
+        return f" At least one of 'reduction' or 'oxidation' must be True"
     
-    logger.info(f"🔬 Redox Potential Analysis Debug:")
     logger.info(f"   Name: {name}")
     logger.info(f"   Input: {molecule}")
-    logger.info(f"   Using SMILES: {canonical_smiles}")
     logger.info(f"   Mode: {mode_lower}")
     logger.info(f"   Reduction: {reduction}")
     logger.info(f"   Oxidation: {oxidation}")
-    logger.info(f"   Solvent: acetonitrile (required)")
     
     # Build parameters for Rowan API
     redox_params = {
@@ -1683,17 +1671,17 @@ def rowan_redox_potential(
         status = result.get('status', result.get('object_status', 'Unknown'))
         
         if status == 2:  # Completed successfully
-            formatted = f"✅ Redox potential analysis for '{name}' completed successfully!\n\n"
+            formatted = f" Redox potential analysis for '{name}' completed successfully!\n\n"
         elif status == 3:  # Failed
-            formatted = f"❌ Redox potential analysis for '{name}' failed!\n\n"
+            formatted = f" Redox potential analysis for '{name}' failed!\n\n"
         else:
-            formatted = f"⚠️ Redox potential analysis for '{name}' finished with status {status}\n\n"
+            formatted = f" Redox potential analysis for '{name}' finished with status {status}\n\n"
             
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {status}\n"
-        formatted += f"⚙️ Mode: {mode_lower.title()}\n"
+        formatted += f" Molecule: {molecule}\n"
+        formatted += f" SMILES: {canonical_smiles}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {status}\n"
+        formatted += f"⚙ Mode: {mode_lower.title()}\n"
         formatted += f"💧 Solvent: Acetonitrile\n"
         
         # Show which potentials were calculated
@@ -1702,47 +1690,46 @@ def rowan_redox_potential(
             calc_types.append("Reduction")
         if oxidation:
             calc_types.append("Oxidation")
-        formatted += f"⚡ Calculated: {' + '.join(calc_types)} potential(s)\n"
+        formatted += f" Calculated: {' + '.join(calc_types)} potential(s)\n"
         
         # Try to extract redox potential results
         if isinstance(result, dict) and 'object_data' in result and result['object_data']:
             data = result['object_data']
             
             if reduction and 'reduction_potential' in data and data['reduction_potential'] is not None:
-                formatted += f"🔋 Reduction Potential: {data['reduction_potential']:.3f} V vs. SCE\n"
+                formatted += f" Reduction Potential: {data['reduction_potential']:.3f} V vs. SCE\n"
             
             if oxidation and 'oxidation_potential' in data and data['oxidation_potential'] is not None:
-                formatted += f"⚡ Oxidation Potential: {data['oxidation_potential']:.3f} V vs. SCE\n"
+                formatted += f" Oxidation Potential: {data['oxidation_potential']:.3f} V vs. SCE\n"
             
             # Legacy support for older format
             if 'redox_potential' in data and data['redox_potential'] is not None:
                 redox_type = data.get('redox_type', 'unknown')
-                formatted += f"⚡ {redox_type.title()} Potential: {data['redox_potential']:.3f} V vs. SCE\n"
+                formatted += f" {redox_type.title()} Potential: {data['redox_potential']:.3f} V vs. SCE\n"
         
         if status == 2:
-            formatted += f"\n🎯 **Results Available:**\n"
+            formatted += f"\n **Results Available:**\n"
             formatted += f"• Potentials reported vs. SCE (Saturated Calomel Electrode)\n"
             formatted += f"• Calculated in acetonitrile solvent\n"
             formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed data\n"
         
         return formatted
     else:
-        formatted = f"🚀 Redox potential analysis for '{name}' submitted!\n\n"
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
-        formatted += f"⚙️ Mode: {mode_lower.title()}\n"
+        formatted = f" Redox potential analysis for '{name}' submitted!\n\n"
+        formatted += f" Molecule: {molecule}\n"
+        formatted += f" SMILES: {canonical_smiles}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {result.get('status', 'Submitted')}\n"
+        formatted += f"⚙ Mode: {mode_lower.title()}\n"
         
         calc_types = []
         if reduction:
             calc_types.append("Reduction")
         if oxidation:
             calc_types.append("Oxidation")
-        formatted += f"⚡ Will calculate: {' + '.join(calc_types)} potential(s)\n"
+        formatted += f" Will calculate: {' + '.join(calc_types)} potential(s)\n"
         
         return formatted
-
 
 # Scan - Potential Energy Surface Scans
 @mcp.tool()
@@ -1786,17 +1773,17 @@ def rowan_scan(
     - 2D potential energy surfaces
     - Concerted coordinate changes
     
-    **📐 Coordinate Types:**
+    ** Coordinate Types:**
     - **bond**: Distance between 2 atoms (requires 2 atom indices)
     - **angle**: Angle between 3 atoms (requires 3 atom indices)  
     - **dihedral**: Dihedral angle between 4 atoms (requires 4 atom indices)
     
-    **🔢 Scan Types:**
+    ** Scan Types:**
     - **1D Scan**: Single coordinate (coordinate_type, atoms, start, stop, num)
     - **2D Scan**: Two coordinates simultaneously creating a grid (add coordinate_type_2d, atoms_2d, start_2d, stop_2d, num_2d)
     - **Concerted Scan**: Multiple coordinates changing together (use concerted_coordinates list)
     
-    **⚙️ Advanced Features:**
+    **⚙ Advanced Features:**
     - **Wavefront Propagation**: Uses previous scan point geometries as starting points (wavefront_propagation=True)
     - **2D Grids**: Scan two coordinates simultaneously to create potential energy surfaces
     - **Concerted Scans**: Multiple coordinates can be scanned simultaneously with same number of steps
@@ -1864,37 +1851,36 @@ def rowan_scan(
     valid_coord_types = ["bond", "angle", "dihedral"]
     coord_type_lower = coordinate_type.lower()
     if coord_type_lower not in valid_coord_types:
-        return f"❌ Invalid coordinate_type '{coordinate_type}'. Valid types: {', '.join(valid_coord_types)}"
+        return f" Invalid coordinate_type '{coordinate_type}'. Valid types: {', '.join(valid_coord_types)}"
     
     # Handle string input for atoms (common format: "1,2,3,4")
     if isinstance(atoms, str):
         try:
             # Parse comma-separated string to list of integers
             atoms = [int(x.strip()) for x in atoms.split(",")]
-            logger.info(f"🔍 Parsed atom string '{atoms}' to list: {atoms}")
         except ValueError as e:
-            return f"❌ Invalid atoms string '{atoms}'. Use format '1,2,3,4' or pass as list [1,2,3,4]. Error: {e}"
+            return f" Invalid atoms string '{atoms}'. Use format '1,2,3,4' or pass as list [1,2,3,4]. Error: {e}"
     
     # Ensure atoms is a list
     if not isinstance(atoms, list):
-        return f"❌ Atoms must be a list of integers or comma-separated string. Got: {type(atoms).__name__}"
+        return f" Atoms must be a list of integers or comma-separated string. Got: {type(atoms).__name__}"
     
     # Validate atom count for coordinate type
     expected_atoms = {"bond": 2, "angle": 3, "dihedral": 4}
     expected_count = expected_atoms[coord_type_lower]
     if len(atoms) != expected_count:
-        return f"❌ {coordinate_type} requires exactly {expected_count} atoms, got {len(atoms)}. Use format: [1,2,3,4] or '1,2,3,4'"
+        return f" {coordinate_type} requires exactly {expected_count} atoms, got {len(atoms)}. Use format: [1,2,3,4] or '1,2,3,4'"
     
     # Validate atoms are positive integers
     if not all(isinstance(atom, int) and atom > 0 for atom in atoms):
-        return f"❌ All atom indices must be positive integers (1-indexed). Got: {atoms}. Use format: [1,2,3,4] or '1,2,3,4'"
+        return f" All atom indices must be positive integers (1-indexed). Got: {atoms}. Use format: [1,2,3,4] or '1,2,3,4'"
     
     # Validate scan range
     if num < 2:
-        return f"❌ Number of scan points must be at least 2, got {num}"
+        return f" Number of scan points must be at least 2, got {num}"
     
     if start >= stop:
-        return f"❌ Start value ({start}) must be less than stop value ({stop})"
+        return f" Start value ({start}) must be less than stop value ({stop})"
     
     # Handle 2D scan validation
     is_2d_scan = any([coordinate_type_2d, atoms_2d, start_2d is not None, stop_2d is not None, num_2d is not None])
@@ -1902,40 +1888,38 @@ def rowan_scan(
     if is_2d_scan:
         # For 2D scan, all 2D parameters must be provided
         if not all([coordinate_type_2d, atoms_2d, start_2d is not None, stop_2d is not None, num_2d is not None]):
-            return f"❌ For 2D scans, all 2D parameters must be provided: coordinate_type_2d, atoms_2d, start_2d, stop_2d, num_2d"
+            return f" For 2D scans, all 2D parameters must be provided: coordinate_type_2d, atoms_2d, start_2d, stop_2d, num_2d"
         
         # Validate 2D coordinate type
         coord_type_2d_lower = coordinate_type_2d.lower()
         if coord_type_2d_lower not in valid_coord_types:
-            return f"❌ Invalid coordinate_type_2d '{coordinate_type_2d}'. Valid types: {', '.join(valid_coord_types)}"
+            return f" Invalid coordinate_type_2d '{coordinate_type_2d}'. Valid types: {', '.join(valid_coord_types)}"
         
         # Handle string input for 2D atoms
         if isinstance(atoms_2d, str):
             try:
                 atoms_2d = [int(x.strip()) for x in atoms_2d.split(",")]
-                logger.info(f"🔍 Parsed 2D atom string to list: {atoms_2d}")
             except ValueError as e:
-                return f"❌ Invalid atoms_2d string '{atoms_2d}'. Use format '1,2,3,4' or pass as list [1,2,3,4]. Error: {e}"
+                return f" Invalid atoms_2d string '{atoms_2d}'. Use format '1,2,3,4' or pass as list [1,2,3,4]. Error: {e}"
         
         # Validate 2D atom count
         expected_count_2d = expected_atoms[coord_type_2d_lower]
         if len(atoms_2d) != expected_count_2d:
-            return f"❌ {coordinate_type_2d} requires exactly {expected_count_2d} atoms, got {len(atoms_2d)}"
+            return f" {coordinate_type_2d} requires exactly {expected_count_2d} atoms, got {len(atoms_2d)}"
         
         # Validate 2D atoms are positive integers
         if not all(isinstance(atom, int) and atom > 0 for atom in atoms_2d):
-            return f"❌ All 2D atom indices must be positive integers (1-indexed). Got: {atoms_2d}"
+            return f" All 2D atom indices must be positive integers (1-indexed). Got: {atoms_2d}"
         
         # Validate 2D scan range
         if num_2d < 2:
-            return f"❌ Number of 2D scan points must be at least 2, got {num_2d}"
+            return f" Number of 2D scan points must be at least 2, got {num_2d}"
         
         if start_2d >= stop_2d:
-            return f"❌ 2D start value ({start_2d}) must be less than stop value ({stop_2d})"
+            return f" 2D start value ({start_2d}) must be less than stop value ({stop_2d})"
         
         # For true 2D grid scans, both dimensions should have same number of points
         # (This creates an N×N grid rather than N points along each coordinate)
-        logger.info(f"🔲 2D Scan: {num} × {num_2d} grid ({num * num_2d} total points)")
     
     # Handle concerted scan validation
     if concerted_coordinates:
@@ -1943,18 +1927,16 @@ def rowan_scan(
         for i, coord in enumerate(concerted_coordinates):
             required_keys = {"coordinate_type", "atoms", "start", "stop", "num"}
             if not all(key in coord for key in required_keys):
-                return f"❌ Concerted coordinate {i+1} missing required keys: {required_keys}"
+                return f" Concerted coordinate {i+1} missing required keys: {required_keys}"
             
             # All concerted coordinates must have same number of steps
             if coord["num"] != num:
-                return f"❌ All concerted scan coordinates must have same number of steps. Got {coord['num']} vs {num}"
+                return f" All concerted scan coordinates must have same number of steps. Got {coord['num']} vs {num}"
             
             # Validate coordinate type
             if coord["coordinate_type"].lower() not in valid_coord_types:
-                return f"❌ Invalid coordinate_type in concerted coordinate {i+1}: '{coord['coordinate_type']}'"
+                return f" Invalid coordinate_type in concerted coordinate {i+1}: '{coord['coordinate_type']}'"
         
-        logger.info(f"🔗 Concerted Scan: {len(concerted_coordinates)} coordinates with {num} steps each")
-    
     # Set intelligent defaults based on coordinate type and method preferences
     if method is None:
         method = "hf-3c"  # Fast default for scans as recommended in docs
@@ -1968,45 +1950,34 @@ def rowan_scan(
     # Validate QC parameters if provided (reuse existing validation logic)
     if method and method.lower() not in QC_METHODS and method.lower() != "hf-3c":
         available_methods = ", ".join(list(QC_METHODS.keys()) + ["hf-3c"])
-        return f"❌ Invalid method '{method}'. Available methods: {available_methods}"
+        return f" Invalid method '{method}'. Available methods: {available_methods}"
     
     if basis_set and basis_set.lower() not in QC_BASIS_SETS:
         available_basis = ", ".join(QC_BASIS_SETS.keys())
-        return f"❌ Invalid basis set '{basis_set}'. Available basis sets: {available_basis}"
+        return f" Invalid basis set '{basis_set}'. Available basis sets: {available_basis}"
     
     if engine and engine.lower() not in QC_ENGINES:
         available_engines = ", ".join(QC_ENGINES.keys())
-        return f"❌ Invalid engine '{engine}'. Available engines: {available_engines}"
+        return f" Invalid engine '{engine}'. Available engines: {available_engines}"
     
     if corrections:
         invalid_corrections = [corr for corr in corrections if corr.lower() not in QC_CORRECTIONS]
         if invalid_corrections:
             available_corrections = ", ".join(QC_CORRECTIONS.keys())
-            return f"❌ Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}"
+            return f" Invalid corrections {invalid_corrections}. Available corrections: {available_corrections}"
     
     # Validate mode
     valid_modes = ["reckless", "rapid", "careful", "meticulous"]
     if mode and mode.lower() not in valid_modes:
-        return f"❌ Invalid mode '{mode}'. Valid modes: {', '.join(valid_modes)}"
+        return f" Invalid mode '{mode}'. Valid modes: {', '.join(valid_modes)}"
     
     # Log the scan parameters
-    logger.info(f"🔬 PES Scan Debug:")
     logger.info(f"   Name: {name}")
     logger.info(f"   Input: {molecule}")
-    logger.info(f"   Using SMILES: {canonical_smiles}")
-    logger.info(f"   Primary Coordinate: {coord_type_lower}")
-    logger.info(f"   Primary Atoms: {atoms}")
-    logger.info(f"   Primary Range: {start} to {stop} in {num} steps")
     if is_2d_scan:
-        logger.info(f"   Secondary Coordinate: {coord_type_2d_lower}")
-        logger.info(f"   Secondary Atoms: {atoms_2d}")
-        logger.info(f"   Secondary Range: {start_2d} to {stop_2d} in {num_2d} steps")
         logger.info(f"   2D Grid Size: {num} × {num_2d} = {num * num_2d} total points")
     if concerted_coordinates:
-        logger.info(f"   Concerted Coordinates: {len(concerted_coordinates)}")
-    logger.info(f"   Method: {method}")
-    logger.info(f"   Basis Set: {basis_set or 'auto-selected'}")
-    logger.info(f"   Engine: {engine}")
+        pass
     logger.info(f"   Mode: {mode}")
     logger.info(f"   Wavefront Propagation: {wavefront_propagation}")
     
@@ -2101,25 +2072,23 @@ def rowan_scan(
         if job_status is None and result.get('uuid'):
             try:
                 job_status = rowan.Workflow.status(uuid=result.get('uuid'))
-                logger.info(f"📊 Retrieved scan status via API: {job_status}")
             except Exception as e:
-                logger.warning(f"⚠️ Could not retrieve scan status: {e}")
                 job_status = None
         
         status_names = {
-            0: ("⏳", "Queued"),
-            1: ("🔄", "Running"), 
-            2: ("✅", "Completed Successfully"),
-            3: ("❌", "Failed"),
-            4: ("⏹️", "Stopped"),
-            5: ("⏸️", "Awaiting Queue")
+            0: ("", "Queued"),
+            1: ("", "Running"), 
+            2: ("", "Completed Successfully"),
+            3: ("", "Failed"),
+            4: ("⏹", "Stopped"),
+            5: ("⏸", "Awaiting Queue")
         }
         
         status_icon, status_text = status_names.get(job_status, ("❓", f"Unknown ({job_status})"))
         
         # Handle None status
         if job_status is None:
-            status_icon, status_text = ("📝", "Submitted (status pending)")
+            status_icon, status_text = ("", "Submitted (status pending)")
         
         # Determine scan type for display
         scan_type = "1D Scan"
@@ -2133,23 +2102,23 @@ def rowan_scan(
         
         # Format response
         if job_status == 2:
-            formatted = f"✅ {scan_type} '{name}' completed successfully!\n\n"
+            formatted = f" {scan_type} '{name}' completed successfully!\n\n"
         elif job_status == 3:
-            formatted = f"❌ {scan_type} '{name}' failed!\n\n"
+            formatted = f" {scan_type} '{name}' failed!\n\n"
         elif job_status in [0, 1, 5]:
-            formatted = f"🔄 {scan_type} '{name}' submitted and running!\n\n"
+            formatted = f" {scan_type} '{name}' submitted and running!\n\n"
         elif job_status == 4:
-            formatted = f"⏹️ {scan_type} '{name}' was stopped!\n\n"
+            formatted = f"⏹ {scan_type} '{name}' was stopped!\n\n"
         else:
-            formatted = f"📊 {scan_type} '{name}' status unknown!\n\n"
+            formatted = f" {scan_type} '{name}' status unknown!\n\n"
             
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {status_icon} {status_text} ({job_status})\n"
+        formatted += f" Molecule: {molecule}\n"
+        formatted += f" SMILES: {canonical_smiles}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {status_icon} {status_text} ({job_status})\n"
         
         # Scan coordinate details
-        formatted += f"\n📐 **Scan Coordinates:**\n"
+        formatted += f"\n **Scan Coordinates:**\n"
         formatted += f"   Type: {scan_type}\n"
         formatted += f"   Primary: {coordinate_type.upper()} on atoms {atoms} ({start} → {stop}, {num} points)\n"
         if is_2d_scan:
@@ -2161,7 +2130,7 @@ def rowan_scan(
         formatted += f"   Total Points: {total_points}\n"
         
         # Applied settings
-        formatted += f"\n⚙️ **Computational Settings:**\n"
+        formatted += f"\n⚙ **Computational Settings:**\n"
         if method:
             method_desc = QC_METHODS.get(method.lower(), "Fast composite method" if "3c" in method else "Custom method")
             formatted += f"   Method: {method.upper()} - {method_desc}\n"
@@ -2182,7 +2151,7 @@ def rowan_scan(
         formatted += f"   Wavefront Propagation: {'Enabled' if wavefront_propagation else 'Disabled'}\n"
         
         # Status-specific guidance
-        formatted += f"\n💡 **Next Steps:**\n"
+        formatted += f"\n **Next Steps:**\n"
         if job_status == 2:  # Completed
             formatted += f"• Use `rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid', 'UUID')}')` for detailed results\n"
             if is_2d_scan:
@@ -2217,7 +2186,7 @@ def rowan_scan(
             formatted += f"• Get details: `rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid', 'UUID')}')`\n"
         
         # Add examples and guidance
-        formatted += f"\n📚 **Scan Examples:**\n"
+        formatted += f"\n **Scan Examples:**\n"
         formatted += f"• **1D Bond scan**: coordinate_type='bond', atoms=[1,2], start=1.0, stop=3.0\n"
         formatted += f"• **1D Angle scan**: coordinate_type='angle', atoms=[1,2,3], start=90, stop=180\n"
         formatted += f"• **1D Dihedral scan**: coordinate_type='dihedral', atoms=[1,2,3,4], start=0, stop=360\n"
@@ -2229,24 +2198,23 @@ def rowan_scan(
         return formatted
         
     except Exception as e:
-        error_msg = f"❌ PES scan submission failed: {str(e)}\n\n"
-        error_msg += "🔧 **Enhanced Scan Troubleshooting:**\n"
+        error_msg = f" PES scan submission failed: {str(e)}\n\n"
+        error_msg += " **Enhanced Scan Troubleshooting:**\n"
         error_msg += "• **Atom indices**: Check that atom numbers exist in the molecule (1-indexed)\n"
         error_msg += "• **Coordinate range**: Ensure start < stop and range is chemically reasonable\n"
         error_msg += "• **Method compatibility**: Some methods may not support scan calculations\n"
         error_msg += "• **Parameter format**: Use atoms=[1,2,3,4] or atoms='1,2,3,4'\n"
         error_msg += "• **2D scans**: All 2D parameters required if any are specified\n"
         error_msg += "• **Concerted scans**: All coordinates must have same number of steps\n\n"
-        error_msg += "💡 **Quick Fix Examples:**\n"
+        error_msg += " **Quick Fix Examples:**\n"
         error_msg += f"• **1D scan**: rowan_scan('{name}', '{molecule}', '{coordinate_type}', [1,2,3,4], {start}, {stop}, {num})\n"
         error_msg += f"• **2D scan**: Add coordinate_type_2d='dihedral', atoms_2d=[1,2,3,4], start_2d=0, stop_2d=180, num_2d={num}\n"
         error_msg += f"• **With method**: rowan_scan(..., method='hf-3c', wavefront_propagation=True)\n\n"
-        error_msg += "📚 **New Features:**\n"
+        error_msg += " **New Features:**\n"
         error_msg += "• **2D Scans**: Create potential energy surfaces with two coordinates\n"
         error_msg += "• **Concerted Scans**: Multiple coordinates changing simultaneously\n"
         error_msg += "• **Wavefront Propagation**: Better convergence using previous scan point geometries\n"
         return error_msg
-
 
 # Fukui Indices - Reactivity Analysis
 @mcp.tool()
@@ -2272,13 +2240,13 @@ def rowan_fukui(
     Predicts sites of chemical reactivity by analyzing electron density changes upon
     gaining/losing electrons. Uses a two-step process: optimization + Fukui calculation.
     
-    **🔬 Fukui Index Types:**
+    ** Fukui Index Types:**
     - **f(+)**: Electrophilic attack sites (nucleophile reactivity)
     - **f(-)**: Nucleophilic attack sites (electrophile reactivity)  
     - **f(0)**: Radical attack sites (average of f(+) and f(-))
     - **Global Electrophilicity Index**: Overall electrophilic character
     
-    **⚡ Key Features:**
+    ** Key Features:**
     - Optional geometry optimization before Fukui calculation
     - Separate control over optimization and Fukui calculation methods
     - Per-atom reactivity indices for site-specific analysis
@@ -2323,7 +2291,7 @@ def rowan_fukui(
         # Default to fast optimization if no engine specified
         if not opt_engine and not opt_method:
             opt_settings["method"] = "gfn2_xtb"  # Fast optimization
-            logger.info(f"🚀 No optimization method specified, defaulting to GFN2-xTB")
+            logger.info(f" No optimization method specified, defaulting to GFN2-xTB")
     
     # Build Fukui calculation settings
     fukui_settings = {
@@ -2339,22 +2307,17 @@ def rowan_fukui(
     # Validate Fukui method
     valid_fukui_methods = ["gfn1_xtb", "gfn2_xtb", "hf", "b3lyp", "pbe", "m06-2x"]
     if fukui_method.lower() not in valid_fukui_methods:
-        logger.warning(f"⚠️ Unusual Fukui method '{fukui_method}'. Common methods: {valid_fukui_methods}")
+        pass
     
     # Log the Fukui parameters
-    logger.info(f"🔬 Fukui Analysis Debug:")
     logger.info(f"   Name: {name}")
     logger.info(f"   Input: {molecule}")
-    logger.info(f"   Using SMILES: {canonical_smiles}")
     logger.info(f"   Optimization: {'Enabled' if optimize else 'Disabled'}")
     if optimize:
-        logger.info(f"   Opt Method: {opt_settings.get('method', 'default')}")
         if opt_engine:
-            logger.info(f"   Opt Engine: {opt_engine}")
-    logger.info(f"   Fukui Method: {fukui_method}")
+            pass
     if fukui_engine:
-        logger.info(f"   Fukui Engine: {fukui_engine}")
-    logger.info(f"   Charge: {charge}, Multiplicity: {multiplicity}")
+        pass
     
     # Build parameters for Rowan API
     fukui_params = {
@@ -2385,19 +2348,19 @@ def rowan_fukui(
         status = result.get('status', result.get('object_status', 'Unknown'))
         
         if status == 2:  # Completed successfully
-            formatted = f"✅ Fukui analysis for '{name}' completed successfully!\n\n"
+            formatted = f" Fukui analysis for '{name}' completed successfully!\n\n"
         elif status == 3:  # Failed
-            formatted = f"❌ Fukui analysis for '{name}' failed!\n\n"
+            formatted = f" Fukui analysis for '{name}' failed!\n\n"
         else:
-            formatted = f"⚠️ Fukui analysis for '{name}' finished with status {status}\n\n"
+            formatted = f" Fukui analysis for '{name}' finished with status {status}\n\n"
             
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {status}\n"
+        formatted += f" Molecule: {molecule}\n"
+        formatted += f" SMILES: {canonical_smiles}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {status}\n"
         
         # Computational settings summary
-        formatted += f"\n⚙️ **Computational Settings:**\n"
+        formatted += f"\n⚙ **Computational Settings:**\n"
         formatted += f"   Optimization: {'Enabled' if optimize else 'Disabled'}\n"
         if optimize:
             opt_method_display = opt_settings.get('method', 'default') if opt_settings else 'default'
@@ -2416,7 +2379,7 @@ def rowan_fukui(
             # Global electrophilicity index
             if 'global_electrophilicity_index' in data and data['global_electrophilicity_index'] is not None:
                 gei = data['global_electrophilicity_index']
-                formatted += f"\n🌐 **Global Electrophilicity Index:** {gei:.4f}\n"
+                formatted += f"\n **Global Electrophilicity Index:** {gei:.4f}\n"
                 if gei > 1.5:
                     formatted += f"   → Strong electrophile (highly reactive towards nucleophiles)\n"
                 elif gei > 0.8:
@@ -2434,10 +2397,10 @@ def rowan_fukui(
                 fukui_available.append("f(0)")
                 
             if fukui_available:
-                formatted += f"\n⚡ **Fukui Indices Available:** {', '.join(fukui_available)}\n"
+                formatted += f"\n **Fukui Indices Available:** {', '.join(fukui_available)}\n"
                 
                 # Analyze most reactive sites
-                formatted += f"\n🎯 **Most Reactive Sites:**\n"
+                formatted += f"\n **Most Reactive Sites:**\n"
                 
                 # f(+) - electrophilic attack sites
                 if 'fukui_positive' in data and data['fukui_positive']:
@@ -2468,7 +2431,7 @@ def rowan_fukui(
                         formatted += f"{', '.join([f'Atom {atom}({val:.3f})' for atom, val in top_f_zero])}\n"
         
         # Status-specific guidance
-        formatted += f"\n💡 **Next Steps:**\n"
+        formatted += f"\n **Next Steps:**\n"
         if status == 2:  # Completed
             formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for full per-atom data\n"
             formatted += f"• Higher Fukui values indicate more reactive sites\n"
@@ -2494,21 +2457,21 @@ def rowan_fukui(
             formatted += f"• Check status: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
         
         # Add examples and guidance
-        formatted += f"\n📚 **Fukui Examples:**\n"
+        formatted += f"\n **Fukui Examples:**\n"
         formatted += f"• **Basic analysis**: rowan_fukui('benzene_fukui', 'benzene')\n"
         formatted += f"• **Skip optimization**: rowan_fukui('quick', 'SMILES', optimize=False)\n"
         formatted += f"• **High-accuracy**: rowan_fukui('accurate', 'SMILES', fukui_method='b3lyp', fukui_basis_set='def2-tzvp')\n"
         formatted += f"• **Charged species**: rowan_fukui('cation', 'SMILES', charge=+1)\n"
         formatted += f"• **Custom optimization**: rowan_fukui('custom', 'SMILES', opt_method='b3lyp', opt_basis_set='def2-svp')\n\n"
         
-        formatted += f"🔬 **Method Guide:**\n"
+        formatted += f" **Method Guide:**\n"
         formatted += f"• **gfn1_xtb**: Fast semiempirical, good for large molecules (default)\n"
         formatted += f"• **gfn2_xtb**: More accurate semiempirical method\n"
         formatted += f"• **hf**: Hartree-Fock, basic quantum method\n"
         formatted += f"• **b3lyp**: Popular DFT method, good accuracy\n"
         formatted += f"• **m06-2x**: Meta-GGA DFT, excellent for organics\n\n"
         
-        formatted += f"⚡ **Interpretation Guide:**\n"
+        formatted += f" **Interpretation Guide:**\n"
         formatted += f"• **f(+) > 0.1**: Strong electrophilic attack site\n"
         formatted += f"• **f(-) > 0.1**: Strong nucleophilic attack site\n"
         formatted += f"• **f(0) > 0.1**: Strong radical attack site\n"
@@ -2516,17 +2479,16 @@ def rowan_fukui(
         
         return formatted
     else:
-        formatted = f"🚀 Fukui analysis for '{name}' submitted!\n\n"
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
-        formatted += f"⚙️ Optimization: {'Enabled' if optimize else 'Disabled'}\n"
-        formatted += f"🔬 Fukui Method: {fukui_method.upper()}\n"
-        formatted += f"⚡ Charge: {charge}, Multiplicity: {multiplicity}\n"
-        formatted += f"\n💡 Use rowan_workflow_management tools to check progress and retrieve results\n"
+        formatted = f" Fukui analysis for '{name}' submitted!\n\n"
+        formatted += f" Molecule: {molecule}\n"
+        formatted += f" SMILES: {canonical_smiles}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {result.get('status', 'Submitted')}\n"
+        formatted += f"⚙ Optimization: {'Enabled' if optimize else 'Disabled'}\n"
+        formatted += f" Fukui Method: {fukui_method.upper()}\n"
+        formatted += f" Charge: {charge}, Multiplicity: {multiplicity}\n"
+        formatted += f"\n Use rowan_workflow_management tools to check progress and retrieve results\n"
         return formatted
-
 
 # Spin States
 @mcp.tool()
@@ -2556,20 +2518,20 @@ def rowan_spin_states(
     - Suggests realistic spin states for d-electron configurations
     - Provides chemical explanations for predictions
     
-    **🔬 Spin State Analysis:**
+    ** Spin State Analysis:**
     - Uses multi-stage optimization (xTB → AIMNet2 → DFT) for accurate energies
     - Validates multiplicity consistency (all must have same parity)
     - Ranks spin states by energy to identify ground state
     - Supports transition metal complexes and radical species
     
-    **⚡ Auto-Detected Complexes:**
+    ** Auto-Detected Complexes:**
     - Mn(Cl)6 → charge: -4, states: [2, 6] (d5: low-spin vs high-spin)
     - Fe(CN)6 → charge: -4, states: [1, 5] (d6: low-spin vs high-spin) 
     - Cu(H2O)4 → charge: +2, states: [2] (d9: always doublet)
     - Ni(H2O)6 → charge: +2, states: [3] (d8: high-spin triplet)
     - Co(NH3)6 → charge: +3, states: [1] (d6: low-spin singlet)
     
-    **🎯 Manual Override Available:**
+    ** Manual Override Available:**
     - All auto-detected parameters can be manually overridden
     - Set auto_analyze=False to disable automatic analysis
     - Specify states, charge, multiplicity explicitly if needed
@@ -2609,7 +2571,7 @@ def rowan_spin_states(
         for sub, num in subscript_map.items():
             processed = processed.replace(sub, num)
             
-        logger.info(f"🔧 Preprocessed molecule: '{mol_input}' → '{processed}'")
+        logger.info(f" Preprocessed molecule: '{mol_input}' → '{processed}'")
         return processed
     
     # Preprocess the molecule input
@@ -2619,24 +2581,20 @@ def rowan_spin_states(
     analysis_results = None
     if auto_analyze and (states is None or charge is None or multiplicity is None):
         analysis_results = analyze_spin_states(processed_molecule)
-        logger.info(f"🤖 Auto-analysis enabled for '{processed_molecule}'")
-        logger.info(f"🔍 Analysis results: {analysis_results}")
+        logger.info(f" Analysis results: {analysis_results}")
     
     # Apply auto-analysis results, but allow manual overrides
     if states is None:
         if analysis_results:
             states = analysis_results["states"]
-            logger.info(f"🎯 Auto-detected spin states: {states}")
         else:
-            return f"❌ Error: 'states' must be provided when auto_analyze=False or analysis fails. Provide as list like [1, 3, 5]"
+            return f" Error: 'states' must be provided when auto_analyze=False or analysis fails. Provide as list like [1, 3, 5]"
     
     if charge is None and analysis_results and "charge" in analysis_results:
         charge = analysis_results["charge"]
-        logger.info(f"⚡ Auto-detected charge: {charge}")
     
     if multiplicity is None and analysis_results and "multiplicity" in analysis_results:
         multiplicity = analysis_results["multiplicity"]
-        logger.info(f"🔬 Auto-detected multiplicity: {multiplicity}")
     
     # For chemical formulas, don't try SMILES lookup - use the processed formula directly
     # Check if this looks like a chemical formula vs SMILES
@@ -2645,46 +2603,39 @@ def rowan_spin_states(
     
     if is_chemical_formula:
         canonical_smiles = processed_molecule
-        logger.info(f"🔬 Using chemical formula directly: {canonical_smiles}")
     else:
         # Look up SMILES if a common name was provided
         canonical_smiles = lookup_molecule_smiles(processed_molecule)
     
     # Validate states parameter
     if not states or not isinstance(states, list):
-        return f"❌ Error: 'states' must be a non-empty list of positive integers. Got: {states}"
+        return f" Error: 'states' must be a non-empty list of positive integers. Got: {states}"
     
     if not all(isinstance(s, int) and s > 0 for s in states):
-        return f"❌ Error: All multiplicities in 'states' must be positive integers. Got: {states}"
+        return f" Error: All multiplicities in 'states' must be positive integers. Got: {states}"
     
     if len(states) < 1:
-        return f"❌ Error: At least one spin multiplicity must be specified. Got: {states}"
+        return f" Error: At least one spin multiplicity must be specified. Got: {states}"
     
     # Check multiplicity parity consistency (all odd or all even)
     first_parity = states[0] % 2
     if not all((s % 2) == first_parity for s in states):
-        return f"❌ Error: All multiplicities must have the same parity (all odd or all even). Got: {states}"
+        return f" Error: All multiplicities must have the same parity (all odd or all even). Got: {states}"
     
     # Validate mode
     valid_modes = ["reckless", "rapid", "careful", "meticulous"]
     mode_lower = mode.lower()
     if mode_lower not in valid_modes:
-        return f"❌ Invalid mode '{mode}'. Valid modes: {', '.join(valid_modes)}"
+        return f" Invalid mode '{mode}'. Valid modes: {', '.join(valid_modes)}"
     
     # Log the spin states parameters
-    logger.info(f"🔬 Spin States Analysis Debug:")
     logger.info(f"   Name: {name}")
     logger.info(f"   Input: {molecule}")
-    logger.info(f"   Using SMILES: {canonical_smiles}")
     logger.info(f"   States (multiplicities): {states}")
-    logger.info(f"   Charge: {charge}")
-    logger.info(f"   Multiplicity: {multiplicity}")
     logger.info(f"   Mode: {mode_lower}")
-    logger.info(f"   Auto-analysis: {auto_analyze}")
     if analysis_results:
         logger.info(f"   Analysis explanation: {analysis_results.get('explanation', 'N/A')}")
         logger.info(f"   Analysis confidence: {analysis_results.get('confidence', 'N/A')}")
-    logger.info(f"   Solvent: {solvent or 'gas phase'}")
     logger.info(f"   xTB Pre-optimization: {xtb_preopt}")
     logger.info(f"   Transition State: {transition_state}")
     logger.info(f"   Frequencies: {frequencies}")
@@ -2728,23 +2679,23 @@ def rowan_spin_states(
         status = result.get('status', result.get('object_status', 'Unknown'))
         
         if status == 2:  # Completed successfully
-            formatted = f"✅ Spin states analysis for '{name}' completed successfully!\n\n"
+            formatted = f" Spin states analysis for '{name}' completed successfully!\n\n"
         elif status == 3:  # Failed
-            formatted = f"❌ Spin states analysis for '{name}' failed!\n\n"
+            formatted = f" Spin states analysis for '{name}' failed!\n\n"
         else:
-            formatted = f"⚠️ Spin states analysis for '{name}' finished with status {status}\n\n"
+            formatted = f" Spin states analysis for '{name}' finished with status {status}\n\n"
             
-        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted += f" Molecule: {molecule}\n"
         if processed_molecule != molecule:
-            formatted += f"🔧 Processed: {processed_molecule}\n"
-        formatted += f"🔬 Input: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {status}\n"
-        formatted += f"⚡ Multiplicities: {states}\n"
+            formatted += f" Processed: {processed_molecule}\n"
+        formatted += f" Input: {canonical_smiles}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {status}\n"
+        formatted += f" Multiplicities: {states}\n"
         if charge is not None:
-            formatted += f"⚡ Charge: {charge:+d}\n"
+            formatted += f" Charge: {charge:+d}\n"
         if multiplicity is not None:
-            formatted += f"🔬 Default Multiplicity: {multiplicity}\n"
+            formatted += f" Default Multiplicity: {multiplicity}\n"
         
         # Show auto-analysis results if used
         if analysis_results and auto_analyze:
@@ -2757,7 +2708,7 @@ def rowan_spin_states(
                 formatted += f"   d-Electron Count: d{analysis_results['d_electrons']}\n"
         
         # Applied settings
-        formatted += f"\n⚙️ **Computational Settings:**\n"
+        formatted += f"\n⚙ **Computational Settings:**\n"
         formatted += f"   Mode: {mode_lower.title()} (multi-stage optimization)\n"
         formatted += f"   Solvent: {solvent or 'Gas Phase'}\n"
         formatted += f"   xTB Pre-optimization: {'Enabled' if xtb_preopt else 'Disabled'}\n"
@@ -2776,7 +2727,7 @@ def rowan_spin_states(
             if 'spin_states' in data and isinstance(data['spin_states'], list):
                 spin_results = data['spin_states']
                 if spin_results:
-                    formatted += f"\n⚡ **Spin States Results:**\n"
+                    formatted += f"\n **Spin States Results:**\n"
                     
                     # Sort by energy to identify ground state
                     sorted_states = sorted(spin_results, key=lambda x: x.get('energy', float('inf')))
@@ -2794,14 +2745,14 @@ def rowan_spin_states(
                                 formatted += f"   🥇 Multiplicity {mult}: {energy:.6f} au (Ground State)\n"
                             else:
                                 rel_energy = (energy - ground_state.get('energy', 0)) * 627.5094740631  # Hartree to kcal/mol
-                                formatted += f"   ⚡ Multiplicity {mult}: {energy:.6f} au (+{rel_energy:.2f} kcal/mol)\n"
+                                formatted += f"    Multiplicity {mult}: {energy:.6f} au (+{rel_energy:.2f} kcal/mol)\n"
                         else:
-                            formatted += f"   ⚡ Multiplicity {mult}: {energy}\n"
+                            formatted += f"    Multiplicity {mult}: {energy}\n"
                     
                     # Summary
                     if ground_state:
                         ground_mult = ground_state.get('multiplicity', 'Unknown')
-                        formatted += f"\n🎯 **Ground State:** Multiplicity {ground_mult}\n"
+                        formatted += f"\n **Ground State:** Multiplicity {ground_mult}\n"
                         
                         # Interpret ground state
                         spin_names = {1: "Singlet", 2: "Doublet", 3: "Triplet", 4: "Quartet", 5: "Quintet", 6: "Sextet", 7: "Septet"}
@@ -2815,7 +2766,7 @@ def rowan_spin_states(
             elif 'energies' in data and isinstance(data['energies'], list):
                 energies = data['energies']
                 if energies and len(energies) == len(states):
-                    formatted += f"\n⚡ **Spin States Energies:**\n"
+                    formatted += f"\n **Spin States Energies:**\n"
                     
                     # Pair with multiplicities and sort by energy
                     paired_results = list(zip(states, energies))
@@ -2829,12 +2780,12 @@ def rowan_spin_states(
                             formatted += f"   🥇 Multiplicity {mult}: {energy:.6f} au (Ground State)\n"
                         else:
                             rel_energy = (energy - ground_energy) * 627.5094740631  # Hartree to kcal/mol
-                            formatted += f"   ⚡ Multiplicity {mult}: {energy:.6f} au (+{rel_energy:.2f} kcal/mol)\n"
+                            formatted += f"    Multiplicity {mult}: {energy:.6f} au (+{rel_energy:.2f} kcal/mol)\n"
                     
-                    formatted += f"\n🎯 **Ground State:** Multiplicity {ground_mult}\n"
+                    formatted += f"\n **Ground State:** Multiplicity {ground_mult}\n"
         
         # Status-specific guidance
-        formatted += f"\n💡 **Next Steps:**\n"
+        formatted += f"\n **Next Steps:**\n"
         if status == 2:  # Completed
             formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed results\n"
             formatted += f"• Ground state identified from relative energies\n"
@@ -2859,7 +2810,7 @@ def rowan_spin_states(
             formatted += f"• Check status: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
         
         # Add examples and guidance
-        formatted += f"\n📚 **Auto-Analysis Examples:**\n"
+        formatted += f"\n **Auto-Analysis Examples:**\n"
         formatted += f"• **Mn(Cl)6** → charge: -4, states: [2, 6] (Mn(II) d5: low vs high-spin)\n"
         formatted += f"• **Fe(CN)6** → charge: -4, states: [1, 5] (Fe(II) d6: low vs high-spin)\n"
         formatted += f"• **Cu(H2O)4** → charge: +2, states: [2] (Cu(II) d9: always doublet)\n"
@@ -2867,13 +2818,13 @@ def rowan_spin_states(
         formatted += f"• **Co(NH3)6** → charge: +3, states: [1] (Co(III) d6: low-spin singlet)\n"
         formatted += f"• **Cr(H2O)6** → charge: +3, states: [4] (Cr(III) d3: always high-spin)\n\n"
         
-        formatted += f"🎯 **Manual Override Examples:**\n"
+        formatted += f" **Manual Override Examples:**\n"
         formatted += f"• rowan_spin_states('test', 'Mn(Cl)6') → auto-detects everything\n"
         formatted += f"• rowan_spin_states('test', 'SMILES', states=[1,3,5]) → manual states\n"
         formatted += f"• rowan_spin_states('test', 'complex', charge=-2, states=[2,4]) → manual override\n"
         formatted += f"• rowan_spin_states('test', 'molecule', auto_analyze=False, states=[1]) → no auto-analysis\n\n"
         
-        formatted += f"⚗️ **Multiplicity Guide:**\n"
+        formatted += f" **Multiplicity Guide:**\n"
         formatted += f"• Multiplicity = 2S + 1 (where S = total spin)\n"
         formatted += f"• Singlet (S=0): 0 unpaired electrons → closed shell\n"
         formatted += f"• Doublet (S=1/2): 1 unpaired electron\n" 
@@ -2883,19 +2834,19 @@ def rowan_spin_states(
         
         return formatted
     else:
-        formatted = f"🚀 Spin states analysis for '{name}' submitted!\n\n"
-        formatted += f"🧪 Molecule: {molecule}\n"
+        formatted = f" Spin states analysis for '{name}' submitted!\n\n"
+        formatted += f" Molecule: {molecule}\n"
         if processed_molecule != molecule:
-            formatted += f"🔧 Processed: {processed_molecule}\n"
-        formatted += f"🔬 Input: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
-        formatted += f"⚡ Multiplicities: {states}\n"
+            formatted += f" Processed: {processed_molecule}\n"
+        formatted += f" Input: {canonical_smiles}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {result.get('status', 'Submitted')}\n"
+        formatted += f" Multiplicities: {states}\n"
         if charge is not None:
-            formatted += f"⚡ Charge: {charge:+d}\n"
+            formatted += f" Charge: {charge:+d}\n"
         if multiplicity is not None:
-            formatted += f"🔬 Default Multiplicity: {multiplicity}\n"
-        formatted += f"⚙️ Mode: {mode_lower.title()}\n"
+            formatted += f" Default Multiplicity: {multiplicity}\n"
+        formatted += f"⚙ Mode: {mode_lower.title()}\n"
         
         # Show auto-analysis results if used
         if analysis_results and auto_analyze:
@@ -2903,9 +2854,8 @@ def rowan_spin_states(
             formatted += f"   {analysis_results['explanation']}\n"
             formatted += f"   Confidence: {analysis_results['confidence'].title()}\n"
         
-        formatted += f"\n💡 Use rowan_workflow_management tools to check progress and retrieve results\n"
+        formatted += f"\n Use rowan_workflow_management tools to check progress and retrieve results\n"
         return formatted
-
 
 # Tautomers
 @mcp.tool()
@@ -2945,7 +2895,6 @@ def rowan_tautomers(
     )
     return str(result)
 
-
 # Hydrogen Bond Basicity
 @mcp.tool()
 def rowan_hydrogen_bond_basicity(
@@ -2983,7 +2932,6 @@ def rowan_hydrogen_bond_basicity(
         ping_interval=ping_interval
     )
     return str(result)
-
 
 # IRC - Reaction Coordinate Following
 @mcp.tool()
@@ -3023,7 +2971,6 @@ def rowan_irc(
     )
     return str(result)
 
-
 # Molecular Dynamics
 @mcp.tool()
 @log_mcp_call
@@ -3055,12 +3002,12 @@ def rowan_molecular_dynamics(
     and thermal properties using various thermodynamic ensembles. Based on Rowan's
     MolecularDynamicsWorkflow with full parameter control.
     
-    **🔬 Simulation Types:**
+    ** Simulation Types:**
     - **NVT**: Constant volume and temperature (canonical ensemble)
     - **NPT**: Constant pressure and temperature (isothermal-isobaric)
     - **NVE**: Constant energy and volume (microcanonical)
     
-    **⚡ Key Features:**
+    ** Key Features:**
     - Multiple thermodynamic ensembles (NVT, NPT, NVE)
     - Configurable timestep and trajectory length
     - Temperature and pressure control with thermostat/barostat settings
@@ -3100,41 +3047,41 @@ def rowan_molecular_dynamics(
     ensemble_lower = ensemble.lower()
     valid_ensembles = ["nvt", "npt", "nve"]
     if ensemble_lower not in valid_ensembles:
-        return f"❌ Error: ensemble must be one of {valid_ensembles}. Got: '{ensemble}'"
+        return f" Error: ensemble must be one of {valid_ensembles}. Got: '{ensemble}'"
     
     # Validate ensemble-specific requirements (following MolecularDynamicsSettings validation)
     if ensemble_lower == "nvt" and temperature <= 0:
-        return f"❌ Error: NVT ensemble must have a positive temperature defined. Got: {temperature}"
+        return f" Error: NVT ensemble must have a positive temperature defined. Got: {temperature}"
     elif ensemble_lower == "npt":
         if temperature <= 0:
-            return f"❌ Error: NPT ensemble must have a positive temperature defined. Got: {temperature}"
+            return f" Error: NPT ensemble must have a positive temperature defined. Got: {temperature}"
         if pressure is None or pressure <= 0:
-            return f"❌ Error: NPT ensemble must have a positive pressure defined. Got: {pressure}"
+            return f" Error: NPT ensemble must have a positive pressure defined. Got: {pressure}"
     elif ensemble_lower == "nve":
         # NVE doesn't require temperature/pressure validation (energy conserving)
         pass
     
     # Validate simulation parameters (following PositiveFloat/PositiveInt validation)
     if timestep <= 0:
-        return f"❌ Error: timestep must be positive. Got: {timestep}"
+        return f" Error: timestep must be positive. Got: {timestep}"
     
     if num_steps <= 0:
-        return f"❌ Error: num_steps must be positive. Got: {num_steps}"
+        return f" Error: num_steps must be positive. Got: {num_steps}"
     
     if save_interval <= 0 or save_interval > num_steps:
-        return f"❌ Error: save_interval must be positive and ≤ num_steps. Got: {save_interval} (num_steps: {num_steps})"
+        return f" Error: save_interval must be positive and ≤ num_steps. Got: {save_interval} (num_steps: {num_steps})"
     
     if langevin_thermostat_timescale <= 0:
-        return f"❌ Error: langevin_thermostat_timescale must be positive. Got: {langevin_thermostat_timescale}"
+        return f" Error: langevin_thermostat_timescale must be positive. Got: {langevin_thermostat_timescale}"
     
     if berendsen_barostat_timescale <= 0:
-        return f"❌ Error: berendsen_barostat_timescale must be positive. Got: {berendsen_barostat_timescale}"
+        return f" Error: berendsen_barostat_timescale must be positive. Got: {berendsen_barostat_timescale}"
     
     # Validate initialization method
     initialization_lower = initialization.lower()
     valid_init = ["random", "quasiclassical", "read"]
     if initialization_lower not in valid_init:
-        return f"❌ Error: initialization must be one of {valid_init}. Got: '{initialization}'"
+        return f" Error: initialization must be one of {valid_init}. Got: '{initialization}'"
     
     # Build MD settings following MolecularDynamicsSettings structure
     md_settings = {
@@ -3168,12 +3115,12 @@ def rowan_molecular_dynamics(
         actual_engine = "xtb"
         calc_settings["engine"] = "xtb"
         # Don't set method - let xTB use its default (gfn2-xtb)
-        logger.info(f"🚀 No engine/method specified, defaulting to xTB engine for fast MD forces")
+        logger.info(f" No engine/method specified, defaulting to xTB engine for fast MD forces")
     elif engine and not method:
         # Engine specified but no method - let engine choose its default
         calc_settings["engine"] = engine.lower()
         actual_engine = engine
-        logger.info(f"🔧 Engine '{engine}' specified, using engine's default method")
+        logger.info(f" Engine '{engine}' specified, using engine's default method")
     elif method and not engine:
         # Method specified but no engine - choose appropriate engine
         method_lower = method.lower()
@@ -3183,30 +3130,30 @@ def rowan_molecular_dynamics(
         if method_lower in ["gfn1-xtb", "gfn1_xtb", "gfn2-xtb", "gfn2_xtb"]:
             actual_engine = "xtb"
             calc_settings["engine"] = "xtb"
-            logger.info(f"🚀 xTB method '{method}' specified, using xTB engine")
+            logger.info(f" xTB method '{method}' specified, using xTB engine")
         elif method_lower in ["hf", "b3lyp", "pbe", "m06-2x", "mp2", "ccsd"]:
             actual_engine = "psi4"
             calc_settings["engine"] = "psi4"
-            logger.info(f"🔬 Quantum method '{method}' specified, using Psi4 engine")
+            logger.info(f" Quantum method '{method}' specified, using Psi4 engine")
         else:
             # Unknown method - default to Psi4 and let it handle validation
             actual_engine = "psi4"
             calc_settings["engine"] = "psi4"
-            logger.warning(f"⚠️ Unknown method '{method}', defaulting to Psi4 engine")
+            logger.warning(f" Unknown method '{method}', defaulting to Psi4 engine")
     else:
         # Both engine and method specified - use as provided
         calc_settings["method"] = method.lower()
         calc_settings["engine"] = engine.lower()
         actual_engine = engine
-        logger.info(f"🎯 Both engine '{engine}' and method '{method}' specified")
+        logger.info(f" Both engine '{engine}' and method '{method}' specified")
         
         # Validate compatibility
         method_lower = method.lower()
         engine_lower = engine.lower()
         if engine_lower == "xtb" and method_lower not in ["gfn1-xtb", "gfn1_xtb", "gfn2-xtb", "gfn2_xtb"]:
-            logger.warning(f"⚠️ Method '{method}' may not be compatible with xTB engine")
+            logger.warning(f" Method '{method}' may not be compatible with xTB engine")
         elif engine_lower == "psi4" and method_lower in ["gfn1-xtb", "gfn1_xtb", "gfn2-xtb", "gfn2_xtb"]:
-            logger.warning(f"⚠️ xTB method '{method}' may not be compatible with Psi4 engine")
+            logger.warning(f" xTB method '{method}' may not be compatible with Psi4 engine")
     
     # Add basis set if specified
     if basis_set:
@@ -3217,17 +3164,12 @@ def rowan_molecular_dynamics(
     if specified_engine == "psi4" and not basis_set:
         # Default basis set for Psi4/DFT methods
         calc_settings["basis_set"] = "def2-svp"
-        logger.info(f"🔬 Using Psi4 engine, defaulting to def2-SVP basis set")
     
     # Log the MD parameters
-    logger.info(f"🔬 Molecular Dynamics Debug:")
     logger.info(f"   Name: {name}")
     logger.info(f"   Input: {molecule}")
-    logger.info(f"   Using SMILES: {canonical_smiles}")
-    logger.info(f"   Ensemble: {ensemble_lower.upper()}")
-    logger.info(f"   Temperature: {temperature} K")
     if ensemble_lower == "npt":
-        logger.info(f"   Pressure: {pressure} atm")
+        pass
     logger.info(f"   Timestep: {timestep} fs")
     logger.info(f"   Steps: {num_steps} ({num_steps * timestep / 1000:.1f} ps total)")
     logger.info(f"   Save interval: every {save_interval} steps")
@@ -3259,19 +3201,19 @@ def rowan_molecular_dynamics(
         status = result.get('status', result.get('object_status', 'Unknown'))
         
         if status == 2:  # Completed successfully
-            formatted = f"✅ Molecular dynamics simulation for '{name}' completed successfully!\n\n"
+            formatted = f" Molecular dynamics simulation for '{name}' completed successfully!\n\n"
         elif status == 3:  # Failed
-            formatted = f"❌ Molecular dynamics simulation for '{name}' failed!\n\n"
+            formatted = f" Molecular dynamics simulation for '{name}' failed!\n\n"
         else:
-            formatted = f"⚠️ Molecular dynamics simulation for '{name}' finished with status {status}\n\n"
+            formatted = f" Molecular dynamics simulation for '{name}' finished with status {status}\n\n"
             
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {status}\n"
+        formatted += f" Molecule: {molecule}\n"
+        formatted += f" SMILES: {canonical_smiles}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {status}\n"
         
         # Simulation settings summary
-        formatted += f"\n⚙️ **Simulation Settings:**\n"
+        formatted += f"\n⚙ **Simulation Settings:**\n"
         formatted += f"   Ensemble: {ensemble_lower.upper()}\n"
         formatted += f"   Temperature: {temperature} K\n"
         if ensemble_lower == "npt":
@@ -3285,7 +3227,7 @@ def rowan_molecular_dynamics(
         formatted += f"   Barostat Timescale: {berendsen_barostat_timescale} fs\n"
         
         # Computational settings
-        formatted += f"\n🔬 **Computational Settings:**\n"
+        formatted += f"\n **Computational Settings:**\n"
         actual_engine = calc_settings.get("engine", "default")
         if method:
             formatted += f"   Method: {method.upper()}\n"
@@ -3304,7 +3246,7 @@ def rowan_molecular_dynamics(
             if 'frames' in data and isinstance(data['frames'], list):
                 frames = data['frames']
                 num_frames = len(frames)
-                formatted += f"\n📊 **Trajectory Results:**\n"
+                formatted += f"\n **Trajectory Results:**\n"
                 formatted += f"   Total Frames: {num_frames}\n"
                 
                 if frames:
@@ -3330,7 +3272,7 @@ def rowan_molecular_dynamics(
                         formatted += f"   Average Volume: {avg_volume:.2f} Ų\n"
         
         # Status-specific guidance
-        formatted += f"\n💡 **Next Steps:**\n"
+        formatted += f"\n **Next Steps:**\n"
         if status == 2:  # Completed
             formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for full trajectory\n"
             formatted += f"• Trajectory contains {num_steps//save_interval} frames over {num_steps * timestep / 1000:.1f} ps\n"
@@ -3358,24 +3300,24 @@ def rowan_molecular_dynamics(
             formatted += f"• Check status: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
         
         # Add examples and guidance
-        formatted += f"\n📚 **MD Examples:**\n"
+        formatted += f"\n **MD Examples:**\n"
         formatted += f"• **Basic NVT**: rowan_molecular_dynamics('glucose_md', 'glucose', temperature=300)\n"
         formatted += f"• **NPT simulation**: rowan_molecular_dynamics('drug_npt', 'SMILES', ensemble='npt', pressure=1.0)\n"
         formatted += f"• **Long trajectory**: rowan_molecular_dynamics('protein_md', 'SMILES', num_steps=5000, timestep=0.5)\n"
         formatted += f"• **High-accuracy**: rowan_molecular_dynamics('accurate', 'SMILES', engine='aimnet2', num_steps=1000)\n"
         formatted += f"• **DFT forces**: rowan_molecular_dynamics('dft_md', 'SMILES', engine='psi4', method='b3lyp', basis_set='def2-svp')\n\n"
         
-        formatted += f"⚗️ **Ensemble Guide:**\n"
+        formatted += f" **Ensemble Guide:**\n"
         formatted += f"• **NVT**: Fixed volume, controlled temperature (most common)\n"
         formatted += f"• **NPT**: Fixed pressure, controlled temperature (realistic conditions)\n"
         formatted += f"• **NVE**: Energy conserving (microcanonical, for testing)\n\n"
         
-        formatted += f"🔬 **Engine Guide:**\n"
+        formatted += f" **Engine Guide:**\n"
         formatted += f"• **xTB**: Fastest, good for large systems and long MD (default)\n"
         formatted += f"• **AIMNet2**: Neural network, balance of speed and accuracy\n"
         formatted += f"• **Psi4**: Quantum chemistry, highest accuracy but slowest\n\n"
         
-        formatted += f"🕐 **Timescale Guide:**\n"
+        formatted += f" **Timescale Guide:**\n"
         formatted += f"• **Timestep**: 0.5-2.0 fs (smaller = more stable, slower)\n"
         formatted += f"• **Short MD**: 100-500 steps (0.1-1 ps) for quick sampling\n"
         formatted += f"• **Medium MD**: 1000-5000 steps (1-10 ps) for conformations\n"
@@ -3383,19 +3325,18 @@ def rowan_molecular_dynamics(
         
         return formatted
     else:
-        formatted = f"🚀 Molecular dynamics simulation for '{name}' submitted!\n\n"
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 SMILES: {canonical_smiles}\n"
-        formatted += f"📋 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
-        formatted += f"⚙️ Ensemble: {ensemble_lower.upper()}\n"
-        formatted += f"🌡️ Temperature: {temperature} K\n"
+        formatted = f" Molecular dynamics simulation for '{name}' submitted!\n\n"
+        formatted += f" Molecule: {molecule}\n"
+        formatted += f" SMILES: {canonical_smiles}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {result.get('status', 'Submitted')}\n"
+        formatted += f"⚙ Ensemble: {ensemble_lower.upper()}\n"
+        formatted += f"🌡 Temperature: {temperature} K\n"
         if ensemble_lower == "npt":
             formatted += f"🔘 Pressure: {pressure} atm\n"
-        formatted += f"⏱️ Steps: {num_steps:,} ({num_steps * timestep / 1000:.1f} ps)\n"
-        formatted += f"\n💡 Use rowan_workflow_management tools to check progress and retrieve trajectory\n"
+        formatted += f" Steps: {num_steps:,} ({num_steps * timestep / 1000:.1f} ps)\n"
+        formatted += f"\n Use rowan_workflow_management tools to check progress and retrieve trajectory\n"
         return formatted
-
 
 @mcp.tool()
 @log_mcp_call
@@ -3423,17 +3364,16 @@ def rowan_pka(
     
     pka_value = result.get("object_data", {}).get("strongest_acid")
     
-    formatted = f"✅ pKa calculation for '{name}' completed!\n\n"
-    formatted += f"🧪 Molecule: {molecule}\n"
-    formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
+    formatted = f" pKa calculation for '{name}' completed!\n\n"
+    formatted += f" Molecule: {molecule}\n"
+    formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
     
     if pka_value is not None:
         formatted += f"🧬 Strongest Acid pKa: {pka_value:.2f}\n"
     else:
-        formatted += "⚠️ pKa result not yet available\n"
+        formatted += " pKa result not yet available\n"
         
     return formatted
-
 
 @mcp.tool()
 @log_mcp_call
@@ -3464,8 +3404,8 @@ def rowan_conformers(
     
     # Log the expected wait time
     if blocking:
-        logger.info(f"🕐 Conformer search will wait up to {max_wait_time} seconds ({max_wait_time//60:.1f} minutes)")
-        logger.info(f"🔄 Checking progress every {ping_interval} seconds")
+        logger.info(f" Conformer search will wait up to {max_wait_time} seconds ({max_wait_time//60:.1f} minutes)")
+        logger.info(f" Checking progress every {ping_interval} seconds")
     
     result = log_rowan_api_call(
         workflow_type="conformer_search",
@@ -3483,16 +3423,16 @@ def rowan_conformers(
         status = result.get('status', result.get('object_status', 'Unknown'))
         
         if status == 2:  # Completed successfully
-            formatted = f"✅ Conformer search for '{name}' completed successfully!\n\n"
+            formatted = f" Conformer search for '{name}' completed successfully!\n\n"
         elif status == 3:  # Failed
-            formatted = f"❌ Conformer search for '{name}' failed!\n\n"
+            formatted = f" Conformer search for '{name}' failed!\n\n"
         else:
-            formatted = f"⚠️ Conformer search for '{name}' finished with status {status}\n\n"
+            formatted = f" Conformer search for '{name}' finished with status {status}\n\n"
             
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {status}\n"
-        formatted += f"🔄 Max Conformers: {max_conformers}\n"
+        formatted += f" Molecule: {molecule}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {status}\n"
+        formatted += f" Max Conformers: {max_conformers}\n"
         
         # Try to extract actual results
         if isinstance(result, dict) and 'object_data' in result and result['object_data']:
@@ -3501,7 +3441,7 @@ def rowan_conformers(
             # Count conformers found
             if 'conformers' in data:
                 conformer_count = len(data['conformers']) if isinstance(data['conformers'], list) else data.get('num_conformers', 'Unknown')
-                formatted += f"🎯 Generated Conformers: {conformer_count}\n"
+                formatted += f" Generated Conformers: {conformer_count}\n"
             
             # Energy information
             if 'energies' in data and isinstance(data['energies'], list) and data['energies']:
@@ -3509,35 +3449,34 @@ def rowan_conformers(
                 min_energy = min(energies)
                 max_energy = max(energies)
                 energy_range = max_energy - min_energy
-                formatted += f"⚡ Energy Range: {min_energy:.3f} to {max_energy:.3f} kcal/mol (Δ={energy_range:.3f})\n"
-                formatted += f"📊 Lowest Energy Conformer: {min_energy:.3f} kcal/mol\n"
+                formatted += f" Energy Range: {min_energy:.3f} to {max_energy:.3f} kcal/mol (Δ={energy_range:.3f})\n"
+                formatted += f" Lowest Energy Conformer: {min_energy:.3f} kcal/mol\n"
             
             # Additional properties if available
             if 'properties' in data:
                 props = data['properties']
-                formatted += f"🔬 Properties calculated: {', '.join(props.keys())}\n"
+                formatted += f" Properties calculated: {', '.join(props.keys())}\n"
         
         # Guidance based on results
         if status == 2:
-            formatted += f"\n💡 **Results Available:**\n"
+            formatted += f"\n **Results Available:**\n"
             formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed data\n"
             formatted += f"• Conformers are ranked by energy (lowest = most stable)\n"
         elif status == 3:
-            formatted += f"\n💡 **Troubleshooting:**\n"
+            formatted += f"\n **Troubleshooting:**\n"
             formatted += f"• Try reducing max_conformers (currently {max_conformers})\n"
             formatted += f"• Check if molecule SMILES is valid\n"
             formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for error details\n"
     else:
         # Non-blocking mode - just submission confirmation
-        formatted = f"🚀 Conformer search for '{name}' submitted!\n\n"
-        formatted += f"🧪 Molecule: {molecule}\n"
-        formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"📊 Status: {result.get('status', 'Submitted')}\n"
-        formatted += f"🔄 Max Conformers: {max_conformers}\n"
-        formatted += f"\n💡 Use rowan_workflow_management tools to check progress and retrieve results\n"
+        formatted = f" Conformer search for '{name}' submitted!\n\n"
+        formatted += f" Molecule: {molecule}\n"
+        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+        formatted += f" Status: {result.get('status', 'Submitted')}\n"
+        formatted += f" Max Conformers: {max_conformers}\n"
+        formatted += f"\n Use rowan_workflow_management tools to check progress and retrieve results\n"
     
     return formatted
-
 
 @mcp.tool()
 def rowan_folder_management(
@@ -3582,7 +3521,7 @@ def rowan_folder_management(
     try:
         if action == "create":
             if not name:
-                return "❌ Error: 'name' is required for creating a folder"
+                return " Error: 'name' is required for creating a folder"
             
             folder = rowan.Folder.create(
                 name=name,
@@ -3592,32 +3531,32 @@ def rowan_folder_management(
                 public=public or False
             )
             
-            formatted = f"✅ Folder '{name}' created successfully!\n\n"
+            formatted = f" Folder '{name}' created successfully!\n\n"
             formatted += f"📁 UUID: {folder.get('uuid', 'N/A')}\n"
-            formatted += f"📝 Notes: {notes or 'None'}\n"
+            formatted += f" Notes: {notes or 'None'}\n"
             if parent_uuid:
                 formatted += f"📂 Parent: {parent_uuid}\n"
             return formatted
             
         elif action == "retrieve":
             if not folder_uuid:
-                return "❌ Error: 'folder_uuid' is required for retrieving a folder"
+                return " Error: 'folder_uuid' is required for retrieving a folder"
             
             folder = rowan.Folder.retrieve(uuid=folder_uuid)
             
             formatted = f"📁 Folder Details:\n\n"
-            formatted += f"📝 Name: {folder.get('name', 'N/A')}\n"
+            formatted += f" Name: {folder.get('name', 'N/A')}\n"
             formatted += f"🆔 UUID: {folder.get('uuid', 'N/A')}\n"
             formatted += f"📂 Parent: {folder.get('parent_uuid', 'Root')}\n"
-            formatted += f"⭐ Starred: {'Yes' if folder.get('starred') else 'No'}\n"
-            formatted += f"🌐 Public: {'Yes' if folder.get('public') else 'No'}\n"
+            formatted += f" Starred: {'Yes' if folder.get('starred') else 'No'}\n"
+            formatted += f" Public: {'Yes' if folder.get('public') else 'No'}\n"
             formatted += f"📅 Created: {folder.get('created_at', 'N/A')}\n"
-            formatted += f"📝 Notes: {folder.get('notes', 'None')}\n"
+            formatted += f" Notes: {folder.get('notes', 'None')}\n"
             return formatted
             
         elif action == "update":
             if not folder_uuid:
-                return "❌ Error: 'folder_uuid' is required for updating a folder"
+                return " Error: 'folder_uuid' is required for updating a folder"
             
             # Build update parameters
             update_params = {"uuid": folder_uuid}
@@ -3634,19 +3573,19 @@ def rowan_folder_management(
                 
             folder = rowan.Folder.update(**update_params)
             
-            formatted = f"✅ Folder '{folder.get('name')}' updated successfully!\n\n"
+            formatted = f" Folder '{folder.get('name')}' updated successfully!\n\n"
             formatted += f"📁 UUID: {folder.get('uuid', 'N/A')}\n"
-            formatted += f"📝 Name: {folder.get('name', 'N/A')}\n"
-            formatted += f"⭐ Starred: {'Yes' if folder.get('starred') else 'No'}\n"
-            formatted += f"🌐 Public: {'Yes' if folder.get('public') else 'No'}\n"
+            formatted += f" Name: {folder.get('name', 'N/A')}\n"
+            formatted += f" Starred: {'Yes' if folder.get('starred') else 'No'}\n"
+            formatted += f" Public: {'Yes' if folder.get('public') else 'No'}\n"
             return formatted
             
         elif action == "delete":
             if not folder_uuid:
-                return "❌ Error: 'folder_uuid' is required for deleting a folder"
+                return " Error: 'folder_uuid' is required for deleting a folder"
             
             rowan.Folder.delete(uuid=folder_uuid)
-            return f"✅ Folder {folder_uuid} deleted successfully."
+            return f" Folder {folder_uuid} deleted successfully."
             
         elif action == "list":
             # Build filter parameters
@@ -3669,8 +3608,8 @@ def rowan_folder_management(
             
             formatted = f"📁 Found {len(folders)} folders (Page {page}/{num_pages}):\n\n"
             for folder in folders:
-                starred_icon = "⭐" if folder.get('starred') else "📁"
-                public_icon = "🌐" if folder.get('public') else "🔒"
+                starred_icon = "" if folder.get('starred') else "📁"
+                public_icon = "" if folder.get('public') else "🔒"
                 formatted += f"{starred_icon} {folder.get('name', 'Unnamed')} {public_icon}\n"
                 formatted += f"   UUID: {folder.get('uuid', 'N/A')}\n"
                 if folder.get('notes'):
@@ -3680,11 +3619,10 @@ def rowan_folder_management(
             return formatted
             
         else:
-            return f"❌ Error: Unknown action '{action}'. Available actions: create, retrieve, update, delete, list"
+            return f" Error: Unknown action '{action}'. Available actions: create, retrieve, update, delete, list"
             
     except Exception as e:
-        return f"❌ Error in folder {action}: {str(e)}"
-
+        return f" Error in folder {action}: {str(e)}"
 
 @mcp.tool()
 def rowan_workflow_management(
@@ -3744,7 +3682,7 @@ def rowan_workflow_management(
     try:
         if action == "create":
             if not all([name, workflow_type, initial_molecule]):
-                return "❌ Error: 'name', 'workflow_type', and 'initial_molecule' are required for creating a workflow"
+                return " Error: 'name', 'workflow_type', and 'initial_molecule' are required for creating a workflow"
             
             # Validate workflow type
             VALID_WORKFLOWS = {
@@ -3755,8 +3693,8 @@ def rowan_workflow_management(
             }
             
             if workflow_type not in VALID_WORKFLOWS:
-                error_msg = f"❌ Invalid workflow_type '{workflow_type}'.\n\n"
-                error_msg += "🔧 **Available Rowan Workflow Types:**\n"
+                error_msg = f" Invalid workflow_type '{workflow_type}'.\n\n"
+                error_msg += " **Available Rowan Workflow Types:**\n"
                 error_msg += f"{', '.join(sorted(VALID_WORKFLOWS))}"
                 return error_msg
             
@@ -3772,16 +3710,16 @@ def rowan_workflow_management(
                 workflow_data=workflow_data or {}
             )
             
-            formatted = f"✅ Workflow '{name}' created successfully!\n\n"
-            formatted += f"🔬 UUID: {workflow.get('uuid', 'N/A')}\n"
-            formatted += f"⚗️ Type: {workflow_type}\n"
-            formatted += f"📊 Status: {workflow.get('object_status', 'Unknown')}\n"
+            formatted = f" Workflow '{name}' created successfully!\n\n"
+            formatted += f" UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f" Type: {workflow_type}\n"
+            formatted += f" Status: {workflow.get('object_status', 'Unknown')}\n"
             formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
             return formatted
             
         elif action == "retrieve":
             if not workflow_uuid:
-                return "❌ Error: 'workflow_uuid' is required for retrieving a workflow"
+                return " Error: 'workflow_uuid' is required for retrieving a workflow"
             
             workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
             
@@ -3797,22 +3735,22 @@ def rowan_workflow_management(
             }
             status_name = status_names.get(status, f"Unknown ({status})")
             
-            formatted = f"🔬 Workflow Details:\n\n"
-            formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
+            formatted = f" Workflow Details:\n\n"
+            formatted += f" Name: {workflow.get('name', 'N/A')}\n"
             formatted += f"🆔 UUID: {workflow.get('uuid', 'N/A')}\n"
-            formatted += f"⚗️ Type: {workflow.get('object_type', 'N/A')}\n"
-            formatted += f"📊 Status: {status_name} ({status})\n"
+            formatted += f" Type: {workflow.get('object_type', 'N/A')}\n"
+            formatted += f" Status: {status_name} ({status})\n"
             formatted += f"📂 Parent: {workflow.get('parent_uuid', 'Root')}\n"
-            formatted += f"⭐ Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
-            formatted += f"🌐 Public: {'Yes' if workflow.get('public') else 'No'}\n"
+            formatted += f" Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
+            formatted += f" Public: {'Yes' if workflow.get('public') else 'No'}\n"
             formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
-            formatted += f"⏱️ Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
+            formatted += f" Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
             formatted += f"💰 Credits: {workflow.get('credits_charged', 0)}\n"
-            formatted += f"📝 Notes: {workflow.get('notes', 'None')}\n\n"
+            formatted += f" Notes: {workflow.get('notes', 'None')}\n\n"
             
             # If workflow is completed (status 2), automatically retrieve calculation results
             if status == 2:
-                formatted += f"✅ **Workflow Completed Successfully!**\n\n"
+                formatted += f" **Workflow Completed Successfully!**\n\n"
                 
                 # Try to retrieve calculation results
                 try:
@@ -3822,7 +3760,7 @@ def rowan_workflow_management(
                     workflow_type = workflow.get('object_type', '')
                     
                     if workflow_type == 'electronic_properties':
-                        formatted += f"🎯 **Electronic Properties Results:**\n\n"
+                        formatted += f" **Electronic Properties Results:**\n\n"
                         
                         # Extract key electronic properties from the result
                         object_data = calc_result.get('object_data', {})
@@ -3850,7 +3788,7 @@ def rowan_workflow_management(
                                             lumo_energy = energies[lumo_idx]
                                             gap = lumo_energy - homo_energy
                                             
-                                            formatted += f"🔋 **Molecular Orbitals:**\n"
+                                            formatted += f" **Molecular Orbitals:**\n"
                                             formatted += f"• HOMO Energy: {homo_energy:.4f} hartree ({homo_energy * 27.2114:.2f} eV)\n"
                                             formatted += f"• LUMO Energy: {lumo_energy:.4f} hartree ({lumo_energy * 27.2114:.2f} eV)\n"
                                             formatted += f"• HOMO-LUMO Gap: {gap:.4f} hartree ({gap * 27.2114:.2f} eV)\n\n"
@@ -3871,7 +3809,7 @@ def rowan_workflow_management(
                         if 'mulliken_charges' in object_data:
                             charges = object_data['mulliken_charges']
                             if isinstance(charges, list) and len(charges) > 0:
-                                formatted += f"⚡ **Mulliken Charges:**\n"
+                                formatted += f" **Mulliken Charges:**\n"
                                 for i, charge in enumerate(charges[:6]):  # Show first 6 atoms
                                     formatted += f"   Atom {i+1}: {charge:+.4f}\n"
                                 if len(charges) > 6:
@@ -3881,13 +3819,13 @@ def rowan_workflow_management(
                         # If no specific electronic properties found, show available keys
                         if not any(key in object_data for key in ['molecular_orbitals', 'dipole', 'mulliken_charges']):
                             if object_data:
-                                formatted += f"📋 **Available Properties:** {', '.join(object_data.keys())}\n\n"
+                                formatted += f" **Available Properties:** {', '.join(object_data.keys())}\n\n"
                             else:
-                                formatted += f"⚠️ **No electronic properties data found in results**\n\n"
+                                formatted += f" **No electronic properties data found in results**\n\n"
                     
                     else:
                         # For other workflow types, show general calculation results
-                        formatted += f"📊 **Calculation Results:**\n\n"
+                        formatted += f" **Calculation Results:**\n\n"
                         
                         object_data = calc_result.get('object_data', {})
                         if object_data:
@@ -3912,30 +3850,30 @@ def rowan_workflow_management(
                                 count += 1
                             formatted += "\n"
                         else:
-                            formatted += f"⚠️ **No calculation data found in results**\n\n"
+                            formatted += f" **No calculation data found in results**\n\n"
                     
-                    formatted += f"💡 **Additional Details:**\n"
+                    formatted += f" **Additional Details:**\n"
                     formatted += f"• Use rowan_calculation_retrieve('{workflow_uuid}') for raw calculation data\n"
                     
                 except Exception as retrieve_error:
-                    formatted += f"⚠️ **Results retrieval failed:** {str(retrieve_error)}\n"
-                    formatted += f"💡 Use rowan_calculation_retrieve('{workflow_uuid}') to manually get detailed results\n\n"
+                    formatted += f" **Results retrieval failed:** {str(retrieve_error)}\n"
+                    formatted += f" Use rowan_calculation_retrieve('{workflow_uuid}') to manually get detailed results\n\n"
             
             elif status == 3:  # Failed
-                formatted += f"❌ **Workflow Failed**\n\n"
-                formatted += f"💡 **Next Steps:**\n"
+                formatted += f" **Workflow Failed**\n\n"
+                formatted += f" **Next Steps:**\n"
                 formatted += f"• Check the workflow parameters and try again\n"
                 formatted += f"• Use rowan_calculation_retrieve('{workflow_uuid}') for error details\n"
             
             elif status in [0, 1, 5]:  # Queued, Running, or Awaiting Queue
-                formatted += f"⏳ **Workflow In Progress**\n\n"
-                formatted += f"💡 **Next Steps:**\n"
+                formatted += f" **Workflow In Progress**\n\n"
+                formatted += f" **Next Steps:**\n"
                 formatted += f"• Check back later - workflow is still {status_name.lower()}\n"
                 formatted += f"• Use rowan_workflow_management(action='status', workflow_uuid='{workflow_uuid}') to check status\n"
             
             elif status == 4:  # Stopped
-                formatted += f"⏹️ **Workflow Stopped**\n\n"
-                formatted += f"💡 **Next Steps:**\n"
+                formatted += f"⏹ **Workflow Stopped**\n\n"
+                formatted += f" **Next Steps:**\n"
                 formatted += f"• Workflow was manually stopped before completion\n"
                 formatted += f"• You may need to restart the calculation\n"
             
@@ -3943,7 +3881,7 @@ def rowan_workflow_management(
             
         elif action == "update":
             if not workflow_uuid:
-                return "❌ Error: 'workflow_uuid' is required for updating a workflow"
+                return " Error: 'workflow_uuid' is required for updating a workflow"
             
             # Build update parameters
             update_params = {"uuid": workflow_uuid}
@@ -3962,23 +3900,23 @@ def rowan_workflow_management(
                 
             workflow = rowan.Workflow.update(**update_params)
             
-            formatted = f"✅ Workflow '{workflow.get('name')}' updated successfully!\n\n"
-            formatted += f"🔬 UUID: {workflow.get('uuid', 'N/A')}\n"
-            formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
-            formatted += f"⭐ Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
-            formatted += f"🌐 Public: {'Yes' if workflow.get('public') else 'No'}\n"
+            formatted = f" Workflow '{workflow.get('name')}' updated successfully!\n\n"
+            formatted += f" UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f" Name: {workflow.get('name', 'N/A')}\n"
+            formatted += f" Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
+            formatted += f" Public: {'Yes' if workflow.get('public') else 'No'}\n"
             return formatted
             
         elif action == "stop":
             if not workflow_uuid:
-                return "❌ Error: 'workflow_uuid' is required for stopping a workflow"
+                return " Error: 'workflow_uuid' is required for stopping a workflow"
             
             rowan.Workflow.stop(uuid=workflow_uuid)
-            return f"⏹️ Workflow {workflow_uuid} stopped successfully."
+            return f"⏹ Workflow {workflow_uuid} stopped successfully."
             
         elif action == "status":
             if not workflow_uuid:
-                return "❌ Error: 'workflow_uuid' is required for checking workflow status"
+                return " Error: 'workflow_uuid' is required for checking workflow status"
             
             status = rowan.Workflow.status(uuid=workflow_uuid)
             
@@ -3993,28 +3931,28 @@ def rowan_workflow_management(
             
             status_name = status_names.get(status, f"Unknown ({status})")
             
-            formatted = f"📊 Workflow Status:\n\n"
+            formatted = f" Workflow Status:\n\n"
             formatted += f"🆔 UUID: {workflow_uuid}\n"
-            formatted += f"📈 Status: {status_name} ({status})\n"
+            formatted += f" Status: {status_name} ({status})\n"
             return formatted
             
         elif action == "is_finished":
             if not workflow_uuid:
-                return "❌ Error: 'workflow_uuid' is required for checking if workflow is finished"
+                return " Error: 'workflow_uuid' is required for checking if workflow is finished"
             
             is_finished = rowan.Workflow.is_finished(uuid=workflow_uuid)
             
-            formatted = f"✅ Workflow Status:\n\n"
+            formatted = f" Workflow Status:\n\n"
             formatted += f"🆔 UUID: {workflow_uuid}\n"
             formatted += f"🏁 Finished: {'Yes' if is_finished else 'No'}\n"
             return formatted
             
         elif action == "delete":
             if not workflow_uuid:
-                return "❌ Error: 'workflow_uuid' is required for deleting a workflow"
+                return " Error: 'workflow_uuid' is required for deleting a workflow"
             
             rowan.Workflow.delete(uuid=workflow_uuid)
-            return f"🗑️ Workflow {workflow_uuid} deleted successfully."
+            return f" Workflow {workflow_uuid} deleted successfully."
             
         elif action == "list":
             # Build filter parameters
@@ -4037,15 +3975,15 @@ def rowan_workflow_management(
             num_pages = result.get("num_pages", 1)
             
             if not workflows:
-                return "🔬 No workflows found matching criteria."
+                return " No workflows found matching criteria."
             
-            status_names = {0: "⏳", 1: "🔄", 2: "✅", 3: "❌", 4: "⏹️", 5: "⏸️"}
+            status_names = {0: "", 1: "", 2: "", 3: "", 4: "⏹", 5: "⏸"}
             
-            formatted = f"🔬 Found {len(workflows)} workflows (Page {page}/{num_pages}):\n\n"
+            formatted = f" Found {len(workflows)} workflows (Page {page}/{num_pages}):\n\n"
             for workflow in workflows:
                 status_icon = status_names.get(workflow.get('object_status'), "❓")
-                starred_icon = "⭐" if workflow.get('starred') else ""
-                public_icon = "🌐" if workflow.get('public') else ""
+                starred_icon = "" if workflow.get('starred') else ""
+                public_icon = "" if workflow.get('public') else ""
                 
                 formatted += f"{status_icon} {workflow.get('name', 'Unnamed')} {starred_icon}{public_icon}\n"
                 formatted += f"   Type: {workflow.get('object_type', 'N/A')}\n"
@@ -4058,11 +3996,10 @@ def rowan_workflow_management(
             return formatted
             
         else:
-            return f"❌ Error: Unknown action '{action}'. Available actions: create, retrieve, update, stop, status, is_finished, delete, list"
+            return f" Error: Unknown action '{action}'. Available actions: create, retrieve, update, stop, status, is_finished, delete, list"
             
     except Exception as e:
-        return f"❌ Error in workflow {action}: {str(e)}"
-
+        return f" Error in workflow {action}: {str(e)}"
 
 @mcp.tool()
 def rowan_calculation_retrieve(calculation_uuid: str) -> str:
@@ -4077,15 +4014,15 @@ def rowan_calculation_retrieve(calculation_uuid: str) -> str:
     try:
         calculation = rowan.Calculation.retrieve(uuid=calculation_uuid)
         
-        formatted = f"⚙️ Calculation Details:\n\n"
-        formatted += f"📝 Name: {calculation.get('name', 'N/A')}\n"
+        formatted = f"⚙ Calculation Details:\n\n"
+        formatted += f" Name: {calculation.get('name', 'N/A')}\n"
         formatted += f"🆔 UUID: {calculation_uuid}\n"
-        formatted += f"📊 Status: {calculation.get('status', 'Unknown')}\n"
-        formatted += f"⏱️ Elapsed: {calculation.get('elapsed', 0):.3f}s\n"
+        formatted += f" Status: {calculation.get('status', 'Unknown')}\n"
+        formatted += f" Elapsed: {calculation.get('elapsed', 0):.3f}s\n"
         
         settings = calculation.get('settings', {})
         if settings:
-            formatted += f"\n⚙️ Settings:\n"
+            formatted += f"\n⚙ Settings:\n"
             formatted += f"   Method: {settings.get('method', 'N/A')}\n"
             if settings.get('basis_set'):
                 formatted += f"   Basis Set: {settings.get('basis_set')}\n"
@@ -4094,13 +4031,12 @@ def rowan_calculation_retrieve(calculation_uuid: str) -> str:
         
         molecules = calculation.get('molecules', [])
         if molecules:
-            formatted += f"\n🧪 Molecules: {len(molecules)} structure(s)\n"
+            formatted += f"\n Molecules: {len(molecules)} structure(s)\n"
         
         return formatted
         
     except Exception as e:
-        return f"❌ Error retrieving calculation: {str(e)}"
-
+        return f" Error retrieving calculation: {str(e)}"
 
 @mcp.tool()
 def rowan_docking(
@@ -4164,18 +4100,18 @@ def rowan_docking(
                 result = rowan.compute(**compute_kwargs)
                 
                 # Format result for display
-                formatted = f"✅ Docking calculation '{name}' completed successfully!\n\n"
-                formatted += f"🔬 Job UUID: {result.get('uuid', 'N/A')}\n"
-                formatted += f"📊 Status: {result.get('status', 'Unknown')}\n"
+                formatted = f" Docking calculation '{name}' completed successfully!\n\n"
+                formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+                formatted += f" Status: {result.get('status', 'Unknown')}\n"
                 formatted += f"🧬 Approach: {approach_name}\n"
                 formatted += f"🧬 Protein: {protein[:50]}{'...' if len(protein) > 50 else ''}\n"
                 formatted += f"💊 Ligand: {ligand}\n"
                 
                 docking_data = result.get("object_data", {})
                 if "binding_affinity" in docking_data:
-                    formatted += f"🔗 Binding Affinity: {docking_data['binding_affinity']:.2f} kcal/mol\n"
+                    formatted += f" Binding Affinity: {docking_data['binding_affinity']:.2f} kcal/mol\n"
                 if "poses" in docking_data:
-                    formatted += f"📐 Poses Generated: {len(docking_data['poses'])}\n"
+                    formatted += f" Poses Generated: {len(docking_data['poses'])}\n"
                 
                 return formatted
                 
@@ -4184,8 +4120,8 @@ def rowan_docking(
                 continue
         
         # If all approaches failed, provide helpful guidance
-        error_msg = f"❌ Docking failed with all approaches. Last error: {str(last_error)}\n\n"
-        error_msg += "🔧 **Troubleshooting Protein-Ligand Docking:**\n\n"
+        error_msg = f" Docking failed with all approaches. Last error: {str(last_error)}\n\n"
+        error_msg += " **Troubleshooting Protein-Ligand Docking:**\n\n"
         error_msg += "**For protein input, try:**\n"
         error_msg += "• PDB ID (4 characters): `1ABC`\n"
         error_msg += "• Direct PDB file content\n\n"
@@ -4202,8 +4138,7 @@ def rowan_docking(
         return error_msg
         
     except Exception as e:
-        return f"❌ Error running docking: {str(e)}"
-
+        return f" Error running docking: {str(e)}"
 
 @mcp.tool()
 def rowan_system_management(
@@ -4231,13 +4166,13 @@ def rowan_system_management(
     
     try:
         if action == "help":
-            result = "🔬 **Available Rowan MCP Tools** 🔬\n\n"
+            result = " **Available Rowan MCP Tools** \n\n"
             
             result += "✨ **Now with unified management tools!**\n"
             result += "Each tool has tailored documentation and parameters.\n\n"
             
             # Group by common use cases
-            result += "**🔬 Quantum Chemistry & Basic Calculations:**\n"
+            result += "** Quantum Chemistry & Basic Calculations:**\n"
             result += "• `rowan_qc_guide` - Comprehensive quantum chemistry guidance\n"
             result += "• `rowan_quantum_chemistry` - Unified QC tool (smart defaults + full customization)\n"
             result += "• `rowan_electronic_properties` - HOMO/LUMO, orbitals\n"
@@ -4248,17 +4183,17 @@ def rowan_system_management(
             result += "• `rowan_tautomers` - Tautomer enumeration\n"
             result += "• `rowan_descriptors` - Molecular descriptors for ML\n\n"
             
-            result += "**⚗️ Chemical Properties:**\n"
+            result += "** Chemical Properties:**\n"
             result += "• `rowan_pka` - pKa prediction\n"
             result += "• `rowan_redox_potential` - Redox potentials vs SCE\n"
             result += "• `rowan_bde` - Bond dissociation energies\n"
             result += "• `rowan_solubility` - Solubility prediction\n\n"
             
-            result += "**🧪 Drug Discovery:**\n"
+            result += "** Drug Discovery:**\n"
             result += "• `rowan_admet` - ADME-Tox properties\n"
             result += "• `rowan_docking` - Protein-ligand docking\n\n"
             
-            result += "**🔬 Advanced Analysis:**\n"
+            result += "** Advanced Analysis:**\n"
             result += "• `rowan_scan` - Potential energy surface scans (bond/angle/dihedral)\n"
             result += "• `rowan_fukui` - Reactivity analysis\n"
             result += "• `rowan_spin_states` - Spin state preferences\n"
@@ -4266,7 +4201,7 @@ def rowan_system_management(
             result += "• `rowan_molecular_dynamics` - MD simulations\n"
             result += "• `rowan_hydrogen_bond_basicity` - H-bond strength\n\n"
             
-            result += "💡 **Usage Guidelines:**\n"
+            result += " **Usage Guidelines:**\n"
             result += "• For geometry optimization: use `rowan_multistage_opt`\n"
             result += "• For energy calculations: use `rowan_quantum_chemistry` (smart defaults)\n"
             result += "• For custom QC settings: use `rowan_quantum_chemistry` with parameters\n"
@@ -4277,35 +4212,35 @@ def rowan_system_management(
             result += "• For reaction mechanisms: use `rowan_scan` then `rowan_irc`\n"
             result += "• For potential energy scans: use `rowan_scan` with coordinate specification\n\n"
             
-            result += "**🗂️ Management Tools:**\n"
+            result += "** Management Tools:**\n"
             result += "• `rowan_folder_management` - Unified folder operations (create, retrieve, update, delete, list)\n"
             result += "• `rowan_workflow_management` - Unified workflow operations (create, retrieve, update, stop, status, delete, list)\n"
             result += "• `rowan_system_management` - System utilities (help, set_log_level, job_redirect)\n\n"
             
-            result += "📋 **Total Available:** 15+ specialized tools + 3 unified management tools\n"
-            result += "🔗 **Each tool has specific documentation - check individual tool descriptions**\n"
-            result += "💡 **Management tools use 'action' parameter to specify operation**\n"
+            result += " **Total Available:** 15+ specialized tools + 3 unified management tools\n"
+            result += " **Each tool has specific documentation - check individual tool descriptions**\n"
+            result += " **Management tools use 'action' parameter to specify operation**\n"
             
             return result
             
         elif action == "set_log_level":
             if not log_level:
-                return "❌ Error: 'log_level' is required for set_log_level action"
+                return " Error: 'log_level' is required for set_log_level action"
             
             valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR"]
             log_level = log_level.upper()
             
             if log_level not in valid_levels:
-                return f"❌ Invalid log level. Use one of: {', '.join(valid_levels)}"
+                return f" Invalid log level. Use one of: {', '.join(valid_levels)}"
             
             logger.setLevel(getattr(logging, log_level))
-            logger.info(f"📊 Log level changed to: {log_level}")
+            logger.info(f" Log level changed to: {log_level}")
             
-            return f"✅ Log level set to {log_level}"
+            return f" Log level set to {log_level}"
             
         elif action == "job_redirect":
             if not job_uuid:
-                return "❌ Error: 'job_uuid' is required for job_redirect action"
+                return " Error: 'job_uuid' is required for job_redirect action"
             
             # Try to treat the job_uuid as a workflow_uuid and retrieve results directly
             try:
@@ -4323,15 +4258,15 @@ def rowan_system_management(
                 }
                 status_name = status_names.get(status, f"Unknown ({status})")
                 
-                formatted = f"✅ **Found Workflow {job_uuid}:**\n\n"
-                formatted += f"📝 Name: {workflow.get('name', 'N/A')}\n"
-                formatted += f"⚗️ Type: {workflow.get('object_type', 'N/A')}\n"
-                formatted += f"📊 Status: {status_name} ({status})\n"
+                formatted = f" **Found Workflow {job_uuid}:**\n\n"
+                formatted += f" Name: {workflow.get('name', 'N/A')}\n"
+                formatted += f" Type: {workflow.get('object_type', 'N/A')}\n"
+                formatted += f" Status: {status_name} ({status})\n"
                 formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
-                formatted += f"⏱️ Elapsed: {workflow.get('elapsed', 0):.2f}s\n\n"
+                formatted += f" Elapsed: {workflow.get('elapsed', 0):.2f}s\n\n"
                 
                 if status == 2:  # Completed
-                    formatted += f"🎯 **Getting Results...**\n\n"
+                    formatted += f" **Getting Results...**\n\n"
                     
                     # Try to retrieve calculation results
                     try:
@@ -4341,7 +4276,7 @@ def rowan_system_management(
                         workflow_type = workflow.get('object_type', '')
                         
                         if workflow_type == 'electronic_properties':
-                            formatted += f"🔋 **Electronic Properties Results:**\n\n"
+                            formatted += f" **Electronic Properties Results:**\n\n"
                             
                             # Extract key electronic properties from the result
                             object_data = calc_result.get('object_data', {})
@@ -4384,13 +4319,13 @@ def rowan_system_management(
                             # If no specific electronic properties found, show available keys
                             if not any(key in object_data for key in ['molecular_orbitals', 'dipole']):
                                 if object_data:
-                                    formatted += f"📋 **Available Properties:** {', '.join(object_data.keys())}\n\n"
+                                    formatted += f" **Available Properties:** {', '.join(object_data.keys())}\n\n"
                                 else:
-                                    formatted += f"⚠️ **No electronic properties data found in results**\n\n"
+                                    formatted += f" **No electronic properties data found in results**\n\n"
                         
                         else:
                             # For other workflow types, show general calculation results
-                            formatted += f"📊 **{workflow_type.replace('_', ' ').title()} Results:**\n\n"
+                            formatted += f" **{workflow_type.replace('_', ' ').title()} Results:**\n\n"
                             
                             object_data = calc_result.get('object_data', {})
                             if object_data:
@@ -4415,20 +4350,20 @@ def rowan_system_management(
                                     count += 1
                                 formatted += "\n"
                             else:
-                                formatted += f"⚠️ **No calculation data found in results**\n\n"
+                                formatted += f" **No calculation data found in results**\n\n"
                         
                     except Exception as retrieve_error:
-                        formatted += f"⚠️ **Results retrieval failed:** {str(retrieve_error)}\n\n"
+                        formatted += f" **Results retrieval failed:** {str(retrieve_error)}\n\n"
                 
                 elif status in [0, 1, 5]:  # Still running
-                    formatted += f"⏳ **Workflow is still {status_name.lower()}**\n"
-                    formatted += f"💡 Check back later for results\n\n"
+                    formatted += f" **Workflow is still {status_name.lower()}**\n"
+                    formatted += f" Check back later for results\n\n"
                 
                 elif status == 3:  # Failed
-                    formatted += f"❌ **Workflow failed**\n"
-                    formatted += f"💡 Check the workflow parameters and try again\n\n"
+                    formatted += f" **Workflow failed**\n"
+                    formatted += f" Check the workflow parameters and try again\n\n"
                 
-                formatted += f"💡 **For more details:**\n"
+                formatted += f" **For more details:**\n"
                 formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{job_uuid}') for full workflow details\n"
                 formatted += f"• Use rowan_calculation_retrieve('{job_uuid}') for raw calculation data\n"
                 
@@ -4436,39 +4371,37 @@ def rowan_system_management(
                 
             except Exception as e:
                 # If workflow retrieval fails, provide the legacy guidance
-                formatted = f"❌ **Could not find workflow {job_uuid}:** {str(e)}\n\n"
-                formatted += f"⚠️ **Important Note:**\n"
+                formatted = f" **Could not find workflow {job_uuid}:** {str(e)}\n\n"
+                formatted += f" **Important Note:**\n"
                 formatted += f"Rowan manages computations through workflows, not individual jobs.\n"
                 formatted += f"The job/results concept is legacy from older versions.\n\n"
-                formatted += f"💡 **To find your workflow:**\n"
+                formatted += f" **To find your workflow:**\n"
                 formatted += f"• Use rowan_workflow_management(action='list') to see all workflows\n"
                 formatted += f"• Look for workflows with similar names or recent creation times\n"
                 formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='UUID') to get results\n\n"
-                formatted += f"🔄 **Migration Guide:**\n"
+                formatted += f" **Migration Guide:**\n"
                 formatted += f"• Old: rowan_job_status('{job_uuid}') → New: rowan_workflow_management(action='status', workflow_uuid='UUID')\n"
                 formatted += f"• Old: rowan_job_results('{job_uuid}') → New: rowan_workflow_management(action='retrieve', workflow_uuid='UUID')\n"
                 
                 return formatted
             
         else:
-            return f"❌ Error: Unknown action '{action}'. Available actions: help, set_log_level, job_redirect"
+            return f" Error: Unknown action '{action}'. Available actions: help, set_log_level, job_redirect"
             
     except Exception as e:
-        return f"❌ Error in system {action}: {str(e)}"
-
+        return f" Error in system {action}: {str(e)}"
 
 def main() -> None:
     """Main entry point for the MCP server."""
     try:
-        logger.info("🚀 Starting Rowan MCP Server...")
-        logger.info(f"📊 Log level: {logger.level}")
+        logger.info(f" Log level: {logger.level}")
         logger.info(f"📁 Log file: rowan_mcp.log")
-        logger.info(f"🔑 API Key loaded: {'✅' if api_key else '❌'}")
-        logger.info("🔗 Server ready for MCP connections!")
+        logger.info(f"🔑 API Key loaded: {'' if api_key else ''}")
+        logger.info(" Server ready for MCP connections!")
         
-        print("🚀 Rowan MCP Server starting...")
-        print("📝 Logging enabled - check rowan_mcp.log for detailed logs")
-        print(f"🔑 API Key: {'✅ Loaded' if api_key else '❌ Missing'}")
+        print(" Rowan MCP Server starting...")
+        print(" Logging enabled - check rowan_mcp.log for detailed logs")
+        print(f"🔑 API Key: {' Loaded' if api_key else ' Missing'}")
         
         mcp.run()
         
@@ -4476,11 +4409,10 @@ def main() -> None:
         logger.info("👋 Server shutdown requested by user")
         print("\n👋 Server shutdown requested by user")
     except Exception as e:
-        logger.error(f"❌ Server startup error: {e}")
+        logger.error(f" Server startup error: {e}")
         logger.error(f"📍 Traceback:\n{traceback.format_exc()}")
-        print(f"❌ Server error: {e}")
-        print("📝 Check rowan_mcp.log for detailed error information")
-
+        print(f" Server error: {e}")
+        print(" Check rowan_mcp.log for detailed error information")
 
 if __name__ == "__main__":
     main() 

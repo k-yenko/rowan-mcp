@@ -9134,3 +9134,228 @@ Cl    0.000000   -2.280000    0.000000'
 2025-06-29 13:14:54,759 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/c7dd0424-da4e-428f-a0ed-c4ac26e73b80 "HTTP/1.1 200 OK"
 2025-06-29 13:14:54,761 - server - INFO - 📊 Retrieved scan status via API: 0
 2025-06-29 13:14:54,761 - server - INFO - ✅ rowan_scan completed successfully in 0.95s
+2025-06-29 16:34:01,553 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 16:34:01,588 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 16:34:01,588 - server - INFO - 🔗 Rowan API key configured
+2025-06-29 16:34:01,600 - server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 16:34:01,600 - server - INFO - 📝 Parameters: {'name': 'reinforced_scan_test', 'molecule': 'CC', 'coordinate_type': 'bond', 'atoms': [1, 2], 'start': 1.4, 'stop': 1.8, 'num': 3}
+2025-06-29 16:34:01,600 - server - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-29 16:34:01,600 - server - INFO - 🚀 Using default method 'hf-3c' for scan (recommended for speed)
+2025-06-29 16:34:01,600 - server - INFO - 🚀 Using default engine 'psi4' for scan (required by Rowan)
+2025-06-29 16:34:01,600 - server - INFO - 🚀 Using default mode 'rapid' for scan (good balance)
+2025-06-29 16:34:01,600 - server - INFO - 🔬 PES Scan Debug:
+2025-06-29 16:34:01,600 - server - INFO -    Name: reinforced_scan_test
+2025-06-29 16:34:01,600 - server - INFO -    Input: CC
+2025-06-29 16:34:01,600 - server - INFO -    Using SMILES: CC
+2025-06-29 16:34:01,600 - server - INFO -    Primary Coordinate: bond
+2025-06-29 16:34:01,600 - server - INFO -    Primary Atoms: [1, 2]
+2025-06-29 16:34:01,600 - server - INFO -    Primary Range: 1.4 to 1.8 in 3 steps
+2025-06-29 16:34:01,600 - server - INFO -    Method: hf-3c
+2025-06-29 16:34:01,600 - server - INFO -    Basis Set: auto-selected
+2025-06-29 16:34:01,601 - server - INFO -    Engine: psi4
+2025-06-29 16:34:01,601 - server - INFO -    Mode: rapid
+2025-06-29 16:34:01,601 - server - INFO -    Wavefront Propagation: True
+2025-06-29 16:34:01,601 - server - INFO - ✅ Primary scan_settings built: type='bond', atoms=[1, 2], range=1.4→1.8, num=3
+2025-06-29 16:34:01,601 - server - INFO - ✅ Single scan_settings configured: {'type': 'bond', 'atoms': [1, 2], 'start': 1.4, 'stop': 1.8, 'num': 3}
+2025-06-29 16:34:01,601 - server - INFO - ✅ Required ScanWorkflow parameters guaranteed: calc_settings={'method': 'hf-3c', 'mode': 'rapid'}, calc_engine=psi4
+2025-06-29 16:34:01,601 - server - INFO - 🌐 Rowan API Call: scan
+2025-06-29 16:34:01,601 - server - INFO - 🔍 Rowan Parameters: {'name': 'reinforced_scan_test', 'molecule': 'CC', 'folder_uuid': None, 'blocking': True, 'ping_interval': 10, 'scan_settings': {'type': 'bond', 'atoms': [1, 2], 'start': 1.4, 'stop': 1.8, 'num': 3}, 'wavefront_propagation': True, 'calc_settings': {'method': 'hf-3c', 'mode': 'rapid'}, 'calc_engine': 'psi4'}
+2025-06-29 16:34:02,359 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 16:34:02,778 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:34:13,164 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:34:23,531 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:34:33,894 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:34:44,263 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:34:54,659 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:35:05,064 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:35:15,465 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:35:25,915 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:35:36,395 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:35:46,797 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:35:57,238 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:36:07,664 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:36:18,031 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:36:28,758 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:36:39,253 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:36:50,015 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:36:50,403 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:36:50,405 - server - INFO - 🎯 Rowan API submission successful: scan (168.80s)
+2025-06-29 16:36:50,405 - server - INFO - 📋 Job UUID: 4b1f6847-edcc-437c-b8cb-ee83742097d1
+2025-06-29 16:36:50,406 - server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 16:36:50,791 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/4b1f6847-edcc-437c-b8cb-ee83742097d1 "HTTP/1.1 200 OK"
+2025-06-29 16:36:50,793 - server - INFO - 📊 Retrieved scan status via API: 2
+2025-06-29 16:36:50,793 - server - INFO - ✅ rowan_scan completed successfully in 169.19s
+2025-06-29 16:37:41,026 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 16:37:41,058 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 16:37:41,058 - server - INFO - 🔗 Rowan API key configured
+2025-06-29 16:37:41,071 - server - INFO - 🔧 MCP Tool Called: rowan_scan
+2025-06-29 16:37:41,071 - server - INFO - 📝 Parameters: {'name': 'string_atoms_test', 'molecule': 'OO', 'coordinate_type': 'dihedral', 'atoms': '1,2,3,4', 'start': 0, 'stop': 180, 'num': 3, 'blocking': False}
+2025-06-29 16:37:41,071 - server - WARNING - ⚠️ No SMILES found for 'OO', using as-is
+2025-06-29 16:37:41,071 - server - INFO - 🔍 Parsed atom string '[1, 2, 3, 4]' to list: [1, 2, 3, 4]
+2025-06-29 16:37:41,071 - server - INFO - 🚀 Using default method 'hf-3c' for scan (recommended for speed)
+2025-06-29 16:37:41,072 - server - INFO - 🚀 Using default engine 'psi4' for scan (required by Rowan)
+2025-06-29 16:37:41,072 - server - INFO - 🚀 Using default mode 'rapid' for scan (good balance)
+2025-06-29 16:37:41,072 - server - INFO - 🔬 PES Scan Debug:
+2025-06-29 16:37:41,072 - server - INFO -    Name: string_atoms_test
+2025-06-29 16:37:41,072 - server - INFO -    Input: OO
+2025-06-29 16:37:41,072 - server - INFO -    Using SMILES: OO
+2025-06-29 16:37:41,072 - server - INFO -    Primary Coordinate: dihedral
+2025-06-29 16:37:41,072 - server - INFO -    Primary Atoms: [1, 2, 3, 4]
+2025-06-29 16:37:41,072 - server - INFO -    Primary Range: 0 to 180 in 3 steps
+2025-06-29 16:37:41,072 - server - INFO -    Method: hf-3c
+2025-06-29 16:37:41,072 - server - INFO -    Basis Set: auto-selected
+2025-06-29 16:37:41,072 - server - INFO -    Engine: psi4
+2025-06-29 16:37:41,072 - server - INFO -    Mode: rapid
+2025-06-29 16:37:41,072 - server - INFO -    Wavefront Propagation: True
+2025-06-29 16:37:41,072 - server - INFO - ✅ Primary scan_settings built: type='dihedral', atoms=[1, 2, 3, 4], range=0→180, num=3
+2025-06-29 16:37:41,072 - server - INFO - ✅ Single scan_settings configured: {'type': 'dihedral', 'atoms': [1, 2, 3, 4], 'start': 0.0, 'stop': 180.0, 'num': 3}
+2025-06-29 16:37:41,072 - server - INFO - ✅ Required ScanWorkflow parameters guaranteed: calc_settings={'method': 'hf-3c', 'mode': 'rapid'}, calc_engine=psi4
+2025-06-29 16:37:41,072 - server - INFO - 🌐 Rowan API Call: scan
+2025-06-29 16:37:41,072 - server - INFO - 🔍 Rowan Parameters: {'name': 'string_atoms_test', 'molecule': 'OO', 'folder_uuid': None, 'blocking': False, 'ping_interval': 10, 'scan_settings': {'type': 'dihedral', 'atoms': [1, 2, 3, 4], 'start': 0.0, 'stop': 180.0, 'num': 3}, 'wavefront_propagation': True, 'calc_settings': {'method': 'hf-3c', 'mode': 'rapid'}, 'calc_engine': 'psi4'}
+2025-06-29 16:37:41,782 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 16:37:41,783 - server - INFO - 🎯 Rowan API submission successful: scan (0.71s)
+2025-06-29 16:37:41,783 - server - INFO - 📋 Job UUID: 7010d1b2-b8f5-45b8-acdf-f0077462900a
+2025-06-29 16:37:41,783 - server - INFO - 📊 Job Status: Unknown (None) (None)
+2025-06-29 16:37:42,192 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/7010d1b2-b8f5-45b8-acdf-f0077462900a "HTTP/1.1 200 OK"
+2025-06-29 16:37:42,193 - server - INFO - 📊 Retrieved scan status via API: 0
+2025-06-29 16:37:42,193 - server - INFO - ✅ rowan_scan completed successfully in 1.12s
+2025-06-29 16:55:27,948 - server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 16:55:27,977 - server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 16:55:27,977 - server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:12:41,891 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:12:41,919 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:12:41,920 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:16:30,451 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:16:30,481 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:16:30,482 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:16:36,665 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:16:36,668 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:16:36,668 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:18:53,379 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:18:53,407 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:18:53,407 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:19:38,942 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:19:38,980 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:19:38,980 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:19:54,447 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:19:54,450 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:19:54,450 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:19:54,460 - src.functions.scan - WARNING - ⚠️ No SMILES found for 'CC', using as-is
+2025-06-29 17:19:54,461 - src.functions.scan - INFO - 🚀 Using default method 'hf-3c' for scan (recommended for speed)
+2025-06-29 17:19:54,461 - src.functions.scan - INFO - 🚀 Using default engine 'psi4' for scan (required by Rowan)
+2025-06-29 17:19:54,461 - src.functions.scan - INFO - 🚀 Using default mode 'rapid' for scan (good balance)
+2025-06-29 17:19:54,461 - src.functions.scan - INFO - 🔬 PES Scan Debug:
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Name: test_scan
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Input: CC
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Using SMILES: CC
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Primary Coordinate: dihedral
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Primary Atoms: [1, 2, 3, 4]
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Primary Range: 0 to 180 in 10 steps
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Method: hf-3c
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Basis Set: auto-selected
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Engine: psi4
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Mode: rapid
+2025-06-29 17:19:54,461 - src.functions.scan - INFO -    Wavefront Propagation: True
+2025-06-29 17:19:54,461 - src.functions.scan - INFO - ✅ Primary scan_settings built: type='dihedral', atoms=[1, 2, 3, 4], range=0→180, num=10
+2025-06-29 17:19:54,461 - src.functions.scan - INFO - ✅ Single scan_settings configured: {'type': 'dihedral', 'atoms': [1, 2, 3, 4], 'start': 0.0, 'stop': 180.0, 'num': 10}
+2025-06-29 17:19:54,461 - src.functions.scan - INFO - ✅ Required ScanWorkflow parameters guaranteed: calc_settings={'method': 'hf-3c', 'mode': 'rapid'}, calc_engine=psi4
+2025-06-29 17:19:55,203 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-06-29 17:19:55,571 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/d67b3222-8441-47ec-9991-cb0f62593773 "HTTP/1.1 200 OK"
+2025-06-29 17:19:55,585 - src.functions.scan - INFO - 📊 Retrieved scan status via API: 0
+2025-06-29 17:26:38,457 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:26:38,488 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:26:38,489 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:26:46,671 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:26:46,674 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:26:46,674 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:26:57,482 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:26:57,486 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:26:57,486 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:27:13,997 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:27:14,019 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:27:14,019 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:27:26,012 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:27:26,017 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:27:26,017 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:27:35,925 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:27:35,929 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:27:35,929 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:27:53,729 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:27:53,750 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:27:53,750 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:41:33,362 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:41:33,391 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:41:33,391 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:41:33,392 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_admet
+2025-06-29 17:41:33,394 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_bde
+2025-06-29 17:41:33,395 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_multistage_opt
+2025-06-29 17:41:33,397 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_descriptors
+2025-06-29 17:41:33,399 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_redox_potential
+2025-06-29 17:41:33,401 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_scan_analyzer
+2025-06-29 17:41:33,403 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_tautomers
+2025-06-29 17:41:33,404 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_hydrogen_bond_basicity
+2025-06-29 17:41:33,405 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_conformers
+2025-06-29 17:43:37,485 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:43:37,549 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:43:37,550 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:43:37,552 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_redox_potential
+2025-06-29 17:43:37,555 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_scan_analyzer
+2025-06-29 17:43:37,557 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_tautomers
+2025-06-29 17:43:37,558 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_hydrogen_bond_basicity
+2025-06-29 17:43:37,560 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_conformers
+2025-06-29 17:43:55,736 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:43:55,742 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:43:55,742 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:43:55,744 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_redox_potential
+2025-06-29 17:43:55,747 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_scan_analyzer
+2025-06-29 17:43:55,749 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_tautomers
+2025-06-29 17:43:55,750 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_hydrogen_bond_basicity
+2025-06-29 17:43:55,751 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_conformers
+2025-06-29 17:51:22,603 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:51:22,635 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:51:22,635 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:51:22,637 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_redox_potential
+2025-06-29 17:51:22,640 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_scan_analyzer
+2025-06-29 17:51:22,643 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_tautomers
+2025-06-29 17:51:22,644 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_hydrogen_bond_basicity
+2025-06-29 17:51:22,645 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_conformers
+2025-06-29 17:51:44,666 - src.server - INFO - ✅ ROWAN_API_KEY loaded (length: 44)
+2025-06-29 17:51:44,670 - src.server - INFO - ✅ rowan-python package loaded successfully
+2025-06-29 17:51:44,670 - src.server - INFO - 🔗 Rowan API key configured
+2025-06-29 17:51:44,673 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_redox_potential
+2025-06-29 17:51:44,676 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_scan_analyzer
+2025-06-29 17:51:44,679 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_tautomers
+2025-06-29 17:51:44,679 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_hydrogen_bond_basicity
+2025-06-29 17:51:44,680 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_conformers
+2025-06-29 18:31:41,848 - src.server - INFO -  ROWAN_API_KEY loaded (length: 44)
+2025-06-29 18:31:41,881 - src.server - INFO -  rowan-python package loaded successfully
+2025-06-29 18:31:41,882 - src.server - INFO -  Rowan API key configured
+2025-06-29 18:31:41,884 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_redox_potential
+2025-06-29 18:31:41,887 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_scan_analyzer
+2025-06-29 18:31:41,889 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_tautomers
+2025-06-29 18:31:41,890 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_hydrogen_bond_basicity
+2025-06-29 18:31:41,891 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_conformers
+2025-06-29 18:45:17,519 - src.server - INFO -  ROWAN_API_KEY loaded (length: 44)
+2025-06-29 18:45:17,555 - src.server - INFO -  rowan-python package loaded successfully
+2025-06-29 18:45:17,555 - src.server - INFO -  Rowan API key configured
+2025-06-29 18:45:17,558 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_redox_potential
+2025-06-29 18:45:17,561 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_scan_analyzer
+2025-06-29 18:45:17,563 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_tautomers
+2025-06-29 18:45:17,564 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_hydrogen_bond_basicity
+2025-06-29 18:45:17,565 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_conformers
+2025-06-29 18:46:30,615 - src.server - INFO -  ROWAN_API_KEY loaded (length: 44)
+2025-06-29 18:46:30,649 - src.server - INFO -  rowan-python package loaded successfully
+2025-06-29 18:46:30,649 - src.server - INFO -  Rowan API key configured
+2025-06-29 18:46:30,651 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_redox_potential
+2025-06-29 18:46:30,655 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_scan_analyzer
+2025-06-29 18:46:30,657 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_tautomers
+2025-06-29 18:46:30,658 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_hydrogen_bond_basicity
+2025-06-29 18:46:30,659 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_conformers
+2025-06-29 18:47:35,703 - src.server - INFO -  ROWAN_API_KEY loaded (length: 44)
+2025-06-29 18:47:35,706 - src.server - INFO -  rowan-python package loaded successfully
+2025-06-29 18:47:35,706 - src.server - INFO -  Rowan API key configured
+2025-06-29 18:47:35,709 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_redox_potential
+2025-06-29 18:47:35,712 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_scan_analyzer
+2025-06-29 18:47:35,714 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_tautomers
+2025-06-29 18:47:35,715 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_hydrogen_bond_basicity
+2025-06-29 18:47:35,716 - FastMCP.fastmcp.tools.tool_manager - WARNING - Tool already exists: rowan_conformers

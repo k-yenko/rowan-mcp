@@ -5,7 +5,6 @@ Rowan molecular dynamics function for MCP tool integration.
 from typing import Any, Dict, List, Optional
 import rowan
 
-
 def rowan_molecular_dynamics(
     name: str,
     molecule: str,
@@ -83,28 +82,28 @@ def rowan_molecular_dynamics(
     # Validate ensemble
     ensemble_lower = ensemble.lower()
     if ensemble_lower not in valid_ensembles:
-        return f"❌ Error: Invalid ensemble '{ensemble}'. Valid options: {', '.join(valid_ensembles)}"
+        return f" Error: Invalid ensemble '{ensemble}'. Valid options: {', '.join(valid_ensembles)}"
     
     # Validate initialization
     initialization_lower = initialization.lower()
     if initialization_lower not in valid_initializations:
-        return f"❌ Error: Invalid initialization '{initialization}'. Valid options: {', '.join(valid_initializations)}"
+        return f" Error: Invalid initialization '{initialization}'. Valid options: {', '.join(valid_initializations)}"
     
     # Validate numeric parameters
     if timestep <= 0:
-        return f"❌ Error: timestep must be positive (got {timestep})"
+        return f" Error: timestep must be positive (got {timestep})"
     if num_steps <= 0:
-        return f"❌ Error: num_steps must be positive (got {num_steps})"
+        return f" Error: num_steps must be positive (got {num_steps})"
     if save_interval <= 0:
-        return f"❌ Error: save_interval must be positive (got {save_interval})"
+        return f" Error: save_interval must be positive (got {save_interval})"
     if temperature <= 0:
-        return f"❌ Error: temperature must be positive (got {temperature})"
+        return f" Error: temperature must be positive (got {temperature})"
     
     # Validate NPT ensemble requirements
     if ensemble_lower == "npt" and pressure is None:
-        return f"❌ Error: NPT ensemble requires pressure to be specified"
+        return f" Error: NPT ensemble requires pressure to be specified"
     if pressure is not None and pressure <= 0:
-        return f"❌ Error: pressure must be positive (got {pressure})"
+        return f" Error: pressure must be positive (got {pressure})"
     
     # Apply smart defaults for MD calculations (fast methods preferred)
     if engine is None:
@@ -182,7 +181,6 @@ def rowan_molecular_dynamics(
         }
         return str(error_response)
 
-
 def test_rowan_molecular_dynamics():
     """Test the rowan_molecular_dynamics function."""
     try:
@@ -193,13 +191,12 @@ def test_rowan_molecular_dynamics():
             num_steps=10,  # Very short for testing
             blocking=False
         )
-        print("✅ Molecular dynamics test successful!")
+        print(" Molecular dynamics test successful!")
         print(f"Result: {result}")
         return True
     except Exception as e:
-        print(f"❌ Molecular dynamics test failed: {e}")
+        print(f" Molecular dynamics test failed: {e}")
         return False
-
 
 if __name__ == "__main__":
     test_rowan_molecular_dynamics()
