@@ -37,14 +37,13 @@ from .functions.redox_potential import rowan_redox_potential
 from .functions.conformers import rowan_conformers
 from .functions.electronic_properties import rowan_electronic_properties
 from .functions.fukui import rowan_fukui
-
-# Import management functions from server_backup (these haven't been moved to separate files yet)
-from .server_backup import rowan_folder_management, rowan_system_management, rowan_pka
-
-# Import molecule lookup from functions
 from .functions.molecule_lookup import rowan_molecule_lookup
+# Import the 3 newly created functions
+from .functions.pka import rowan_pka
+from .functions.folder_management import rowan_folder_management
+from .functions.system_management import rowan_system_management
 
-# Mapping of tool names to functions
+# Mapping of tool names to functions - ONLY from individual function files
 TOOL_FUNCTIONS = {
     # Basic Calculations
     "rowan_admet": rowan_admet,
@@ -60,6 +59,7 @@ TOOL_FUNCTIONS = {
     "rowan_bde": rowan_bde,
     "rowan_redox_potential": rowan_redox_potential,
     "rowan_solubility": rowan_solubility,
+    "rowan_pka": rowan_pka,
     
     # Advanced Analysis
     "rowan_scan": rowan_scan,
@@ -79,8 +79,7 @@ TOOL_FUNCTIONS = {
     "rowan_system_management": rowan_system_management,
     "rowan_calculation_retrieve": rowan_calculation_retrieve,
     
-    # Additional Tools
-    "rowan_pka": rowan_pka,
+    # Lookup Tools
     "rowan_molecule_lookup": rowan_molecule_lookup,
 }
 

@@ -5,7 +5,7 @@ Rowan multistage optimization function for geometry optimization.
 import os
 import logging
 import time
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
 try:
     import rowan
@@ -55,53 +55,109 @@ def log_rowan_api_call(workflow_type: str, **kwargs):
 def rowan_multistage_opt(
     name: str,
     molecule: str,
+    mode: str = "rapid",
+    solvent: Optional[str] = None,
+    xtb_preopt: bool = False,
+    constraints: Optional[List[Dict[str, Any]]] = None,
+    transition_state: bool = False,
+    frequencies: bool = False,
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
     ping_interval: int = 30
 ) -> str:
-    """Run multi-level geometry optimization.
+    """Run multi-level geometry optimization using stjames MultiStageOptWorkflow.
     
-    Performs hierarchical optimization using multiple levels of theory:
-    GFN2-xTB → AIMNet2 → DFT for optimal balance of speed and accuracy.
+    Performs hierarchical optimization using multiple levels of theory based on mode:
     
-    This is a method for geometry optimization as it provides:
+    **RAPID** (default): GFN2-xTB optimization → r²SCAN-3c single point
+    **RECKLESS**: GFN-FF optimization → GFN2-xTB single point  
+    **CAREFUL**: GFN2-xTB preopt → r²SCAN-3c optimization → ωB97X-3c single point
+    **METICULOUS**: GFN2-xTB preopt → r²SCAN-3c opt → ωB97X-3c opt → ωB97M-D3BJ/def2-TZVPPD single point
+    
+    This follows the exact stjames MultiStageOptWorkflow implementation for:
     - High accuracy final structures
-    - Efficient computational cost
-    - Reliable convergence
-    
-    Use this for: Geometry optimization, conformational analysis, structure refinement
+    - Efficient computational cost  
+    - Reliable convergence across chemical space
     
     Args:
         name: Name for the calculation
         molecule: Molecule SMILES string
+        mode: Optimization mode - "rapid", "reckless", "careful", or "meticulous" (default: "rapid")
+        solvent: Solvent for single point calculation (e.g., "water", "dmso", "acetone")
+        xtb_preopt: Whether to include xTB pre-optimization step (default: False)
+        constraints: List of optimization constraints (default: None)
+        transition_state: Whether this is a transition state optimization (default: False)
+        frequencies: Whether to calculate vibrational frequencies (default: False)
         folder_uuid: Optional folder UUID for organization
         blocking: Whether to wait for completion (default: True)
-        ping_interval: Check status interval in seconds (default: 30, longer for multi-stage)
+        ping_interval: Check status interval in seconds (default: 30)
     
     Returns:
-        Optimized geometry and energy results
+        Comprehensive optimization results following MultiStageOptWorkflow format
+        
+    Example:
+        # Basic optimization
+        result = rowan_multistage_opt("aspirin_opt", "CC(=O)Oc1ccccc1C(=O)O")
+        
+        # With solvent and frequency analysis
+        result = rowan_multistage_opt(
+            "aspirin_water", 
+            "CC(=O)Oc1ccccc1C(=O)O",
+            mode="careful",
+            solvent="water",
+            frequencies=True
+        )
     """
     
+    # Prepare parameters following stjames MultiStageOptWorkflow structure
+    params = {
+        "name": name,
+        "molecule": molecule,
+        "initial_molecule": molecule,  # Required by MultiStageOptWorkflow
+        "mode": mode.lower(),
+        "folder_uuid": folder_uuid,
+        "blocking": blocking,
+        "ping_interval": ping_interval
+    }
+    
+    # Add optional parameters if specified
+    if solvent:
+        params["solvent"] = solvent
+        
+    if xtb_preopt:
+        params["xtb_preopt"] = xtb_preopt
+        
+    if constraints:
+        params["constraints"] = constraints
+        
+    if transition_state:
+        params["transition_state"] = transition_state
+        
+    if frequencies:
+        params["frequencies"] = frequencies
+    
+    # Submit to Rowan using multistage_opt workflow
     result = log_rowan_api_call(
         workflow_type="multistage_opt",
-        name=name,
-        molecule=molecule,
-        folder_uuid=folder_uuid,
-        blocking=blocking,
-        ping_interval=ping_interval
+        **params
     )
     return str(result)
 
 def test_rowan_multistage_opt():
-    """Test the rowan_multistage_opt function."""
+    """Test the rowan_multistage_opt function with stjames parameters."""
     try:
-        # Test with a simple molecule (non-blocking to avoid long wait)
-        result = rowan_multistage_opt("test_opt", "CCO", blocking=False)
-        print(" Multistage optimization test successful!")
+        # Test with stjames-compatible parameters
+        result = rowan_multistage_opt(
+            name="test_stjames_opt", 
+            molecule="CCO", 
+            mode="rapid",
+            blocking=False
+        )
+        print("✅ Multistage optimization test successful!")
         print(f"Result length: {len(result)} characters")
         return True
     except Exception as e:
-        print(f" Multistage optimization test failed: {e}")
+        print(f"Multistage optimization test failed: {e}")
         return False
 
 if __name__ == "__main__":
