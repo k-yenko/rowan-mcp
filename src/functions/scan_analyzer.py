@@ -10,21 +10,37 @@ def rowan_scan_analyzer(
     action: str = "analyze",
     energy_threshold: Optional[float] = None
 ) -> str:
-    """Analyze scan results and extract key geometries.
+    """Analyze scan results and extract key geometries for IRC workflows.
     
-    **Available Actions:**
-    - **analyze**: Full analysis with energy profile and key points
-    - **extract_ts**: Extract highest energy geometry (TS approximation)
-    - **extract_minima**: Extract lowest energy geometries
-    - **energy_profile**: Show energy vs coordinate plot data
+    ** Essential IRC Tool:**
+    - Analyzes completed scan workflows to extract transition state geometries
+    - Provides formatted results ready for IRC calculations
+    - Identifies energy maxima, minima, and barriers automatically
+    
+    ** Analysis Actions:**
+    - **analyze**: Complete analysis with energy profile and key points (default)
+    - **extract_ts**: Extract highest energy geometry (TS approximation for IRC)
+    - **extract_minima**: Extract low energy geometries 
+    - **energy_profile**: Show energy vs coordinate data for plotting
+    
+    ** IRC Workflow Integration:**
+    1. Run scan → get scan_uuid
+    2. Use: rowan_scan_analyzer(scan_uuid, "extract_ts")
+    3. Copy TS geometry for transition state optimization
+    4. Run IRC from optimized TS
+    
+    ** Example Usage:**
+    - Full analysis: rowan_scan_analyzer("uuid-123", "analyze")
+    - Extract TS: rowan_scan_analyzer("uuid-123", "extract_ts")
+    - Find minima: rowan_scan_analyzer("uuid-123", "extract_minima", energy_threshold=2.0)
     
     Args:
-        scan_uuid: UUID of the completed scan workflow
-        action: Analysis type ('analyze', 'extract_ts', 'extract_minima', 'energy_profile')
-        energy_threshold: Energy threshold for identifying key points (kcal/mol above minimum)
+        scan_uuid: UUID of the completed scan workflow to analyze
+        action: Analysis type ("analyze", "extract_ts", "extract_minima", "energy_profile")
+        energy_threshold: Energy threshold in kcal/mol above minimum for minima extraction (default: None)
     
     Returns:
-        Analysis results with geometries and energies
+        Analysis results with geometries, energies, and IRC preparation instructions
     """
     
     action = action.lower()
