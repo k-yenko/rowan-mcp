@@ -841,6 +841,12 @@ wheels = [
 ]
 
 [[package]]
+name = "pubchempy"
+version = "1.0.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/aa/fb/8de3aa9804b614dbc8dc5c16ed061d819cc360e0ddecda3dcd01c1552339/PubChemPy-1.0.4.tar.gz", hash = "sha256:24e9dc2fc90ab153b2764bf805e510b1410700884faf0510a9e7cf0d61d8ed0e", size = 29767, upload-time = "2017-04-11T18:36:23.649Z" }
+
+[[package]]
 name = "pyahocorasick"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1082,8 +1088,9 @@ name = "rdkit"
 version = "2025.3.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.3.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "pillow", marker = "python_full_version >= '3.11'" },
+    { name = "pillow" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/68/11/93b4a2897f7b784a2b8300cb14a1d40e6d847e71dda7012d4b6bb874f723/rdkit-2025.3.2-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:1adc25fee282cd0ef1dbe7796a5f319f0f2a4d1625085c292bcddb4c2071a83c", size = 30301131, upload-time = "2025-05-13T07:50:34.509Z" },
@@ -1227,8 +1234,10 @@ source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
     { name = "fastmcp" },
+    { name = "pubchempy" },
     { name = "pydantic" },
     { name = "python-dotenv" },
+    { name = "rdkit" },
     { name = "rowan-python", version = "1.1.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "rowan-python", version = "1.1.10", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "typing-extensions" },
@@ -1250,9 +1259,11 @@ requires-dist = [
     { name = "fastmcp", specifier = ">=0.2.0" },
     { name = "isort", marker = "extra == 'dev'", specifier = ">=5.0.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
+    { name = "pubchempy", specifier = ">=1.0.4" },
     { name = "pydantic", specifier = ">=2.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
+    { name = "rdkit", specifier = ">=2025.3.2" },
     { name = "rowan-python", specifier = ">=0.1.0" },
     { name = "typing-extensions", specifier = ">=4.0.0" },
     { name = "uvicorn", specifier = ">=0.24.0" },

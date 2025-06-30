@@ -36,7 +36,6 @@ from .functions.irc import rowan_irc as irc_function
 from .functions.docking import rowan_docking as docking_function
 from .functions.workflow_management import rowan_workflow_management as workflow_management_function
 from .functions.calculation_retrieve import rowan_calculation_retrieve as calculation_retrieve_function
-from .functions.molecule_lookup import lookup_molecule_smiles
 
 # Import management functions from server_backup (these haven't been moved to separate files yet)
 from .server_backup import rowan_folder_management as folder_management_function

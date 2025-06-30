@@ -20,6 +20,8 @@ dependencies = [
     "uvicorn>=0.24.0",
     "fastapi>=0.104.0",
     "python-dotenv>=1.0.0",
+    "pubchempy>=1.0.4",
+    "rdkit>=2025.3.2",
 ]
 
 [project.optional-dependencies]
