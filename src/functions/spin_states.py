@@ -745,4 +745,3 @@ def rowan_spin_states(
         logger.error(f"Spin states calculation failed: {str(e)}")
         return str(error_response)
 
-

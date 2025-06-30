@@ -9,6 +9,11 @@ Usage:
 import sys
 
 if __name__ == "__main__":
-    # Import the server module and let it handle command line args
-    from . import server
-    # The server module will check sys.argv and run the appropriate mode 
+    if "--http" in sys.argv:
+        # HTTP mode
+        from .http_server import main
+        main()
+    else:
+        # Default STDIO mode  
+        from .server import main
+        main() 

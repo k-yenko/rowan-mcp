@@ -208,7 +208,7 @@ def extract_ts_geometry(scan_results: Dict[str, Any], scan_uuid: str) -> str:
     rel_energy = (max_energy - min_energy) * 627.509  # Hartree to kcal/mol
     
     formatted = f" **Transition State Approximation Extracted**\n\n"
-    formatted += f"📍 **Scan Point:** {max_energy_idx + 1} of {len(energies)}\n"
+    formatted += f"**Scan Point:** {max_energy_idx + 1} of {len(energies)}\n"
     formatted += f" **Coordinate Value:** {max_coord:.3f}\n"
     formatted += f" **Energy:** {max_energy:.6f} hartree\n"
     formatted += f" **Barrier:** {rel_energy:.2f} kcal/mol above minimum\n\n"
@@ -253,7 +253,7 @@ def extract_minima_geometries(scan_results: Dict[str, Any], energy_threshold: Op
                 'geometry': geometries[i]
             })
     
-    formatted = f"🌊 **Low Energy Structures** (within {threshold:.1f} kcal/mol)\n\n"
+    formatted = f"**Low Energy Structures** (within {threshold:.1f} kcal/mol)\n\n"
     formatted += f"Found {len(minima_points)} structures:\n\n"
     
     for point in minima_points:
