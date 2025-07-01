@@ -4,7 +4,7 @@ This document provides a comprehensive overview of all available tools in the Ro
 
 ## Overview
 
-The Rowan MCP server provides access to **21 computational chemistry tools** organized into the following categories:
+The Rowan MCP server provides access to **23 computational chemistry tools** organized into the following categories:
 
 - **Core Calculations**: Basic quantum chemistry workflows
 - **Chemical Properties**: Molecular property predictions  
@@ -200,6 +200,20 @@ Generates comprehensive molecular descriptors including topological, geometric, 
 - `ping_interval`: Status check interval (default: 5)
 
 **Use Cases**: QSAR modeling, machine learning, chemical space analysis
+
+---
+
+#### `rowan_pka`
+**Description**: Calculate pKa values for ionizable groups.
+
+Predicts acid-base properties for pharmaceutical applications. Calculates pKa values for ionizable functional groups in organic molecules, essential for understanding protonation states at physiological pH.
+
+**Parameters**:
+- `name`: Calculation name
+- `molecule`: SMILES string
+- `folder_uuid`: Organization folder (optional)
+
+**Use Cases**: Drug discovery, pharmaceutical development, ADMET prediction
 
 ---
 
@@ -443,7 +457,7 @@ Converts common chemical names to canonical SMILES strings. Supports a comprehen
 
 ## Token Count Summary
 
-**Total Tools**: 21
+**Total Tools**: 23
 
 **Average Description Length**: ~150-300 words per tool
 

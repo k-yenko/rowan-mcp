@@ -20,41 +20,29 @@ if not hasattr(rowan, 'api_key') or not rowan.api_key:
         logger.error("No ROWAN_API_KEY found in environment")
 
 def log_rowan_api_call(workflow_type: str, **kwargs):
-    """Log Rowan API calls with detailed parameters."""
-    try:
-        logger.info(f"🚀 Rowan API Call: {workflow_type}")
-        for key, value in kwargs.items():
-            if key != 'folder_uuid':  # Don't log folder UUIDs as they're not that useful
-                logger.info(f"   {key}: {value}")
-        
-        # Create and execute the workflow
-        workflow_class = getattr(rowan, f"{workflow_type.title().replace('_', '')}Workflow")
-        workflow = workflow_class(**kwargs)
-        result = workflow.submit()
-        
-        logger.info(f"Workflow submitted successfully: {result.get('uuid', 'N/A')}")
-        return result
-        
-    except Exception as e:
-        logger.error(f"Rowan API call failed: {str(e)}")
-        error_response = {
-            "error": str(e),
-            "workflow_type": workflow_type,
-            "parameters": kwargs
-        }
-        return error_response
+    """Log Rowan API calls and let Rowan handle its own errors."""
+    
+    # Simple logging for calculations
+    logger.info(f" Starting {workflow_type.replace('_', ' ')}...")
+    
+    # Let Rowan handle everything - no custom error handling
+    return rowan.compute(workflow_type=workflow_type, **kwargs)
 
 def rowan_pka(
     name: str,
     molecule: str,
-    folder_uuid: Optional[str] = None
+    folder_uuid: Optional[str] = None,
+    blocking: bool = True,
+    ping_interval: int = 5
 ) -> str:
     """Calculate pKa values for molecules.
     
     Args:
         name: Name for the calculation
-        molecule: Molecule SMILES string
+        molecule: Molecule SMILES string or common name
         folder_uuid: UUID of folder to organize calculation in
+        blocking: Whether to wait for completion (default: True)
+        ping_interval: How often to check status in seconds (default: 5)
     
     Returns:
         pKa calculation results
@@ -64,29 +52,60 @@ def rowan_pka(
             workflow_type="pka",
             name=name,
             molecule=molecule,
-            folder_uuid=folder_uuid
+            folder_uuid=folder_uuid,
+            blocking=blocking,
+            ping_interval=ping_interval
         )
         
-        # Handle error case
-        if "error" in result:
-            error_response = {
-                "error": f"Failed to submit pKa calculation: {result['error']}",
-                "name": name,
-                "molecule": molecule
-            }
-            return str(error_response)
-        
-        pka_value = result.get("object_data", {}).get("strongest_acid")
-        
-        formatted = f"pKa calculation for '{name}' completed!\n\n"
-        formatted += f"Molecule: {molecule}\n"
-        formatted += f"Job UUID: {result.get('uuid', 'N/A')}\n"
-        
-        if pka_value is not None:
-            formatted += f"Strongest Acid pKa: {pka_value:.2f}\n"
-        else:
-            formatted += "pKa result not yet available\n"
+        # Format results based on whether we waited or not
+        if blocking:
+            # We waited for completion - format actual results
+            status = result.get('status', result.get('object_status', 'Unknown'))
             
+            if status == 2:  # Completed successfully
+                formatted = f" pKa calculation for '{name}' completed successfully!\n\n"
+            elif status == 3:  # Failed
+                formatted = f" pKa calculation for '{name}' failed!\n\n"
+            else:
+                formatted = f" pKa calculation for '{name}' finished with status {status}\n\n"
+                
+            formatted += f" Molecule: {molecule}\n"
+            formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+            formatted += f" Status: {status}\n"
+            
+            # Try to extract pKa results
+            if isinstance(result, dict) and 'object_data' in result and result['object_data']:
+                data = result['object_data']
+                
+                # Extract pKa values
+                if 'strongest_acid' in data:
+                    if data['strongest_acid'] is not None:
+                        formatted += f" Strongest Acid pKa: {data['strongest_acid']:.2f}\n"
+                    else:
+                        formatted += f" Strongest Acid pKa: N/A (no acidic sites found)\n"
+                        
+                if 'strongest_base' in data:
+                    if data['strongest_base'] is not None:
+                        formatted += f" Strongest Base pKa: {data['strongest_base']:.2f}\n"
+                    else:
+                        formatted += f" Strongest Base pKa: N/A (no basic sites found)\n"
+                if 'pka_values' in data and isinstance(data['pka_values'], list):
+                    formatted += f" All pKa values: {', '.join([f'{val:.2f}' for val in data['pka_values']])}\n"
+                
+                # Additional properties if available
+                if 'ionizable_sites' in data:
+                    formatted += f" Ionizable sites found: {data['ionizable_sites']}\n"
+            
+            # Basic guidance
+            if status == 2:
+                formatted += f"\n Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed data\n"
+        else:
+            # Non-blocking mode - just submission confirmation
+            formatted = f" pKa calculation for '{name}' submitted!\n\n"
+            formatted += f" Molecule: {molecule}\n"
+            formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
+            formatted += f" Status: {result.get('status', 'Submitted')}\n"
+        
         return formatted
         
     except Exception as e:

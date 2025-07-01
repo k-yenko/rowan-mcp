@@ -1,5 +1,12 @@
 # Rowan MCP Server
 
+⚠️ **IMPORTANT**: This server requires **Python 3.10+** due to rowan-python package dependencies. Use Python 3.11+ for best compatibility.
+
+**🔧 For Python 3.11 users:** If you encounter `ModuleNotFoundError` with rowan-python, install dependencies specifically for Python 3.11:
+```bash
+/opt/homebrew/bin/python3.11 -m pip install rowan-python fastmcp pubchempy
+```
+
 **Connect AI assistants to chemistry calculations**
 
 This tool lets AI assistants (like Claude) run real chemistry calculations through Rowan's platform. Ask your AI to calculate molecular properties, optimize structures, or predict how molecules behave - and get scientific results back.

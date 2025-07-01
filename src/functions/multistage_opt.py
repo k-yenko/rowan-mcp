@@ -67,7 +67,7 @@ def rowan_multistage_opt(
 ) -> str:
     """Run multi-level geometry optimization using stjames MultiStageOptWorkflow.
     
-    Performs hierarchical optimization using multiple levels of theory based on mode:
+    Performs hierarchical optimization using multiple levels of theory based on mode. There are only four valid modes:
     
     **RAPID** (default): GFN2-xTB optimization → r²SCAN-3c single point
     **RECKLESS**: GFN-FF optimization → GFN2-xTB single point  
@@ -108,6 +108,13 @@ def rowan_multistage_opt(
             frequencies=True
         )
     """
+    
+    # Validate mode parameter - only allow Rowan's supported modes
+    valid_modes = ["rapid", "reckless", "careful", "meticulous"]
+    if mode.lower() not in valid_modes:
+        error_msg = f"Invalid mode '{mode}'. Must be one of: {', '.join(valid_modes)}"
+        logger.error(f"Mode validation failed: {error_msg}")
+        return f"Error: {error_msg}"
     
     # Prepare parameters following stjames MultiStageOptWorkflow structure
     params = {

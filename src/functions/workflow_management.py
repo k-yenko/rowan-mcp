@@ -94,7 +94,7 @@ def rowan_workflow_management(
             formatted += f" UUID: {workflow.get('uuid', 'N/A')}\n"
             formatted += f" Type: {workflow_type}\n"
             formatted += f" Status: {workflow.get('object_status', 'Unknown')}\n"
-            formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
+            formatted += f" Created: {workflow.get('created_at', 'N/A')}\n"
             return formatted
             
         elif action == "retrieve":
@@ -117,15 +117,15 @@ def rowan_workflow_management(
             
             formatted = f" Workflow Details:\n\n"
             formatted += f" Name: {workflow.get('name', 'N/A')}\n"
-            formatted += f"🆔 UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f" UUID: {workflow.get('uuid', 'N/A')}\n"
             formatted += f" Type: {workflow.get('object_type', 'N/A')}\n"
             formatted += f" Status: {status_name} ({status})\n"
-            formatted += f"📂 Parent: {workflow.get('parent_uuid', 'Root')}\n"
+            formatted += f" Parent: {workflow.get('parent_uuid', 'Root')}\n"
             formatted += f" Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
             formatted += f" Public: {'Yes' if workflow.get('public') else 'No'}\n"
-            formatted += f"📅 Created: {workflow.get('created_at', 'N/A')}\n"
+            formatted += f" Created: {workflow.get('created_at', 'N/A')}\n"
             formatted += f" Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
-            formatted += f"💰 Credits: {workflow.get('credits_charged', 0)}\n"
+            formatted += f" Credits: {workflow.get('credits_charged', 0)}\n"
             formatted += f" Notes: {workflow.get('notes', 'None')}\n\n"
             
             # If workflow is completed (status 2), extract and show results
@@ -153,8 +153,8 @@ def rowan_workflow_management(
                 formatted += f" **Workflow failed**\n"
                 formatted += f" Check the workflow details in the Rowan web interface for error messages\n"
             elif status == 4:  # Stopped
-                formatted += f"⏹ **Workflow was stopped**\n"
-                
+                formatted += f" **Workflow was stopped**\n"
+            
             return formatted
             
         elif action == "update":
@@ -181,7 +181,7 @@ def rowan_workflow_management(
             workflow = rowan.Workflow.update(uuid=workflow_uuid, **update_data)
             
             formatted = f" Workflow updated successfully!\n\n"
-            formatted += f"🆔 UUID: {workflow_uuid}\n"
+            formatted += f" UUID: {workflow_uuid}\n"
             for key, value in update_data.items():
                 formatted += f" {key.replace('_', ' ').title()}: {value}\n"
             
@@ -193,7 +193,7 @@ def rowan_workflow_management(
             
             if action == "stop":
                 result = rowan.Workflow.stop(uuid=workflow_uuid)
-                return f"⏹ Workflow stop request submitted. Result: {result}"
+                return f" Workflow stop request submitted. Result: {result}"
             elif action == "status":
                 workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
                 status = workflow.get('object_status', 'Unknown')
@@ -221,7 +221,7 @@ def rowan_workflow_management(
                 elif status == 3:
                     formatted += f" **Failed** - Check workflow details for error information.\n"
                 elif status == 4:
-                    formatted += f"⏹ **Stopped**\n"
+                    formatted += f" **Stopped**\n"
                     
                 return formatted
             elif action == "is_finished":
@@ -275,13 +275,23 @@ def rowan_workflow_management(
             
             workflows = rowan.Workflow.list(**filters)
             
-            if not workflows or 'results' not in workflows:
-                return " No workflows found matching the criteria"
+            if not workflows or 'workflows' not in workflows:
+                formatted = " No workflows found matching the criteria\n\n"
+                formatted += "**This could mean:**\n"
+                formatted += "• You haven't created any workflows yet\n"
+                formatted += "• Your filters are too restrictive\n"
+                formatted += "• There might be an API connectivity issue\n\n"
+                formatted += "**Getting Started:**\n"
+                formatted += "• Try rowan_system_management(action='server_status') to check connectivity\n"
+                formatted += "• Use any Rowan tool (like rowan_electronic_properties) to create your first workflow\n"
+                formatted += "• Remove filters and try rowan_workflow_management(action='list') again\n"
+                return formatted
             
-            results = workflows['results']
-            total_count = workflows.get('total_count', len(results))
+            results = workflows['workflows']
+            total_count = len(results)
+            num_pages = workflows.get('num_pages', 1)
             
-            formatted = f" **Workflows** (showing {len(results)} of {total_count} total)\n\n"
+            formatted = f" **Workflows** (showing {len(results)} workflows, page {page}/{num_pages})\n\n"
             
             status_names = {
                 0: "Queued",
@@ -297,13 +307,13 @@ def rowan_workflow_management(
                 status_name = status_names.get(status, f"Unknown ({status})")
                 
                 formatted += f" **{workflow.get('name', 'Unnamed')}**\n"
-                formatted += f"   🆔 {workflow.get('uuid', 'N/A')}\n"
-                formatted += f"    {workflow.get('object_type', 'N/A')} |  {status_name}\n"
-                formatted += f"   📅 {workflow.get('created_at', 'N/A')} |  {workflow.get('elapsed', 0):.1f}s\n\n"
+                formatted += f"   UUID: {workflow.get('uuid', 'N/A')}\n"
+                formatted += f"    {workflow.get('object_type', 'N/A')} | {status_name}\n"
+                formatted += f"   Created: {workflow.get('created_at', 'N/A')} | {workflow.get('elapsed', 0):.1f}s\n\n"
             
             # Pagination info
-            if total_count > len(results):
-                formatted += f"📄 Page {page} of {(total_count - 1) // size + 1} | Use 'page' parameter to navigate\n"
+            if num_pages > 1:
+                formatted += f"Page {page} of {num_pages} | Use 'page' parameter to navigate\n"
             
             return formatted
             

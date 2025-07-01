@@ -3,6 +3,7 @@ System management operations for Rowan API.
 """
 
 import os
+import sys
 import rowan
 import logging
 from typing import Optional
@@ -28,11 +29,13 @@ def rowan_system_management(
     
     **Available Actions:**
     - **help**: Get list of all available Rowan MCP tools with descriptions
+    - **server_info**: Get server status and configuration information
+    - **server_status**: Check server health and connectivity
     - **set_log_level**: Set logging level for debugging (requires: log_level)
     - **job_redirect**: Redirect legacy job queries to workflow management (requires: job_uuid)
     
     Args:
-        action: Action to perform ('help', 'set_log_level', 'job_redirect')
+        action: Action to perform ('help', 'server_info', 'server_status', 'set_log_level', 'job_redirect')
         job_uuid: UUID of the job (required for job_redirect)
         log_level: Logging level - DEBUG, INFO, WARNING, ERROR (required for set_log_level)
     
@@ -96,6 +99,85 @@ def rowan_system_management(
             result += "**Total Available:** 20+ specialized tools + management tools\n"
             result += "**Each tool has specific documentation - check individual tool descriptions**\n"
             result += "**Management tools use 'action' parameter to specify operation**\n"
+            
+            return result
+            
+        elif action == "server_info":
+            result = "**Rowan MCP Server Information**\n\n"
+            
+            # Server configuration
+            result += "**Configuration:**\n"
+            result += f"• API Key: {'Configured' if os.getenv('ROWAN_API_KEY') else 'Missing'}\n"
+            result += f"• Rowan Package: {'Available' if rowan else 'Not Found'}\n"
+            result += f"• Log Level: {logger.level}\n"
+            result += f"• Python Version: {sys.version.split()[0]}\n\n"
+            
+            # Available tools count
+            result += f"**Available Tools:** 20+ specialized computational chemistry tools\n"
+            result += f"• Core Calculations: 4 tools (electronic_properties, multistage_opt, etc.)\n"
+            result += f"• Molecular Analysis: 3 tools (conformers, tautomers, descriptors)\n"
+            result += f"• Chemical Properties: 4 tools (pka, redox_potential, bde, solubility)\n"
+            result += f"• Advanced Analysis: 6 tools (scan, fukui, spin_states, irc, md, etc.)\n"
+            result += f"• Drug Discovery: 2 tools (admet, docking)\n"
+            result += f"• Management Tools: 5 tools (workflow, folder, system, etc.)\n\n"
+            
+            # Quick status check
+            try:
+                # Try a simple API call to test connectivity
+                recent_workflows = rowan.Workflow.list(size=1)
+                total_workflows = len(recent_workflows.get('workflows', []))
+                result += f"**API Connectivity:** Connected\n"
+                result += f"**Workflow Check:** {total_workflows} workflows accessible\n\n"
+            except Exception as e:
+                result += f"**API Connectivity:** Error: {str(e)[:100]}...\n\n"
+            
+            result += f"**Usage:**\n"
+            result += f"• Use rowan_system_management(action='help') for tool descriptions\n"
+            result += f"• Use rowan_workflow_management(action='list') to see your workflows\n"
+            result += f"• Note: Folder management currently has API issues - use workflow organization instead\n"
+            
+            return result
+            
+        elif action == "server_status":
+            result = "**Rowan MCP Server Health Check**\n\n"
+            
+            # Test API connectivity with workflow endpoint (the main one)
+            status_checks = []
+            
+            # Test workflow list
+            try:
+                workflows = rowan.Workflow.list(size=1)
+                workflow_count = len(workflows.get('workflows', []))
+                status_checks.append(("Workflow API", "OK", f"{workflow_count} workflows accessible"))
+            except Exception as e:
+                status_checks.append(("Workflow API", "Error", str(e)[:50]))
+            
+            # Test workflow retrieve (if we have any workflows)
+            try:
+                workflows = rowan.Workflow.list(size=1)
+                if workflows.get('workflows'):
+                    first_workflow_uuid = workflows['workflows'][0]['uuid']
+                    rowan.Workflow.retrieve(uuid=first_workflow_uuid)
+                    status_checks.append(("Workflow Retrieve", "OK", "Can access workflow details"))
+                else:
+                    status_checks.append(("Workflow Retrieve", "Skipped", "No workflows to test"))
+            except Exception as e:
+                status_checks.append(("Workflow Retrieve", "Error", str(e)[:50]))
+            
+            # Display results
+            for check_name, status, details in status_checks:
+                result += f"**{check_name}:** {status}\n"
+                result += f"  Details: {details}\n\n"
+            
+            # Overall status
+            all_ok = all("OK" in check[1] or "Skipped" in check[1] for check in status_checks)
+            result += f"**Overall Status:** {'All Systems Operational' if all_ok else 'Some Issues Detected'}\n\n"
+            
+            if not all_ok:
+                result += f"**Troubleshooting:**\n"
+                result += f"• Check your ROWAN_API_KEY environment variable\n"
+                result += f"• Verify internet connectivity\n"
+                result += f"• Check Rowan service status at labs.rowansci.com\n"
             
             return result
             
@@ -262,7 +344,7 @@ def rowan_system_management(
                 return formatted
             
         else:
-            return f"Error: Unknown action '{action}'. Available actions: help, set_log_level, job_redirect"
+            return f"Error: Unknown action '{action}'. Available actions: help, server_info, server_status, set_log_level, job_redirect"
             
     except Exception as e:
         return f"Error in system {action}: {str(e)}"
