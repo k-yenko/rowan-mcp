@@ -3,7 +3,7 @@
     "rowan": {
       "command": "rowan-mcp",
       "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
+        "ROWAN_API_KEY": "your_rowan_api_key_here"
       }
     }
   }

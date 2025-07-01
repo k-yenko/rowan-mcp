@@ -11,27 +11,71 @@
 
 This tool lets AI assistants (like Claude) run real chemistry calculations through Rowan's platform. Ask your AI to calculate molecular properties, optimize structures, or predict how molecules behave - and get scientific results back.
 
-## Setup
+## 🚀 Quick Installation (For Users)
 
-1. **Get API Key**: Create account at [labs.rowansci.com](https://labs.rowansci.com)
-2. **Install**: `uv sync`  
-3. **Configure**: `echo "ROWAN_API_KEY=your_key" > .env`
-4. **Start**: `uv run python -m src`
+### 1. Install the Package
+```bash
+# Install directly from this repository
+pip install git+https://github.com/your-username/rowan-mcp.git
 
-## AI Assistant Configuration
+# Or if you have the source code locally
+pip install .
+```
 
-🤖 **AI Integration**: Works with any AI assistant that supports MCP
-
-☁️ **Cloud Computing**: Uses Rowan's platform - no need to install complex chemistry software
-
-## Quick Start
-
-### 1. Get a Rowan Account
+### 2. Get Your API Key
 - Visit [labs.rowansci.com](https://labs.rowansci.com)
-- Create a free account
+- Create a free account  
 - Generate an API key from your account settings
 
-### 2. Install & Setup
+### 3. Configure Your MCP Client
+
+Add this configuration to your MCP client (e.g., Claude Desktop):
+
+```json
+{
+  "mcpServers": {
+    "rowan": {
+      "command": "rowan-mcp",
+      "env": {
+        "ROWAN_API_KEY": "your_rowan_api_key_here"
+      }
+    }
+  }
+}
+```
+
+**That's it!** Your MCP client will automatically launch the Rowan server when needed.
+
+### Alternative: Set Environment Variable
+Instead of putting the API key in the config, you can set it globally:
+```bash
+# Add to your shell profile (.bashrc, .zshrc, etc.)
+export ROWAN_API_KEY="your_rowan_api_key_here"
+```
+
+Then use this simpler config:
+```json
+{
+  "mcpServers": {
+    "rowan": {
+      "command": "rowan-mcp"
+    }
+  }
+}
+```
+
+---
+
+## 🛠️ Development Setup
+
+For developers who want to modify or contribute to this project:
+
+### Prerequisites
+- Python 3.10+
+- [uv](https://docs.astral.sh/uv/) package manager  
+- Rowan API key
+
+### Setup
 ```bash
 # Clone this repository
 git clone <repository-url>
@@ -44,34 +88,36 @@ uv sync
 echo "ROWAN_API_KEY=your_actual_api_key_here" > .env
 ```
 
-### 3. Start the Server
-
-**Option A: HTTP Server (Recommended)**
+### Development Commands
 ```bash
-# Start HTTP server on 127.0.0.1:6276/mcp
-uv run python -c "from src.http_server import main; main()"
-```
-
-**Option B: STDIO Mode (Traditional)**
-```bash  
-# For traditional stdio-based MCP clients
+# Run server in STDIO mode
 uv run python -m src
+
+# Run server in HTTP/SSE mode  
+uv run python -m src --http
+
+# Show help
+uv run python -m src --help
 ```
 
-### 4. Connect Your AI Assistant
-
-**Option A: HTTP Connection (Modern)**
+### Development MCP Configuration
+For development, use this configuration that points to your local project:
 ```json
 {
   "mcpServers": {
     "rowan": {
       "command": "uv",
       "args": ["run", "python", "-m", "src"],
-      "cwd": "/path/to/rowan-mcp"
+      "cwd": "/path/to/your/rowan-mcp",
+      "env": {
+        "ROWAN_API_KEY": "your_api_key_here"
+      }
     }
   }
 }
 ```
+
+---
 
 ## Available Tools
 
@@ -91,7 +137,6 @@ uv run python -m src
 - `rowan_solubility` - Aqueous solubility
 - `rowan_redox_potential` - Electrochemical potentials
 
-
 ### Drug Discovery
 - `rowan_admet` - ADME-Tox properties
 - `rowan_docking` - Protein-ligand docking
@@ -99,7 +144,6 @@ uv run python -m src
 ### Reactivity Analysis  
 - `rowan_fukui` - Reactivity sites
 - `rowan_spin_states` - Spin multiplicities
-
 
 ### Project Management
 - `rowan_folder_create/list/update/delete` - Organize calculations
@@ -132,39 +176,35 @@ rowan_docking(name="inhibitor", protein="1ABC", ligand="CCO")
 ## Requirements
 
 - Python 3.10+
-- [uv](https://docs.astral.sh/uv/) package manager
 - Rowan API key
-- MCP-compatible AI assistant
+- MCP-compatible AI assistant (Claude Desktop, etc.)
 
 ## Getting Help
 
 - **API Issues**: support@rowansci.com
 - **Documentation**: [docs.rowansci.com](https://docs.rowansci.com)
-- **Tool Help**: Use `rowan_available_workflows()` for complete tool list 
+- **Tool Help**: Use `rowan_available_workflows()` for complete tool list
 
-## Enhanced Tutorial Examples
-The `rowan_compute` tool has been enhanced with comprehensive examples based on official Rowan tutorials. It now provides intelligent context and formatting for common calculation types:
+## Troubleshooting
 
-### Supported Calculation Types
-- **Optimization & Frequencies**: Geometry optimization with vibrational analysis
-- **Single Point Energy**: Energy calculation at fixed geometry  
-- **Transition State Optimization**: Finding and optimizing transition states
-- **Orbital Calculations**: Electronic structure and molecular orbital analysis
-- **Conformer Search**: Multiple conformer generation and analysis
-- **Potential Energy Scans**: Energy profiles along reaction coordinates
+### Common Installation Issues
 
-### Tutorial Examples
-Run the comprehensive tutorial examples:
+**Python Version**: Make sure you're using Python 3.10+
 ```bash
-python examples/tutorial_examples.py
+python --version  # Should show 3.10 or higher
 ```
 
-This demonstrates real usage patterns from the [official Rowan tutorials](https://docs.rowansci.com/tutorials/), including:
-- Ethane optimization and frequencies (like the official tutorial)
-- Benzene single point energy calculations
-- Methanol geometry optimization
-- Transition state finding
-- Water orbital calculations
+**API Key Not Found**: Make sure your API key is properly set
+```bash
+# Test your installation
+rowan-mcp --help
+```
+
+**MCP Client Connection**: If your MCP client can't find the command:
+```bash
+# Make sure the package is installed in the right environment
+which rowan-mcp
+```
 
 ## 🧬 Protein-Ligand Docking
 
@@ -203,7 +243,7 @@ SMILES Parse Error: syntax error while parsing: GLP1R:GLP1
 
 This means the system is trying to parse protein names/sequences as chemical SMILES strings. **Solutions:**
 
-1. **Use the dedicated `rowan_docking()` tool** instead of `rowan_compute()` for protein-ligand work
+1. **Use the dedicated `rowan_docking()` tool** for protein-ligand work
 2. **Use valid PDB IDs** from the Protein Data Bank (https://www.rcsb.org/)
 3. **Ensure ligands are valid SMILES** strings
 
