@@ -41,7 +41,7 @@ def log_rowan_api_call(workflow_type: str, **kwargs):
             if key != 'ping_interval':
                 logger.info(f"  {key}: {value}")
         
-        result = rowan.run(workflow_type, **kwargs)
+        result = rowan.compute(workflow_type=workflow_type, **kwargs)
         
         end_time = time.time()
         duration = end_time - start_time
@@ -54,52 +54,32 @@ def log_rowan_api_call(workflow_type: str, **kwargs):
         raise e
 
 def lookup_molecule_smiles(molecule_name: str) -> str:
-    """Look up canonical SMILES for common molecule names."""
-    # Common molecule SMILES database
-    MOLECULE_SMILES = {
-        # Aromatics
-        "phenol": "Oc1ccccc1",
-        "benzene": "c1ccccc1", 
-        "toluene": "Cc1ccccc1",
-        "aniline": "Nc1ccccc1",
-        "benzoic acid": "O=C(O)c1ccccc1",
-        "salicylic acid": "O=C(O)c1ccccc1O",
-        "aspirin": "CC(=O)Oc1ccccc1C(=O)O",
+    """Look up canonical SMILES using the advanced molecule_lookup system.
+    
+    Uses PubChemPy + SQLite caching + RDKit validation for scalable molecule lookup.
+    """
+    try:
+        # Import the advanced molecule lookup system
+        from .molecule_lookup import get_lookup_instance
         
-        # Solvents
-        "water": "O",
-        "acetone": "CC(=O)C",
-        "dmso": "CS(=O)C",
-        "dmf": "CN(C)C=O",
-        "thf": "C1CCOC1",
-        "dioxane": "C1COCCO1",
-        "chloroform": "ClC(Cl)Cl",
-        "dichloromethane": "ClCCl",
+        lookup = get_lookup_instance()
+        smiles, source, metadata = lookup.get_smiles(molecule_name)
         
-        # Others
-        "glucose": "OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O",
-        "ethylene": "C=C",
-        "acetylene": "C#C",
-        "formaldehyde": "C=O",
-        "ammonia": "N",
-        "hydrogen peroxide": "OO",
-        "carbon dioxide": "O=C=O",
-    }
-    
-    # Normalize the input (lowercase, strip whitespace)
-    normalized_name = molecule_name.lower().strip()
-    
-    # Direct lookup
-    if normalized_name in MOLECULE_SMILES:
-        return MOLECULE_SMILES[normalized_name]
-    
-    # Try partial matches for common variations
-    for name, smiles in MOLECULE_SMILES.items():
-        if normalized_name in name or name in normalized_name:
-            logger.info(f"SMILES Lookup (partial match): '{molecule_name}' → '{name}' → '{smiles}'")
+        if smiles:
+            logger.info(f"Molecule lookup successful: '{molecule_name}' → '{smiles}' (source: {source})")
             return smiles
-    
-    # If no match found, return the original input (assume it's already SMILES)
+        else:
+            logger.warning(f"Molecule lookup failed for '{molecule_name}': {metadata.get('error', 'Unknown error')}")
+            # Return original input as fallback (might be valid SMILES)
+            return molecule_name
+            
+    except ImportError as e:
+        logger.error(f"Could not import molecule_lookup: {e}")
+        # Fallback: return original input
+        return molecule_name
+    except Exception as e:
+        logger.error(f"Molecule lookup error for '{molecule_name}': {e}")
+        # Fallback: return original input
     return molecule_name
 
 def rowan_electronic_properties(
@@ -132,9 +112,12 @@ def rowan_electronic_properties(
     - **Bond Analysis**: Wiberg bond orders, Mayer bond orders
     - **Visualization Data**: Cube files for density, ESP, and molecular orbitals
     
+    **Molecule Lookup**: Uses advanced PubChemPy + SQLite caching + RDKit validation system
+    for robust molecule identification and SMILES canonicalization.
+    
     Args:
         name: Name for the calculation
-        molecule: Molecule SMILES string or common name
+        molecule: Molecule name (e.g., "aspirin", "taxol") or SMILES string
         method: QM method (default: b3lyp for electronic properties)
         basis_set: Basis set (default: def2-svp for balanced accuracy)
         engine: Computational engine (default: psi4)
@@ -152,7 +135,7 @@ def rowan_electronic_properties(
     Returns:
         Comprehensive electronic properties results following ElectronicPropertiesWorkflow format
     """
-    # Look up SMILES if a common name was provided
+    # Look up canonical SMILES using advanced molecule lookup (PubChemPy + caching + RDKit)
     canonical_smiles = lookup_molecule_smiles(molecule)
     
     # Apply smart defaults for electronic properties calculations
@@ -174,7 +157,7 @@ def rowan_electronic_properties(
         "name": name,
         "molecule": canonical_smiles,  # API interface requirement
         "initial_molecule": canonical_smiles,  # ElectronicPropertiesWorkflow requirement
-        # Settings (quantum chemistry parameters)
+        # Settings (quantum chemistry parameters) - exactly as in ElectronicPropertiesWorkflow
         "settings": {
             "method": method.lower(),
             "basis_set": basis_set.lower(),
@@ -182,7 +165,7 @@ def rowan_electronic_properties(
             "charge": charge,
             "multiplicity": multiplicity
         },
-        # Cube computation control
+        # Cube computation control - exactly as in ElectronicPropertiesWorkflow
         "compute_density_cube": compute_density_cube,
         "compute_electrostatic_potential_cube": compute_electrostatic_potential_cube,
         "compute_num_occupied_orbitals": compute_num_occupied_orbitals,
@@ -193,7 +176,7 @@ def rowan_electronic_properties(
         "ping_interval": ping_interval
     }
     
-    # Add mode if specified
+    # Add mode if specified (optional in ElectronicPropertiesWorkflow)
     if mode:
         electronic_params["mode"] = mode
     
@@ -215,10 +198,11 @@ def rowan_electronic_properties(
                 formatted = f"Electronic properties calculation for '{name}' submitted!\n\n"
             
             formatted += f"Molecule: {molecule}\n"
-            formatted += f"SMILES: {canonical_smiles}\n"
+            formatted += f"Canonical SMILES: {canonical_smiles}\n"
             formatted += f"Job UUID: {result.get('uuid', 'N/A')}\n"
             formatted += f"Status: {status}\n\n"
             
+            formatted += f"Molecule Lookup: Advanced PubChemPy + SQLite + RDKit system\n\n"
             formatted += f"Calculation Settings:\n"
             formatted += f"• Method: {method.upper()}\n"
             formatted += f"• Basis Set: {basis_set}\n"
@@ -254,20 +238,22 @@ def rowan_electronic_properties(
     except Exception as e:
         error_msg = f"Electronic properties calculation failed: {str(e)}\n\n"
         error_msg += f"Molecule: {molecule}\n"
-        error_msg += f"SMILES: {canonical_smiles}\n"
+        error_msg += f"Canonical SMILES: {canonical_smiles}\n"
         error_msg += f"Settings: {method}/{basis_set}/{engine}\n\n"
+        error_msg += f"Molecule Lookup: Advanced PubChemPy + SQLite + RDKit system\n\n"
         error_msg += f"Common Issues:\n"
         error_msg += f"• Invalid method/basis set combination\n"
         error_msg += f"• Incorrect charge/multiplicity for molecule\n"
         error_msg += f"• Engine compatibility issues\n"
+        error_msg += f"• Molecule not found in PubChem database\n"
         error_msg += f"• Try with default parameters first\n"
         return error_msg
 
 def test_electronic_properties():
-    """Test the electronic properties function."""
+    """Test the electronic properties function with advanced molecule lookup."""
     return rowan_electronic_properties(
         name="test_electronic_properties",
-        molecule="water",
+        molecule="aspirin",  # Test advanced lookup with a pharmaceutical
         method="hf",
         basis_set="sto-3g",
         blocking=True

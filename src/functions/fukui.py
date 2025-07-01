@@ -41,7 +41,7 @@ def log_rowan_api_call(workflow_type: str, **kwargs):
             if key != 'ping_interval':
                 logger.info(f"  {key}: {value}")
         
-        result = rowan.run(workflow_type, **kwargs)
+        result = rowan.compute(workflow_type=workflow_type, **kwargs)
         
         end_time = time.time()
         duration = end_time - start_time

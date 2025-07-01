@@ -61,7 +61,7 @@ def rowan_folder_management(
     try:
         if action == "create":
             if not name:
-                return "❌ Error: 'name' is required for creating a folder"
+                return " Error: 'name' is required for creating a folder"
             
             folder = rowan.Folder.create(
                 name=name,
@@ -128,15 +128,16 @@ def rowan_folder_management(
             return f"Folder {folder_uuid} deleted successfully."
             
         elif action == "list":
-            # Build filter parameters
+            # Build filter parameters - only include non-None/non-empty values
             filter_params = {"page": page, "size": size}
-            if name_contains is not None:
+            
+            if name_contains:  # Only add if not None and not empty
                 filter_params["name_contains"] = name_contains
-            if parent_uuid is not None:
+            if parent_uuid:  # Only add if not None and not empty
                 filter_params["parent_uuid"] = parent_uuid
-            if starred is not None:
+            if starred is not None:  # Boolean can be False, so check specifically for None
                 filter_params["starred"] = starred
-            if public is not None:
+            if public is not None:  # Boolean can be False, so check specifically for None
                 filter_params["public"] = public
                 
             result = rowan.Folder.list(**filter_params)
@@ -148,9 +149,9 @@ def rowan_folder_management(
             
             formatted = f"Found {len(folders)} folders (Page {page}/{num_pages}):\n\n"
             for folder in folders:
-                starred_icon = "⭐" if folder.get('starred') else "📁"
-                public_icon = "🌐" if folder.get('public') else "🔒"
-                formatted += f"{starred_icon} {folder.get('name', 'Unnamed')} {public_icon}\n"
+                starred_text = " [STARRED]" if folder.get('starred') else ""
+                public_text = " [PUBLIC]" if folder.get('public') else " [PRIVATE]"
+                formatted += f" {folder.get('name', 'Unnamed')}{starred_text}{public_text}\n"
                 formatted += f"   UUID: {folder.get('uuid', 'N/A')}\n"
                 if folder.get('notes'):
                     formatted += f"   Notes: {folder.get('notes')}\n"
@@ -162,7 +163,17 @@ def rowan_folder_management(
             return f"Error: Unknown action '{action}'. Available actions: create, retrieve, update, delete, list"
             
     except Exception as e:
-        return f"Error in folder {action}: {str(e)}"
+        error_msg = str(e)
+        if "500 Internal Server Error" in error_msg and "folder" in error_msg:
+            return f" **Folder API Issue**: The Rowan folder endpoint is currently experiencing issues.\n\n" \
+                   f"**Known Problem**: The rowan-python library sends empty parameters that cause 500 errors.\n\n" \
+                   f"**Workarounds**:\n" \
+                   f"• Use workflow organization via rowan_workflow_management(action='list')\n" \
+                   f"• Create folders via the Rowan web interface at labs.rowansci.com\n" \
+                   f"• Use parent_uuid when creating workflows to organize them\n\n" \
+                   f"**Technical Details**: {error_msg[:100]}..."
+        else:
+            return f" Error in folder {action}: {str(e)}"
 
 
 def test_rowan_folder_management():

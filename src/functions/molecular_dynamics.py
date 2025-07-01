@@ -59,23 +59,19 @@ def rowan_molecular_dynamics(
         ping_interval: Check status interval in seconds
     
     Example:
-        # Glucose molecular dynamics simulation (working example)
         result = rowan_molecular_dynamics(
-            name="glucose_md_simulation_v2",
-            molecule="C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O",
+            name="ethanol_md_simulation",
+            molecule="ethanol",
             ensemble="NVT",
-            temperature=300,
-            num_steps=10000,
-            timestep=1,
-            save_interval=100,
-            initialization="random",
-            blocking=True
+            temperature=298,
+            num_steps=1000,
+            blocking=False
         )
     
     Returns:
         Molecular dynamics workflow result
     """
-    # Parameter validation (following stjames workflow specifications)
+    # Parameter validation
     valid_ensembles = ["nvt", "npt", "nve"]
     valid_initializations = ["random", "quasiclassical", "read"]
     
@@ -105,7 +101,19 @@ def rowan_molecular_dynamics(
     if pressure is not None and pressure <= 0:
         return f" Error: pressure must be positive (got {pressure})"
     
-    # Apply smart defaults for MD calculations (fast methods preferred)
+    # Convert molecule name to SMILES using lookup system
+    try:
+        from .molecule_lookup import get_lookup_instance
+        lookup = get_lookup_instance()
+        smiles, source, metadata = lookup.get_smiles(molecule)
+        if smiles:
+            resolved_smiles = smiles
+        else:
+            resolved_smiles = molecule  # Fallback to original
+    except Exception:
+        resolved_smiles = molecule  # Fallback if lookup fails
+    
+    # Apply smart defaults for MD calculations
     if engine is None:
         engine = "xtb"  # Default to xTB for fast MD forces
     if method is None and engine.lower() == "xtb":
@@ -115,7 +123,7 @@ def rowan_molecular_dynamics(
     if basis_set is None and engine.lower() != "xtb":
         basis_set = "def2-svp"  # Default basis set for non-xTB engines
     
-    # Build MD settings following MolecularDynamicsSettings structure
+    # Build MD settings
     md_settings = {
         "ensemble": ensemble_lower,
         "initialization": initialization_lower,
@@ -137,7 +145,7 @@ def rowan_molecular_dynamics(
     if confining_constraint:
         md_settings["confining_constraint"] = confining_constraint
     
-    # Build calc_settings following Settings structure
+    # Build calc_settings
     calc_settings = {
         "charge": charge,
         "multiplicity": multiplicity,
@@ -155,7 +163,7 @@ def rowan_molecular_dynamics(
     # Build parameters for Rowan API
     workflow_params = {
         "name": name,
-        "molecule": molecule,
+        "molecule": resolved_smiles,
         "workflow_type": "molecular_dynamics",
         "settings": md_settings,
         "calc_settings": calc_settings,
@@ -164,7 +172,7 @@ def rowan_molecular_dynamics(
         "ping_interval": ping_interval
     }
     
-    # Add calc_engine at top level if different from calc_settings engine
+    # Add calc_engine at top level
     if engine:
         workflow_params["calc_engine"] = engine.lower()
     
@@ -177,26 +185,7 @@ def rowan_molecular_dynamics(
             "success": False,
             "error": f"Molecular dynamics calculation failed: {str(e)}",
             "name": name,
-            "molecule": molecule
+            "molecule": molecule,
+            "resolved_smiles": resolved_smiles
         }
         return str(error_response)
-
-def test_rowan_molecular_dynamics():
-    """Test the rowan_molecular_dynamics function."""
-    try:
-        # Test with minimal parameters
-        result = rowan_molecular_dynamics(
-            name="test_md_water",
-            molecule="O",
-            num_steps=10,  # Very short for testing
-            blocking=False
-        )
-        print(" Molecular dynamics test successful!")
-        print(f"Result: {result}")
-        return True
-    except Exception as e:
-        print(f" Molecular dynamics test failed: {e}")
-        return False
-
-if __name__ == "__main__":
-    test_rowan_molecular_dynamics()

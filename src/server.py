@@ -36,11 +36,9 @@ from .functions.irc import rowan_irc as irc_function
 from .functions.docking import rowan_docking as docking_function
 from .functions.workflow_management import rowan_workflow_management as workflow_management_function
 from .functions.calculation_retrieve import rowan_calculation_retrieve as calculation_retrieve_function
-
-# Import management functions from server_backup (these haven't been moved to separate files yet)
-from .server_backup import rowan_folder_management as folder_management_function
-from .server_backup import rowan_system_management as system_management_function
-from .server_backup import rowan_pka as pka_function
+from .functions.pka import rowan_pka as pka_function
+from .functions.folder_management import rowan_folder_management as folder_management_function
+from .functions.system_management import rowan_system_management as system_management_function
 
 # Import molecule lookup from functions
 from .functions.molecule_lookup import rowan_molecule_lookup as molecule_lookup_function
@@ -91,16 +89,9 @@ rowan_docking = mcp.tool()(docking_function)
 rowan_workflow_management = mcp.tool()(workflow_management_function)
 rowan_calculation_retrieve = mcp.tool()(calculation_retrieve_function)
 rowan_molecule_lookup = mcp.tool()(molecule_lookup_function)
-
-# Management functions from server_backup are already FastMCP tools, so don't wrap them again
-rowan_folder_management = folder_management_function
-rowan_system_management = system_management_function
-rowan_pka = pka_function
-
-# Manually add the pre-existing FastMCP tools to the main server
-mcp.add_tool(folder_management_function)
-mcp.add_tool(system_management_function) 
-mcp.add_tool(pka_function)
+rowan_pka = mcp.tool()(pka_function)
+rowan_folder_management = mcp.tool()(folder_management_function)
+rowan_system_management = mcp.tool()(system_management_function)
 
 # Setup API key
 api_key = os.getenv("ROWAN_API_KEY")
