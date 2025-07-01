@@ -33,10 +33,11 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+packages = ["src", "rowan_mcp"]
 
 [project.scripts]
-rowan-mcp = "src.server:main"
+rowan-mcp = "rowan_mcp:main"
+rowan-mcp-server = "rowan_mcp:main"
 
 [tool.black]
 line-length = 88
