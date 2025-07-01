@@ -64,7 +64,7 @@ An unexpected large imaginary frequency was encountered, meaning that the calcul
 
 ### hydrogen bond basicity (no access)
 
-## advanced analysis
+## reactions / dynamics (?)
 
 ### reactivity (fukui)
 - Where will electrophiles attack benzene? ✅
@@ -84,7 +84,7 @@ An unexpected large imaginary frequency was encountered, meaning that the calcul
 - Predict drug-likeness of aspirin (follow-up: is it orally bioavailable?) ✅
 - Calculate ADMET for KarXT from Karuna Therapeutics ✅
 
-### docking (couldn't resolve)
+### docking (couldn't resolve) ❌
 - Dock aspirin to COX-2 enzyme
 - Find binding pose of this ligand
 - Predict protein-drug interaction
@@ -98,6 +98,8 @@ An unexpected large imaginary frequency was encountered, meaning that the calcul
 
 ### data retrieval
 - Get results from this calculation UUID ✅
+- List 5 most recent workflows ✅
+- Update name of most recent workflow to "x" ✅
 
 ### project organization
 - Create a new project folder for drug discovery (and delete) ✅
@@ -106,14 +108,16 @@ An unexpected large imaginary frequency was encountered, meaning that the calcul
 - fix list folders ❌ 
 
 ### server administration
-- Check server status
-- Set logging level to debug
-- Monitor system health
+- Check server status ✅
 
 # more comprehensive queries tbd...
 
 ### to do 
-- rowan folder list - i don't think this works 
-    - tried 
-- descriptions for one-liners to feed into the mcp tool
-- break up the folder and workflow mega tool?
+- reaction coordinates, irc, docking 
+- rowan folder list - i think there's a bug
+    - tried paramter filtering (non-None params to avoid sending empty strings)
+    - direct API calls with rowan.Folder.list() with no params
+    - string, None, type checks
+    - used the example directly from Rowan's API docs (after adding redox folder), still getting 500 error
+- edit descriptions for one-liners to feed into the mcp tool
+- break up the folder and workflow mega tools
