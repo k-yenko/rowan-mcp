@@ -20,7 +20,7 @@ from .server import api_key
 # Import all functions from their individual files in functions/
 from .functions.solubility import rowan_solubility
 from .functions.workflow_management import rowan_workflow_management
-from .functions.calculation_retrieve import rowan_calculation_retrieve
+# from .functions.calculation_retrieve import rowan_calculation_retrieve
 from .functions.docking import rowan_docking
 from .functions.spin_states import rowan_spin_states
 from .functions.molecular_dynamics import rowan_molecular_dynamics
@@ -77,7 +77,7 @@ TOOL_FUNCTIONS = {
     "rowan_folder_management": rowan_folder_management,
     "rowan_workflow_management": rowan_workflow_management,
     "rowan_system_management": rowan_system_management,
-    "rowan_calculation_retrieve": rowan_calculation_retrieve,
+    # "rowan_calculation_retrieve": rowan_calculation_retrieve,
     
     # Lookup Tools
     "rowan_molecule_lookup": rowan_molecule_lookup,
