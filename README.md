@@ -15,8 +15,8 @@ This tool lets AI assistants (like Claude) run real chemistry calculations throu
 
 ### 1. Install the Package
 ```bash
-# Install directly from this repository
-pip install git+https://github.com/your-username/rowan-mcp.git
+# Install directly from GitHub
+pip install git+https://github.com/k-yenko/rowan-mcp.git
 
 # Or if you have the source code locally
 pip install .
@@ -78,7 +78,7 @@ For developers who want to modify or contribute to this project:
 ### Setup
 ```bash
 # Clone this repository
-git clone <repository-url>
+git clone https://github.com/k-yenko/rowan-mcp.git
 cd rowan-mcp
 
 # Install dependencies
