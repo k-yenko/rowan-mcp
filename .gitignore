@@ -5,3 +5,7 @@ __pycache__/
 *$py.class
 *.so
 .DS_Store
+
+.claude
+CLAUDE.md
+co
