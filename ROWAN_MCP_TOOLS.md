@@ -136,21 +136,7 @@ Comprehensive spin state analysis including energy differences, spin densities, 
 
 ### 2. Chemical Properties
 
-#### `rowan_bde`
-**Description**: Calculate bond dissociation energies.
 
-Predicts the energy required to break specific bonds in molecules. Useful for understanding metabolic pathways, predicting reaction selectivity, and identifying weak bonds for synthetic planning.
-
-**Parameters**:
-- `name`: Calculation name
-- `molecule`: SMILES string
-- `folder_uuid`: Organization folder (optional)
-- `blocking`: Wait for completion (default: True)
-- `ping_interval`: Status check interval (default: 5)
-
-**Use Cases**: Metabolism prediction, synthetic planning, reaction mechanism studies
-
----
 
 #### `rowan_redox_potential`
 **Description**: Predict redox potentials vs. SCE in acetonitrile.
@@ -357,21 +343,7 @@ Finds all possible tautomeric forms and ranks them by relative energy. Includes 
 
 ---
 
-#### `rowan_hydrogen_bond_basicity`
-**Description**: Calculate hydrogen bond acceptor strength.
 
-Quantifies the ability of molecules to accept hydrogen bonds. Important for drug-target interactions, crystal packing predictions, and solvent interactions.
-
-**Parameters**:
-- `name`: Calculation name
-- `molecule`: SMILES string
-- `folder_uuid`: Organization folder (optional)
-- `blocking`: Wait for completion (default: True)
-- `ping_interval`: Status check interval (default: 5)
-
-**Use Cases**: Drug design, crystal engineering, intermolecular interactions
-
----
 
 ### 5. Workflow Management
 
@@ -457,7 +429,7 @@ Converts common chemical names to canonical SMILES strings. Supports a comprehen
 
 ## Token Count Summary
 
-**Total Tools**: 23
+**Total Tools**: 21
 
 **Average Description Length**: ~150-300 words per tool
 

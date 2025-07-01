@@ -61,9 +61,9 @@ pytest
 
 **Basic Calculations**: `rowan_multistage_opt`, `rowan_admet`, `rowan_electronic_properties`
 
-**Molecular Properties**: `rowan_pka`, `rowan_solubility`, `rowan_redox_potential`, `rowan_bde`, `rowan_conformers`, `rowan_descriptors`, `rowan_tautomers`
+**Molecular Properties**: `rowan_pka`, `rowan_solubility`, `rowan_redox_potential`, `rowan_conformers`, `rowan_descriptors`, `rowan_tautomers`
 
-**Advanced Analysis**: `rowan_scan`, `rowan_fukui`, `rowan_spin_states`, `rowan_irc`, `rowan_molecular_dynamics`, `rowan_hydrogen_bond_basicity`
+**Advanced Analysis**: `rowan_scan`, `rowan_fukui`, `rowan_spin_states`, `rowan_irc`, `rowan_molecular_dynamics`
 
 **Drug Discovery**: `rowan_docking` with PDB ID and SMILES support
 

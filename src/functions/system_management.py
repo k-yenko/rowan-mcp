@@ -65,7 +65,7 @@ def rowan_system_management(
             result += "**Chemical Properties:**\n"
             result += "• `rowan_pka` - pKa prediction\n"
             result += "• `rowan_redox_potential` - Redox potentials vs SCE\n"
-            result += "• `rowan_bde` - Bond dissociation energies\n"
+    
             result += "• `rowan_solubility` - Solubility prediction\n\n"
             
             result += "**Drug Discovery:**\n"
@@ -78,7 +78,7 @@ def rowan_system_management(
             result += "• `rowan_spin_states` - Spin state preferences\n"
             result += "• `rowan_irc` - Reaction coordinate following\n"
             result += "• `rowan_molecular_dynamics` - MD simulations\n"
-            result += "• `rowan_hydrogen_bond_basicity` - H-bond strength\n\n"
+            result += "\n"
             
             result += "**Usage Guidelines:**\n"
             result += "• For geometry optimization: use `rowan_multistage_opt`\n"
