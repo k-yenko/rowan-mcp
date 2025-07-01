@@ -2,11 +2,18 @@
 Rowan workflow management functions for MCP tool integration.
 """
 
-from typing import Optional, Dict, Any, Union, List
+from typing import Optional, Dict, Any, Union, List, Literal
 import rowan
 
+def safe_get_attr(obj, attr: str, default=None):
+    """Safely get an attribute from an object, returning default if it doesn't exist."""
+    try:
+        return getattr(obj, attr, default)
+    except (AttributeError, TypeError):
+        return default
+
 def rowan_workflow_management(
-    action: str,
+    action: Literal['create', 'retrieve', 'update', 'stop', 'status', 'is_finished', 'delete', 'list'],
     workflow_uuid: Optional[str] = None,
     name: Optional[str] = None,
     workflow_type: Optional[str] = None,
@@ -27,7 +34,7 @@ def rowan_workflow_management(
     
     **Available Actions:**
     - **create**: Create a new workflow (requires: name, workflow_type, initial_molecule)
-    - **retrieve**: Get workflow details (requires: workflow_uuid)
+    - **retrieve**: retrieve workflow details (requires: workflow_uuid)
     - **update**: Update workflow properties (requires: workflow_uuid, optional: name, parent_uuid, notes, starred, public, email_when_complete)
     - **stop**: Stop a running workflow (requires: workflow_uuid)
     - **status**: Check workflow status (requires: workflow_uuid)
@@ -36,7 +43,7 @@ def rowan_workflow_management(
     - **list**: List workflows with filters (optional: name_contains, parent_uuid, starred, public, object_status, object_type, page, size)
     
     Args:
-        action: Action to perform ('create', 'retrieve', 'update', 'stop', 'status', 'is_finished', 'delete', 'list')
+        action: Action to perform - must be one of: 'create', 'retrieve', 'update', 'stop', 'status', 'is_finished', 'delete', 'list'
         workflow_uuid: UUID of the workflow (required for retrieve, update, stop, status, is_finished, delete)
         name: Workflow name (required for create, optional for update)
         workflow_type: Type of workflow (required for create)
@@ -91,20 +98,30 @@ def rowan_workflow_management(
             )
             
             formatted = f" Workflow '{name}' created successfully!\n\n"
-            formatted += f" UUID: {workflow.get('uuid', 'N/A')}\n"
+            formatted += f" UUID: {safe_get_attr(workflow, 'uuid', 'N/A')}\n"
             formatted += f" Type: {workflow_type}\n"
-            formatted += f" Status: {workflow.get('object_status', 'Unknown')}\n"
-            formatted += f" Created: {workflow.get('created_at', 'N/A')}\n"
+            formatted += f" Status: {safe_get_attr(workflow, 'object_status', 'Unknown')}\n"
+            formatted += f" Created: {safe_get_attr(workflow, 'created_at', 'N/A')}\n"
             return formatted
             
         elif action == "retrieve":
             if not workflow_uuid:
                 return " Error: 'workflow_uuid' is required for retrieving a workflow"
             
-            workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
+            try:
+                workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
+            except Exception as e:
+                return f" Error retrieving workflow: {str(e)}"
+            
+            # Handle workflow as dictionary (which is what Rowan API returns)
+            def safe_get_dict_value(data, key, default='N/A'):
+                """Safely get a value from a dictionary."""
+                if isinstance(data, dict):
+                    return data.get(key, default)
+                return safe_get_attr(data, key, default)
             
             # Get status and interpret it
-            status = workflow.get('object_status', 'Unknown')
+            status = safe_get_dict_value(workflow, 'object_status', 'Unknown')
             status_names = {
                 0: "Queued",
                 1: "Running", 
@@ -116,32 +133,64 @@ def rowan_workflow_management(
             status_name = status_names.get(status, f"Unknown ({status})")
             
             formatted = f" Workflow Details:\n\n"
-            formatted += f" Name: {workflow.get('name', 'N/A')}\n"
-            formatted += f" UUID: {workflow.get('uuid', 'N/A')}\n"
-            formatted += f" Type: {workflow.get('object_type', 'N/A')}\n"
+            formatted += f" Name: {safe_get_dict_value(workflow, 'name', 'N/A')}\n"
+            formatted += f" UUID: {safe_get_dict_value(workflow, 'uuid', 'N/A')}\n"
+            formatted += f" Type: {safe_get_dict_value(workflow, 'object_type', 'N/A')}\n"
             formatted += f" Status: {status_name} ({status})\n"
-            formatted += f" Parent: {workflow.get('parent_uuid', 'Root')}\n"
-            formatted += f" Starred: {'Yes' if workflow.get('starred') else 'No'}\n"
-            formatted += f" Public: {'Yes' if workflow.get('public') else 'No'}\n"
-            formatted += f" Created: {workflow.get('created_at', 'N/A')}\n"
-            formatted += f" Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
-            formatted += f" Credits: {workflow.get('credits_charged', 0)}\n"
-            formatted += f" Notes: {workflow.get('notes', 'None')}\n\n"
+            formatted += f" Parent: {safe_get_dict_value(workflow, 'parent_uuid', 'Root')}\n"
+            formatted += f" Starred: {'Yes' if safe_get_dict_value(workflow, 'starred', False) else 'No'}\n"
+            formatted += f" Public: {'Yes' if safe_get_dict_value(workflow, 'public', False) else 'No'}\n"
+            formatted += f" Created: {safe_get_dict_value(workflow, 'created_at', 'N/A')}\n"
+            formatted += f" Elapsed: {safe_get_dict_value(workflow, 'elapsed', 0):.2f}s\n"
+            formatted += f" Credits: {safe_get_dict_value(workflow, 'credits_charged', 0)}\n"
+            formatted += f" Notes: {safe_get_dict_value(workflow, 'notes', 'None')}\n\n"
             
             # If workflow is completed (status 2), extract and show results
             if status == 2:
                 formatted += f" **Workflow Completed Successfully!**\n\n"
                 
                 # Show basic completion details
-                if workflow.get('credits_charged'):
-                    formatted += f" Workflow used {workflow.get('credits_charged')} credits and ran for {workflow.get('elapsed', 0):.2f}s\n\n"
+                credits_charged = safe_get_dict_value(workflow, 'credits_charged', 0)
+                elapsed_time = safe_get_dict_value(workflow, 'elapsed', 0)
+                if credits_charged or elapsed_time:
+                    formatted += f" Workflow used {credits_charged} credits and ran for {elapsed_time:.2f}s\n\n"
+                
+                # Debug: Show all available keys in the workflow dictionary
+                if isinstance(workflow, dict):
+                    workflow_keys = list(workflow.keys())
+                    formatted += f" **Debug - Available Workflow Keys:**\n"
+                    formatted += f" {', '.join(workflow_keys)}\n\n"
+                else:
+                    # Fallback for object-based workflows
+                    workflow_attrs = []
+                    for attr in dir(workflow):
+                        if not attr.startswith('_'):
+                            try:
+                                value = getattr(workflow, attr)
+                                if not callable(value):
+                                    workflow_attrs.append(attr)
+                            except:
+                                pass
+                    formatted += f" **Debug - Available Workflow Attributes:**\n"
+                    formatted += f" {', '.join(workflow_attrs)}\n\n"
                 
                 # Extract actual results from object_data
-                object_data = workflow.get('object_data', {})
+                object_data = safe_get_dict_value(workflow, 'object_data', {})
+                workflow_type = safe_get_dict_value(workflow, 'object_type', '')
+                
+                formatted += f" **Results Analysis:**\n"
+                formatted += f" Workflow Type: {workflow_type}\n"
+                formatted += f" Object Data Present: {'Yes' if object_data else 'No'}\n"
+                
                 if object_data:
-                    formatted += extract_workflow_results(workflow.get('object_type', ''), object_data)
+                    formatted += f" Object Data Keys: {list(object_data.keys()) if isinstance(object_data, dict) else 'Not a dictionary'}\n\n"
+                    formatted += extract_workflow_results(workflow_type, object_data)
                 else:
-                    formatted += f" No results data found in workflow object_data\n"
+                    formatted += f" **No results data found in workflow object_data**\n"
+                    formatted += f" This could mean:\n"
+                    formatted += f" • The workflow completed but didn't generate data\n"
+                    formatted += f" • The results are stored in a different attribute\n"
+                    formatted += f" • There was an issue with the workflow execution\n"
             
             elif status == 1:  # Running
                 formatted += f" **Workflow is currently running...**\n"
@@ -161,29 +210,49 @@ def rowan_workflow_management(
             if not workflow_uuid:
                 return " Error: 'workflow_uuid' is required for updating a workflow"
             
-            update_data = {}
-            if name is not None:
-                update_data['name'] = name
-            if parent_uuid is not None:
-                update_data['parent_uuid'] = parent_uuid
-            if notes is not None:
-                update_data['notes'] = notes
-            if starred is not None:
-                update_data['starred'] = starred
-            if public is not None:
-                update_data['public'] = public
-            if email_when_complete is not None:
-                update_data['email_when_complete'] = email_when_complete
+            # Build update parameters according to Rowan API docs
+            update_params = {'uuid': workflow_uuid}
+            updates_made = []
             
-            if not update_data:
+            if name is not None:
+                update_params['name'] = name
+                updates_made.append(f"name: {name}")
+            if parent_uuid is not None:
+                update_params['parent_uuid'] = parent_uuid
+                updates_made.append(f"parent_uuid: {parent_uuid}")
+            if notes is not None:
+                update_params['notes'] = notes
+                updates_made.append(f"notes: {notes}")
+            if starred is not None:
+                update_params['starred'] = starred
+                updates_made.append(f"starred: {starred}")
+            if public is not None:
+                update_params['public'] = public
+                updates_made.append(f"public: {public}")
+            if email_when_complete is not None:
+                update_params['email_when_complete'] = email_when_complete
+                updates_made.append(f"email_when_complete: {email_when_complete}")
+            
+            if len(update_params) == 1:  # Only UUID provided
                 return " Error: At least one field must be provided for updating (name, parent_uuid, notes, starred, public, email_when_complete)"
             
-            workflow = rowan.Workflow.update(uuid=workflow_uuid, **update_data)
+            # Call Rowan API with correct parameter structure
+            workflow = rowan.Workflow.update(**update_params)
             
+            # Format response using the returned workflow object
             formatted = f" Workflow updated successfully!\n\n"
-            formatted += f" UUID: {workflow_uuid}\n"
-            for key, value in update_data.items():
-                formatted += f" {key.replace('_', ' ').title()}: {value}\n"
+            formatted += f" UUID: {safe_get_attr(workflow, 'uuid', workflow_uuid)}\n"
+            formatted += f" Name: {safe_get_attr(workflow, 'name', 'N/A')}\n"
+            formatted += f" Type: {safe_get_attr(workflow, 'object_type', 'N/A')}\n"
+            formatted += f" Parent: {safe_get_attr(workflow, 'parent_uuid', 'Root')}\n"
+            formatted += f" Starred: {'Yes' if safe_get_attr(workflow, 'starred', False) else 'No'}\n"
+            formatted += f" Public: {'Yes' if safe_get_attr(workflow, 'public', False) else 'No'}\n"
+            formatted += f" Email on Complete: {'Yes' if safe_get_attr(workflow, 'email_when_complete', False) else 'No'}\n"
+            formatted += f" Notes: {safe_get_attr(workflow, 'notes', 'None')}\n\n"
+            
+            formatted += f" **Updates Applied:**\n"
+            for update in updates_made:
+                formatted += f"• {update}\n"
             
             return formatted
             
@@ -196,7 +265,14 @@ def rowan_workflow_management(
                 return f" Workflow stop request submitted. Result: {result}"
             elif action == "status":
                 workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
-                status = workflow.get('object_status', 'Unknown')
+                
+                # Handle workflow as dictionary
+                def safe_get_dict_value(data, key, default='N/A'):
+                    if isinstance(data, dict):
+                        return data.get(key, default)
+                    return safe_get_attr(data, key, default)
+                
+                status = safe_get_dict_value(workflow, 'object_status', 'Unknown')
                 status_names = {
                     0: "Queued",
                     1: "Running", 
@@ -208,9 +284,9 @@ def rowan_workflow_management(
                 status_name = status_names.get(status, f"Unknown ({status})")
                 
                 formatted = f" **Workflow Status**: {status_name} ({status})\n"
-                formatted += f"🆔 UUID: {workflow_uuid}\n"
-                formatted += f" Name: {workflow.get('name', 'N/A')}\n"
-                formatted += f" Elapsed: {workflow.get('elapsed', 0):.2f}s\n"
+                formatted += f" UUID: {workflow_uuid}\n"
+                formatted += f" Name: {safe_get_dict_value(workflow, 'name', 'N/A')}\n"
+                formatted += f" Elapsed: {safe_get_dict_value(workflow, 'elapsed', 0):.2f}s\n"
                 
                 if status == 2:
                     formatted += f" **Completed successfully!** Use 'retrieve' action to get results.\n"
@@ -226,11 +302,18 @@ def rowan_workflow_management(
                 return formatted
             elif action == "is_finished":
                 workflow = rowan.Workflow.retrieve(uuid=workflow_uuid)
-                status = workflow.get('object_status', 'Unknown')
+                
+                # Handle workflow as dictionary
+                def safe_get_dict_value(data, key, default='N/A'):
+                    if isinstance(data, dict):
+                        return data.get(key, default)
+                    return safe_get_attr(data, key, default)
+                
+                status = safe_get_dict_value(workflow, 'object_status', 'Unknown')
                 is_finished = status in [2, 3, 4]  # Completed, Failed, or Stopped
                 
                 formatted = f" **Workflow Finished Check**\n"
-                formatted += f"🆔 UUID: {workflow_uuid}\n"
+                formatted += f" UUID: {workflow_uuid}\n"
                 formatted += f" Status: {status}\n"
                 formatted += f" Finished: {'Yes' if is_finished else 'No'}\n"
                 
@@ -303,13 +386,24 @@ def rowan_workflow_management(
             }
             
             for workflow in results:
-                status = workflow.get('object_status', 'Unknown')
-                status_name = status_names.get(status, f"Unknown ({status})")
-                
-                formatted += f" **{workflow.get('name', 'Unnamed')}**\n"
-                formatted += f"   UUID: {workflow.get('uuid', 'N/A')}\n"
-                formatted += f"    {workflow.get('object_type', 'N/A')} | {status_name}\n"
-                formatted += f"   Created: {workflow.get('created_at', 'N/A')} | {workflow.get('elapsed', 0):.1f}s\n\n"
+                # For list results, workflow items might be dictionaries
+                if isinstance(workflow, dict):
+                    status = workflow.get('object_status', 'Unknown')
+                    status_name = status_names.get(status, f"Unknown ({status})")
+                    
+                    formatted += f" **{workflow.get('name', 'Unnamed')}**\n"
+                    formatted += f"   UUID: {workflow.get('uuid', 'N/A')}\n"
+                    formatted += f"    {workflow.get('object_type', 'N/A')} | {status_name}\n"
+                    formatted += f"   Created: {workflow.get('created_at', 'N/A')} | {workflow.get('elapsed', 0):.1f}s\n\n"
+                else:
+                    # If it's a workflow object
+                    status = safe_get_attr(workflow, 'object_status', 'Unknown')
+                    status_name = status_names.get(status, f"Unknown ({status})")
+                    
+                    formatted += f" **{safe_get_attr(workflow, 'name', 'Unnamed')}**\n"
+                    formatted += f"   UUID: {safe_get_attr(workflow, 'uuid', 'N/A')}\n"
+                    formatted += f"    {safe_get_attr(workflow, 'object_type', 'N/A')} | {status_name}\n"
+                    formatted += f"   Created: {safe_get_attr(workflow, 'created_at', 'N/A')} | {safe_get_attr(workflow, 'elapsed', 0):.1f}s\n\n"
             
             # Pagination info
             if num_pages > 1:
@@ -324,107 +418,20 @@ def rowan_workflow_management(
         return f" Error in workflow management: {str(e)}"
 
 def extract_workflow_results(workflow_type: str, object_data: Dict[str, Any]) -> str:
-    """Extract and format workflow results based on type."""
+    """Extract and format workflow results - simple raw data display."""
     
-    if workflow_type == 'solubility':
-        if 'solubilities' in object_data:
-            formatted = f" **Solubility Results (log S):**\n\n"
-            solubilities = object_data['solubilities']
-            
-            if isinstance(solubilities, dict):
-                # Define temperature range based on typical solubility workflow
-                # Most solubility workflows use 5 temperatures: 273.15, 298.15, 323.15, 348.15, 373.15 K
-                default_temps = [273.15, 298.15, 323.15, 348.15, 373.15]  # Kelvin
-                
-                for solvent_smiles, solvent_data in solubilities.items():
-                    # Convert SMILES to common name if possible
-                    solvent_names = {
-                        'O': 'Water', 'CCO': 'Ethanol', 'CCCCCC': 'Hexane',
-                        'CC(=O)C': 'Acetone', 'CS(=O)C': 'DMSO', 'CC#N': 'Acetonitrile',
-                        'CC1=CC=CC=C1': 'Toluene', 'C1CCCO1': 'THF'
-                    }
-                    solvent_name = solvent_names.get(solvent_smiles, solvent_smiles)
-                    
-                    formatted += f"**{solvent_name} ({solvent_smiles}):**\n"
-                    
-                    if isinstance(solvent_data, dict):
-                        solubilities_vals = solvent_data.get('solubilities', [])
-                        uncertainties_vals = solvent_data.get('uncertainties', [])
-                        
-                        # Match solubility values with temperatures
-                        for i, sol_val in enumerate(solubilities_vals):
-                            temp_k = default_temps[i] if i < len(default_temps) else 298.15
-                            temp_c = temp_k - 273.15
-                            
-                            uncertainty = f" ± {uncertainties_vals[i]:.3f}" if i < len(uncertainties_vals) else ""
-                            formatted += f"  • {temp_c:.0f}°C: {sol_val:.3f}{uncertainty} log S\n"
-                    else:
-                        formatted += f"  • {solvent_data}\n"
-                    
-                    formatted += "\n"
-            else:
-                formatted += f"Raw data: {solubilities}\n"
-            
-            return formatted
+    formatted = f" **{workflow_type.replace('_', ' ').title()} Results:**\n\n"
     
-    elif workflow_type == 'electronic_properties':
-        formatted = f" **Electronic Properties:**\n\n"
-        
-        # HOMO/LUMO energies
-        if 'molecular_orbitals' in object_data:
-            mo_data = object_data['molecular_orbitals']
-            if isinstance(mo_data, dict) and 'energies' in mo_data:
-                energies = mo_data['energies']
-                occupations = mo_data.get('occupations', [])
-                
-                if energies and occupations:
-                    homo_idx = None
-                    lumo_idx = None
-                    for i, occ in enumerate(occupations):
-                        if occ > 0.5:
-                            homo_idx = i
-                        elif occ < 0.5 and lumo_idx is None:
-                            lumo_idx = i
-                            break
-                    
-                    if homo_idx is not None and lumo_idx is not None:
-                        homo_energy = energies[homo_idx]
-                        lumo_energy = energies[lumo_idx]
-                        gap = lumo_energy - homo_energy
-                        
-                        formatted += f"• HOMO: {homo_energy:.4f} hartree ({homo_energy * 27.2114:.2f} eV)\n"
-                        formatted += f"• LUMO: {lumo_energy:.4f} hartree ({lumo_energy * 27.2114:.2f} eV)\n"
-                        formatted += f"• Gap: {gap:.4f} hartree ({gap * 27.2114:.2f} eV)\n\n"
-        
-        # Dipole moment
-        if 'dipole' in object_data:
-            dipole = object_data['dipole']
-            if isinstance(dipole, dict) and 'magnitude' in dipole:
-                formatted += f"• Dipole: {dipole['magnitude']:.4f} Debye\n\n"
-            elif isinstance(dipole, (int, float)):
-                formatted += f"• Dipole: {dipole:.4f} Debye\n\n"
-        
-        return formatted
+    import json
+    try:
+        # Pretty print the object_data as JSON
+        formatted += f"```json\n{json.dumps(object_data, indent=2, default=str)}\n```\n"
+    except Exception as e:
+        # Fallback if JSON serialization fails
+        formatted += f"Raw object_data:\n{str(object_data)}\n"
+        formatted += f"(JSON serialization failed: {e})\n"
     
-    else:
-        # Generic formatting for other workflow types
-        formatted = f" **{workflow_type.replace('_', ' ').title()} Results:**\n\n"
-        
-        # Show key-value pairs if they're simple
-        for key, value in list(object_data.items())[:5]:
-            if isinstance(value, (int, float)):
-                formatted += f"• {key}: {value:.4f}\n"
-            elif isinstance(value, str) and len(value) < 100:
-                formatted += f"• {key}: {value}\n"
-            elif isinstance(value, list) and len(value) < 5:
-                formatted += f"• {key}: {value}\n"
-            else:
-                formatted += f"• {key}: <data available>\n"
-        
-        if len(object_data) > 5:
-            formatted += f"... and {len(object_data) - 5} more properties\n"
-        
-        return formatted
+    return formatted
 
 def test_rowan_workflow_management():
     """Test the workflow management function."""
