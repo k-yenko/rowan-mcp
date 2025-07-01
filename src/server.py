@@ -20,11 +20,11 @@ from stjames import Molecule
 from .functions.scan import rowan_scan as scan_function
 from .functions.scan_analyzer import rowan_scan_analyzer as scan_analyzer_function
 from .functions.admet import rowan_admet as admet_function
-from .functions.bde import rowan_bde as bde_function
+
 from .functions.multistage_opt import rowan_multistage_opt as multistage_opt_function
 from .functions.descriptors import rowan_descriptors as descriptors_function
 from .functions.tautomers import rowan_tautomers as tautomers_function
-from .functions.hydrogen_bond_basicity import rowan_hydrogen_bond_basicity as hb_basicity_function
+
 from .functions.redox_potential import rowan_redox_potential as redox_potential_function
 from .functions.conformers import rowan_conformers as conformers_function
 from .functions.electronic_properties import rowan_electronic_properties as electronic_properties_function
@@ -72,11 +72,11 @@ mcp = FastMCP()
 rowan_scan = mcp.tool()(scan_function)
 rowan_scan_analyzer = mcp.tool()(scan_analyzer_function)
 rowan_admet = mcp.tool()(admet_function)
-rowan_bde = mcp.tool()(bde_function)
+
 rowan_multistage_opt = mcp.tool()(multistage_opt_function)
 rowan_descriptors = mcp.tool()(descriptors_function)
 rowan_tautomers = mcp.tool()(tautomers_function)
-rowan_hydrogen_bond_basicity = mcp.tool()(hb_basicity_function)
+
 rowan_redox_potential = mcp.tool()(redox_potential_function)
 rowan_conformers = mcp.tool()(conformers_function)
 rowan_electronic_properties = mcp.tool()(electronic_properties_function)

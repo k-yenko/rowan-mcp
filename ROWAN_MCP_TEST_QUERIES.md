@@ -70,13 +70,8 @@ An unexpected large imaginary frequency was encountered, meaning that the calcul
 - Where will electrophiles attack benzene? ✅
 - Find the most reactive sites in phenol ✅
 
-### rxn coordinate
+### rxn coordinate/irc ❌ 
 - Find the transition state for hydrogen migration in formic acid, then trace the reaction path to confirm it connects HCOOH and HOCOH isomers ❌
-
-### irc
-- Trace the reaction path from this transition state
-- Confirm this TS connects reactants and products
-- Map the minimum energy pathway
 
 ### molecular dynamics
 - Run a short MD simulation of water ✅ (use molecule='water', not 'O')
@@ -102,25 +97,23 @@ An unexpected large imaginary frequency was encountered, meaning that the calcul
 ## workflow management
 
 ### data retrieval
-- Get results from this calculation UUID
-- Download the optimized geometry
-- Retrieve energy data from my scan
+- Get results from this calculation UUID ✅
 
 ### project organization
 - Create a new project folder for drug discovery (and delete) ✅
 - List all folders in my account ✅
 - "Move KarXT-related calculations into the folder" ✅
-
-## system management
+- fix list folders ❌ 
 
 ### server administration
 - Check server status
 - Set logging level to debug
 - Monitor system health
 
-### molecule database?
-- What's the SMILES for caffeine?
-- Look up aspirin structure
-- Convert 'benzene' to SMILES
-
 # more comprehensive queries tbd...
+
+### to do 
+- rowan folder list - i don't think this works 
+    - tried 
+- descriptions for one-liners to feed into the mcp tool
+- break up the folder and workflow mega tool?

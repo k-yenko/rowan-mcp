@@ -27,10 +27,10 @@ def rowan_workflow_management(
     name_contains: Optional[str] = None,
     object_status: Optional[int] = None,
     object_type: Optional[str] = None,
-    page: int = 1,
+    page: int = 0,
     size: int = 50
 ) -> str:
-    """Unified workflow management tool for all workflow operations.
+    """Unified workflow management tool for all workflow operations. Available actions: create, retrieve, update, stop, status, is_finished, delete, list.
     
     **Available Actions:**
     - **create**: Create a new workflow (requires: name, workflow_type, initial_molecule)
@@ -73,8 +73,8 @@ def rowan_workflow_management(
             
             # Validate workflow type
             VALID_WORKFLOWS = {
-                "admet", "basic_calculation", "bde", "conformer_search", "descriptors", 
-                "docking", "electronic_properties", "fukui", "hydrogen_bond_basicity", 
+                "admet", "basic_calculation", "conformer_search", "descriptors", 
+                "docking", "electronic_properties", "fukui", 
                 "irc", "molecular_dynamics", "multistage_opt", "pka", "redox_potential", 
                 "scan", "solubility", "spin_states", "tautomers"
             }
@@ -340,7 +340,7 @@ def rowan_workflow_management(
             # Build filters
             filters = {
                 'page': page,
-                'size': size
+                'size': min(size * 5, 250)  # Get more workflows to sort properly, cap at 250
             }
             
             if name_contains:
@@ -358,58 +358,31 @@ def rowan_workflow_management(
             
             workflows = rowan.Workflow.list(**filters)
             
-            if not workflows or 'workflows' not in workflows:
-                formatted = " No workflows found matching the criteria\n\n"
-                formatted += "**This could mean:**\n"
-                formatted += "• You haven't created any workflows yet\n"
-                formatted += "• Your filters are too restrictive\n"
-                formatted += "• There might be an API connectivity issue\n\n"
-                formatted += "**Getting Started:**\n"
-                formatted += "• Try rowan_system_management(action='server_status') to check connectivity\n"
-                formatted += "• Use any Rowan tool (like rowan_electronic_properties) to create your first workflow\n"
-                formatted += "• Remove filters and try rowan_workflow_management(action='list') again\n"
-                return formatted
+            # Sort workflows by created_at in descending order (most recent first)
+            if 'workflows' in workflows and workflows['workflows']:
+                from datetime import datetime
+                
+                def parse_date(date_str):
+                    try:
+                        return datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+                    except:
+                        return datetime.min
+                
+                sorted_workflows = sorted(
+                    workflows['workflows'], 
+                    key=lambda w: parse_date(w.get('created_at', '')),
+                    reverse=True
+                )
+                
+                # Remove object_logfile from each workflow and return only the requested number
+                cleaned_workflows = []
+                for workflow in sorted_workflows[:size]:
+                    cleaned_workflow = {k: v for k, v in workflow.items() if k != 'object_logfile'}
+                    cleaned_workflows.append(cleaned_workflow)
+                
+                workflows['workflows'] = cleaned_workflows
             
-            results = workflows['workflows']
-            total_count = len(results)
-            num_pages = workflows.get('num_pages', 1)
-            
-            formatted = f" **Workflows** (showing {len(results)} workflows, page {page}/{num_pages})\n\n"
-            
-            status_names = {
-                0: "Queued",
-                1: "Running", 
-                2: "Completed",
-                3: "Failed",
-                4: "Stopped",
-                5: "Awaiting Queue"
-            }
-            
-            for workflow in results:
-                # For list results, workflow items might be dictionaries
-                if isinstance(workflow, dict):
-                    status = workflow.get('object_status', 'Unknown')
-                    status_name = status_names.get(status, f"Unknown ({status})")
-                    
-                    formatted += f" **{workflow.get('name', 'Unnamed')}**\n"
-                    formatted += f"   UUID: {workflow.get('uuid', 'N/A')}\n"
-                    formatted += f"    {workflow.get('object_type', 'N/A')} | {status_name}\n"
-                    formatted += f"   Created: {workflow.get('created_at', 'N/A')} | {workflow.get('elapsed', 0):.1f}s\n\n"
-                else:
-                    # If it's a workflow object
-                    status = safe_get_attr(workflow, 'object_status', 'Unknown')
-                    status_name = status_names.get(status, f"Unknown ({status})")
-                    
-                    formatted += f" **{safe_get_attr(workflow, 'name', 'Unnamed')}**\n"
-                    formatted += f"   UUID: {safe_get_attr(workflow, 'uuid', 'N/A')}\n"
-                    formatted += f"    {safe_get_attr(workflow, 'object_type', 'N/A')} | {status_name}\n"
-                    formatted += f"   Created: {safe_get_attr(workflow, 'created_at', 'N/A')} | {safe_get_attr(workflow, 'elapsed', 0):.1f}s\n\n"
-            
-            # Pagination info
-            if num_pages > 1:
-                formatted += f"Page {page} of {num_pages} | Use 'page' parameter to navigate\n"
-            
-            return formatted
+            return workflows
             
         else:
             return f" Error: Unknown action '{action}'. Available actions: create, retrieve, update, stop, status, is_finished, delete, list"

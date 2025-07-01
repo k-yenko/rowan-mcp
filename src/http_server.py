@@ -28,11 +28,9 @@ from .functions.irc import rowan_irc
 from .functions.scan import rowan_scan
 from .functions.scan_analyzer import rowan_scan_analyzer
 from .functions.admet import rowan_admet
-from .functions.bde import rowan_bde
 from .functions.multistage_opt import rowan_multistage_opt
 from .functions.descriptors import rowan_descriptors
 from .functions.tautomers import rowan_tautomers
-from .functions.hydrogen_bond_basicity import rowan_hydrogen_bond_basicity
 from .functions.redox_potential import rowan_redox_potential
 from .functions.conformers import rowan_conformers
 from .functions.electronic_properties import rowan_electronic_properties
@@ -56,7 +54,6 @@ TOOL_FUNCTIONS = {
     "rowan_tautomers": rowan_tautomers,
     
     # Chemical Properties  
-    "rowan_bde": rowan_bde,
     "rowan_redox_potential": rowan_redox_potential,
     "rowan_solubility": rowan_solubility,
     "rowan_pka": rowan_pka,
@@ -68,7 +65,6 @@ TOOL_FUNCTIONS = {
     "rowan_spin_states": rowan_spin_states,
     "rowan_irc": rowan_irc,
     "rowan_molecular_dynamics": rowan_molecular_dynamics,
-    "rowan_hydrogen_bond_basicity": rowan_hydrogen_bond_basicity,
     
     # Drug Discovery
     "rowan_docking": rowan_docking,

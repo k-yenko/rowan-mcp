@@ -90,7 +90,7 @@ uv run python -m src
 - `rowan_descriptors` - ML-ready molecular features
 - `rowan_solubility` - Aqueous solubility
 - `rowan_redox_potential` - Electrochemical potentials
-- `rowan_bde` - Bond dissociation energies
+
 
 ### Drug Discovery
 - `rowan_admet` - ADME-Tox properties
@@ -99,7 +99,7 @@ uv run python -m src
 ### Reactivity Analysis  
 - `rowan_fukui` - Reactivity sites
 - `rowan_spin_states` - Spin multiplicities
-- `rowan_hydrogen_bond_basicity` - H-bond acceptor strength
+
 
 ### Project Management
 - `rowan_folder_create/list/update/delete` - Organize calculations

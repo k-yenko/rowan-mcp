@@ -28,7 +28,7 @@ except ImportError:
     RDKIT_AVAILABLE = False
 
 class MoleculeLookup:
-    """Advanced molecule lookup with PubChem API, SQLite caching, and RDKit validation."""
+    """Molecule lookup with PubChem API, SQLite caching, and RDKit validation."""
     
     def __init__(self, cache_db: str = 'molecule_cache.db', cache_expiry_days: int = 30):
         """Initialize the molecule lookup system."""
