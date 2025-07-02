@@ -158,3 +158,11 @@ For development, use this configuration that points to your local project:
 - [ ] Folder listing API bug (returns 500 error)
 - [ ] Multistage optimization sometimes shows unexpected imaginary frequencies
 - [ ] Some calculations show as finished in logs but not in Rowan UI
+
+## Citation
+
+If you use this MCP tool in your research, please cite the underlying Rowan platform:
+
+Rowan Scientific. https://www.rowansci.com (accessed 2025-07-01).
+
+For complete citation information including specific computational engines, methods, and workflows used in your calculations, please refer to [Rowan's citation guidelines](https://docs.rowansci.com/citations).
