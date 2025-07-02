@@ -1,4 +1,5 @@
 /.venv
+/rowan-dxt
 .env
 __pycache__/
 *.py[cod]
