@@ -8,4 +8,5 @@ __pycache__/
 
 .claude
 CLAUDE.md
-co
+dynamic_coord_generator.py
+inspector_commands.md
