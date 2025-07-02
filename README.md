@@ -18,7 +18,7 @@ That's it - no command line setup needed!
 
 ---
 
-## **Manual Installation (Advanced)**
+## **Manual Installation**
 
 **For developers or users who prefer command-line setup:**
 
