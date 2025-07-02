@@ -4,7 +4,23 @@ This project wraps an MCP (Model Context Protocol) around Rowan's tools, making 
 
 ---
 
-## **Quick Installation**
+## **🚀 Quick Install - Desktop Extension**
+
+**For Claude Desktop users - this is the easiest way:**
+
+1. **Download** the extension: [`rowan-dxt.dxt`](./rowan-dxt.dxt) 
+2. **Drag and drop** the file into **Claude Desktop > Settings > Extensions**
+3. **Enter your API key** from [labs.rowansci.com](https://labs.rowansci.com) 
+4. **Enable** the MCP tool in the extension settings
+5. **Start chatting** Try: *"Using the Rowan MCP tool, calculate the pKa of aspirin"*
+
+That's it - no command line setup needed!
+
+---
+
+## **Manual Installation (Advanced)**
+
+**For developers or users who prefer command-line setup:**
 
 ### **1. Clone and Setup**
 ```bash
