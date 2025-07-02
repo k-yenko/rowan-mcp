@@ -6,9 +6,11 @@ This project wraps an MCP (Model Context Protocol) around Rowan's tools, making 
 
 ## **Quick Installation**
 
-### **1. Install**
+### **1. Clone and Setup**
 ```bash
-pip install git+https://github.com/k-yenko/rowan-mcp.git
+git clone https://github.com/k-yenko/rowan-mcp.git
+cd rowan-mcp
+uv sync
 ```
 
 ### **2. Get API Key**
@@ -22,7 +24,9 @@ pip install git+https://github.com/k-yenko/rowan-mcp.git
 {
   "mcpServers": {
     "rowan": {
-      "command": "rowan-mcp",
+      "command": "uv",
+      "args": ["run", "python", "-m", "src"],
+      "cwd": "/path/to/rowan-mcp",
       "env": {
         "ROWAN_API_KEY": "your_api_key_here"
       }
@@ -31,8 +35,37 @@ pip install git+https://github.com/k-yenko/rowan-mcp.git
 }
 ```
 
+*Replace `/path/to/rowan-mcp` with the actual path where you cloned the repository*
+
+**💡 To find your path:**
+```bash
+# After cloning, run this in the rowan-mcp directory:
+pwd
+# Copy the output and use it as your "cwd" value
+```
+
 ### **4. Start Using**
 Ask your AI: *"Calculate the pKa of aspirin"* or *"Optimize the geometry of caffeine"*
+
+### **Alternative: Use .env file**
+Instead of putting your API key in the MCP config, create a `.env` file:
+```bash
+# In the rowan-mcp directory:
+echo "ROWAN_API_KEY=your_actual_api_key_here" > .env
+```
+
+Then use this simpler config (no env section needed):
+```json
+{
+  "mcpServers": {
+    "rowan": {
+      "command": "uv",
+      "args": ["run", "python", "-m", "src"],
+      "cwd": "/path/to/rowan-mcp"
+    }
+  }
+}
+```
 
 ---
 
@@ -47,60 +80,27 @@ Ask the LLM to:
 ## **System Requirements**
 
 - **Python 3.10+** (Python 3.11+ recommended)
+- **[uv](https://docs.astral.sh/uv/) package manager** 
 - **Rowan API key** (free at [labs.rowansci.com](https://labs.rowansci.com))
 - **MCP-compatible client** (Claude Desktop, Continue, etc.)
 
----
+## **Testing Your Setup**
 
-## Development Setup
-
-For those that would like to contribute (!):
-
-### Prerequisites
-- Python 3.10+
-- [uv](https://docs.astral.sh/uv/) package manager  
-- Rowan API key
-
-### Setup
+You can test the server directly:
 ```bash
-# Clone this repository
-git clone https://github.com/k-yenko/rowan-mcp.git
-cd rowan-mcp
-
-# Install dependencies
-uv sync
-
-# Add your API key to .env file
-echo "ROWAN_API_KEY=your_actual_api_key_here" > .env
-```
-
-### Development Commands
-```bash
-# Run server in STDIO mode
-uv run python -m src
-
-# Run server in HTTP/SSE mode  
-uv run python -m src --http
-
-# Show help
+# In the rowan-mcp directory:
 uv run python -m src --help
 ```
 
-### Development MCP Configuration
-For development, use this configuration that points to your local project:
-```json
-{
-  "mcpServers": {
-    "rowan": {
-      "command": "uv",
-      "args": ["run", "python", "-m", "src"],
-      "cwd": "/path/to/your/rowan-mcp",
-      "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
+## **Development**
+
+The installation above is the same for development! Additional commands:
+```bash
+# Run server in HTTP/SSE mode  
+uv run python -m src --http
+
+# Run server in STDIO mode (default)
+uv run python -m src
 ```
 
 ---
