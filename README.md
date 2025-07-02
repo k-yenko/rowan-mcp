@@ -171,6 +171,7 @@ uv run python -m src
 - [ ] `rowan_scan` - Potential energy surfaces
 - [ ] `rowan_irc` - Reaction coordinate following
 - [ ] `rowan_docking` - Protein-ligand docking
+- [ ] add in h-bond, BDE and macroscopic pka, logD, BBB
 - [ ] Folder listing API bug (returns 500 error)
 - [ ] Multistage optimization sometimes shows unexpected imaginary frequencies
 - [ ] Some calculations show as finished in logs but not in Rowan UI
