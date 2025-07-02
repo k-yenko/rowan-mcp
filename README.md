@@ -4,7 +4,7 @@ This project wraps an MCP (Model Context Protocol) around Rowan's tools, making 
 
 ---
 
-## **🚀 Quick Install - Desktop Extension**
+## **Quick Install - Desktop Extension**
 
 **For Claude Desktop users - this is the easiest way:**
 
@@ -53,7 +53,7 @@ uv sync
 
 *Replace `/path/to/rowan-mcp` with the actual path where you cloned the repository*
 
-**💡 To find your path:**
+**To find your path:**
 ```bash
 # After cloning, run this in the rowan-mcp directory:
 pwd
