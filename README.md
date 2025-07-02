@@ -54,7 +54,7 @@ Ask the LLM to:
 
 ## Development Setup
 
-For developers who want to modify or contribute to this project:
+For those that would like to contribute (!):
 
 ### Prerequisites
 - Python 3.10+
@@ -133,20 +133,6 @@ For development, use this configuration that points to your local project:
 - `rowan_folder_create/list/update/delete` - Organize calculations
 - `rowan_workflow_create/list/status/stop` - Manage workflows
 
-## Usage Examples
-
-```python
-# Calculate pKa
-rowan_pka(name="aspirin", molecule="CC(=O)OC1=CC=CC=C1C(=O)O")
-
-# Optimize geometry (recommended)
-rowan_multistage_opt(name="methane", molecule="C")
-
-# Drug properties
-rowan_admet(name="caffeine", molecule="CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
-
-```
-
 ## Requirements
 
 - Python 3.10+
@@ -155,13 +141,14 @@ rowan_admet(name="caffeine", molecule="CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
 
 ## Getting Help
 
-- **Documentation**: [docs.rowansci.com](https://docs.rowansci.com)
-- **Tool Help**: Use `rowan_available_workflows()` for complete tool list
+- **Documentation**: [docs.rowansci.com](https://docs.rowansci.com/)
+- or ping me! 
 
 ---
 
 ## **Todo**
 
+- [ ] Remove unnecessary AI spaghetti formatting 🙃
 - [ ] Some complex conformer searches hang on "running"
 - [ ] Edit MCP one-liner context
 - [ ] Transition state finding and IRC
