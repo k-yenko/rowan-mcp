@@ -64,7 +64,7 @@ An unexpected large imaginary frequency was encountered, meaning that the calcul
 
 ### hydrogen bond basicity (no access)
 
-## reactions / dynamics (?)
+## reactions / dynamics 
 
 ### reactivity (fukui)
 - Where will electrophiles attack benzene? ✅
