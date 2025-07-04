@@ -38,6 +38,7 @@ from .functions.docking import rowan_docking as docking_function
 from .functions.workflow_management import rowan_workflow_management as workflow_management_function
 # from .functions.calculation_retrieve import rowan_calculation_retrieve as calculation_retrieve_function
 from .functions.pka import rowan_pka as pka_function
+from .functions.hydrogen_bond_basicity import rowan_hydrogen_bond_basicity as hydrogen_bond_basicity_function
 from .functions.folder_management import rowan_folder_management as folder_management_function
 from .functions.system_management import rowan_system_management as system_management_function
 
@@ -80,6 +81,7 @@ rowan_workflow_management = mcp.tool()(workflow_management_function)
 # rowan_calculation_retrieve = mcp.tool()(calculation_retrieve_function)
 rowan_molecule_lookup = mcp.tool()(molecule_lookup_function)
 rowan_pka = mcp.tool()(pka_function)
+rowan_hydrogen_bond_basicity = mcp.tool()(hydrogen_bond_basicity_function)
 rowan_folder_management = mcp.tool()(folder_management_function)
 rowan_system_management = mcp.tool()(system_management_function)
 
