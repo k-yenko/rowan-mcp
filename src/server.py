@@ -34,10 +34,12 @@ from .functions.spin_states import rowan_spin_states as spin_states_function
 from .functions.solubility import rowan_solubility as solubility_function
 from .functions.molecular_dynamics import rowan_molecular_dynamics as molecular_dynamics_function
 from .functions.irc import rowan_irc as irc_function
-from .functions.docking import rowan_docking as docking_function
+from .functions.docking import rowan_docking as docking_function, rowan_docking_pdb_id as docking_pdb_id_function
+from .functions.docking_enhanced import rowan_docking_enhanced as docking_enhanced_function
 from .functions.workflow_management import rowan_workflow_management as workflow_management_function
 # from .functions.calculation_retrieve import rowan_calculation_retrieve as calculation_retrieve_function
 from .functions.pka import rowan_pka as pka_function
+from .functions.macropka import rowan_macropka as macropka_function
 from .functions.hydrogen_bond_basicity import rowan_hydrogen_bond_basicity as hydrogen_bond_basicity_function
 from .functions.bde import rowan_bde as bde_function
 from .functions.folder_management import rowan_folder_management as folder_management_function
@@ -78,10 +80,14 @@ rowan_solubility = mcp.tool()(solubility_function)
 rowan_molecular_dynamics = mcp.tool()(molecular_dynamics_function)
 rowan_irc = mcp.tool()(irc_function)
 rowan_docking = mcp.tool()(docking_function)
+rowan_docking_pdb_id = mcp.tool()(docking_pdb_id_function)
+rowan_docking_conversational = mcp.tool()(docking_conversational_function)
+rowan_docking_enhanced = mcp.tool()(docking_enhanced_function)
 rowan_workflow_management = mcp.tool()(workflow_management_function)
 # rowan_calculation_retrieve = mcp.tool()(calculation_retrieve_function)
 rowan_molecule_lookup = mcp.tool()(molecule_lookup_function)
 rowan_pka = mcp.tool()(pka_function)
+rowan_macropka = mcp.tool()(macropka_function)
 rowan_hydrogen_bond_basicity = mcp.tool()(hydrogen_bond_basicity_function)
 rowan_bde = mcp.tool()(bde_function)
 rowan_folder_management = mcp.tool()(folder_management_function)
