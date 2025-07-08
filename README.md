@@ -168,11 +168,10 @@ uv run python -m src
 - [ ] Some complex conformer searches hang on "running"
 - [ ] Edit MCP one-liner context
 - [ ] Transition state finding and IRC
-- [ ] `rowan_scan` - Potential energy surfaces
-- [ ] `rowan_irc` - Reaction coordinate following
+- [X] `rowan_scan` - Potential energy surfaces
 - [ ] `rowan_docking` - Protein-ligand docking
-- [ ] add in h-bond, BDE and macroscopic pka, logD, BBB
-- [ ] Folder listing API bug (returns 500 error)
+- [X] add in h-bond, BDE and macroscopic pka, logD, BBB
+- [ ] Folder listing API bug (returns 500 error) - Rowan side?
 - [ ] Multistage optimization sometimes shows unexpected imaginary frequencies
 - [ ] Some calculations show as finished in logs but not in Rowan UI
 
