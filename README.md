@@ -77,37 +77,6 @@ Ask your AI: *"Calculate the pKa of aspirin"* or *"Optimize the geometry of caff
 
 ---
 
-## **Development Installation**
-
-**For developers or contributors:**
-
-### **1. Clone and Setup**
-```bash
-git clone https://github.com/k-yenko/rowan-mcp.git
-cd rowan-mcp
-uv sync
-```
-
-### **2. Configure for Development**
-```json
-{
-  "mcpServers": {
-    "rowan": {
-      "command": "uv",
-      "args": ["run", "python", "-m", "rowan_mcp"],
-      "cwd": "/path/to/rowan-mcp",
-      "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
-```
-
-*Replace `/path/to/rowan-mcp` with your actual clone path. Find it with `pwd` in the project directory.*
-
----
-
 ## **What You Can Do** 
 
 Ask the LLM to:
