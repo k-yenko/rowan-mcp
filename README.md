@@ -27,30 +27,30 @@ Just add this to your MCP configuration and it will automatically install and ru
 **Using uvx (simplest):**
 ```json
 {
-  "mcpServers": {
-    "rowan": {
-      "command": "uvx",
-      "args": ["--from", "rowan-mcp", "rowan-mcp"],
-      "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
-      }
-    }
-  }
+  "mcpServers": {
+    "rowan": {
+      "command": "uvx",
+      "args": ["--from", "rowan-mcp", "rowan-mcp"],
+      "env": {
+        "ROWAN_API_KEY": "your_api_key_here"
+      }
+    }
+  }
 }
 ```
 
 **Using uv run (alternative):**
 ```json
 {
-  "mcpServers": {
-    "rowan": {
-      "command": "uv",
-      "args": ["run", "--with", "rowan-mcp", "-m", "rowan_mcp"],
-      "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
-      }
-    }
-  }
+  "mcpServers": {
+    "rowan": {
+      "command": "uv",
+      "args": ["run", "--with", "rowan-mcp", "-m", "rowan_mcp"],
+      "env": {
+        "ROWAN_API_KEY": "your_api_key_here"
+      }
+    }
+  }
 }
 ```
 
@@ -71,14 +71,14 @@ pip install rowan-mcp
 Then use this configuration:
 ```json
 {
-  "mcpServers": {
-    "rowan": {
-      "command": "rowan-mcp",
-      "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
-      }
-    }
-  }
+  "mcpServers": {
+    "rowan": {
+      "command": "rowan-mcp",
+      "env": {
+        "ROWAN_API_KEY": "your_api_key_here"
+      }
+    }
+  }
 }
 ```
 
@@ -87,6 +87,7 @@ Then use this configuration:
 Visit [labs.rowansci.com](https://labs.rowansci.com) → Create account → Generate API key
 
 ### **Start Using**
+
 Ask your AI: *"Calculate the pKa of aspirin"* or *"Optimize the geometry of caffeine"*
 
 ---
@@ -106,7 +107,6 @@ Ask the LLM to:
 - **Rowan API key** (free at [labs.rowansci.com](https://labs.rowansci.com))
 - **MCP-compatible client** (Claude Desktop, etc.)
 
-
 **Development commands** (if you cloned the repo):
 ```bash
 # Run from source
@@ -115,11 +115,11 @@ uv run python -m rowan_mcp --http
 
 ---
 
-## Available Tools
+## **Available Tools**
 
 ### Chemistry Calculations
 - `rowan_basic_calculation` - Energy, optimization, frequencies
-- `rowan_multistage_opt` - geometry optimization  
+- `rowan_multistage_opt` - geometry optimization  
 - `rowan_electronic_properties` - HOMO/LUMO, orbitals
 - `rowan_molecular_dynamics` - MD simulations
 
@@ -134,8 +134,7 @@ uv run python -m rowan_mcp --http
 ### Drug Discovery
 - `rowan_admet` - ADME-Tox properties
 
-
-### Reactivity Analysis  
+### Reactivity Analysis  
 - `rowan_fukui` - Reactivity sites
 - `rowan_spin_states` - Spin multiplicities
 
@@ -143,13 +142,13 @@ uv run python -m rowan_mcp --http
 - `rowan_folder_create/list/update/delete` - Organize calculations
 - `rowan_workflow_create/list/status/stop` - Manage workflows
 
-## Requirements
+## **Requirements**
 
 - Python 3.10+
 - Rowan API key
 - MCP-compatible AI assistant (Claude Desktop, etc.)
 
-## Getting Help
+## **Getting Help**
 
 - **Documentation**: [docs.rowansci.com](https://docs.rowansci.com/)
 - or ping me! 
@@ -169,7 +168,7 @@ uv run python -m rowan_mcp --http
 - [ ] Multistage optimization sometimes shows unexpected imaginary frequencies
 - [ ] Some calculations show as finished in logs but not in Rowan UI
 
-## Citation
+## **Citation**
 
 If you use this MCP tool in your research, please cite the underlying Rowan platform:
 
