@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rowan-mcp"
-version = "0.1.0"
+version = "1.0.0"
 description = "Model Context Protocol server for Rowan computational chemistry platform"
 authors = [
     {name = "Katherine Yenko", email = "katherineyenko@example.com"}
@@ -12,6 +12,17 @@ authors = [
 license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.10"
+urls = {Homepage = "https://github.com/k-yenko/rowan-mcp"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
 dependencies = [
     "fastmcp>=0.2.0",
     "rowan-python>=0.1.0",
@@ -32,8 +43,11 @@ dev = [
     "mypy>=1.0.0",
 ]
 
+[project.scripts]
+rowan-mcp = "rowan_mcp.server:main"
+
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+packages = ["rowan_mcp"]
 
 [tool.black]
 line-length = 88
