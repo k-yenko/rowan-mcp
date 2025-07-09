@@ -18,31 +18,38 @@ That's it - no command line setup needed!
 
 ---
 
-## **Manual Installation**
+## **Package Installation**
 
-**For developers or users who prefer command-line setup:**
-
-### **1. Clone and Setup**
+### **Using uv (recommended):**
 ```bash
-git clone https://github.com/k-yenko/rowan-mcp.git
-cd rowan-mcp
-uv sync
+# Install the package
+uv add rowan-mcp
 ```
 
-### **2. Get API Key**
-- Visit [labs.rowansci.com](https://labs.rowansci.com)
-- Create free account → Generate API key
+### **Using pip:**
+```bash
+# Install the package
+pip install rowan-mcp
 
-### **3. Configure Your MCP Client**
+# Or in a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install rowan-mcp
+```
 
-**Claude Desktop Example:**
+### **Get API Key & Configure**
+
+1. **Get your API key**: Visit [labs.rowansci.com](https://labs.rowansci.com) → Create account → Generate API key
+
+2. **Configure your MCP client** (e.g., Claude Code, VSCode, Cursor, etc.):
+
+**With uv:**
 ```json
 {
   "mcpServers": {
     "rowan": {
       "command": "uv",
-      "args": ["run", "python", "-m", "src"],
-      "cwd": "/path/to/rowan-mcp",
+      "args": ["run", "rowan-mcp"],
       "env": {
         "ROWAN_API_KEY": "your_api_key_here"
       }
@@ -51,16 +58,21 @@ uv sync
 }
 ```
 
-*Replace `/path/to/rowan-mcp` with the actual path where you cloned the repository*
-
-**To find your path:**
-```bash
-# After cloning, run this in the rowan-mcp directory:
-pwd
-# Copy the output and use it as your "cwd" value
+**With pip/system Python:**
+```json
+{
+  "mcpServers": {
+    "rowan": {
+      "command": "rowan-mcp",
+      "env": {
+        "ROWAN_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
 ```
 
-### **4. Start Using**
+### **Start Using**
 Ask your AI: *"Calculate the pKa of aspirin"* or *"Optimize the geometry of caffeine"*
 
 ---
@@ -69,34 +81,22 @@ Ask your AI: *"Calculate the pKa of aspirin"* or *"Optimize the geometry of caff
 
 Ask the LLM to:
 - **Calculate drug properties**: *"Predict drug-likeness of aspirin"*
-- **Optimize molecular structures**: *"Optimize the geometry of aspirin"*  
+- **Optimize molecular structures**: *"Optimize the geometry of aspirin"* 
 - **Predict chemical behavior**: *"What's the pKa of acetic acid?"*
 - **Run calculations**: *"Calculate the HOMO and LUMO of benzene"*
 
 ## **System Requirements**
 
 - **Python 3.10+** (Python 3.11+ recommended)
-- **[uv](https://docs.astral.sh/uv/) package manager** 
+- **Package manager**: [uv](https://docs.astral.sh/uv/) (recommended) or pip
 - **Rowan API key** (free at [labs.rowansci.com](https://labs.rowansci.com))
-- **MCP-compatible client** (Claude Desktop, Continue, etc.)
+- **MCP-compatible client** (Claude Desktop, etc.)
 
-## **Testing Your Setup**
 
-You can test the server directly:
+**Development commands** (if you cloned the repo):
 ```bash
-# In the rowan-mcp directory:
-uv run python -m src --help
-```
-
-## **Development**
-
-The installation above is the same for development! Additional commands:
-```bash
-# Run server in HTTP/SSE mode  
-uv run python -m src --http
-
-# Run server in STDIO mode (default)
-uv run python -m src
+# Run from source
+uv run python -m rowan_mcp --http
 ```
 
 ---
@@ -148,11 +148,10 @@ uv run python -m src
 - [ ] Some complex conformer searches hang on "running"
 - [ ] Edit MCP one-liner context
 - [ ] Transition state finding and IRC
-- [ ] `rowan_scan` - Potential energy surfaces
-- [ ] `rowan_irc` - Reaction coordinate following
+- [X] `rowan_scan` - Potential energy surfaces
 - [ ] `rowan_docking` - Protein-ligand docking
-- [ ] add in h-bond, BDE and macroscopic pka, logD, BBB
-- [ ] Folder listing API bug (returns 500 error)
+- [X] add in h-bond, BDE and macroscopic pka, logD, BBB
+- [ ] Folder listing API bug (returns 500 error) - Rowan side?
 - [ ] Multistage optimization sometimes shows unexpected imaginary frequencies
 - [ ] Some calculations show as finished in logs but not in Rowan UI
 
@@ -163,3 +162,21 @@ If you use this MCP tool in your research, please cite the underlying Rowan plat
 Rowan Scientific. https://www.rowansci.com (accessed 2025-07-01).
 
 For complete citation information including specific computational engines, methods, and workflows used in your calculations, please refer to [Rowan's citation guidelines](https://docs.rowansci.com/citations).
+
+---
+
+## **Publishing (Maintainer Notes)**
+
+To publish a new version to PyPI:
+
+```bash
+# Update version in pyproject.toml and rowan_mcp/__init__.py
+# Build the package
+uv build
+
+# Publish to PyPI (requires API token)
+uv publish
+
+# Or publish to TestPyPI first
+uv publish --index-url https://test.pypi.org/simple/
+```
