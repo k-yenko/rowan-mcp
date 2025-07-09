@@ -63,26 +63,6 @@ pwd
 ### **4. Start Using**
 Ask your AI: *"Calculate the pKa of aspirin"* or *"Optimize the geometry of caffeine"*
 
-### **Alternative: Use .env file**
-Instead of putting your API key in the MCP config, create a `.env` file:
-```bash
-# In the rowan-mcp directory:
-echo "ROWAN_API_KEY=your_actual_api_key_here" > .env
-```
-
-Then use this simpler config (no env section needed):
-```json
-{
-  "mcpServers": {
-    "rowan": {
-      "command": "uv",
-      "args": ["run", "python", "-m", "src"],
-      "cwd": "/path/to/rowan-mcp"
-    }
-  }
-}
-```
-
 ---
 
 ## **What You Can Do** 
