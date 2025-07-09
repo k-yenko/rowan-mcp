@@ -20,57 +20,71 @@ That's it - no command line setup needed!
 
 ## **Package Installation**
 
-### **Using uv (recommended):**
+### **Option 1: Auto-Install (No manual installation needed!)**
+
+Just add this to your MCP configuration and it will automatically install and run:
+
+**Using uvx (simplest):**
+```json
+{
+  "mcpServers": {
+    "rowan": {
+      "command": "uvx",
+      "args": ["--from", "rowan-mcp", "rowan-mcp"],
+      "env": {
+        "ROWAN_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+**Using uv run (alternative):**
+```json
+{
+  "mcpServers": {
+    "rowan": {
+      "command": "uv",
+      "args": ["run", "--with", "rowan-mcp", "-m", "rowan_mcp"],
+      "env": {
+        "ROWAN_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+### **Option 2: Manual Installation**
+
+If you prefer to install the package first:
+
+**Using uv:**
 ```bash
-# Install the package
 uv add rowan-mcp
 ```
 
-### **Using pip:**
+**Using pip:**
 ```bash
-# Install the package
-pip install rowan-mcp
-
-# Or in a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install rowan-mcp
 ```
 
-### **Get API Key & Configure**
-
-1. **Get your API key**: Visit [labs.rowansci.com](https://labs.rowansci.com) → Create account → Generate API key
-
-2. **Configure your MCP client** (e.g., Claude Code, VSCode, Cursor, etc.):
-
-**With uv:**
+Then use this configuration:
 ```json
 {
-  "mcpServers": {
-    "rowan": {
-      "command": "uv",
-      "args": ["run", "rowan-mcp"],
-      "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
-      }
-    }
-  }
+  "mcpServers": {
+    "rowan": {
+      "command": "rowan-mcp",
+      "env": {
+        "ROWAN_API_KEY": "your_api_key_here"
+      }
+    }
+  }
 }
 ```
 
-**With pip/system Python:**
-```json
-{
-  "mcpServers": {
-    "rowan": {
-      "command": "rowan-mcp",
-      "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
-```
+### **Get API Key**
+
+Visit [labs.rowansci.com](https://labs.rowansci.com) → Create account → Generate API key
 
 ### **Start Using**
 Ask your AI: *"Calculate the pKa of aspirin"* or *"Optimize the geometry of caffeine"*
@@ -105,7 +119,7 @@ uv run python -m rowan_mcp --http
 
 ### Chemistry Calculations
 - `rowan_basic_calculation` - Energy, optimization, frequencies
-- `rowan_multistage_opt` - geometry optimization  
+- `rowan_multistage_opt` - geometry optimization  
 - `rowan_electronic_properties` - HOMO/LUMO, orbitals
 - `rowan_molecular_dynamics` - MD simulations
 
@@ -121,7 +135,7 @@ uv run python -m rowan_mcp --http
 - `rowan_admet` - ADME-Tox properties
 
 
-### Reactivity Analysis  
+### Reactivity Analysis  
 - `rowan_fukui` - Reactivity sites
 - `rowan_spin_states` - Spin multiplicities
 
