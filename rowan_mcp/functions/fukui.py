@@ -54,53 +54,33 @@ def log_rowan_api_call(workflow_type: str, **kwargs):
         raise e
 
 def lookup_molecule_smiles(molecule_name: str) -> str:
-    """Look up canonical SMILES for common molecule names."""
-    # Common molecule SMILES database
-    MOLECULE_SMILES = {
-        # Aromatics
-        "phenol": "Oc1ccccc1",
-        "benzene": "c1ccccc1", 
-        "toluene": "Cc1ccccc1",
-        "aniline": "Nc1ccccc1",
-        "benzoic acid": "O=C(O)c1ccccc1",
-        "salicylic acid": "O=C(O)c1ccccc1O",
-        "aspirin": "CC(=O)Oc1ccccc1C(=O)O",
+    """Look up canonical SMILES using the advanced molecule_lookup system.
+    
+    Uses PubChemPy + SQLite caching + RDKit validation for scalable molecule lookup.
+    """
+    try:
+        # Import the advanced molecule lookup system
+        from .molecule_lookup import get_lookup_instance
         
-        # Solvents
-        "water": "O",
-        "acetone": "CC(=O)C",
-        "dmso": "CS(=O)C",
-        "dmf": "CN(C)C=O",
-        "thf": "C1CCOC1",
-        "dioxane": "C1COCCO1",
-        "chloroform": "ClC(Cl)Cl",
-        "dichloromethane": "ClCCl",
+        lookup = get_lookup_instance()
+        smiles, source, metadata = lookup.get_smiles(molecule_name)
         
-        # Others
-        "glucose": "OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O",
-        "ethylene": "C=C",
-        "acetylene": "C#C",
-        "formaldehyde": "C=O",
-        "ammonia": "N",
-        "hydrogen peroxide": "OO",
-        "carbon dioxide": "O=C=O",
-    }
-    
-    # Normalize the input (lowercase, strip whitespace)
-    normalized_name = molecule_name.lower().strip()
-    
-    # Direct lookup
-    if normalized_name in MOLECULE_SMILES:
-        return MOLECULE_SMILES[normalized_name]
-    
-    # Try partial matches for common variations
-    for name, smiles in MOLECULE_SMILES.items():
-        if normalized_name in name or name in normalized_name:
-            logger.info(f"SMILES Lookup (partial match): '{molecule_name}' → '{name}' → '{smiles}'")
+        if smiles:
+            logger.info(f"Molecule lookup successful: '{molecule_name}' → '{smiles}' (source: {source})")
             return smiles
-    
-    # If no match found, return the original input (assume it's already SMILES)
-    return molecule_name
+        else:
+            logger.warning(f"Molecule lookup failed for '{molecule_name}': {metadata.get('error', 'Unknown error')}")
+            # Return original input as fallback (might be valid SMILES)
+            return molecule_name
+            
+    except ImportError as e:
+        logger.error(f"Could not import molecule_lookup: {e}")
+        # Fallback: return original input
+        return molecule_name
+    except Exception as e:
+        logger.error(f"Molecule lookup error for '{molecule_name}': {e}")
+        # Fallback: return original input
+        return molecule_name
 
 def rowan_fukui(
     name: str,
@@ -135,9 +115,12 @@ def rowan_fukui(
     - Per-atom reactivity indices for site-specific analysis
     - Global reactivity descriptors
     
+    **Molecule Lookup**: Uses advanced PubChemPy + SQLite caching + RDKit validation system
+    for robust molecule identification and SMILES canonicalization.
+    
     Args:
         name: Name for the calculation
-        molecule: Molecule SMILES string or common name (e.g., "phenol", "benzene")
+        molecule: Molecule name (e.g., "aspirin", "taxol") or SMILES string
         optimize: Whether to optimize geometry before Fukui calculation (default: True)
         opt_method: Method for optimization (default: None, uses engine default)
         opt_basis_set: Basis set for optimization (default: None, uses engine default)
