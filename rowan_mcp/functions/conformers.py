@@ -42,8 +42,8 @@ def rowan_conformers(
     folder_uuid: Optional[str] = None,
     blocking: bool = True,
     ping_interval: int = 5
-) -> str:
-    """Generate and optimize molecular conformers using Rowan's conformer_search workflow.
+):
+    """Generate and optimize molecular conformers using Rowan's conformer_search workflow. Valid modes are "reckless", "rapid", "careful", and "meticulous", and default to using SMILES strings for the "molecule" parameter.
     
     Args:
         name: Name for the calculation
@@ -65,7 +65,7 @@ def rowan_conformers(
             f"Invalid mode '{mode}'. Valid modes are: {', '.join(valid_modes)}"
         )
     
-    result = log_rowan_api_call(
+    return log_rowan_api_call(
         workflow_type="conformer_search",
         name=name,
         molecule=molecule,
@@ -75,61 +75,6 @@ def rowan_conformers(
         blocking=blocking,
         ping_interval=ping_interval
     )
-    
-    # Format results based on whether we waited or not
-    if blocking:
-        # We waited for completion - format actual results
-        status = result.get('status', result.get('object_status', 'Unknown'))
-        
-        if status == 2:  # Completed successfully
-            formatted = f" Conformer search for '{name}' completed successfully!\n\n"
-        elif status == 3:  # Failed
-            formatted = f" Conformer search for '{name}' failed!\n\n"
-        else:
-            formatted = f" Conformer search for '{name}' finished with status {status}\n\n"
-            
-        formatted += f" Molecule: {molecule}\n"
-        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f" Status: {status}\n"
-        formatted += f" Mode: {mode.upper()}\n"
-        formatted += f" Max Conformers: {max_conformers}\n"
-        
-        # Try to extract actual results
-        if isinstance(result, dict) and 'object_data' in result and result['object_data']:
-            data = result['object_data']
-            
-            # Count conformers found
-            if 'conformers' in data:
-                conformer_count = len(data['conformers']) if isinstance(data['conformers'], list) else data.get('num_conformers', 'Unknown')
-                formatted += f" Generated Conformers: {conformer_count}\n"
-            
-            # Energy information
-            if 'energies' in data and isinstance(data['energies'], list) and data['energies']:
-                energies = data['energies']
-                min_energy = min(energies)
-                max_energy = max(energies)
-                energy_range = max_energy - min_energy
-                formatted += f" Energy Range: {min_energy:.3f} to {max_energy:.3f} kcal/mol (Δ={energy_range:.3f})\n"
-                formatted += f" Lowest Energy Conformer: {min_energy:.3f} kcal/mol\n"
-            
-            # Additional properties if available
-            if 'properties' in data:
-                props = data['properties']
-                formatted += f" Properties calculated: {', '.join(props.keys())}\n"
-        
-        # Basic guidance
-        if status == 2:
-            formatted += f"\n Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed data\n"
-    else:
-        # Non-blocking mode - just submission confirmation
-        formatted = f" Conformer search for '{name}' submitted!\n\n"
-        formatted += f" Molecule: {molecule}\n"
-        formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f" Status: {result.get('status', 'Submitted')}\n"
-        formatted += f" Mode: {mode.upper()}\n"
-        formatted += f" Max Conformers: {max_conformers}\n"
-    
-    return formatted
 
 if __name__ == "__main__":
     pass 
