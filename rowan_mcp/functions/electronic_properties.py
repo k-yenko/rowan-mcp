@@ -186,68 +186,10 @@ def rowan_electronic_properties(
             **electronic_params
         )
         
-        # Enhanced result formatting for electronic properties
-        if blocking:
-            status = result.get('status', result.get('object_status', 'Unknown'))
-            
-            if status == 2:  # Completed successfully
-                formatted = f"Electronic properties calculation for '{name}' completed successfully!\n\n"
-            elif status == 3:  # Failed
-                formatted = f"Electronic properties calculation for '{name}' failed!\n\n"
-            else:
-                formatted = f"Electronic properties calculation for '{name}' submitted!\n\n"
-            
-            formatted += f"Molecule: {molecule}\n"
-            formatted += f"Canonical SMILES: {canonical_smiles}\n"
-            formatted += f"Job UUID: {result.get('uuid', 'N/A')}\n"
-            formatted += f"Status: {status}\n\n"
-            
-            formatted += f"Molecule Lookup: Advanced PubChemPy + SQLite + RDKit system\n\n"
-            formatted += f"Calculation Settings:\n"
-            formatted += f"• Method: {method.upper()}\n"
-            formatted += f"• Basis Set: {basis_set}\n"
-            formatted += f"• Engine: {engine.upper()}\n"
-            formatted += f"• Charge: {charge}, Multiplicity: {multiplicity}\n\n"
-            
-            formatted += f"Property Calculations:\n"
-            formatted += f"• Density Cube: {'Enabled' if compute_density_cube else 'Disabled'}\n"
-            formatted += f"• ESP Cube: {'Enabled' if compute_electrostatic_potential_cube else 'Disabled'}\n"
-            formatted += f"• Occupied MOs: {compute_num_occupied_orbitals}\n"
-            formatted += f"• Virtual MOs: {compute_num_virtual_orbitals}\n\n"
-            
-            if status == 2:
-                formatted += f"Additional Analysis:\n"
-                formatted += f"• Use rowan_calculation_retrieve('{result.get('uuid')}') for full calculation details\n"
-                formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for workflow metadata\n"
-                
-            elif status == 3:
-                formatted += f"Troubleshooting:\n"
-                formatted += f"• Try simpler method/basis: method='hf', basis_set='sto-3g'\n"
-                formatted += f"• Check molecular charge and multiplicity\n"
-                formatted += f"• Disable cube generation for faster calculations\n"
-                formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for error details\n"
-            else:
-                formatted += f"Next Steps:\n"
-                formatted += f"• Monitor status with rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}')\n"
-                formatted += f"• Electronic properties calculations may take several minutes\n"
-            
-            return formatted
-        else:
-            return str(result)
+        return result
             
     except Exception as e:
-        error_msg = f"Electronic properties calculation failed: {str(e)}\n\n"
-        error_msg += f"Molecule: {molecule}\n"
-        error_msg += f"Canonical SMILES: {canonical_smiles}\n"
-        error_msg += f"Settings: {method}/{basis_set}/{engine}\n\n"
-        error_msg += f"Molecule Lookup: Advanced PubChemPy + SQLite + RDKit system\n\n"
-        error_msg += f"Common Issues:\n"
-        error_msg += f"• Invalid method/basis set combination\n"
-        error_msg += f"• Incorrect charge/multiplicity for molecule\n"
-        error_msg += f"• Engine compatibility issues\n"
-        error_msg += f"• Molecule not found in PubChem database\n"
-        error_msg += f"• Try with default parameters first\n"
-        return error_msg
+        return f"Electronic properties calculation failed: {str(e)}"
 
 def test_electronic_properties():
     """Test the electronic properties function with advanced molecule lookup."""
