@@ -195,135 +195,16 @@ def rowan_fukui(
     if fukui_engine:
         fukui_params["fukui_engine"] = fukui_engine.lower()
     
-    result = log_rowan_api_call(
-        workflow_type="fukui",
-        **fukui_params
-    )
-    
-    if blocking:
-        status = result.get('status', result.get('object_status', 'Unknown'))
+    try:
+        result = log_rowan_api_call(
+            workflow_type="fukui",
+            **fukui_params
+        )
         
-        if status == 2:  # Completed successfully
-            formatted = f"Fukui analysis for '{name}' completed successfully!\n\n"
-        elif status == 3:  # Failed
-            formatted = f"Fukui analysis for '{name}' failed!\n\n"
-        else:
-            formatted = f"Fukui analysis for '{name}' finished with status {status}\n\n"
+        return result
             
-        formatted += f"Molecule: {molecule}\n"
-        formatted += f"SMILES: {canonical_smiles}\n"
-        formatted += f"Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"Status: {status}\n"
-        
-        # Computational settings summary
-        formatted += f"\nComputational Settings:\n"
-        formatted += f"   Optimization: {'Enabled' if optimize else 'Disabled'}\n"
-        if optimize:
-            opt_method_display = opt_settings.get('method', 'default') if opt_settings else 'default'
-            formatted += f"   Opt Method: {opt_method_display.upper()}\n"
-            if opt_engine:
-                formatted += f"   Opt Engine: {opt_engine.upper()}\n"
-        formatted += f"   Fukui Method: {fukui_method.upper()}\n"
-        if fukui_engine:
-            formatted += f"   Fukui Engine: {fukui_engine.upper()}\n"
-        formatted += f"   Charge: {charge}, Multiplicity: {multiplicity}\n"
-        
-        # Try to extract Fukui results
-        if isinstance(result, dict) and 'object_data' in result and result['object_data']:
-            data = result['object_data']
-            
-            # Global electrophilicity index
-            if 'global_electrophilicity_index' in data and data['global_electrophilicity_index'] is not None:
-                gei = data['global_electrophilicity_index']
-                formatted += f"\nGlobal Electrophilicity Index: {gei:.4f}\n"
-                if gei > 1.5:
-                    formatted += f"   → Strong electrophile (highly reactive towards nucleophiles)\n"
-                elif gei > 0.8:
-                    formatted += f"   → Moderate electrophile\n"
-                else:
-                    formatted += f"   → Weak electrophile\n"
-            
-            # Fukui indices per atom
-            fukui_available = []
-            if 'fukui_positive' in data and data['fukui_positive']:
-                fukui_available.append("f(+)")
-            if 'fukui_negative' in data and data['fukui_negative']:
-                fukui_available.append("f(-)")
-            if 'fukui_zero' in data and data['fukui_zero']:
-                fukui_available.append("f(0)")
-                
-            if fukui_available:
-                formatted += f"\nFukui Indices Available: {', '.join(fukui_available)}\n"
-                
-                # Analyze most reactive sites
-                formatted += f"\nMost Reactive Sites:\n"
-                
-                # f(+) - electrophilic attack sites
-                if 'fukui_positive' in data and data['fukui_positive']:
-                    f_plus = data['fukui_positive']
-                    if isinstance(f_plus, list) and len(f_plus) > 0:
-                        # Find top 3 sites
-                        indexed_values = [(i+1, val) for i, val in enumerate(f_plus) if val is not None]
-                        top_f_plus = sorted(indexed_values, key=lambda x: x[1], reverse=True)[:3]
-                        formatted += f"   f(+) Top Sites (electrophilic attack): "
-                        formatted += f"{', '.join([f'Atom {atom}({val:.3f})' for atom, val in top_f_plus])}\n"
-                
-                # f(-) - nucleophilic attack sites  
-                if 'fukui_negative' in data and data['fukui_negative']:
-                    f_minus = data['fukui_negative']
-                    if isinstance(f_minus, list) and len(f_minus) > 0:
-                        indexed_values = [(i+1, val) for i, val in enumerate(f_minus) if val is not None]
-                        top_f_minus = sorted(indexed_values, key=lambda x: x[1], reverse=True)[:3]
-                        formatted += f"   f(-) Top Sites (nucleophilic attack): "
-                        formatted += f"{', '.join([f'Atom {atom}({val:.3f})' for atom, val in top_f_minus])}\n"
-                
-                # f(0) - radical attack sites
-                if 'fukui_zero' in data and data['fukui_zero']:
-                    f_zero = data['fukui_zero']
-                    if isinstance(f_zero, list) and len(f_zero) > 0:
-                        indexed_values = [(i+1, val) for i, val in enumerate(f_zero) if val is not None]
-                        top_f_zero = sorted(indexed_values, key=lambda x: x[1], reverse=True)[:3]
-                        formatted += f"   f(0) Top Sites (radical attack): "
-                        formatted += f"{', '.join([f'Atom {atom}({val:.3f})' for atom, val in top_f_zero])}\n"
-        
-        # Status-specific guidance
-        formatted += f"\nNext Steps:\n"
-        if status == 2:  # Completed
-            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for full per-atom data\n"
-            formatted += f"• Higher Fukui values indicate more reactive sites\n"
-            formatted += f"• f(+) predicts where nucleophiles will attack\n"
-            formatted += f"• f(-) predicts where electrophiles will attack\n"
-            formatted += f"• f(0) predicts radical reaction sites\n"
-        elif status == 3:  # Failed
-            formatted += f"• Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for error details\n"
-            formatted += f"• Troubleshooting:\n"
-            formatted += f"  - Try disabling optimization: optimize=False\n"
-            formatted += f"  - Use faster Fukui method: fukui_method='gfn1_xtb'\n"
-            formatted += f"  - Check if molecule SMILES is valid\n"
-            formatted += f"  - Verify charge and multiplicity are correct\n"
-        elif status in [0, 1, 5]:  # Running
-            formatted += f"• Check progress: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
-            if optimize:
-                formatted += f"• Two-step process: optimization → Fukui calculation\n"
-            formatted += f"• Fukui analysis may take 5-20 minutes depending on method and molecule size\n"
-        elif status == 4:  # Stopped
-            formatted += f"• Check why stopped: rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}')\n"
-            formatted += f"• You can restart with same or modified parameters\n"
-        else:  # Unknown
-            formatted += f"• Check status: rowan_workflow_management(action='status', workflow_uuid='{result.get('uuid')}')\n"
-        
-        return formatted
-    else:
-        formatted = f"Fukui analysis for '{name}' submitted!\n\n"
-        formatted += f"Molecule: {molecule}\n"
-        formatted += f"SMILES: {canonical_smiles}\n"
-        formatted += f"Job UUID: {result.get('uuid', 'N/A')}\n"
-        formatted += f"Status: {result.get('status', 'Submitted')}\n"
-        formatted += f"Optimization: {'Enabled' if optimize else 'Disabled'}\n"
-        formatted += f"Fukui Method: {fukui_method.upper()}\n"
-        formatted += f"Charge: {charge}, Multiplicity: {multiplicity}\n"
-        formatted += f"\nUse rowan_workflow_management tools to check progress and retrieve results\n"
-        return formatted
+    except Exception as e:
+        return f"Fukui analysis failed: {str(e)}"
 
 def test_fukui():
     """Test the fukui function."""
