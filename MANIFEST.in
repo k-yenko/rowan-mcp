@@ -1,8 +1,0 @@
-include README.md
-include ROWAN_MCP_TOOLS.md
-include ROWAN_MCP_TEST_QUERIES.md
-include rowan-dxt.dxt
-recursive-include rowan_mcp *.db
-recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
-recursive-exclude * .DS_Store 
