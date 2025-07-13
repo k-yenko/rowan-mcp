@@ -193,3 +193,11 @@ uv publish
 # Or publish to TestPyPI first
 uv publish --index-url https://test.pypi.org/simple/
 ```
+
+To update the dxt file:
+```bash
+# After updating the PyPI package, update all changed tools/functions
+
+# Then update the desktop extension
+dxt pack rowan-dxt
+```

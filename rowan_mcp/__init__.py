@@ -6,7 +6,7 @@ for integrating with Rowan's computational chemistry platform.
 """
 
 __version__ = "1.0.0"
-__author__ = "Rowan MCP Team"
+__author__ = "Kat Yenko"
 __description__ = "MCP server for Rowan computational chemistry platform"
 
 from .server import main
