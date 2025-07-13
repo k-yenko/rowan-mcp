@@ -15,7 +15,7 @@ if not hasattr(rowan, 'api_key') or not rowan.api_key:
     api_key = os.getenv("ROWAN_API_KEY")
     if api_key:
         rowan.api_key = api_key
-        logger.info("🔑 Rowan API key configured")
+        logger.info("Rowan API key configured")
     else:
         logger.error("No ROWAN_API_KEY found in environment")
 
@@ -39,7 +39,7 @@ def rowan_pka(
     
     Args:
         name: Name for the calculation
-        molecule: Molecule SMILES string or common name
+        molecule: Molecule SMILES string
         folder_uuid: UUID of folder to organize calculation in
         blocking: Whether to wait for completion (default: True)
         ping_interval: How often to check status in seconds (default: 5)
@@ -57,56 +57,7 @@ def rowan_pka(
             ping_interval=ping_interval
         )
         
-        # Format results based on whether we waited or not
-        if blocking:
-            # We waited for completion - format actual results
-            status = result.get('status', result.get('object_status', 'Unknown'))
-            
-            if status == 2:  # Completed successfully
-                formatted = f" pKa calculation for '{name}' completed successfully!\n\n"
-            elif status == 3:  # Failed
-                formatted = f" pKa calculation for '{name}' failed!\n\n"
-            else:
-                formatted = f" pKa calculation for '{name}' finished with status {status}\n\n"
-                
-            formatted += f" Molecule: {molecule}\n"
-            formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
-            formatted += f" Status: {status}\n"
-            
-            # Try to extract pKa results
-            if isinstance(result, dict) and 'object_data' in result and result['object_data']:
-                data = result['object_data']
-                
-                # Extract pKa values
-                if 'strongest_acid' in data:
-                    if data['strongest_acid'] is not None:
-                        formatted += f" Strongest Acid pKa: {data['strongest_acid']:.2f}\n"
-                    else:
-                        formatted += f" Strongest Acid pKa: N/A (no acidic sites found)\n"
-                        
-                if 'strongest_base' in data:
-                    if data['strongest_base'] is not None:
-                        formatted += f" Strongest Base pKa: {data['strongest_base']:.2f}\n"
-                    else:
-                        formatted += f" Strongest Base pKa: N/A (no basic sites found)\n"
-                if 'pka_values' in data and isinstance(data['pka_values'], list):
-                    formatted += f" All pKa values: {', '.join([f'{val:.2f}' for val in data['pka_values']])}\n"
-                
-                # Additional properties if available
-                if 'ionizable_sites' in data:
-                    formatted += f" Ionizable sites found: {data['ionizable_sites']}\n"
-            
-            # Basic guidance
-            if status == 2:
-                formatted += f"\n Use rowan_workflow_management(action='retrieve', workflow_uuid='{result.get('uuid')}') for detailed data\n"
-        else:
-            # Non-blocking mode - just submission confirmation
-            formatted = f" pKa calculation for '{name}' submitted!\n\n"
-            formatted += f" Molecule: {molecule}\n"
-            formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
-            formatted += f" Status: {result.get('status', 'Submitted')}\n"
-        
-        return formatted
+        return str(result)
         
     except Exception as e:
         error_response = {
@@ -125,7 +76,7 @@ def test_rowan_pka():
             name="test_pka_water",
             molecule="O"
         )
-        print("✅ pKa test successful!")
+        print("pKa test successful")
         print(f"Result: {result}")
         return True
     except Exception as e:
