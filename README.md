@@ -1,6 +1,6 @@
 # Rowan MCP Server
 
-This project wraps an MCP (Model Context Protocol) around Rowan's tools, making it easy for users to design molecuels and run simulations in natural everyday language. 
+MCP server for making it easy to run Rowan's molecular design and simulation tools.
 
 ---
 
