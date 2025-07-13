@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rowan-mcp"
-version = "1.0.0"
+version = "1.0.1"
 description = "Model Context Protocol server for Rowan computational chemistry platform"
 authors = [
-    {name = "Katherine Yenko", email = "katherineyenko@example.com"}
+    {name = "Katherine Yenko", email = "katherineayenko@gmail.com"}
 ]
 license = {text = "MIT"}
 readme = "README.md"
