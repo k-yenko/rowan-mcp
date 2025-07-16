@@ -227,28 +227,28 @@ def rowan_docking(
                 return formatted
             else:
                 # Failed calculation
-                return f"❌ Docking calculation failed\n🔖 UUID: {uuid}\n📋 Status: {status}\n💬 Check workflow details for more information"
+                return f"Docking calculation failed\n🔖 UUID: {uuid}\n📋 Status: {status}\n💬 Check workflow details for more information"
         else:
             # Non-blocking mode
-            formatted = f"📋 Docking calculation '{name}' submitted!\n"
-            formatted += f"🔖 Workflow UUID: {uuid}\n"
-            formatted += f"⏳ Status: Running...\n"
-            formatted += f"💡 Use rowan_workflow_management to check status\n\n"
+            formatted = f"Docking calculation '{name}' submitted!\n"
+            formatted += f"Workflow UUID: {uuid}\n"
+            formatted += f"Status: Running...\n"
+            formatted += f"Use rowan_workflow_management to check status\n\n"
             
             formatted += f"Docking Details:\n"
-            formatted += f"🧬 Ligand: {initial_molecule}\n"
-            formatted += f"🎯 Target: {target_uuid or target[:50] + '...' if target and len(target) > 50 else target}\n"
-            formatted += f"📍 Pocket: center={pocket[0]}, size={pocket[1]}\n"
-            formatted += f"⚙️  Settings: csearch={do_csearch}, optimize={do_optimization}, refine={do_pose_refinement}\n"
+            formatted += f"Ligand: {initial_molecule}\n"
+            formatted += f"Target: {target_uuid or target[:50] + '...' if target and len(target) > 50 else target}\n"
+            formatted += f"Pocket: center={pocket[0]}, size={pocket[1]}\n"
+            formatted += f"Settings: csearch={do_csearch}, optimize={do_optimization}, refine={do_pose_refinement}\n"
             
             if conformers:
-                formatted += f"🔬 Pre-optimized conformers: {len(conformers)}\n"
+                formatted += f"Pre-optimized conformers: {len(conformers)}\n"
                 
             return formatted
             
     except Exception as e:
         logger.error(f"Error in rowan_docking: {str(e)}")
-        return f"❌ Docking calculation failed: {str(e)}"
+        return f"Docking calculation failed: {str(e)}"
 
 def rowan_docking_pdb_id(
     name: str,
@@ -297,7 +297,7 @@ def rowan_docking_pdb_id(
         else:
             ligand_param = f"    smiles={smiles},\n"
     
-    return (f"✅ PDB {pdb_id} found in RCSB database!\n\n"
+    return (f"PDB {pdb_id} found in RCSB database!\n\n"
             f"To perform docking with this protein:\n\n"
             f"1. Go to https://labs.rowansci.com\n"
             f"2. Upload the PDB file for {pdb_id}\n"
@@ -329,11 +329,11 @@ def test_rowan_docking():
             pocket=((0.0, 0.0, 0.0), (20.0, 20.0, 20.0)),
             blocking=False
         )
-        print("✅ Docking test result:")
+        print("Docking test result:")
         print(result)
         return True
     except Exception as e:
-        print(f"❌ Docking test failed: {e}")
+        print(f"Docking test failed: {e}")
         return False
 
 if __name__ == "__main__":
