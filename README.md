@@ -157,16 +157,18 @@ uv run python -m rowan_mcp --http
 
 ## **Todo**
 
-- [ ] Remove unnecessary AI spaghetti formatting 🙃
+- [X] Remove unnecessary AI spaghetti formatting
+- [X] Remove no longer necessary API config lines
 - [ ] Some complex conformer searches hang on "running"
-- [ ] Edit MCP one-liner context
+- [X] Edit MCP one-liner context
 - [ ] Transition state finding and IRC
 - [X] `rowan_scan` - Potential energy surfaces
 - [ ] `rowan_docking` - Protein-ligand docking
 - [X] add in h-bond, BDE and macroscopic pka, logD, BBB
 - [ ] Folder listing API bug (returns 500 error) - Rowan side?
 - [ ] Multistage optimization sometimes shows unexpected imaginary frequencies
-- [ ] Some calculations show as finished in logs but not in Rowan UI
+- [X] Some calculations show as finished in logs but not in Rowan UI
+- [ ] Can you hook up Rowan's visual capabilites? 
 
 ## **Citation**
 
