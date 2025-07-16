@@ -192,59 +192,9 @@ def rowan_docking(
         if conformers is not None:
             compute_params["conformers"] = conformers
         
-        # Submit docking calculation
+        # Submit docking calculation and return raw result
         result = rowan.compute(**compute_params)
-        
-        # Format results
-        uuid = result.get('uuid', 'N/A')
-        status = result.get('status', 'unknown')
-        
-        if blocking:
-            # Blocking mode - check if successful
-            if status == "success":
-                formatted = f"✅ Docking calculation '{name}' completed successfully!\n"
-                formatted += f"🔖 Workflow UUID: {uuid}\n"
-                formatted += f"📊 Status: {status}\n\n"
-                
-                # Extract docking results if available
-                object_data = result.get("object_data", {})
-                scores = object_data.get("scores", [])
-                
-                if scores:
-                    formatted += f"🎯 Docking Results: {len(scores)} poses generated\n"
-                    formatted += f"📈 Best docking score: {scores[0] if scores else 'N/A'}\n"
-                    
-                    # Show top poses
-                    formatted += "\nTop poses:\n"
-                    for i, score in enumerate(scores[:5]):
-                        formatted += f"  {i+1}. Score: {score}\n"
-                        
-                    if len(scores) > 5:
-                        formatted += f"  ... and {len(scores) - 5} more poses\n"
-                else:
-                    formatted += "📈 Results: Check workflow details for docking data\n"
-                    
-                return formatted
-            else:
-                # Failed calculation
-                return f"Docking calculation failed\n🔖 UUID: {uuid}\n📋 Status: {status}\n💬 Check workflow details for more information"
-        else:
-            # Non-blocking mode
-            formatted = f"Docking calculation '{name}' submitted!\n"
-            formatted += f"Workflow UUID: {uuid}\n"
-            formatted += f"Status: Running...\n"
-            formatted += f"Use rowan_workflow_management to check status\n\n"
-            
-            formatted += f"Docking Details:\n"
-            formatted += f"Ligand: {initial_molecule}\n"
-            formatted += f"Target: {target_uuid or target[:50] + '...' if target and len(target) > 50 else target}\n"
-            formatted += f"Pocket: center={pocket[0]}, size={pocket[1]}\n"
-            formatted += f"Settings: csearch={do_csearch}, optimize={do_optimization}, refine={do_pose_refinement}\n"
-            
-            if conformers:
-                formatted += f"Pre-optimized conformers: {len(conformers)}\n"
-                
-            return formatted
+        return result
             
     except Exception as e:
         logger.error(f"Error in rowan_docking: {str(e)}")
