@@ -15,10 +15,7 @@ except ImportError:
 # Setup logging
 logger = logging.getLogger(__name__)
 
-# Setup API key
-api_key = os.getenv("ROWAN_API_KEY")
-if rowan and api_key:
-    rowan.api_key = api_key
+
 
 def log_rowan_api_call(workflow_type: str, **kwargs):
     """Log Rowan API calls with detailed parameters."""

@@ -92,9 +92,8 @@ rowan_bde = mcp.tool()(bde_function)
 rowan_folder_management = mcp.tool()(folder_management_function)
 rowan_system_management = mcp.tool()(system_management_function)
 
-# Setup API key
-api_key = os.getenv("ROWAN_API_KEY")
-if not api_key:
+# Validate required dependencies and configuration
+if not os.getenv("ROWAN_API_KEY"):
     raise ValueError(
         "ROWAN_API_KEY environment variable is required. "
         "Get your API key from https://labs.rowansci.com"
@@ -104,8 +103,6 @@ if rowan is None:
     raise ImportError(
         "rowan-python package is required. Install with: pip install rowan-python"
     )
-
-rowan.api_key = api_key
 
 def main() -> None:
     """Main entry point for the MCP server."""
@@ -146,7 +143,7 @@ def main() -> None:
             
             print("🚀 Starting Rowan MCP Server (HTTP/SSE mode)")
             print(f"📡 Server will be available at: http://{host}:{port}/sse")
-            print(f"🔑 API Key loaded: {'✓' if api_key else '✗'}")
+            print(f"🔑 API Key loaded: {'✓' if os.getenv('ROWAN_API_KEY') else '✗'}")
             print(f"🛠️  Available tools: {len([attr for attr in dir() if attr.startswith('rowan_')])}")
             print("🔗 Connect your MCP client to this endpoint!")
             print("\nPress Ctrl+C to stop the server")
@@ -154,7 +151,7 @@ def main() -> None:
             mcp.run(transport="sse", host=host, port=port)
         else:
             print("🚀 Starting Rowan MCP Server (STDIO mode)")
-            print(f"🔑 API Key loaded: {'✓' if api_key else '✗'}")
+            print(f"🔑 API Key loaded: {'✓' if os.getenv('ROWAN_API_KEY') else '✗'}")
             print(f"🛠️  Available tools: {len([attr for attr in dir() if attr.startswith('rowan_')])}")
             
             mcp.run()  # Default STDIO transport

@@ -11,14 +11,7 @@ from typing import Optional
 # Set up logging
 logger = logging.getLogger(__name__)
 
-# Configure rowan API key
-if not hasattr(rowan, 'api_key') or not rowan.api_key:
-    api_key = os.getenv("ROWAN_API_KEY")
-    if api_key:
-        rowan.api_key = api_key
-        logger.info("Rowan API key configured")
-    else:
-        logger.error("No ROWAN_API_KEY found in environment")
+
 
 def rowan_system_management(
     action: str,

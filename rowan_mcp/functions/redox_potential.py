@@ -15,10 +15,7 @@ except ImportError:
 # Setup logging
 logger = logging.getLogger(__name__)
 
-# Setup API key
-api_key = os.getenv("ROWAN_API_KEY")
-if rowan and api_key:
-    rowan.api_key = api_key
+
 
 def lookup_molecule_smiles(molecule_name: str) -> str:
     """Look up canonical SMILES for common molecule names."""
@@ -287,7 +284,7 @@ def rowan_redox_potential(
         formatted += f" Job UUID: {result.get('uuid', 'N/A')}\n"
         formatted += f" Status: {status}\n"
         formatted += f"⚙ Mode: {mode_lower.title()}\n"
-        formatted += f"💧 Solvent: Acetonitrile\n"
+        formatted += f"Solvent: Acetonitrile\n"
         
         # Show which potentials were calculated
         calc_types = []
