@@ -4,10 +4,7 @@ Predict acid dissociation constants for ionizable groups in molecules.
 """
 
 from typing import Optional, List, Tuple
-import logging
 import rowan
-
-logger = logging.getLogger(__name__)
 
 
 def submit_pka_workflow(
@@ -19,7 +16,7 @@ def submit_pka_workflow(
     name: str = "pKa Workflow",
     folder_uuid: Optional[str] = None,
     max_credits: Optional[int] = None
-) -> str:
+):
     """Submit a pKa prediction workflow using Rowan v2 API.
     
     Predicts acid dissociation constants (pKa) for ionizable groups in a molecule
@@ -39,7 +36,7 @@ def submit_pka_workflow(
         max_credits: Optional credit limit for the calculation
         
     Returns:
-        JSON string with workflow details including UUID for tracking
+        Workflow object representing the submitted workflow
         
     Example:
         # Basic pKa prediction
@@ -57,51 +54,13 @@ def submit_pka_workflow(
         )
     """
     
-    try:
-        # Get API key
-        api_key = rowan.get_api_key()
-        if not api_key:
-            raise ValueError("ROWAN_API_KEY environment variable not set")
-        
-        # Submit workflow
-        workflow = rowan.submit_pka_workflow(
-            initial_molecule=initial_molecule,
-            pka_range=pka_range,
-            deprotonate_elements=deprotonate_elements,
-            protonate_elements=protonate_elements,
-            mode=mode,
-            name=name,
-            folder_uuid=folder_uuid,
-            max_credits=max_credits
-        )
-        
-        # Format response
-        response = {
-            "success": True,
-            "workflow_uuid": workflow.uuid,
-            "name": name,
-            "status": "submitted",
-            "calculation_details": {
-                "pka_range": pka_range,
-                "mode": mode,
-                "deprotonate_elements": deprotonate_elements or "default",
-                "protonate_elements": protonate_elements or "default"
-            },
-            "tracking": {
-                "workflow_uuid": workflow.uuid,
-                "folder_uuid": folder_uuid
-            }
-        }
-        
-        logger.info(f"pKa workflow submitted: {workflow.uuid}")
-        return str(response)
-        
-    except Exception as e:
-        error_response = {
-            "success": False,
-            "error": f"Failed to submit pKa workflow: {str(e)}",
-            "name": name,
-            "molecule": initial_molecule
-        }
-        logger.error(f"pKa workflow submission failed: {str(e)}")
-        return str(error_response)
+    return rowan.submit_pka_workflow(
+        initial_molecule=initial_molecule,
+        pka_range=pka_range,
+        deprotonate_elements=deprotonate_elements,
+        protonate_elements=protonate_elements,
+        mode=mode,
+        name=name,
+        folder_uuid=folder_uuid,
+        max_credits=max_credits
+    )

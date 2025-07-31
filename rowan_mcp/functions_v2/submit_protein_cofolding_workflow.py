@@ -3,126 +3,64 @@ Rowan v2 API: Protein Cofolding Workflow
 Simulate protein-protein interactions and cofolding.
 """
 
-from typing import Optional, List, Dict, Any
-import logging
+from typing import Optional, List
 import rowan
-
-logger = logging.getLogger(__name__)
+import stjames
 
 
 def submit_protein_cofolding_workflow(
-    protein_sequences: List[str],
-    prediction_method: str = "alphafold2",
-    num_models: int = 5,
-    relaxation: bool = True,
-    msa_mode: str = "mmseqs2",
-    name: str = "Protein Cofolding Workflow",
+    initial_protein_sequences: List[str],
+    initial_smiles_list: Optional[List[str]] = None,
+    ligand_binding_affinity_index: Optional[int] = None,
+    use_msa_server: bool = True,
+    use_potentials: bool = False,
+    name: str = "Cofolding Workflow",
+    model: str = stjames.CofoldingModel.BOLTZ_2.value,
     folder_uuid: Optional[str] = None,
     max_credits: Optional[int] = None
-) -> str:
-    """Submit a protein cofolding workflow using Rowan v2 API.
-    
-    Predicts the 3D structure of protein complexes from amino acid sequences,
-    simulating how multiple proteins fold together.
+):
+    """Submits a protein cofolding workflow to the API.
     
     Args:
-        protein_sequences: List of protein sequences in single-letter amino acid code
-            Each sequence represents one protein chain in the complex
-        prediction_method: Structure prediction method (default: "alphafold2")
-            Options: "alphafold2", "rosettafold", "esmfold"
-        num_models: Number of structure models to generate (default: 5)
-        relaxation: Whether to relax the predicted structures (default: True)
-        msa_mode: Multiple sequence alignment mode (default: "mmseqs2")
-            Options: "mmseqs2", "jackhmmer", "hhblits"
-        name: Workflow name for tracking
-        folder_uuid: Optional folder UUID for organization
-        max_credits: Optional credit limit for the calculation
+        initial_protein_sequences: The sequences of the proteins to be cofolded
+        initial_smiles_list: A list of SMILES strings for the ligands to be cofolded with
+        ligand_binding_affinity_index: The index of the ligand for which to compute the binding affinity
+        use_msa_server: Whether to use the MSA server for the computation
+        use_potentials: Whether to use potentials for the computation
+        name: The name of the workflow
+        model: The model to use for the computation
+        folder_uuid: The UUID of the folder to store the workflow in
+        max_credits: The maximum number of credits to use for the workflow
         
     Returns:
-        JSON string with workflow details including UUID for tracking
+        Workflow object representing the submitted workflow
         
     Example:
-        # Protein dimer prediction
+        # Protein dimer cofolding
         result = submit_protein_cofolding_workflow(
-            protein_sequences=[
+            initial_protein_sequences=[
                 "MKTAYIAKQRQISFVKSHFSRQLEERLGLIEVQAPILSRVGDGTQDNLSGAEK",
                 "MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF"
-            ],
-            num_models=3
+            ]
         )
         
-        # Complex with multiple chains
+        # Protein-ligand complex
         result = submit_protein_cofolding_workflow(
-            protein_sequences=[
-                "MGSSHHHHHHSSGLVPRGSH",
-                "MASMTGGQQMGRGSEF",
-                "MHHHHHHENLYFQG"
-            ],
-            prediction_method="alphafold2",
-            relaxation=True
+            initial_protein_sequences=["MGSSHHHHHHSSGLVPRGSH"],
+            initial_smiles_list=["CC(=O)O", "CCO"],
+            ligand_binding_affinity_index=0,
+            use_msa_server=True
         )
     """
     
-    try:
-        # Get API key
-        api_key = rowan.get_api_key()
-        if not api_key:
-            raise ValueError("ROWAN_API_KEY environment variable not set")
-        
-        # Validate inputs
-        if not protein_sequences or len(protein_sequences) < 2:
-            raise ValueError("At least 2 protein sequences required for cofolding")
-        
-        # Prepare workflow parameters
-        params = {
-            "protein_sequences": protein_sequences,
-            "name": name,
-            "folder_uuid": folder_uuid,
-            "max_credits": max_credits
-        }
-        
-        # Add optional parameters if different from defaults
-        if prediction_method != "alphafold2":
-            params["prediction_method"] = prediction_method
-        if num_models != 5:
-            params["num_models"] = num_models
-        if not relaxation:
-            params["relaxation"] = relaxation
-        if msa_mode != "mmseqs2":
-            params["msa_mode"] = msa_mode
-        
-        # Submit workflow
-        workflow = rowan.submit_protein_cofolding_workflow(**params)
-        
-        # Format response
-        response = {
-            "success": True,
-            "workflow_uuid": workflow.uuid,
-            "name": name,
-            "status": "submitted",
-            "cofolding_details": {
-                "num_chains": len(protein_sequences),
-                "total_residues": sum(len(seq) for seq in protein_sequences),
-                "method": prediction_method,
-                "num_models": num_models,
-                "relaxation": relaxation,
-                "msa_mode": msa_mode
-            },
-            "tracking": {
-                "workflow_uuid": workflow.uuid,
-                "folder_uuid": folder_uuid
-            }
-        }
-        
-        logger.info(f"Protein cofolding workflow submitted: {workflow.uuid}")
-        return str(response)
-        
-    except Exception as e:
-        error_response = {
-            "success": False,
-            "error": f"Failed to submit protein cofolding workflow: {str(e)}",
-            "name": name,
-            "num_sequences": len(protein_sequences) if protein_sequences else 0
-        }
-        logger.error(f"Protein cofolding workflow submission failed: {str(e)}")
-        return str(error_response)
+    return rowan.submit_protein_cofolding_workflow(
+        initial_protein_sequences=initial_protein_sequences,
+        initial_smiles_list=initial_smiles_list,
+        ligand_binding_affinity_index=ligand_binding_affinity_index,
+        use_msa_server=use_msa_server,
+        use_potentials=use_potentials,
+        name=name,
+        model=model,
+        folder_uuid=folder_uuid,
+        max_credits=max_credits
+    )

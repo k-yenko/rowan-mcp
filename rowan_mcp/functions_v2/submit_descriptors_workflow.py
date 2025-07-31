@@ -4,10 +4,7 @@ Calculate molecular descriptors for QSAR and molecular analysis.
 """
 
 from typing import Optional
-import logging
 import rowan
-
-logger = logging.getLogger(__name__)
 
 
 def submit_descriptors_workflow(
@@ -15,7 +12,7 @@ def submit_descriptors_workflow(
     name: str = "Descriptors Workflow",
     folder_uuid: Optional[str] = None,
     max_credits: Optional[int] = None
-) -> str:
+):
     """Submit a molecular descriptors calculation workflow using Rowan v2 API.
     
     Calculates a comprehensive set of molecular descriptors including:
@@ -31,7 +28,7 @@ def submit_descriptors_workflow(
         max_credits: Optional credit limit for the calculation
         
     Returns:
-        JSON string with workflow details including UUID for tracking
+        Workflow object representing the submitted workflow
         
     Example:
         # Basic descriptor calculation
@@ -46,50 +43,9 @@ def submit_descriptors_workflow(
         )
     """
     
-    try:
-        # Get API key
-        api_key = rowan.get_api_key()
-        if not api_key:
-            raise ValueError("ROWAN_API_KEY environment variable not set")
-        
-        # Submit workflow
-        workflow = rowan.submit_descriptors_workflow(
-            initial_molecule=initial_molecule,
-            name=name,
-            folder_uuid=folder_uuid,
-            max_credits=max_credits
-        )
-        
-        # Format response
-        response = {
-            "success": True,
-            "workflow_uuid": workflow.uuid,
-            "name": name,
-            "status": "submitted",
-            "calculation_details": {
-                "description": "Calculating comprehensive molecular descriptors",
-                "categories": [
-                    "Physical properties",
-                    "Electronic properties",
-                    "Structural features",
-                    "Topological indices"
-                ]
-            },
-            "tracking": {
-                "workflow_uuid": workflow.uuid,
-                "folder_uuid": folder_uuid
-            }
-        }
-        
-        logger.info(f"Descriptors workflow submitted: {workflow.uuid}")
-        return str(response)
-        
-    except Exception as e:
-        error_response = {
-            "success": False,
-            "error": f"Failed to submit descriptors workflow: {str(e)}",
-            "name": name,
-            "molecule": initial_molecule
-        }
-        logger.error(f"Descriptors workflow submission failed: {str(e)}")
-        return str(error_response)
+    return rowan.submit_descriptors_workflow(
+        initial_molecule=initial_molecule,
+        name=name,
+        folder_uuid=folder_uuid,
+        max_credits=max_credits
+    )

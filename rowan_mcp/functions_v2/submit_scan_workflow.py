@@ -4,10 +4,7 @@ Perform potential energy surface scans along molecular coordinates.
 """
 
 from typing import Optional, Dict, Any
-import logging
 import rowan
-
-logger = logging.getLogger(__name__)
 
 
 def submit_scan_workflow(
@@ -19,7 +16,7 @@ def submit_scan_workflow(
     name: str = "Scan Workflow",
     folder_uuid: Optional[str] = None,
     max_credits: Optional[int] = None
-) -> str:
+):
     """Submit a potential energy surface scan workflow using Rowan v2 API.
     
     Performs systematic scans along specified molecular coordinates (bonds, angles,
@@ -46,7 +43,7 @@ def submit_scan_workflow(
         max_credits: Optional credit limit for the calculation
         
     Returns:
-        JSON string with workflow details including UUID for tracking
+        Workflow object representing the submitted workflow
         
     Example:
         # Dihedral scan
@@ -75,57 +72,13 @@ def submit_scan_workflow(
         )
     """
     
-    try:
-        # Get API key
-        api_key = rowan.get_api_key()
-        if not api_key:
-            raise ValueError("ROWAN_API_KEY environment variable not set")
-        
-        # Submit workflow
-        workflow = rowan.submit_scan_workflow(
-            initial_molecule=initial_molecule,
-            scan_settings=scan_settings,
-            calculation_engine=calculation_engine,
-            calculation_method=calculation_method,
-            wavefront_propagation=wavefront_propagation,
-            name=name,
-            folder_uuid=folder_uuid,
-            max_credits=max_credits
-        )
-        
-        # Format response
-        scan_info = "default scan"
-        if scan_settings:
-            scan_type = scan_settings.get("type", "coordinate")
-            scan_range = f"{scan_settings.get('start', 'N/A')} to {scan_settings.get('stop', 'N/A')}"
-            scan_info = f"{scan_type} scan from {scan_range}"
-            
-        response = {
-            "success": True,
-            "workflow_uuid": workflow.uuid,
-            "name": name,
-            "status": "submitted",
-            "scan_details": {
-                "scan_info": scan_info,
-                "engine": calculation_engine,
-                "method": calculation_method,
-                "wavefront_propagation": wavefront_propagation
-            },
-            "tracking": {
-                "workflow_uuid": workflow.uuid,
-                "folder_uuid": folder_uuid
-            }
-        }
-        
-        logger.info(f"Scan workflow submitted: {workflow.uuid}")
-        return str(response)
-        
-    except Exception as e:
-        error_response = {
-            "success": False,
-            "error": f"Failed to submit scan workflow: {str(e)}",
-            "name": name,
-            "molecule": initial_molecule
-        }
-        logger.error(f"Scan workflow submission failed: {str(e)}")
-        return str(error_response)
+    return rowan.submit_scan_workflow(
+        initial_molecule=initial_molecule,
+        scan_settings=scan_settings,
+        calculation_engine=calculation_engine,
+        calculation_method=calculation_method,
+        wavefront_propagation=wavefront_propagation,
+        name=name,
+        folder_uuid=folder_uuid,
+        max_credits=max_credits
+    )
