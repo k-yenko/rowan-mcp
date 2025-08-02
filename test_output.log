@@ -1,0 +1,111 @@
+2025-08-02 13:40:45,107 - mcp.server.lowlevel.server - DEBUG - Initializing server 'Rowan MCP Server'
+2025-08-02 13:40:45,107 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2025-08-02 13:40:45,107 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2025-08-02 13:40:45,107 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2025-08-02 13:40:45,107 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2025-08-02 13:40:45,107 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2025-08-02 13:40:45,107 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2025-08-02 13:40:45,107 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2025-08-02 13:40:45,120 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO - ============================================================
+2025-08-02 13:40:45,120 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO - submit_basic_calculation_workflow called with:
+2025-08-02 13:40:45,120 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   method: gfn2-xtb (type: <class 'str'>)
+2025-08-02 13:40:45,120 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   tasks: ['optimize'] (type: <class 'list'>)
+2025-08-02 13:40:45,120 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   mode: auto
+2025-08-02 13:40:45,120 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   engine: xtb
+2025-08-02 13:40:45,120 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   name: Test with tasks list
+2025-08-02 13:40:45,120 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   initial_molecule: dict with keys ['smiles', 'charge', 'multiplicity', 'atoms']...
+2025-08-02 13:40:45,120 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -     SMILES in dict: CCCC
+2025-08-02 13:40:45,120 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO - Extracting SMILES from dict: CCCC
+2025-08-02 13:40:45,141 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - DEBUG - Successfully created StJamesMolecule from extracted SMILES
+2025-08-02 13:40:45,141 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO - Calling rowan.submit_basic_calculation_workflow...
+2025-08-02 13:40:45,168 - httpcore.connection - DEBUG - connect_tcp.started host='api.rowansci.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-08-02 13:40:45,264 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1096470e0>
+2025-08-02 13:40:45,264 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x10966af90> server_hostname='api.rowansci.com' timeout=5.0
+2025-08-02 13:40:45,374 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1096d8550>
+2025-08-02 13:40:45,374 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-08-02 13:40:45,374 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-08-02 13:40:45,375 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-08-02 13:40:45,375 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-08-02 13:40:45,375 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-08-02 13:40:46,037 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sat, 02 Aug 2025 20:40:46 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'2072'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains')])
+2025-08-02 13:40:46,038 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-02 13:40:46,038 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-08-02 13:40:46,038 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-08-02 13:40:46,038 - httpcore.http11 - DEBUG - response_closed.started
+2025-08-02 13:40:46,039 - httpcore.http11 - DEBUG - response_closed.complete
+2025-08-02 13:40:46,040 - httpcore.connection - DEBUG - close.started
+2025-08-02 13:40:46,040 - httpcore.connection - DEBUG - close.complete
+2025-08-02 13:40:46,040 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO - SUCCESS: Workflow submitted with UUID: 4d395ec6-2b8c-4dbe-85fa-f23bacc4d3c1
+2025-08-02 13:40:46,040 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO - ============================================================
+2025-08-02 13:40:46,040 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO - submit_basic_calculation_workflow called with:
+2025-08-02 13:40:46,040 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   method: gfn2-xtb (type: <class 'str'>)
+2025-08-02 13:40:46,041 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   tasks: None (type: <class 'NoneType'>)
+2025-08-02 13:40:46,041 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   mode: auto
+2025-08-02 13:40:46,041 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   engine: xtb
+2025-08-02 13:40:46,041 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   name: Test with tasks None
+2025-08-02 13:40:46,041 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -   initial_molecule: dict with keys ['smiles', 'charge', 'multiplicity', 'atoms']...
+2025-08-02 13:40:46,041 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO -     SMILES in dict: CCCC
+2025-08-02 13:40:46,041 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO - Extracting SMILES from dict: CCCC
+2025-08-02 13:40:46,046 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - DEBUG - Successfully created StJamesMolecule from extracted SMILES
+2025-08-02 13:40:46,046 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO - Calling rowan.submit_basic_calculation_workflow...
+2025-08-02 13:40:46,056 - httpcore.connection - DEBUG - connect_tcp.started host='api.rowansci.com' port=443 local_address=None timeout=5.0 socket_options=None
+2025-08-02 13:40:46,165 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1096d9e50>
+2025-08-02 13:40:46,165 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x10966aa80> server_hostname='api.rowansci.com' timeout=5.0
+2025-08-02 13:40:46,276 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1094ab820>
+2025-08-02 13:40:46,277 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-08-02 13:40:46,277 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-08-02 13:40:46,277 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-08-02 13:40:46,277 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-08-02 13:40:46,277 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-08-02 13:40:46,768 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sat, 02 Aug 2025 20:40:46 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'2067'), (b'Connection', b'keep-alive'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains')])
+2025-08-02 13:40:46,769 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-02 13:40:46,769 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-08-02 13:40:46,769 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-08-02 13:40:46,769 - httpcore.http11 - DEBUG - response_closed.started
+2025-08-02 13:40:46,769 - httpcore.http11 - DEBUG - response_closed.complete
+2025-08-02 13:40:46,769 - httpcore.connection - DEBUG - close.started
+2025-08-02 13:40:46,769 - httpcore.connection - DEBUG - close.complete
+2025-08-02 13:40:46,769 - rowan_mcp.functions_v2.submit_basic_calculation_workflow - INFO - SUCCESS: Workflow submitted with UUID: bf62e4e1-dd50-4b9d-81a9-d178b26ad344
+Testing with dictionary initial_molecule (like MCP sends)...
+
+Test 1: With tasks=["optimize"]
+
+============================================================
+DEBUG: submit_basic_calculation_workflow called
+  tasks parameter: ['optimize'] (type: list)
+  tasks length: 1
+    task[0]: 'optimize' (type: str)
+  method: gfn2-xtb
+  engine: xtb
+  initial_molecule: dict containing SMILES: CCCC
+  Extracting SMILES from dict: CCCC
+
+Calling Rowan API with:
+  initial_molecule type: Molecule
+  tasks: ['optimize']
+  method: gfn2-xtb
+============================================================
+
+✅ SUCCESS: Workflow UUID: 4d395ec6-2b8c-4dbe-85fa-f23bacc4d3c1
+
+Result: 4d395ec6-2b8c-4dbe-85fa-f23bacc4d3c1
+
+Test 2: With tasks=None
+
+============================================================
+DEBUG: submit_basic_calculation_workflow called
+  tasks parameter: None (type: NoneType)
+  method: gfn2-xtb
+  engine: xtb
+  initial_molecule: dict containing SMILES: CCCC
+  Extracting SMILES from dict: CCCC
+
+Calling Rowan API with:
+  initial_molecule type: Molecule
+  tasks: None
+  method: gfn2-xtb
+============================================================
+
+✅ SUCCESS: Workflow UUID: bf62e4e1-dd50-4b9d-81a9-d178b26ad344
+
+Result: bf62e4e1-dd50-4b9d-81a9-d178b26ad344

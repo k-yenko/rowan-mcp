@@ -10,12 +10,28 @@ import os
 import sys
 import time
 import traceback
+import logging
 from typing import Any, Dict, List, Optional, Literal, Union
 from enum import Enum
 
 from fastmcp import FastMCP
 from pydantic import BaseModel, Field
 from stjames import Molecule
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Changed from DEBUG to INFO
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stderr),  # Log to stderr so it doesn't interfere with stdio
+        logging.FileHandler('rowan_mcp_debug.log')  # Also log to file
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# Suppress SSE ping debug messages
+logging.getLogger('sse_starlette').setLevel(logging.WARNING)
+logging.getLogger('sse_starlette.sse').setLevel(logging.WARNING)
 
 # Import functions from functions module
 # from .functions.scan import rowan_scan as scan_function
