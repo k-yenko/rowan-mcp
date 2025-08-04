@@ -3,15 +3,28 @@ Rowan v2 API: Descriptors Workflow
 Calculate molecular descriptors for QSAR and molecular analysis.
 """
 
-from typing import Optional
+from typing import Optional, Annotated
+from pydantic import Field
 import rowan
 
 
 def submit_descriptors_workflow(
-    initial_molecule: str,
-    name: str = "Descriptors Workflow",
-    folder_uuid: Optional[str] = None,
-    max_credits: Optional[int] = None
+    initial_molecule: Annotated[
+        str,
+        Field(description="SMILES string or molecule object for descriptor calculation")
+    ],
+    name: Annotated[
+        str,
+        Field(description="Workflow name for identification and tracking")
+    ] = "Descriptors Workflow",
+    folder_uuid: Annotated[
+        Optional[str],
+        Field(description="UUID of folder to organize this workflow. None uses default folder")
+    ] = None,
+    max_credits: Annotated[
+        Optional[int],
+        Field(description="Maximum credits to spend on this calculation. None for no limit")
+    ] = None
 ):
     """Submit a molecular descriptors calculation workflow using Rowan v2 API.
     
@@ -21,12 +34,6 @@ def submit_descriptors_workflow(
     - Structural features (rotatable bonds, H-bond donors/acceptors, etc.)
     - Topological indices
     
-    Args:
-        initial_molecule: SMILES string or molecule object
-        name: Workflow name for tracking
-        folder_uuid: Optional folder UUID for organization
-        max_credits: Optional credit limit for the calculation
-        
     Returns:
         Workflow object representing the submitted workflow
         

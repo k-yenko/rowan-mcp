@@ -3,16 +3,19 @@ Rowan v2 API: Workflow Management Tools
 MCP tools for interacting with Workflow objects returned by v2 API submission functions.
 """
 
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Annotated
+from pydantic import Field
 import rowan
 
 
-def workflow_get_status(workflow_uuid: str) -> Dict[str, Any]:
+def workflow_get_status(
+    workflow_uuid: Annotated[
+        str,
+        Field(description="UUID of the workflow to check status")
+    ]
+) -> Dict[str, Any]:
     """Get the current status of a workflow.
     
-    Args:
-        workflow_uuid: The UUID of the workflow
-        
     Returns:
         Dictionary with status information
     """
@@ -28,19 +31,37 @@ def workflow_get_status(workflow_uuid: str) -> Dict[str, Any]:
 
 
 def workflow_wait_for_result(
-    workflow_uuid: str,
-    poll_interval: int = 5
+    workflow_uuid: Annotated[
+        str,
+        Field(description="UUID of the workflow to wait for completion")
+    ],
+    poll_interval: Annotated[
+        int,
+        Field(description="Seconds between status checks while waiting")
+    ] = 5
 ) -> Dict[str, Any]:
     """Wait for a workflow to complete and return the result.
     
-    Blocks until the workflow completes, polling at specified intervals.
+    Essential for chaining dependent workflows where subsequent calculations 
+    require results from previous ones. Blocks execution until the workflow 
+    completes, then returns the full results.
     
-    Args:
-        workflow_uuid: The UUID of the workflow to wait for
-        poll_interval: Time in seconds between status checks (default: 5)
-        
+    Common use cases:
+    - Conformer search → Redox potential for each conformer
+    - Optimization → Frequency calculation on optimized geometry
+    - Multiple sequential optimizations with different methods
+    - Any workflow chain where results feed into next calculation
+    
+    Example workflow chain:
+        1. Submit conformer search
+        2. Wait for conformer search to complete (using this function)
+        3. Extract conformer geometries from results
+        4. Submit new workflows using those geometries
+    
     Returns:
         Dictionary containing the completed workflow data including results
+        needed for dependent workflows (e.g., conformer_uuids, optimized
+        geometries, calculation_uuids)
     """
     workflow = rowan.retrieve_workflow(workflow_uuid)
     
@@ -63,12 +84,14 @@ def workflow_wait_for_result(
     }
 
 
-def workflow_stop(workflow_uuid: str) -> Dict[str, str]:
+def workflow_stop(
+    workflow_uuid: Annotated[
+        str,
+        Field(description="UUID of the running workflow to stop")
+    ]
+) -> Dict[str, str]:
     """Stop a running workflow.
     
-    Args:
-        workflow_uuid: The UUID of the workflow to stop
-        
     Returns:
         Dictionary with confirmation message
     """
@@ -81,14 +104,16 @@ def workflow_stop(workflow_uuid: str) -> Dict[str, str]:
     }
 
 
-def workflow_delete(workflow_uuid: str) -> Dict[str, str]:
+def workflow_delete(
+    workflow_uuid: Annotated[
+        str,
+        Field(description="UUID of the workflow to permanently delete")
+    ]
+) -> Dict[str, str]:
     """Delete a workflow.
     
     This permanently removes the workflow and its results from the database.
     
-    Args:
-        workflow_uuid: The UUID of the workflow to delete
-        
     Returns:
         Dictionary with confirmation message
     """
@@ -101,15 +126,20 @@ def workflow_delete(workflow_uuid: str) -> Dict[str, str]:
     }
 
 
-def workflow_fetch_latest(workflow_uuid: str, in_place: bool = False) -> Dict[str, Any]:
+def workflow_fetch_latest(
+    workflow_uuid: Annotated[
+        str,
+        Field(description="UUID of the workflow to fetch latest data")
+    ],
+    in_place: Annotated[
+        bool,
+        Field(description="Whether to update the workflow object in place")
+    ] = False
+) -> Dict[str, Any]:
     """Fetch the latest workflow data from the database.
     
     Updates the workflow object with the most recent status and results.
     
-    Args:
-        workflow_uuid: The UUID of the workflow to fetch
-        in_place: Whether to update the workflow object in place (default: False)
-        
     Returns:
         Dictionary containing the updated workflow data including status and results
     """
@@ -138,12 +168,14 @@ def workflow_fetch_latest(workflow_uuid: str, in_place: bool = False) -> Dict[st
     }
 
 
-def retrieve_workflow(uuid: str) -> Dict[str, Any]:
+def retrieve_workflow(
+    uuid: Annotated[
+        str,
+        Field(description="UUID of the workflow to retrieve")
+    ]
+) -> Dict[str, Any]:
     """Retrieve a workflow from the API.
     
-    Args:
-        uuid: The UUID of the workflow to retrieve
-        
     Returns:
         Dictionary containing the complete workflow data
         
@@ -175,27 +207,41 @@ def retrieve_workflow(uuid: str) -> Dict[str, Any]:
 
 
 def list_workflows(
-    parent_uuid: Optional[str] = None,
-    name_contains: Optional[str] = None,
-    public: Optional[bool] = None,
-    starred: Optional[bool] = None,
-    status: Optional[int] = None,
-    workflow_type: Optional[str] = None,
-    page: int = 0,
-    size: int = 10
+    parent_uuid: Annotated[
+        Optional[str],
+        Field(description="UUID of parent folder to filter by. None for all folders")
+    ] = None,
+    name_contains: Annotated[
+        Optional[str],
+        Field(description="Substring to search for in workflow names. None for all names")
+    ] = None,
+    public: Annotated[
+        Optional[bool],
+        Field(description="Filter by public status. None for both public and private")
+    ] = None,
+    starred: Annotated[
+        Optional[bool],
+        Field(description="Filter by starred status. None for both starred and unstarred")
+    ] = None,
+    status: Annotated[
+        Optional[int],
+        Field(description="Filter by workflow status code. None for all statuses")
+    ] = None,
+    workflow_type: Annotated[
+        Optional[str],
+        Field(description="Filter by workflow type (e.g., 'conformer_search', 'pka'). None for all types")
+    ] = None,
+    page: Annotated[
+        int,
+        Field(description="Page number for pagination (0-indexed)")
+    ] = 0,
+    size: Annotated[
+        int,
+        Field(description="Number of workflows per page")
+    ] = 10
 ) -> List[Dict[str, Any]]:
     """List workflows subject to the specified criteria.
     
-    Args:
-        parent_uuid: The UUID of the parent folder
-        name_contains: Substring to search for in workflow names
-        public: Filter workflows by their public status
-        starred: Filter workflows by their starred status
-        status: Filter workflows by their status
-        workflow_type: Filter workflows by their type
-        page: The page number to retrieve (default: 0)
-        size: The number of items per page (default: 10)
-        
     Returns:
         List of workflow dictionaries that match the search criteria
         
@@ -231,12 +277,14 @@ def list_workflows(
     ]
 
 
-def retrieve_calculation_molecules(uuid: str) -> List[Dict[str, Any]]:
+def retrieve_calculation_molecules(
+    uuid: Annotated[
+        str,
+        Field(description="UUID of the calculation to retrieve molecules from")
+    ]
+) -> List[Dict[str, Any]]:
     """Retrieve a list of molecules from a calculation.
     
-    Args:
-        uuid: The UUID of the calculation to retrieve molecules from
-        
     Returns:
         List of dictionaries representing the molecules in the calculation
         
@@ -265,21 +313,29 @@ def retrieve_calculation_molecules(uuid: str) -> List[Dict[str, Any]]:
 
 
 def workflow_update(
-    workflow_uuid: str,
-    name: Optional[str] = None,
-    notes: Optional[str] = None,
-    starred: Optional[bool] = None,
-    public: Optional[bool] = None
+    workflow_uuid: Annotated[
+        str,
+        Field(description="UUID of the workflow to update")
+    ],
+    name: Annotated[
+        Optional[str],
+        Field(description="New name for the workflow. None to keep current name")
+    ] = None,
+    notes: Annotated[
+        Optional[str],
+        Field(description="New notes/description for the workflow. None to keep current notes")
+    ] = None,
+    starred: Annotated[
+        Optional[bool],
+        Field(description="Set starred status (True/False). None to keep current status")
+    ] = None,
+    public: Annotated[
+        Optional[bool],
+        Field(description="Set public visibility (True/False). None to keep current status")
+    ] = None
 ) -> Dict[str, Any]:
     """Update workflow details.
     
-    Args:
-        workflow_uuid: The UUID of the workflow to update
-        name: New name for the workflow (optional)
-        notes: New notes for the workflow (optional)
-        starred: Whether to star/unstar the workflow (optional)
-        public: Whether to make the workflow public/private (optional)
-        
     Returns:
         Dictionary with updated workflow information
     """
@@ -303,12 +359,14 @@ def workflow_update(
     }
 
 
-def workflow_is_finished(workflow_uuid: str) -> Dict[str, Any]:
+def workflow_is_finished(
+    workflow_uuid: Annotated[
+        str,
+        Field(description="UUID of the workflow to check completion status")
+    ]
+) -> Dict[str, Any]:
     """Check if a workflow is finished.
     
-    Args:
-        workflow_uuid: The UUID of the workflow to check
-        
     Returns:
         Dictionary with workflow completion status
     """
@@ -322,12 +380,14 @@ def workflow_is_finished(workflow_uuid: str) -> Dict[str, Any]:
     }
 
 
-def workflow_delete_data(workflow_uuid: str) -> Dict[str, str]:
+def workflow_delete_data(
+    workflow_uuid: Annotated[
+        str,
+        Field(description="UUID of the workflow whose data to delete (keeps workflow record)")
+    ]
+) -> Dict[str, str]:
     """Delete workflow data while keeping the workflow record.
     
-    Args:
-        workflow_uuid: The UUID of the workflow
-        
     Returns:
         Dictionary with confirmation message
     """

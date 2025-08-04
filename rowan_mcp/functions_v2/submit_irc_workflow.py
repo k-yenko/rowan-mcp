@@ -3,54 +3,73 @@ Rowan v2 API: IRC Workflow
 Perform Intrinsic Reaction Coordinate calculations to trace reaction paths.
 """
 
-from typing import Optional, Dict, Any, Union
+from typing import Optional, Dict, Any, Union, Annotated
+from pydantic import Field
 import rowan
 
 
 def submit_irc_workflow(
-    initial_molecule: Optional[Union[Dict[str, Any], Any]] = None,
-    method: str = "uma_m_omol",
-    engine: str = "omol25",
-    preopt: bool = True,
-    step_size: float = 0.05,
-    max_irc_steps: int = 30,
-    name: str = "IRC Workflow",
-    folder_uuid: Optional[str] = None,
-    max_credits: Optional[int] = None
+    initial_molecule: Annotated[
+        Optional[Union[Dict[str, Any], Any]],
+        Field(description="Transition state molecule for IRC. Can be dict with SMILES, StJamesMolecule, or RdkitMol object")
+    ] = None,
+    method: Annotated[
+        str,
+        Field(description="Computational method for IRC. Options: 'uma_m_omol', 'gfn2_xtb', 'r2scan_3c'")
+    ] = "uma_m_omol",
+    engine: Annotated[
+        str,
+        Field(description="Computational engine. Options: 'omol25', 'xtb', 'psi4'")
+    ] = "omol25",
+    preopt: Annotated[
+        bool,
+        Field(description="Whether to pre-optimize the transition state before IRC")
+    ] = True,
+    step_size: Annotated[
+        float,
+        Field(description="Step size for IRC path tracing in Bohr (typically 0.03-0.1)")
+    ] = 0.05,
+    max_irc_steps: Annotated[
+        int,
+        Field(description="Maximum number of IRC steps in each direction from TS")
+    ] = 30,
+    name: Annotated[
+        str,
+        Field(description="Workflow name for identification and tracking")
+    ] = "IRC Workflow",
+    folder_uuid: Annotated[
+        Optional[str],
+        Field(description="UUID of folder to organize this workflow. None uses default folder")
+    ] = None,
+    max_credits: Annotated[
+        Optional[int],
+        Field(description="Maximum credits to spend on this calculation. None for no limit")
+    ] = None
 ):
     """Submits an Intrinsic Reaction Coordinate (IRC) workflow to the API.
     
-    Args:
-        initial_molecule: The initial molecule to perform the IRC calculation on.
-            Can be a dict, StJamesMolecule, or RdkitMol object
-        method: The computational method to use for the IRC calculation (default: "uma_m_omol")
-            See list of available methods for options
-        engine: The computational engine to use for the calculation (default: "omol25")
-            See list of available engines
-        preopt: Whether to perform a pre-optimization of the molecule (default: True)
-        step_size: The step size to use for the IRC calculation (default: 0.05)
-        max_irc_steps: The maximum number of IRC steps to perform (default: 30)
-        name: The name of the workflow
-        folder_uuid: The UUID of the folder to place the workflow in
-        max_credits: The maximum number of credits to use for the workflow
-        
     Returns:
         Workflow object representing the submitted IRC workflow
         
     Example:
-        # Basic IRC calculation
-        result = submit_irc_workflow(
-            initial_molecule={"smiles": "[CH3].[CH3]"},
-            method="gfn2_xtb",
-            max_irc_steps=50
-        )
+        # IRC for HNCO + H₂O reaction (from test)
+        from stjames import Molecule
         
-        # IRC with specific method and engine
         result = submit_irc_workflow(
-            initial_molecule={"smiles": "CC(O)=CC"},
-            method="r2scan_3c",
-            engine="psi4",
-            step_size=0.03
+            initial_molecule=Molecule.from_xyz_lines(
+                '''7
+        SMILES `N=C([O-])[OH2+]`
+        N    -0.15519741  -1.36979175  -0.20679433
+        C     1.11565384  -1.23943631  -0.14797646
+        O     2.17614993  -1.72950370  -0.04017850
+        H    -0.55869366  -2.29559315  -0.23834737
+        O     1.02571386   0.42871733  -0.27925360
+        H    -0.09029954  -0.04166676  -0.31495768
+        H     1.26740151   0.88347299   0.53620841
+        '''.splitlines()
+            ),
+            name="HNCO + H₂O - IRC",
+            preopt=False
         )
     """
     

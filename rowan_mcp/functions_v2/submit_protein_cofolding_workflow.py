@@ -3,53 +3,64 @@ Rowan v2 API: Protein Cofolding Workflow
 Simulate protein-protein interactions and cofolding.
 """
 
-from typing import Optional, List
+from typing import Optional, List, Annotated
+from pydantic import Field
 import rowan
 import stjames
 
 
 def submit_protein_cofolding_workflow(
-    initial_protein_sequences: List[str],
-    initial_smiles_list: Optional[List[str]] = None,
-    ligand_binding_affinity_index: Optional[int] = None,
-    use_msa_server: bool = True,
-    use_potentials: bool = False,
-    name: str = "Cofolding Workflow",
-    model: str = stjames.CofoldingModel.BOLTZ_2.value,
-    folder_uuid: Optional[str] = None,
-    max_credits: Optional[int] = None
+    initial_protein_sequences: Annotated[
+        List[str],
+        Field(description="List of protein sequences (amino acid strings) to cofold")
+    ],
+    initial_smiles_list: Annotated[
+        Optional[List[str]],
+        Field(description="List of ligand SMILES strings to include in cofolding. None for protein-only")
+    ] = None,
+    ligand_binding_affinity_index: Annotated[
+        Optional[int],
+        Field(description="Index of ligand in initial_smiles_list for binding affinity calculation. None skips affinity")
+    ] = None,
+    use_msa_server: Annotated[
+        bool,
+        Field(description="Whether to use MSA (Multiple Sequence Alignment) server for improved accuracy")
+    ] = True,
+    use_potentials: Annotated[
+        bool,
+        Field(description="Whether to use statistical potentials in the calculation")
+    ] = False,
+    name: Annotated[
+        str,
+        Field(description="Workflow name for identification and tracking")
+    ] = "Cofolding Workflow",
+    model: Annotated[
+        str,
+        Field(description="Cofolding model to use (e.g., 'boltz_2', 'alphafold3')")
+    ] = stjames.CofoldingModel.BOLTZ_2.value,
+    folder_uuid: Annotated[
+        Optional[str],
+        Field(description="UUID of folder to organize this workflow. None uses default folder")
+    ] = None,
+    max_credits: Annotated[
+        Optional[int],
+        Field(description="Maximum credits to spend on this calculation. None for no limit")
+    ] = None
 ):
     """Submits a protein cofolding workflow to the API.
     
-    Args:
-        initial_protein_sequences: The sequences of the proteins to be cofolded
-        initial_smiles_list: A list of SMILES strings for the ligands to be cofolded with
-        ligand_binding_affinity_index: The index of the ligand for which to compute the binding affinity
-        use_msa_server: Whether to use the MSA server for the computation
-        use_potentials: Whether to use potentials for the computation
-        name: The name of the workflow
-        model: The model to use for the computation
-        folder_uuid: The UUID of the folder to store the workflow in
-        max_credits: The maximum number of credits to use for the workflow
-        
     Returns:
         Workflow object representing the submitted workflow
         
     Example:
-        # Protein dimer cofolding
+        # Protein-ligand cofolding with CDK2 kinase (from test)
         result = submit_protein_cofolding_workflow(
             initial_protein_sequences=[
-                "MKTAYIAKQRQISFVKSHFSRQLEERLGLIEVQAPILSRVGDGTQDNLSGAEK",
-                "MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF"
-            ]
-        )
-        
-        # Protein-ligand complex
-        result = submit_protein_cofolding_workflow(
-            initial_protein_sequences=["MGSSHHHHHHSSGLVPRGSH"],
-            initial_smiles_list=["CC(=O)O", "CCO"],
+                "MENFQKVEKIGEGTYGVVYKARNKLTGEVVALKKIRLDTETEGVPSTAIREISLLKELNHPNIVKLLDVIHTENKLYLVFEFLHQDLKKFMDASALTGIPLPLIKSYLFQLLQGLAFCHSHRVLHRDLKPQNLLINTEGAIKLADFGLARAFGVPVRTYTHEVVTLWYRAPEILLGCKYYSTAVDIWSLGCIFAEMVTRRALFPGDSEIDQLFRIFRTLGTPDEVVWPGVTSMPDYKPSFPKWARQDFSKVVPPLDEDGRSLLSQMLHYDPNKRISAKAALAHPFFQDVTKPVPHLRL"
+            ],
+            initial_smiles_list=["CCC(C)(C)NC1=NCC2(CCC(=O)C2C)N1"],
             ligand_binding_affinity_index=0,
-            use_msa_server=True
+            name="Cofolding CDK2 with ligand"
         )
     """
     

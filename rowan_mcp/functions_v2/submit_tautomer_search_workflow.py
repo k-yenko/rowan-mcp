@@ -3,30 +3,38 @@ Rowan v2 API: Tautomer Search Workflow
 Search for tautomeric forms of molecules.
 """
 
-from typing import Optional
+from typing import Optional, Annotated
+from pydantic import Field
 import rowan
 
 
 def submit_tautomer_search_workflow(
-    initial_molecule: str,
-    mode: str = "careful",
-    name: str = "Tautomer Search Workflow",
-    folder_uuid: Optional[str] = None,
-    max_credits: Optional[int] = None
+    initial_molecule: Annotated[
+        str,
+        Field(description="SMILES string or molecule object to search for tautomers")
+    ],
+    mode: Annotated[
+        str,
+        Field(description="Search mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)")
+    ] = "careful",
+    name: Annotated[
+        str,
+        Field(description="Workflow name for identification and tracking")
+    ] = "Tautomer Search Workflow",
+    folder_uuid: Annotated[
+        Optional[str],
+        Field(description="UUID of folder to organize this workflow. None uses default folder")
+    ] = None,
+    max_credits: Annotated[
+        Optional[int],
+        Field(description="Maximum credits to spend on this calculation. None for no limit")
+    ] = None
 ):
     """Submit a tautomer search workflow using Rowan v2 API.
     
     Searches for different tautomeric forms of a molecule and evaluates their
     relative stabilities. Tautomers are structural isomers that readily interconvert.
     
-    Args:
-        initial_molecule: SMILES string or molecule object
-        mode: Search mode (default: "careful")
-            Options: "rapid", "careful", "meticulous"
-        name: Workflow name for tracking
-        folder_uuid: Optional folder UUID for organization
-        max_credits: Optional credit limit for the calculation
-        
     Returns:
         Workflow object representing the submitted workflow
         

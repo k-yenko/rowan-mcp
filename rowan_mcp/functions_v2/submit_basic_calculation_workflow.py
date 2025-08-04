@@ -48,6 +48,40 @@ def submit_basic_calculation_workflow(
     
     Performs fundamental quantum chemistry calculations with configurable methods
     and computational tasks. Returns a workflow object for tracking progress.
+    
+    Examples:
+        # Simple water optimization with GFN2-xTB
+        result = submit_basic_calculation_workflow(
+            initial_molecule="O",
+            method="gfn2-xtb",
+            tasks=["optimize"],
+            engine="xtb",
+            name="Water Optimization"
+        )
+        
+        # Butane optimization from SMILES
+        result = submit_basic_calculation_workflow(
+            initial_molecule="CCCC",
+            method="gfn2-xtb",
+            tasks=["optimize"],
+            mode="rapid",
+            engine="xtb",
+            name="Butane Optimization"
+        )
+        
+        # Using a molecule dict (from data.json)
+        molecule_dict = {
+            "smiles": "CCCC",
+            "charge": 0,
+            "multiplicity": 1,
+            "atoms": [...]  # atomic positions
+        }
+        result = submit_basic_calculation_workflow(
+            initial_molecule=molecule_dict,
+            method="gfn2-xtb",
+            tasks=["optimize"],
+            engine="xtb"
+        )
     """
     
     # Parse tasks parameter - handle string or list

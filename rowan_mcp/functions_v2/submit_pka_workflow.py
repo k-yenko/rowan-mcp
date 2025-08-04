@@ -3,54 +3,68 @@ Rowan v2 API: pKa Workflow
 Predict acid dissociation constants for ionizable groups in molecules.
 """
 
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Annotated
+from pydantic import Field
 import rowan
 
 
 def submit_pka_workflow(
-    initial_molecule: str,
-    pka_range: Tuple[float, float] = (2, 12),
-    deprotonate_elements: Optional[List[str]] = None,
-    protonate_elements: Optional[List[str]] = None,
-    mode: str = "careful",
-    name: str = "pKa Workflow",
-    folder_uuid: Optional[str] = None,
-    max_credits: Optional[int] = None
+    initial_molecule: Annotated[
+        str,
+        Field(description="SMILES string or molecule object for pKa prediction")
+    ],
+    pka_range: Annotated[
+        Tuple[float, float],
+        Field(description="(min, max) pKa range to search, e.g., (2, 12)")
+    ] = (2, 12),
+    deprotonate_elements: Annotated[
+        Optional[List[int]],
+        Field(description="Atomic numbers to consider for deprotonation, e.g., [7, 8, 16] for N, O, S. None uses defaults")
+    ] = None,
+    protonate_elements: Annotated[
+        Optional[List[int]],
+        Field(description="Atomic numbers to consider for protonation, e.g., [7, 8] for N, O. None uses defaults")
+    ] = None,
+    mode: Annotated[
+        str,
+        Field(description="Calculation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)")
+    ] = "careful",
+    name: Annotated[
+        str,
+        Field(description="Workflow name for identification and tracking")
+    ] = "pKa Workflow",
+    folder_uuid: Annotated[
+        Optional[str],
+        Field(description="UUID of folder to organize this workflow. None uses default folder")
+    ] = None,
+    max_credits: Annotated[
+        Optional[int],
+        Field(description="Maximum credits to spend on this calculation. None for no limit")
+    ] = None
 ):
     """Submit a pKa prediction workflow using Rowan v2 API.
     
     Predicts acid dissociation constants (pKa) for ionizable groups in a molecule
     using quantum chemistry calculations.
     
-    Args:
-        initial_molecule: SMILES string or molecule object
-        pka_range: Tuple of (min, max) pKa values to search (default: (2, 12))
-        deprotonate_elements: List of elements to consider for deprotonation
-            (e.g., ["N", "O", "S"]). If None, uses defaults
-        protonate_elements: List of elements to consider for protonation
-            (e.g., ["N", "O"]). If None, uses defaults
-        mode: Calculation mode (default: "careful")
-            Options: "rapid", "careful", "meticulous"
-        name: Workflow name for tracking
-        folder_uuid: Optional folder UUID for organization
-        max_credits: Optional credit limit for the calculation
-        
     Returns:
         Workflow object representing the submitted workflow
         
-    Example:
-        # Basic pKa prediction
+    Examples:
+        # p-nitrophenol pKa (from test)
+        import stjames
+        
         result = submit_pka_workflow(
-            initial_molecule="CC(=O)O",
-            pka_range=(2, 8)
+            initial_molecule=stjames.Molecule.from_smiles("Oc1ccc(N(=O)=O)cc1"),
+            name="pKa p-nitrophenol",
+            deprotonate_elements=[8]  # Only consider oxygen
         )
         
-        # Specific elements with meticulous mode
+        # Phenol pKa
         result = submit_pka_workflow(
-            initial_molecule="NC(C)C(=O)O",
-            pka_range=(1, 14),
-            deprotonate_elements=["N", "O"],
-            mode="meticulous"
+            initial_molecule=stjames.Molecule.from_smiles("Oc1ccccc1"),
+            name="pKa phenol",
+            deprotonate_elements=[8]  # Atomic number for oxygen
         )
     """
     

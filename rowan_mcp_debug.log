@@ -2012,3 +2012,40 @@ For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/St
 2025-08-02 14:22:30,365 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
 2025-08-02 14:23:27,975 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
 2025-08-02 14:23:28,866 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-02 19:50:03,905 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'Rowan MCP Server' with transport 'sse' on http://127.0.0.1:6276/sse
+2025-08-02 19:50:08,086 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-02 19:50:08,087 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-02 19:50:08,093 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-02 19:50:08,094 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-02 19:50:10,303 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-02 19:50:10,304 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-02 19:50:10,312 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-02 19:50:10,312 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-02 19:51:12,984 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-02 19:51:13,853 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-03 16:25:05,503 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-03 16:25:05,514 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-03 16:26:27,035 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'Rowan MCP Server' with transport 'sse' on http://127.0.0.1:6276/sse
+2025-08-03 16:26:28,569 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-03 16:26:28,576 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-03 16:27:48,178 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'Rowan MCP Server' with transport 'sse' on http://127.0.0.1:6276/sse
+2025-08-03 16:27:49,665 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-03 16:27:49,671 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-03 16:29:06,077 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'Rowan MCP Server' with transport 'sse' on http://127.0.0.1:6276/sse
+2025-08-03 16:29:10,320 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-03 16:29:10,327 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-03 16:32:26,579 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'Rowan MCP Server' with transport 'sse' on http://127.0.0.1:6276/sse
+2025-08-03 16:32:29,416 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-03 16:32:29,421 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-03 16:36:00,057 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'Rowan MCP Server' with transport 'sse' on http://127.0.0.1:6276/sse
+2025-08-03 16:36:02,524 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-03 16:36:02,531 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-03 16:38:35,094 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'Rowan MCP Server' with transport 'sse' on http://127.0.0.1:6276/sse
+2025-08-03 16:38:36,163 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-03 16:38:36,170 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-03 16:40:24,816 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'Rowan MCP Server' with transport 'sse' on http://127.0.0.1:6276/sse
+2025-08-03 16:40:26,274 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-03 16:40:26,280 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-03 17:08:13,769 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'Rowan MCP Server' with transport 'sse' on http://127.0.0.1:6276/sse
+2025-08-03 17:08:16,476 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-03 17:08:16,483 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
