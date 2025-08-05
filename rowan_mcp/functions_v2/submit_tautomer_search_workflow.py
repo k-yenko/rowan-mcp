@@ -6,7 +6,7 @@ Search for tautomeric forms of molecules.
 from typing import Optional, Annotated
 from pydantic import Field
 import rowan
-
+import stjames
 
 def submit_tautomer_search_workflow(
     initial_molecule: Annotated[
@@ -52,7 +52,7 @@ def submit_tautomer_search_workflow(
     """
     
     return rowan.submit_tautomer_search_workflow(
-        initial_molecule=initial_molecule,
+        initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         mode=mode,
         name=name,
         folder_uuid=folder_uuid,

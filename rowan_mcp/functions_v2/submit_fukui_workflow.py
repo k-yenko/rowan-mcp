@@ -3,10 +3,11 @@ Rowan v2 API: Fukui Workflow
 Calculate Fukui indices for reactivity analysis.
 """
 
-from typing import Optional, Dict, Any, Annotated
+from typing import Optional, Dict, Any, Annotated, Union
 from pydantic import Field
 import rowan
-
+import stjames
+import json
 
 def submit_fukui_workflow(
     initial_molecule: Annotated[
@@ -22,8 +23,8 @@ def submit_fukui_workflow(
         Field(description="Method for Fukui calculation. Options: 'gfn1_xtb', 'gfn2_xtb'")
     ] = "gfn1_xtb",
     solvent_settings: Annotated[
-        Optional[Dict[str, Any]],
-        Field(description="Solvent configuration dict, e.g., {'solvent': 'water', 'model': 'alpb'}. None for gas phase")
+        Optional[Union[str, Dict[str, Any]]],
+        Field(description="Solvent configuration dict or JSON string, e.g., {'solvent': 'water', 'model': 'alpb'}. None for gas phase")
     ] = None,
     name: Annotated[
         str,
@@ -61,12 +62,60 @@ def submit_fukui_workflow(
         )
     """
     
-    return rowan.submit_fukui_workflow(
-        initial_molecule=initial_molecule,
-        optimization_method=optimization_method,
-        fukui_method=fukui_method,
-        solvent_settings=solvent_settings,
-        name=name,
-        folder_uuid=folder_uuid,
-        max_credits=max_credits
-    )
+    # Parse solvent_settings if it's a string
+    if solvent_settings is not None and isinstance(solvent_settings, str):
+        try:
+            solvent_settings = json.loads(solvent_settings)
+        except (json.JSONDecodeError, ValueError):
+            # If it's not valid JSON, keep it as is
+            pass
+    
+    try:
+        # Convert initial_molecule to StJamesMolecule
+        if isinstance(initial_molecule, str):
+            molecule = stjames.Molecule.from_smiles(initial_molecule)
+        elif isinstance(initial_molecule, dict):
+            molecule = stjames.Molecule(**initial_molecule)
+        else:
+            molecule = initial_molecule
+            
+        # Convert to dict for API payload
+        if isinstance(molecule, stjames.Molecule):
+            initial_molecule_dict = molecule.model_dump()
+        else:
+            initial_molecule_dict = molecule
+        
+        # Create Settings objects and immediately serialize them to JSON-compatible dicts
+        # This is the workaround for the bug in rowan.submit_fukui_workflow
+        optimization_settings = stjames.Settings(method=optimization_method)
+        fukui_settings = stjames.Settings(method=fukui_method, solvent_settings=solvent_settings)
+        
+        # Use model_dump(mode="json") to ensure JSON serializability
+        workflow_data = {
+            "opt_settings": optimization_settings.model_dump(mode="json"),
+            "opt_engine": stjames.Method(optimization_method).default_engine(),
+            "fukui_settings": fukui_settings.model_dump(mode="json"),
+            "fukui_engine": stjames.Method(fukui_method).default_engine(),
+        }
+        
+        # Build the API request payload
+        data = {
+            "name": name,
+            "folder_uuid": folder_uuid,
+            "workflow_type": "fukui",
+            "workflow_data": workflow_data,
+            "initial_molecule": initial_molecule_dict,
+            "max_credits": max_credits,
+        }
+        
+        # Submit directly to the API, bypassing the buggy rowan.submit_fukui_workflow
+        with rowan.api_client() as client:
+            response = client.post("/workflow", json=data)
+            response.raise_for_status()
+            
+            # Create and return a Workflow object from the response
+            result = rowan.Workflow(**response.json())
+            return result
+            
+    except Exception as e:
+        raise e

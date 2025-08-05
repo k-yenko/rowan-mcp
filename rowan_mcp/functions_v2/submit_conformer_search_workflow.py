@@ -6,7 +6,8 @@ Search for low-energy molecular conformations using various methods.
 from typing import Optional, Annotated
 from pydantic import Field
 import rowan
-
+import json
+import stjames
 
 def submit_conformer_search_workflow(
     initial_molecule: Annotated[
@@ -25,7 +26,7 @@ def submit_conformer_search_workflow(
         Optional[str],
         Field(description="Solvent for implicit solvation (e.g., 'water', 'ethanol', 'dmso'). None for gas phase")
     ] = None,
-    transition_state: Annotated[
+    transistion_state: Annotated[
         bool,
         Field(description="Whether to search for transition state conformers (default: False)")
     ] = False,
@@ -74,14 +75,61 @@ def submit_conformer_search_workflow(
             final_method="r2scan_3c"
         )
     """
-    
-    return rowan.submit_conformer_search_workflow(
-        initial_molecule=initial_molecule,
-        conf_gen_mode=conf_gen_mode,
-        final_method=final_method,
-        solvent=solvent,
-        transistion_state=transition_state,  # Note: API uses "transistion" (typo)
-        name=name,
-        folder_uuid=folder_uuid,
-        max_credits=max_credits
-    )
+
+    try:
+        # Handle initial_molecule parameter - could be JSON string, SMILES, or dict
+        if isinstance(initial_molecule, str):
+            # Check if it's a JSON string (starts with { or [)
+            initial_molecule_str = initial_molecule.strip()
+            if (initial_molecule_str.startswith('{') and initial_molecule_str.endswith('}')) or \
+               (initial_molecule_str.startswith('[') and initial_molecule_str.endswith(']')):
+                try:
+                    # Parse the JSON string to dict
+                    initial_molecule = json.loads(initial_molecule_str)
+                    
+                    # Now handle as dict (fall through to dict handling below)
+                    if isinstance(initial_molecule, dict) and 'smiles' in initial_molecule:
+                        smiles = initial_molecule.get('smiles')
+                        if smiles:
+                            try:
+                                initial_molecule = stjames.Molecule.from_smiles(smiles)
+                            except Exception as e:
+                                initial_molecule = smiles
+                except (json.JSONDecodeError, ValueError) as e:
+                    # Not valid JSON, treat as SMILES string
+                    try:
+                        initial_molecule = stjames.Molecule.from_smiles(initial_molecule)
+                    except Exception as e:
+                        pass
+            else:
+                # Regular SMILES string
+                try:
+                    initial_molecule = stjames.Molecule.from_smiles(initial_molecule)
+                except Exception as e:
+                    pass
+        elif isinstance(initial_molecule, dict) and 'smiles' in initial_molecule:
+            # If we have a dict with SMILES, extract and use just the SMILES
+            smiles = initial_molecule.get('smiles')
+            if smiles:
+                try:
+                    initial_molecule = stjames.Molecule.from_smiles(smiles)
+                except Exception as e:
+                    initial_molecule = smiles
+        
+
+        result = rowan.submit_conformer_search_workflow(
+            initial_molecule=initial_molecule,
+            conf_gen_mode=conf_gen_mode,
+            final_method=final_method,
+            solvent=solvent,
+            transistion_state=transistion_state,  # Note: API uses "transistion" (typo in Rowan API)
+            name=name,
+            folder_uuid=folder_uuid,
+            max_credits=max_credits
+        )
+        
+        return result
+        
+    except Exception as e:
+        # Re-raise the exception so MCP can handle it
+        raise

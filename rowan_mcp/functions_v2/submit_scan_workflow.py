@@ -6,7 +6,7 @@ Perform potential energy surface scans along molecular coordinates.
 from typing import Optional, Dict, Any, Annotated
 from pydantic import Field
 import rowan
-
+import stjames
 
 def submit_scan_workflow(
     initial_molecule: Annotated[
@@ -51,11 +51,9 @@ def submit_scan_workflow(
         Workflow object representing the submitted workflow
         
     Example:
-        # Water angle scan (from test)
-        from stjames import Molecule
-        
+        # Water angle scan
         result = submit_scan_workflow(
-            initial_molecule=Molecule.from_smiles("O"),
+            initial_molecule="O",  # Water SMILES
             name="Water Angle scan",
             scan_settings={
                 "type": "angle",
@@ -70,7 +68,7 @@ def submit_scan_workflow(
     """
     
     return rowan.submit_scan_workflow(
-        initial_molecule=initial_molecule,
+        initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         scan_settings=scan_settings,
         calculation_engine=calculation_engine,
         calculation_method=calculation_method,

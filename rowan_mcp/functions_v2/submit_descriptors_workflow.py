@@ -6,6 +6,7 @@ Calculate molecular descriptors for QSAR and molecular analysis.
 from typing import Optional, Annotated
 from pydantic import Field
 import rowan
+import stjames
 
 
 def submit_descriptors_workflow(
@@ -51,7 +52,7 @@ def submit_descriptors_workflow(
     """
     
     return rowan.submit_descriptors_workflow(
-        initial_molecule=initial_molecule,
+        initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         name=name,
         folder_uuid=folder_uuid,
         max_credits=max_credits

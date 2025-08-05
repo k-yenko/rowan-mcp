@@ -78,6 +78,13 @@ from .functions_v2.submit_irc_workflow import submit_irc_workflow as irc_v2_func
 from .functions_v2.submit_protein_cofolding_workflow import submit_protein_cofolding_workflow as protein_cofolding_v2_function
 from .functions_v2.submit_docking_workflow import submit_docking_workflow as docking_v2_function
 
+# Import molecule lookup functions
+from .functions_v2.molecule_lookup import (
+    molecule_lookup as molecule_lookup_function,
+    batch_molecule_lookup as batch_molecule_lookup_function,
+    validate_smiles as validate_smiles_function
+)
+
 # Import v2 workflow management functions
 from .functions_v2.workflow_management_v2 import (
     workflow_fetch_latest as workflow_fetch_latest_function,
@@ -91,6 +98,16 @@ from .functions_v2.workflow_management_v2 import (
     workflow_update as workflow_update_function,
     workflow_is_finished as workflow_is_finished_function,
     workflow_delete_data as workflow_delete_data_function
+)
+
+# Import protein management functions
+from .functions_v2.protein_management import (
+    create_protein_from_pdb_id as create_protein_from_pdb_id_function,
+    retrieve_protein as retrieve_protein_function,
+    list_proteins as list_proteins_function,
+    upload_protein as upload_protein_function,
+    delete_protein as delete_protein_function,
+    sanitize_protein as sanitize_protein_function
 )
 
 try:
@@ -151,6 +168,11 @@ submit_irc_workflow = mcp.tool()(irc_v2_function)
 submit_protein_cofolding_workflow = mcp.tool()(protein_cofolding_v2_function)
 submit_docking_workflow = mcp.tool()(docking_v2_function)
 
+# Register molecule lookup tools
+molecule_lookup = mcp.tool()(molecule_lookup_function)
+batch_molecule_lookup = mcp.tool()(batch_molecule_lookup_function)
+validate_smiles = mcp.tool()(validate_smiles_function)
+
 # Register v2 workflow management functions as MCP tools
 workflow_fetch_latest = mcp.tool()(workflow_fetch_latest_function)
 workflow_wait_for_result = mcp.tool()(workflow_wait_for_result_function)
@@ -163,6 +185,14 @@ list_workflows = mcp.tool()(list_workflows_function)
 workflow_update = mcp.tool()(workflow_update_function)
 workflow_is_finished = mcp.tool()(workflow_is_finished_function)
 workflow_delete_data = mcp.tool()(workflow_delete_data_function)
+
+# Register protein management functions as MCP tools
+create_protein_from_pdb_id = mcp.tool()(create_protein_from_pdb_id_function)
+retrieve_protein = mcp.tool()(retrieve_protein_function)
+list_proteins = mcp.tool()(list_proteins_function)
+upload_protein = mcp.tool()(upload_protein_function)
+delete_protein = mcp.tool()(delete_protein_function)
+sanitize_protein = mcp.tool()(sanitize_protein_function)
 
 # Validate required dependencies and configuration
 if not os.getenv("ROWAN_API_KEY"):

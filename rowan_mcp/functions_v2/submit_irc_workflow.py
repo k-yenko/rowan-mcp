@@ -6,13 +6,13 @@ Perform Intrinsic Reaction Coordinate calculations to trace reaction paths.
 from typing import Optional, Dict, Any, Union, Annotated
 from pydantic import Field
 import rowan
-
+import stjames
 
 def submit_irc_workflow(
     initial_molecule: Annotated[
-        Optional[Union[Dict[str, Any], Any]],
-        Field(description="Transition state molecule for IRC. Can be dict with SMILES, StJamesMolecule, or RdkitMol object")
-    ] = None,
+        str,
+        Field(description="SMILES string or molecule object for descriptor calculation")
+    ],
     method: Annotated[
         str,
         Field(description="Computational method for IRC. Options: 'uma_m_omol', 'gfn2_xtb', 'r2scan_3c'")
@@ -52,29 +52,32 @@ def submit_irc_workflow(
         Workflow object representing the submitted IRC workflow
         
     Example:
-        # IRC for HNCO + H₂O reaction (from test)
-        from stjames import Molecule
-        
+        # IRC from SMILES
         result = submit_irc_workflow(
-            initial_molecule=Molecule.from_xyz_lines(
-                '''7
-        SMILES `N=C([O-])[OH2+]`
-        N    -0.15519741  -1.36979175  -0.20679433
-        C     1.11565384  -1.23943631  -0.14797646
-        O     2.17614993  -1.72950370  -0.04017850
-        H    -0.55869366  -2.29559315  -0.23834737
-        O     1.02571386   0.42871733  -0.27925360
-        H    -0.09029954  -0.04166676  -0.31495768
-        H     1.26740151   0.88347299   0.53620841
-        '''.splitlines()
-            ),
+            initial_molecule="N=C([O-])[OH2+]",  # Transition state SMILES
             name="HNCO + H₂O - IRC",
-            preopt=False
+            preopt=True,  # Pre-optimize TS
+            method="gfn2_xtb",
+            engine="xtb"
+        )
+        
+        # IRC from molecule dict with coordinates
+        molecule_dict = {
+            "smiles": "N=C([O-])[OH2+]",
+            "atoms": [  # XYZ coordinates if available
+                {"element": "N", "x": -0.155, "y": -1.370, "z": -0.207},
+                # ... more atoms
+            ]
+        }
+        result = submit_irc_workflow(
+            initial_molecule=molecule_dict,
+            name="HNCO + H₂O - IRC",
+            preopt=False  # Already at TS
         )
     """
     
     return rowan.submit_irc_workflow(
-        initial_molecule=initial_molecule,
+        initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         method=method,
         engine=engine,
         preopt=preopt,

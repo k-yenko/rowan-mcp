@@ -6,6 +6,7 @@ Calculate reduction and oxidation potentials for molecules.
 from typing import Optional, Annotated
 from pydantic import Field
 import rowan
+import stjames
 
 
 def submit_redox_potential_workflow(
@@ -47,22 +48,25 @@ def submit_redox_potential_workflow(
         Workflow object representing the submitted workflow
         
     Example:
-        # Conformer-dependent redox potential (from test)
-        import stjames
-        
-        # After getting a conformer from previous calculation
-        molecule_dict = rowan.retrieve_calculation_molecules(conformer_uuid)[0]
-        stjames_molecule = stjames.Molecule.model_validate(molecule_dict)
-        
+        # Simple redox potential from SMILES
         result = submit_redox_potential_workflow(
-            initial_molecule=stjames_molecule,
+            initial_molecule="Cc1ccccc1",  # Toluene
+            reduction=True,
+            oxidization=True,
+            name="Toluene Redox Potential"
+        )
+        
+        # Using a molecule dict from previous calculation
+        molecule_dict = rowan.retrieve_calculation_molecules(conformer_uuid)[0]
+        result = submit_redox_potential_workflow(
+            initial_molecule=molecule_dict,  # Pass dict directly
             reduction=True,
             oxidization=True
         )
     """
     
     return rowan.submit_redox_potential_workflow(
-        initial_molecule=initial_molecule,
+        initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         reduction=reduction,
         oxidization=oxidization,
         mode=mode,

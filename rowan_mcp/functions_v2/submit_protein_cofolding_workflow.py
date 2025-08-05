@@ -3,24 +3,25 @@ Rowan v2 API: Protein Cofolding Workflow
 Simulate protein-protein interactions and cofolding.
 """
 
-from typing import Optional, List, Annotated
+from typing import Optional, List, Annotated, Union
 from pydantic import Field
 import rowan
 import stjames
+import json
 
 
 def submit_protein_cofolding_workflow(
     initial_protein_sequences: Annotated[
-        List[str],
-        Field(description="List of protein sequences (amino acid strings) to cofold")
+        Union[str, List[str]],
+        Field(description="List of protein sequences (amino acid strings) to cofold. Can be a JSON string or list")
     ],
     initial_smiles_list: Annotated[
-        Optional[List[str]],
-        Field(description="List of ligand SMILES strings to include in cofolding. None for protein-only")
+        Optional[Union[str, List[str]]],
+        Field(description="List of ligand SMILES strings to include in cofolding. Can be a JSON string or list. None for protein-only")
     ] = None,
     ligand_binding_affinity_index: Annotated[
-        Optional[int],
-        Field(description="Index of ligand in initial_smiles_list for binding affinity calculation. None skips affinity")
+        Optional[Union[str, int]],
+        Field(description="Index of ligand in initial_smiles_list for binding affinity calculation (e.g., 0, '0'). None skips affinity")
     ] = None,
     use_msa_server: Annotated[
         bool,
@@ -63,6 +64,37 @@ def submit_protein_cofolding_workflow(
             name="Cofolding CDK2 with ligand"
         )
     """
+    if isinstance(initial_protein_sequences, str):
+        initial_protein_sequences = initial_protein_sequences.strip()
+        if initial_protein_sequences.startswith('[') and initial_protein_sequences.endswith(']'):
+            try:
+                initial_protein_sequences = json.loads(initial_protein_sequences)
+            except (json.JSONDecodeError, ValueError):
+                initial_protein_sequences = initial_protein_sequences.strip('[]').replace('"', '').replace("'", "")
+                initial_protein_sequences = [s.strip() for s in initial_protein_sequences.split(',') if s.strip()]
+        elif ',' in initial_protein_sequences:
+            initial_protein_sequences = [s.strip() for s in initial_protein_sequences.split(',') if s.strip()]
+        else:
+            initial_protein_sequences = [initial_protein_sequences]
+    
+    if initial_smiles_list is not None and isinstance(initial_smiles_list, str):
+        initial_smiles_list = initial_smiles_list.strip()
+        if initial_smiles_list.startswith('[') and initial_smiles_list.endswith(']'):
+            try:
+                initial_smiles_list = json.loads(initial_smiles_list)
+            except (json.JSONDecodeError, ValueError):
+                initial_smiles_list = initial_smiles_list.strip('[]').replace('"', '').replace("'", "")
+                initial_smiles_list = [s.strip() for s in initial_smiles_list.split(',') if s.strip()]
+        elif ',' in initial_smiles_list:
+            initial_smiles_list = [s.strip() for s in initial_smiles_list.split(',') if s.strip()]
+        else:
+            initial_smiles_list = [initial_smiles_list]
+    
+    if ligand_binding_affinity_index is not None and isinstance(ligand_binding_affinity_index, str):
+        try:
+            ligand_binding_affinity_index = int(ligand_binding_affinity_index)
+        except (ValueError, TypeError):
+            raise ValueError(f"Invalid ligand_binding_affinity_index: '{ligand_binding_affinity_index}' must be an integer")
     
     return rowan.submit_protein_cofolding_workflow(
         initial_protein_sequences=initial_protein_sequences,

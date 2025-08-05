@@ -3,27 +3,28 @@ Rowan v2 API: pKa Workflow
 Predict acid dissociation constants for ionizable groups in molecules.
 """
 
-from typing import Optional, List, Tuple, Annotated
+from typing import Optional, List, Tuple, Annotated, Union, Dict, Any
 from pydantic import Field
 import rowan
-
+import json
+import stjames
 
 def submit_pka_workflow(
     initial_molecule: Annotated[
-        str,
-        Field(description="SMILES string or molecule object for pKa prediction")
+        Union[str, Dict[str, Any], Any],
+        Field(description="The molecule to calculate the pKa of. Can be a SMILES string, dict, StJamesMolecule, or RdkitMol object")
     ],
     pka_range: Annotated[
         Tuple[float, float],
         Field(description="(min, max) pKa range to search, e.g., (2, 12)")
     ] = (2, 12),
     deprotonate_elements: Annotated[
-        Optional[List[int]],
-        Field(description="Atomic numbers to consider for deprotonation, e.g., [7, 8, 16] for N, O, S. None uses defaults")
+        Optional[Union[str, List[int]]],
+        Field(description="Atomic numbers to consider for deprotonation, e.g., [7, 8, 16] for N, O, S. Can be a JSON string '[7, 8, 16]' or list. None uses defaults")
     ] = None,
     protonate_elements: Annotated[
-        Optional[List[int]],
-        Field(description="Atomic numbers to consider for protonation, e.g., [7, 8] for N, O. None uses defaults")
+        Optional[Union[str, List[int]]],
+        Field(description="Atomic numbers to consider for protonation, e.g., [7, 8] for N, O. Can be a JSON string '[7, 8]' or list. None uses defaults")
     ] = None,
     mode: Annotated[
         str,
@@ -67,9 +68,9 @@ def submit_pka_workflow(
             deprotonate_elements=[8]  # Atomic number for oxygen
         )
     """
-    
+
     return rowan.submit_pka_workflow(
-        initial_molecule=initial_molecule,
+        initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         pka_range=pka_range,
         deprotonate_elements=deprotonate_elements,
         protonate_elements=protonate_elements,
