@@ -3,10 +3,11 @@ Rowan v2 API: Scan Workflow
 Perform potential energy surface scans along molecular coordinates.
 """
 
-from typing import Optional, Dict, Any, Annotated
+from typing import Optional, Dict, Any, Annotated, Union
 from pydantic import Field
 import rowan
 import stjames
+import json
 
 def submit_scan_workflow(
     initial_molecule: Annotated[
@@ -14,8 +15,8 @@ def submit_scan_workflow(
         Field(description="SMILES string or molecule object to scan")
     ],
     scan_settings: Annotated[
-        Optional[Dict[str, Any]],
-        Field(description="Scan parameters dict: {'type': 'dihedral'/'bond'/'angle', 'atoms': [1-indexed], 'start': value, 'stop': value, 'num': points or 'step': size}")
+        Optional[Union[str, Dict[str, Any]]],
+        Field(description="Scan parameters dict or JSON string: {'type': 'dihedral'/'bond'/'angle', 'atoms': [1-indexed], 'start': value, 'stop': value, 'num': points}")
     ] = None,
     calculation_engine: Annotated[
         str,
@@ -66,6 +67,28 @@ def submit_scan_workflow(
             calculation_engine="xtb"
         )
     """
+    # Parse scan_settings if it's a string
+    if scan_settings is not None and isinstance(scan_settings, str):
+        try:
+            scan_settings = json.loads(scan_settings)
+        except (json.JSONDecodeError, ValueError) as e:
+            raise ValueError(f"Invalid scan_settings format: {e}")
+    
+    # Validate and convert scan_settings
+    if scan_settings is not None:
+        # Convert step to num if step is provided instead of num
+        if 'step' in scan_settings and 'num' not in scan_settings:
+            start = scan_settings.get('start', 0)
+            stop = scan_settings.get('stop', 360)
+            step = scan_settings['step']
+            scan_settings['num'] = int((stop - start) / step) + 1
+            del scan_settings['step']  # Remove step as API doesn't accept it
+        
+        # Validate required fields
+        required_fields = ['type', 'atoms', 'start', 'stop', 'num']
+        missing_fields = [field for field in required_fields if field not in scan_settings]
+        if missing_fields:
+            raise ValueError(f"Missing required fields in scan_settings: {missing_fields}")
     
     return rowan.submit_scan_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),

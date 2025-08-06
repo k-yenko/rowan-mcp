@@ -5597,3 +5597,114 @@ TypeError: create_protein_from_pdb_id() missing 1 required positional argument: 
 2025-08-04 19:53:52,103 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e95110b8-527f-4ed1-87ef-b27093fbe77d "HTTP/1.1 200 OK"
 2025-08-04 19:53:56,852 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
 2025-08-04 19:53:57,285 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e95110b8-527f-4ed1-87ef-b27093fbe77d "HTTP/1.1 200 OK"
+2025-08-04 19:58:00,559 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 19:58:00,561 - rowan_mcp.functions_v2.molecule_lookup - INFO - Looking up molecule: hydrogen peroxide
+2025-08-04 19:58:01,105 - rowan_mcp.functions_v2.molecule_lookup - INFO - Successfully converted 'hydrogen peroxide' to SMILES: OO
+2025-08-04 19:59:01,970 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 19:59:01,971 - rowan_mcp.functions_v2.molecule_lookup - INFO - Looking up molecule: hydrogen peroxide
+2025-08-04 19:59:02,565 - rowan_mcp.functions_v2.molecule_lookup - INFO - Successfully converted 'hydrogen peroxide' to SMILES: OO
+2025-08-04 20:01:31,461 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-04 20:01:32,093 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-04 20:04:17,168 - FastMCP.fastmcp.server.server - INFO - Starting MCP server 'Rowan MCP Server' with transport 'sse' on http://127.0.0.1:6276/sse
+2025-08-04 20:04:23,731 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2025-08-04 20:04:23,737 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2025-08-04 20:04:31,679 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 20:04:31,679 - rowan_mcp.functions_v2.molecule_lookup - INFO - Looking up molecule: hydrogen peroxide
+2025-08-04 20:04:32,218 - rowan_mcp.functions_v2.molecule_lookup - INFO - Successfully converted 'hydrogen peroxide' to SMILES: OO
+2025-08-04 20:04:38,513 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 20:04:39,278 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-04 20:04:40,603 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 20:04:41,132 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-04 20:04:49,355 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 20:04:49,730 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:04:50,109 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:04:55,508 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:00,909 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:06,585 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:11,974 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:17,498 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:23,008 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:28,528 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:34,033 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:39,560 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:45,112 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:50,648 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:05:56,184 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:01,761 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:07,312 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:12,861 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:18,351 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:23,908 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:29,433 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:34,971 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:40,522 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:46,053 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:51,605 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:06:57,151 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:07:02,704 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:07:08,238 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:07:13,800 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:07:19,360 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:07:24,876 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:07:30,408 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:07:35,958 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:07:36,259 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 20:07:36,646 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0827329-e0ba-4363-bfec-eca0a731f9bc "HTTP/1.1 200 OK"
+2025-08-04 20:07:37,016 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0827329-e0ba-4363-bfec-eca0a731f9bc "HTTP/1.1 200 OK"
+2025-08-04 20:07:42,435 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0827329-e0ba-4363-bfec-eca0a731f9bc "HTTP/1.1 200 OK"
+2025-08-04 20:07:47,859 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0827329-e0ba-4363-bfec-eca0a731f9bc "HTTP/1.1 200 OK"
+2025-08-04 20:07:53,301 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0827329-e0ba-4363-bfec-eca0a731f9bc "HTTP/1.1 200 OK"
+2025-08-04 20:08:00,522 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 20:08:00,976 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/e8ec9f50-c05a-47ab-8971-024082672c93 "HTTP/1.1 200 OK"
+2025-08-04 20:08:08,596 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 20:08:09,028 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/9230ed66-64e0-4e31-ab22-af0b74a3eac7/molecules "HTTP/1.1 200 OK"
+2025-08-04 20:08:09,723 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 20:08:10,146 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0827329-e0ba-4363-bfec-eca0a731f9bc "HTTP/1.1 200 OK"
+2025-08-04 20:08:10,585 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0827329-e0ba-4363-bfec-eca0a731f9bc "HTTP/1.1 200 OK"
+2025-08-04 20:08:11,026 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0827329-e0ba-4363-bfec-eca0a731f9bc "HTTP/1.1 200 OK"
+2025-08-04 20:08:15,441 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-04 20:08:15,892 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/a0827329-e0ba-4363-bfec-eca0a731f9bc "HTTP/1.1 200 OK"
+2025-08-04 20:21:19,802 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-04 20:21:20,498 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-05 20:12:46,593 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:12:47,371 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-05 20:12:51,905 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:12:52,286 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/db952c8a-a009-4ef2-9c39-c339babd0838 "HTTP/1.1 200 OK"
+2025-08-05 20:12:52,654 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/db952c8a-a009-4ef2-9c39-c339babd0838 "HTTP/1.1 200 OK"
+2025-08-05 20:13:03,131 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/db952c8a-a009-4ef2-9c39-c339babd0838 "HTTP/1.1 200 OK"
+2025-08-05 20:13:06,178 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:13:06,578 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/db952c8a-a009-4ef2-9c39-c339babd0838 "HTTP/1.1 200 OK"
+2025-08-05 20:13:07,033 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/db952c8a-a009-4ef2-9c39-c339babd0838 "HTTP/1.1 200 OK"
+2025-08-05 20:13:07,441 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/db952c8a-a009-4ef2-9c39-c339babd0838 "HTTP/1.1 200 OK"
+2025-08-05 20:13:11,278 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:13:11,739 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/db952c8a-a009-4ef2-9c39-c339babd0838 "HTTP/1.1 200 OK"
+2025-08-05 20:13:12,250 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/db952c8a-a009-4ef2-9c39-c339babd0838 "HTTP/1.1 200 OK"
+2025-08-05 20:13:18,451 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:13:19,055 - httpx - INFO - HTTP Request: POST https://api.rowansci.com/workflow "HTTP/1.1 200 OK"
+2025-08-05 20:13:22,845 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:13:23,282 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:13:23,685 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:13:34,138 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:13:44,536 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:13:54,952 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:14:05,395 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:14:15,814 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:14:19,429 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:14:19,819 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:14:20,214 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:14:20,624 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:14:24,402 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:14:24,799 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:14:25,188 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/workflow/deda082c-4e38-40b5-9926-f29432a8ca35 "HTTP/1.1 200 OK"
+2025-08-05 20:14:30,010 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:14:30,414 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/ce30b898-0bcf-4e2f-9246-9a338b19b386/molecules "HTTP/1.1 200 OK"
+2025-08-05 20:14:31,142 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:14:31,547 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/96652bd9-3aba-4284-892a-201f152f5973/molecules "HTTP/1.1 200 OK"
+2025-08-05 20:14:32,237 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:14:32,629 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/f4e8394a-3050-4c6d-8dac-569e2a9f922d/molecules "HTTP/1.1 200 OK"
+2025-08-05 20:14:36,773 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:14:37,165 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/9b718769-4a5e-492b-850a-6789cff3e7e1/molecules "HTTP/1.1 200 OK"
+2025-08-05 20:14:38,077 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:14:38,490 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/1e60e991-9eb3-4435-a46a-d5cec573204c/molecules "HTTP/1.1 200 OK"
+2025-08-05 20:14:39,268 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2025-08-05 20:14:39,662 - httpx - INFO - HTTP Request: GET https://api.rowansci.com/calculation/cb3f43a4-88f0-4ba8-b2fd-cc2e3d51ad4f/molecules "HTTP/1.1 200 OK"
