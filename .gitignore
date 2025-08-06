@@ -10,3 +10,6 @@ __pycache__/
 .claude
 CLAUDE.md
 /dist
+
+# MCP configuration (may contain tokens)
+.mcp.json
