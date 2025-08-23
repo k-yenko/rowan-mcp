@@ -11,6 +11,8 @@ import sys
 import time
 import traceback
 import logging
+import signal
+import atexit
 from typing import Any, Dict, List, Optional, Literal, Union
 from enum import Enum
 
@@ -206,8 +208,27 @@ if rowan is None:
         "rowan-python package is required. Install with: pip install rowan-python"
     )
 
+def cleanup():
+    """Cleanup function called on exit."""
+    logger.info("Performing cleanup...")
+    # Add any specific cleanup code here if needed
+    logger.info("Cleanup complete")
+
+def signal_handler(signum, frame):
+    """Handle shutdown signals gracefully."""
+    logger.info(f"Received signal {signum}, initiating shutdown...")
+    cleanup()
+    sys.exit(0)
+
 def main() -> None:
     """Main entry point for the MCP server."""
+    # Register signal handlers for graceful shutdown
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    
+    # Register cleanup function
+    atexit.register(cleanup)
+    
     try:
         # Check for transport mode from command line args or environment
         transport_mode = os.getenv("ROWAN_MCP_TRANSPORT", "stdio").lower()
@@ -259,10 +280,12 @@ def main() -> None:
             mcp.run()  # Default STDIO transport
             
     except KeyboardInterrupt:
-        print("\nServer shutdown requested by user")
+        print("\n🛑 Server shutdown requested by user")
+        cleanup()
     except Exception as e:
-        print(f"Server error: {e}")
+        print(f"❌ Server error: {e}")
         traceback.print_exc()
+        cleanup()
 
 if __name__ == "__main__":
     main() 

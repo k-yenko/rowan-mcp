@@ -68,6 +68,19 @@ def submit_pka_workflow(
             deprotonate_elements=[8]  # Atomic number for oxygen
         )
     """
+    
+    # Handle JSON string inputs for element lists
+    if isinstance(deprotonate_elements, str):
+        try:
+            deprotonate_elements = json.loads(deprotonate_elements)
+        except json.JSONDecodeError:
+            pass  # Keep as string if not valid JSON
+            
+    if isinstance(protonate_elements, str):
+        try:
+            protonate_elements = json.loads(protonate_elements)
+        except json.JSONDecodeError:
+            pass  # Keep as string if not valid JSON
 
     return rowan.submit_pka_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),

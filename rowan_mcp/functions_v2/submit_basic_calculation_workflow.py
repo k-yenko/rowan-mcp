@@ -145,18 +145,76 @@ def submit_basic_calculation_workflow(
                 except Exception as e:
                     initial_molecule = smiles
         
-        result = rowan.submit_basic_calculation_workflow(
-            initial_molecule=initial_molecule,
-            method=method,
-            tasks=tasks,
-            mode=mode,
-            engine=engine,
-            name=name,
-            folder_uuid=folder_uuid,
-            max_credits=max_credits
-        )
+        # Convert to appropriate format
+        if hasattr(initial_molecule, 'model_dump'):
+            initial_molecule_dict = initial_molecule.model_dump()
+        elif isinstance(initial_molecule, dict):
+            initial_molecule_dict = initial_molecule
+        else:
+            # Try to convert to StJamesMolecule if it's a string
+            try:
+                mol = stjames.Molecule.from_smiles(str(initial_molecule))
+                initial_molecule_dict = mol.model_dump()
+            except:
+                # If that fails, pass as-is
+                initial_molecule_dict = initial_molecule
         
-        return result
+        # Convert method string to Method object to get the correct name
+        if isinstance(method, str):
+            # Handle common method name variations
+            method_map = {
+                'gfn2_xtb': 'gfn2-xtb',
+                'gfn1_xtb': 'gfn1-xtb',
+                'gfn0_xtb': 'gfn0-xtb',
+                'r2scan_3c': 'r2scan-3c',
+                'wb97x_d3': 'wb97x-d3',
+                'wb97m_d3bj': 'wb97m-d3bj',
+                'b3lyp_d3bj': 'b3lyp-d3bj',
+                'uma_m_omol': 'uma_m_omol',  # This one stays the same
+            }
+            method = method_map.get(method, method)
+            
+            try:
+                method_obj = stjames.Method(method)
+                method_name = method_obj.name
+            except:
+                # If Method conversion fails, use the string as-is
+                method_name = method
+        else:
+            method_name = method
+        
+        # Default tasks if not provided
+        if not tasks:
+            tasks = ["optimize"]
+        
+        # Build workflow_data following the official API structure
+        workflow_data = {
+            "settings": {
+                "method": method_name,
+                "tasks": tasks,
+                "mode": mode,
+            },
+            "engine": engine,
+        }
+        
+        # Build the API request
+        data = {
+            "name": name,
+            "folder_uuid": folder_uuid,
+            "workflow_type": "basic_calculation",
+            "workflow_data": workflow_data,
+            "initial_molecule": initial_molecule_dict,
+            "max_credits": max_credits,
+        }
+        
+        # Submit directly to API
+        from rowan.utils import api_client
+        from rowan import Workflow
+        
+        with api_client() as client:
+            response = client.post("/workflow", json=data)
+            response.raise_for_status()
+            return Workflow(**response.json())
         
     except Exception as e:
         # Re-raise the exception so MCP can handle it

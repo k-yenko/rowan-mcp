@@ -239,7 +239,7 @@ def list_workflows(
         int,
         Field(description="Number of workflows per page")
     ] = 10
-) -> List[Dict[str, Any]]:
+):
     """List workflows subject to the specified criteria.
     
     Returns:
@@ -248,33 +248,27 @@ def list_workflows(
     Raises:
         HTTPError: If the request to the API fails
     """
-    workflows = rowan.list_workflows(
-        parent_uuid=parent_uuid,
-        name_contains=name_contains,
-        public=public,
-        starred=starred,
-        status=status,
-        workflow_type=workflow_type,
-        page=page,
-        size=size
-    )
-    
-    # Convert to list of dicts
-    return [
-        {
-            "uuid": w.uuid,
-            "name": w.name,
-            "status": w.status,
-            "created_at": w.created_at,
-            "updated_at": w.updated_at,
-            "parent_uuid": w.parent_uuid,
-            "workflow_type": w.workflow_type,
-            "public": w.public,
-            "starred": w.starred,
-            "credits_charged": w.credits_charged
+    # Use direct API call to avoid Workflow validation issues
+    with rowan.api_client() as client:
+        params = {
+            "parent_uuid": parent_uuid,
+            "name_contains": name_contains,
+            "public": public,
+            "starred": starred,
+            "object_status": status,  # API uses object_status not status
+            "object_type": workflow_type,  # API uses object_type not workflow_type
+            "page": page,
+            "size": size
         }
-        for w in workflows
-    ]
+        # Remove None values
+        params = {k: v for k, v in params.items() if v is not None}
+        
+        response = client.get("/workflow", params=params)
+        response.raise_for_status()
+        
+        data = response.json()
+        # Extract workflows from the paginated response
+        return data.get("workflows", [])
 
 
 def retrieve_calculation_molecules(

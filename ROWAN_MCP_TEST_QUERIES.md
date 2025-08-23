@@ -28,7 +28,7 @@ An unexpected large imaginary frequency was encountered, meaning that the calcul
 - What are the molecular orbitals of methanol? ✅
 
 ### conformational analysis
-- Find the stable conformers of glucose ❌ - stuck on "running"
+- can you test a ❌ - stuck on "running"
 - Generate 5 conformers of butane ✅
 - What are the different shapes ethanol can adopt? ✅
 

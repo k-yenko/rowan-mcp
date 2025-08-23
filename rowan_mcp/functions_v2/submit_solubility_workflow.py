@@ -78,6 +78,48 @@ def submit_solubility_workflow(
             else:
                 # Single solvent as string like 'water'
                 solvents = [solvents]
+        
+        # Convert solvent names to SMILES if needed
+        solvent_name_to_smiles = {
+            'water': 'O',
+            'ethanol': 'CCO',
+            'dmso': 'CS(=O)C',
+            'acetone': 'CC(=O)C',
+            'methanol': 'CO',
+            'chloroform': 'C(Cl)(Cl)Cl',
+            'dichloromethane': 'C(Cl)Cl',
+            'toluene': 'Cc1ccccc1',
+            'benzene': 'c1ccccc1',
+            'hexane': 'CCCCCC',
+            'ether': 'CCOCC',
+            'diethyl ether': 'CCOCC',
+            'thf': 'C1CCOC1',
+            'tetrahydrofuran': 'C1CCOC1',
+            'dioxane': 'C1COCCO1',
+            'acetonitrile': 'CC#N',
+            'pyridine': 'c1ccncc1'
+        }
+        
+        converted_solvents = []
+        for solvent in solvents:
+            solvent_lower = solvent.lower().strip()
+            if solvent_lower in solvent_name_to_smiles:
+                converted_solvents.append(solvent_name_to_smiles[solvent_lower])
+            else:
+                # Assume it's already a SMILES string or use as-is
+                converted_solvents.append(solvent)
+        solvents = converted_solvents
+        
+        # Validate the final solvent SMILES to catch issues early
+        try:
+            from rdkit import Chem
+            for i, solvent_smiles in enumerate(solvents):
+                mol = Chem.MolFromSmiles(solvent_smiles)
+                if mol is None:
+                    raise ValueError(f"Invalid solvent SMILES: '{solvent_smiles}' at position {i}")
+        except ImportError:
+            # RDKit not available for validation, proceed anyway
+            pass
     
     # Parse temperatures parameter - handle string or list
     if temperatures is not None:
@@ -98,6 +140,16 @@ def submit_solubility_workflow(
             else:
                 # Single temperature as string like '298.15'
                 temperatures = [float(temperatures)]
+    
+    # Validate the main SMILES string early to catch issues
+    try:
+        from rdkit import Chem
+        mol = Chem.MolFromSmiles(initial_smiles)
+        if mol is None:
+            raise ValueError(f"Invalid initial SMILES: '{initial_smiles}'")
+    except ImportError:
+        # RDKit not available for validation, proceed anyway
+        pass
     
     try:
         result = rowan.submit_solubility_workflow(

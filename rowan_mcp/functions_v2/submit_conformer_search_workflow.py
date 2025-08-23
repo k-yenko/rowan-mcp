@@ -3,16 +3,15 @@ Rowan v2 API: Conformer Search Workflow
 Search for low-energy molecular conformations using various methods.
 """
 
-from typing import Optional, Annotated
+from typing import Optional, Annotated, Any, Dict, Union
 from pydantic import Field
 import rowan
-import json
 import stjames
 
 def submit_conformer_search_workflow(
     initial_molecule: Annotated[
-        str,
-        Field(description="SMILES string or molecule object representing the initial structure")
+        Union[str, Dict[str, Any]],
+        Field(description="SMILES string or molecule dict representing the initial structure")
     ],
     conf_gen_mode: Annotated[
         str,
@@ -26,7 +25,7 @@ def submit_conformer_search_workflow(
         Optional[str],
         Field(description="Solvent for implicit solvation (e.g., 'water', 'ethanol', 'dmso'). None for gas phase")
     ] = None,
-    transistion_state: Annotated[
+    transition_state: Annotated[
         bool,
         Field(description="Whether to search for transition state conformers (default: False)")
     ] = False,
@@ -56,7 +55,7 @@ def submit_conformer_search_workflow(
         Workflow object representing the submitted workflow
         
     Examples:
-        # Simple diethyl ether conformer search (from test)
+        # Simple diethyl ether conformer search
         result = submit_conformer_search_workflow(
             initial_molecule="CCOCC"
         )
@@ -77,59 +76,97 @@ def submit_conformer_search_workflow(
     """
 
     try:
-        # Handle initial_molecule parameter - could be JSON string, SMILES, or dict
+        # Convert initial_molecule to appropriate format
         if isinstance(initial_molecule, str):
-            # Check if it's a JSON string (starts with { or [)
-            initial_molecule_str = initial_molecule.strip()
-            if (initial_molecule_str.startswith('{') and initial_molecule_str.endswith('}')) or \
-               (initial_molecule_str.startswith('[') and initial_molecule_str.endswith(']')):
-                try:
-                    # Parse the JSON string to dict
-                    initial_molecule = json.loads(initial_molecule_str)
-                    
-                    # Now handle as dict (fall through to dict handling below)
-                    if isinstance(initial_molecule, dict) and 'smiles' in initial_molecule:
-                        smiles = initial_molecule.get('smiles')
-                        if smiles:
-                            try:
-                                initial_molecule = stjames.Molecule.from_smiles(smiles)
-                            except Exception as e:
-                                initial_molecule = smiles
-                except (json.JSONDecodeError, ValueError) as e:
-                    # Not valid JSON, treat as SMILES string
-                    try:
-                        initial_molecule = stjames.Molecule.from_smiles(initial_molecule)
-                    except Exception as e:
-                        pass
-            else:
-                # Regular SMILES string
-                try:
-                    initial_molecule = stjames.Molecule.from_smiles(initial_molecule)
-                except Exception as e:
-                    pass
-        elif isinstance(initial_molecule, dict) and 'smiles' in initial_molecule:
-            # If we have a dict with SMILES, extract and use just the SMILES
-            smiles = initial_molecule.get('smiles')
-            if smiles:
-                try:
-                    initial_molecule = stjames.Molecule.from_smiles(smiles)
-                except Exception as e:
-                    initial_molecule = smiles
+            # Try to parse as SMILES
+            try:
+                mol = stjames.Molecule.from_smiles(initial_molecule)
+                initial_molecule = mol.model_dump()
+            except Exception:
+                # If fails, pass as dict with smiles
+                initial_molecule = {"smiles": initial_molecule}
+        elif isinstance(initial_molecule, dict):
+            # Already in dict format
+            pass
+        elif hasattr(initial_molecule, 'model_dump'):
+            # StJamesMolecule
+            initial_molecule = initial_molecule.model_dump()
+        else:
+            # Assume RdkitMol or similar
+            try:
+                from rdkit import Chem
+                mol = stjames.Molecule.from_rdkit(initial_molecule, cid=0)
+                initial_molecule = mol.model_dump()
+            except:
+                pass
         
-
-        result = rowan.submit_conformer_search_workflow(
-            initial_molecule=initial_molecule,
-            conf_gen_mode=conf_gen_mode,
-            final_method=final_method,
-            solvent=solvent,
-            transistion_state=transistion_state,  # Note: API uses "transistion" (typo in Rowan API)
-            name=name,
-            folder_uuid=folder_uuid,
-            max_credits=max_credits
+        # Convert final_method to Method if it's a string
+        if isinstance(final_method, str):
+            final_method = stjames.Method(final_method)
+        
+        # Determine solvent model based on method
+        solvent_model = None
+        if solvent:
+            solvent_model = "alpb" if final_method in stjames.XTB_METHODS else "cpcm"
+        
+        # Create optimization settings following official API
+        opt_settings = stjames.Settings(
+            method=final_method,
+            tasks=["optimize"],
+            mode=stjames.Mode.AUTO,
+            solvent_settings={"solvent": solvent, "model": solvent_model} if solvent else None,
+            opt_settings={"transition_state": transition_state, "constraints": []},
         )
         
-        return result
+        # Create MultiStageOptSettings
+        msos = stjames.MultiStageOptSettings(
+            mode=stjames.Mode.MANUAL,
+            xtb_preopt=True,
+            optimization_settings=[opt_settings],
+        )
+        
+        # Convert to dict and fix the soscf field
+        msos_dict = msos.model_dump()
+        
+        # Fix soscf: convert boolean to string enum
+        if 'optimization_settings' in msos_dict:
+            for opt_setting in msos_dict['optimization_settings']:
+                if 'scf_settings' in opt_setting and 'soscf' in opt_setting['scf_settings']:
+                    soscf_val = opt_setting['scf_settings']['soscf']
+                    if isinstance(soscf_val, bool):
+                        if soscf_val is False:
+                            opt_setting['scf_settings']['soscf'] = 'never'
+                        elif soscf_val is True:
+                            opt_setting['scf_settings']['soscf'] = 'always'
+                    elif soscf_val is None:
+                        # Default to smart behavior
+                        opt_setting['scf_settings']['soscf'] = 'upon_failure'
+        
+        # Build workflow_data
+        workflow_data = {
+            "multistage_opt_settings": msos_dict,
+            "conf_gen_mode": conf_gen_mode,
+            "mso_mode": "manual",
+            "solvent": solvent,
+            "transition_state": transition_state,
+        }
+        
+        # Build the API request
+        data = {
+            "name": name,
+            "folder_uuid": folder_uuid,
+            "workflow_type": "conformer_search",
+            "workflow_data": workflow_data,
+            "initial_molecule": initial_molecule,
+            "max_credits": max_credits,
+        }
+        
+        # Submit to API
+        with api_client() as client:
+            response = client.post("/workflow", json=data)
+            response.raise_for_status()
+            return Workflow(**response.json())
         
     except Exception as e:
         # Re-raise the exception so MCP can handle it
-        raise
+        raise e

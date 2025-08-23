@@ -61,40 +61,48 @@ def submit_fukui_workflow(
             solvent_settings={"solvent": "water", "model": "alpb"}
         )
     """
-    
     # Parse solvent_settings if it's a string
     if solvent_settings is not None and isinstance(solvent_settings, str):
         try:
             solvent_settings = json.loads(solvent_settings)
         except (json.JSONDecodeError, ValueError):
-            # If it's not valid JSON, keep it as is
             pass
     
     try:
         # Convert initial_molecule to StJamesMolecule
-        if isinstance(initial_molecule, str):
-            molecule = stjames.Molecule.from_smiles(initial_molecule)
-        elif isinstance(initial_molecule, dict):
-            molecule = stjames.Molecule(**initial_molecule)
-        else:
-            molecule = initial_molecule
-            
-        # Convert to dict for API payload
-        if isinstance(molecule, stjames.Molecule):
-            initial_molecule_dict = molecule.model_dump()
-        else:
-            initial_molecule_dict = molecule
+        molecule = stjames.Molecule.from_smiles(initial_molecule)
+        initial_molecule_dict = molecule.model_dump()
         
-        # Create Settings objects and immediately serialize them to JSON-compatible dicts
-        # This is the workaround for the bug in rowan.submit_fukui_workflow
+        # Create Settings objects
         optimization_settings = stjames.Settings(method=optimization_method)
         fukui_settings = stjames.Settings(method=fukui_method, solvent_settings=solvent_settings)
         
-        # Use model_dump(mode="json") to ensure JSON serializability
+        # Serialize to dicts
+        opt_settings_dict = optimization_settings.model_dump(mode="json")
+        fukui_settings_dict = fukui_settings.model_dump(mode="json")
+        
+        # Fix soscf boolean to string enum conversion for optimization settings
+        if 'scf_settings' in opt_settings_dict and 'soscf' in opt_settings_dict['scf_settings']:
+            soscf_val = opt_settings_dict['scf_settings']['soscf']
+            if isinstance(soscf_val, bool):
+                if soscf_val is False:
+                    opt_settings_dict['scf_settings']['soscf'] = 'never'
+                elif soscf_val is True:
+                    opt_settings_dict['scf_settings']['soscf'] = 'always'
+        
+        # Fix soscf boolean to string enum conversion for fukui settings
+        if 'scf_settings' in fukui_settings_dict and 'soscf' in fukui_settings_dict['scf_settings']:
+            soscf_val = fukui_settings_dict['scf_settings']['soscf']
+            if isinstance(soscf_val, bool):
+                if soscf_val is False:
+                    fukui_settings_dict['scf_settings']['soscf'] = 'never'
+                elif soscf_val is True:
+                    fukui_settings_dict['scf_settings']['soscf'] = 'always'
+        
         workflow_data = {
-            "opt_settings": optimization_settings.model_dump(mode="json"),
+            "opt_settings": opt_settings_dict,
             "opt_engine": stjames.Method(optimization_method).default_engine(),
-            "fukui_settings": fukui_settings.model_dump(mode="json"),
+            "fukui_settings": fukui_settings_dict,
             "fukui_engine": stjames.Method(fukui_method).default_engine(),
         }
         
@@ -108,14 +116,11 @@ def submit_fukui_workflow(
             "max_credits": max_credits,
         }
         
-        # Submit directly to the API, bypassing the buggy rowan.submit_fukui_workflow
+        # Submit to API
         with rowan.api_client() as client:
             response = client.post("/workflow", json=data)
             response.raise_for_status()
-            
-            # Create and return a Workflow object from the response
-            result = rowan.Workflow(**response.json())
-            return result
+            return rowan.Workflow(**response.json())
             
     except Exception as e:
         raise e

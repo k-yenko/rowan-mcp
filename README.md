@@ -203,3 +203,5 @@ To update the dxt file:
 # Then update the desktop extension
 dxt pack rowan-dxt
 ```
+### MCP inspector
+npx @modelcontextprotocol/inspector uv run rowan-mcp        
