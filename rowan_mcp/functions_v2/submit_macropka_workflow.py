@@ -6,8 +6,6 @@ Calculate macroscopic pKa values across a pH range.
 from typing import Optional, Annotated
 from pydantic import Field
 import rowan
-from rowan.utils import api_client
-from rowan import Workflow
 
 def submit_macropka_workflow(
     initial_smiles: Annotated[
@@ -109,11 +107,18 @@ def submit_macropka_workflow(
             "max_credits": max_credits,
         }
         
-        # Submit to API
-        with api_client() as client:
-            response = client.post("/workflow", json=data)
-            response.raise_for_status()
-            return Workflow(**response.json())
+        # Submit to API using rowan module
+        return rowan.submit_macropka_workflow(
+            initial_smiles=initial_smiles,
+            min_pH=min_pH,
+            max_pH=max_pH,
+            min_charge=min_charge,
+            max_charge=max_charge,
+            compute_solvation_energy=compute_solvation_energy,
+            name=name,
+            folder_uuid=folder_uuid,
+            max_credits=max_credits
+        )
             
     except Exception as e:
         # Re-raise the exception so MCP can handle it
