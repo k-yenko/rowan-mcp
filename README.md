@@ -140,7 +140,7 @@ uv run python -m rowan_mcp
 
 ## **Requirements**
 
-- Python 3.10+
+- Python 3.11+
 - Rowan API key
 - MCP-compatible AI assistant (Claude Desktop, etc.)
 
@@ -150,21 +150,6 @@ uv run python -m rowan_mcp
 - or ping me! 
 
 ---
-
-## **Todo**
-
-- [X] Remove unnecessary AI spaghetti formatting
-- [X] Remove no longer necessary API config lines
-- [ ] Some complex conformer searches hang on "running"
-- [X] Edit MCP one-liner context
-- [ ] Transition state finding and IRC
-- [X] `rowan_scan` - Potential energy surfaces
-- [ ] `rowan_docking` - Protein-ligand docking
-- [X] add in h-bond, BDE and macroscopic pka, logD, BBB
-- [ ] Folder listing API bug (returns 500 error) - Rowan side?
-- [ ] Multistage optimization sometimes shows unexpected imaginary frequencies
-- [X] Some calculations show as finished in logs but not in Rowan UI
-- [ ] Can you hook up Rowan's visual capabilites? 
 
 ## **Citation**
 

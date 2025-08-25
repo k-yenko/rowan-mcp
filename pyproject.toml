@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rowan-mcp"
-version = "1.0.2"
+version = "2.0.0"
 description = "Model Context Protocol server for Rowan computational chemistry platform"
 authors = [
     {name = "Katherine Yenko", email = "katherineayenko@gmail.com"}
@@ -49,6 +49,16 @@ rowan-mcp = "rowan_mcp.server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["rowan_mcp"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "rowan-dxt/",
+  "dxt/", 
+  "*.log",
+  "test_*.py",
+  ".venv/",
+  "*.dxt"
+]
 
 [tool.black]
 line-length = 88
