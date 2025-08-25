@@ -3,7 +3,7 @@ Rowan v2 API: pKa Workflow
 Predict acid dissociation constants for ionizable groups in molecules.
 """
 
-from typing import Optional, List, Tuple, Annotated, Union, Dict, Any
+from typing import Optional, List, Annotated, Union, Dict, Any
 from pydantic import Field
 import rowan
 import json
@@ -15,9 +15,9 @@ def submit_pka_workflow(
         Field(description="The molecule to calculate the pKa of. Can be a SMILES string, dict, StJamesMolecule, or RdkitMol object")
     ],
     pka_range: Annotated[
-        Tuple[float, float],
-        Field(description="(min, max) pKa range to search, e.g., (2, 12)")
-    ] = (2, 12),
+        List[float],
+        Field(description="pKa range [min, max] to search, e.g., [2, 12]")
+    ] = [2, 12],
     deprotonate_elements: Annotated[
         Optional[Union[str, List[int]]],
         Field(description="Atomic numbers to consider for deprotonation, e.g., [7, 8, 16] for N, O, S. Can be a JSON string '[7, 8, 16]' or list. None uses defaults")
@@ -82,9 +82,12 @@ def submit_pka_workflow(
         except json.JSONDecodeError:
             pass  # Keep as string if not valid JSON
 
+    # Convert List[float] to Tuple[float, float] for Rowan SDK compatibility
+    pka_range_tuple = tuple(pka_range) if len(pka_range) == 2 else (pka_range[0], pka_range[1] if len(pka_range) > 1 else pka_range[0])
+    
     return rowan.submit_pka_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
-        pka_range=pka_range,
+        pka_range=pka_range_tuple,
         deprotonate_elements=deprotonate_elements,
         protonate_elements=protonate_elements,
         mode=mode,
