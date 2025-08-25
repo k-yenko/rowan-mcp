@@ -3,8 +3,7 @@ Molecule name to SMILES converter using Chemical Identifier Resolver (CIR).
 Enables natural language molecule input for Rowan workflows.
 """
 
-from typing import Annotated, Optional, List, Dict
-from pydantic import Field
+from typing import List, Dict, Annotated
 from urllib.request import urlopen
 from urllib.parse import quote
 import logging
@@ -13,16 +12,14 @@ logger = logging.getLogger(__name__)
 
 
 def molecule_lookup(
-    molecule_name: Annotated[
-        str,
-        Field(description="Common name, IUPAC name, or CAS number of molecule (e.g., 'aspirin', 'caffeine', '50-78-2')")
-    ],
-    fallback_to_input: Annotated[
-        bool,
-        Field(description="If lookup fails, return the input string assuming it might be SMILES (default: False)")
-    ] = False
+    molecule_name: Annotated[str, "Common name, IUPAC name, or CAS number of molecule (e.g., 'aspirin', 'caffeine', '50-78-2')"],
+    fallback_to_input: Annotated[bool, "If lookup fails, return the input string assuming it might be SMILES"] = False
 ) -> str:
     """Convert molecule names to SMILES using Chemical Identifier Resolver (CIR).
+    
+    Args:
+        molecule_name: Common name, IUPAC name, or CAS number of molecule (e.g., 'aspirin', 'caffeine', '50-78-2')
+        fallback_to_input: If lookup fails, return the input string assuming it might be SMILES
     
     This tool enables natural language input for molecules by converting common names,
     IUPAC names, CAS numbers, and other identifiers to SMILES strings that can be
@@ -90,22 +87,16 @@ def molecule_lookup(
 
 
 def batch_molecule_lookup(
-    molecule_names: Annotated[
-        List[str],
-        Field(description="List of molecule names to convert to SMILES")
-    ],
-    skip_failures: Annotated[
-        bool,
-        Field(description="Skip molecules that fail lookup instead of stopping (default: True)")
-    ] = True
+    molecule_names: Annotated[List[str], "List of molecule names to convert to SMILES"],
+    skip_failures: Annotated[bool, "Skip molecules that fail lookup instead of stopping"] = True
 ) -> Dict[str, str]:
     """Convert multiple molecule names to SMILES in batch.
     
-    Useful for preparing multiple molecules for workflows or screening.
-    
     Args:
-        molecule_names: List of molecule names, IUPAC names, or CAS numbers
-        skip_failures: If True, continue with other molecules if one fails
+        molecule_names: List of molecule names to convert to SMILES
+        skip_failures: Skip molecules that fail lookup instead of stopping
+    
+    Useful for preparing multiple molecules for workflows or screening.
         
     Returns:
         Dictionary mapping input names to SMILES strings (or error messages)
@@ -150,17 +141,14 @@ def batch_molecule_lookup(
 
 
 def validate_smiles(
-    smiles: Annotated[
-        str,
-        Field(description="SMILES string to validate")
-    ]
+    smiles: Annotated[str, "SMILES string to validate"]
 ) -> Dict[str, any]:
     """Validate a SMILES string and return basic molecular properties.
     
-    Uses RDKit to validate SMILES and extract basic properties.
-    
     Args:
         smiles: SMILES string to validate
+    
+    Uses RDKit to validate SMILES and extract basic properties.
         
     Returns:
         Dictionary with validation status and properties if valid

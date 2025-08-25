@@ -3,22 +3,19 @@ Rowan v2 API: Protein Management
 Tools for creating, retrieving, and managing protein structures.
 """
 
-from typing import Optional, List, Dict, Any, Annotated
-from pydantic import Field
+from typing import List, Dict, Any, Annotated
 import rowan
 
 
 def create_protein_from_pdb_id(
-    name: Annotated[
-        str,
-        Field(description="Name for the protein")
-    ],
-    code: Annotated[
-        str,
-        Field(description="PDB ID code (e.g., '1HCK')")
-    ]
+    name: Annotated[str, "Name for the protein"],
+    code: Annotated[str, "PDB ID code (e.g., '1HCK')"]
 ) -> Dict[str, Any]:
     """Create a protein from a PDB ID.
+    
+    Args:
+        name: Name for the protein
+        code: PDB ID code (e.g., '1HCK')
     
     Returns:
         Dictionary containing protein information
@@ -34,12 +31,12 @@ def create_protein_from_pdb_id(
 
 
 def retrieve_protein(
-    uuid: Annotated[
-        str,
-        Field(description="UUID of the protein to retrieve")
-    ]
+    uuid: Annotated[str, "UUID of the protein to retrieve"]
 ) -> Dict[str, Any]:
     """Retrieve a protein by UUID.
+    
+    Args:
+        uuid: UUID of the protein to retrieve
     
     Returns:
         Dictionary containing the protein data
@@ -55,16 +52,14 @@ def retrieve_protein(
 
 
 def list_proteins(
-    page: Annotated[
-        int,
-        Field(description="Page number (0-indexed)")
-    ] = 0,
-    size: Annotated[
-        int,
-        Field(description="Number per page")
-    ] = 20
+    page: Annotated[int, "Page number (0-indexed)"] = 0,
+    size: Annotated[int, "Number per page"] = 20
 ) -> List[Dict[str, Any]]:
     """List proteins.
+    
+    Args:
+        page: Page number (0-indexed)
+        size: Number per page
     
     Returns:
         List of protein dictionaries
@@ -83,16 +78,14 @@ def list_proteins(
 
 
 def upload_protein(
-    name: Annotated[
-        str,
-        Field(description="Name for the protein")
-    ],
-    file_path: Annotated[
-        str,
-        Field(description="Path to PDB file")
-    ]
+    name: Annotated[str, "Name for the protein"],
+    file_path: Annotated[str, "Path to PDB file"]
 ) -> Dict[str, Any]:
     """Upload a protein from a PDB file.
+    
+    Args:
+        name: Name for the protein
+        file_path: Path to PDB file
     
     Returns:
         Dictionary containing protein information
@@ -109,12 +102,12 @@ def upload_protein(
 
 
 def delete_protein(
-    uuid: Annotated[
-        str,
-        Field(description="UUID of the protein to delete")
-    ]
+    uuid: Annotated[str, "UUID of the protein to delete"]
 ) -> Dict[str, str]:
     """Delete a protein.
+    
+    Args:
+        uuid: UUID of the protein to delete
     
     Returns:
         Dictionary with confirmation message
@@ -129,12 +122,12 @@ def delete_protein(
 
 
 def sanitize_protein(
-    uuid: Annotated[
-        str,
-        Field(description="UUID of the protein to sanitize")
-    ]
+    uuid: Annotated[str, "UUID of the protein to sanitize"]
 ) -> Dict[str, Any]:
     """Sanitize a protein for docking.
+    
+    Args:
+        uuid: UUID of the protein to sanitize
     
     Returns:
         Dictionary with sanitization status

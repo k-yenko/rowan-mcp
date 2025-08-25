@@ -3,43 +3,30 @@ Rowan v2 API: Fukui Workflow
 Calculate Fukui indices for reactivity analysis.
 """
 
-from typing import Optional, Dict, Any, Annotated, Union
-from pydantic import Field
+from typing import Dict, Any, Annotated
 import rowan
 import stjames
 import json
 
 def submit_fukui_workflow(
-    initial_molecule: Annotated[
-        str,
-        Field(description="SMILES string or molecule object for Fukui analysis")
-    ],
-    optimization_method: Annotated[
-        str,
-        Field(description="Method for geometry optimization. Options: 'gfn2_xtb', 'r2scan_3c', 'aimnet2_wb97md3'")
-    ] = "gfn2_xtb",
-    fukui_method: Annotated[
-        str,
-        Field(description="Method for Fukui calculation. Options: 'gfn1_xtb', 'gfn2_xtb'")
-    ] = "gfn1_xtb",
-    solvent_settings: Annotated[
-        Optional[Union[str, Dict[str, Any]]],
-        Field(description="Solvent configuration dict or JSON string, e.g., {'solvent': 'water', 'model': 'alpb'}. None for gas phase")
-    ] = None,
-    name: Annotated[
-        str,
-        Field(description="Workflow name for identification and tracking")
-    ] = "Fukui Workflow",
-    folder_uuid: Annotated[
-        Optional[str],
-        Field(description="UUID of folder to organize this workflow. None uses default folder")
-    ] = None,
-    max_credits: Annotated[
-        Optional[int],
-        Field(description="Maximum credits to spend on this calculation. None for no limit")
-    ] = None
+    initial_molecule: Annotated[str, "SMILES string of the molecule to calculate Fukui indices for"],
+    optimization_method: Annotated[str, "Method for geometry optimization (e.g., 'gfn2_xtb', 'uma_m_omol')"] = "gfn2_xtb",
+    fukui_method: Annotated[str, "Method for Fukui indices calculation (e.g., 'gfn1_xtb', 'gfn2_xtb')"] = "gfn1_xtb",
+    solvent_settings: Annotated[str, "JSON string for solvent settings. Empty string for vacuum"] = "",
+    name: Annotated[str, "Workflow name for identification and tracking"] = "Fukui Workflow",
+    folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
+    max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
 ):
     """Submit a Fukui indices calculation workflow using Rowan v2 API.
+    
+    Args:
+        initial_molecule: SMILES string for Fukui analysis
+        optimization_method: Method for geometry optimization. Options: 'gfn2_xtb', 'r2scan_3c', 'aimnet2_wb97md3'
+        fukui_method: Method for Fukui calculation. Options: 'gfn1_xtb', 'gfn2_xtb'
+        solvent_settings: Solvent configuration JSON string, e.g., '{"solvent": "water", "model": "alpb"}'. Empty for gas phase.
+        name: Workflow name for identification and tracking
+        folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
+        max_credits: Maximum credits to spend on this calculation. 0 for no limit.
     
     Calculates Fukui indices to predict molecular reactivity at different sites.
     Fukui indices indicate susceptibility to nucleophilic/electrophilic attack.
@@ -58,13 +45,14 @@ def submit_fukui_workflow(
             initial_molecule="c1ccccc1N",
             optimization_method="r2scan_3c",
             fukui_method="gfn2_xtb",
-            solvent_settings={"solvent": "water", "model": "alpb"}
+            solvent_settings='{"solvent": "water", "model": "alpb"}'
         )
     """
-    # Parse solvent_settings if it's a string
-    if solvent_settings is not None and isinstance(solvent_settings, str):
+    # Parse solvent_settings if provided
+    parsed_solvent_settings = None
+    if solvent_settings:
         try:
-            solvent_settings = json.loads(solvent_settings)
+            parsed_solvent_settings = json.loads(solvent_settings)
         except (json.JSONDecodeError, ValueError):
             pass
     
@@ -75,7 +63,7 @@ def submit_fukui_workflow(
         
         # Create Settings objects
         optimization_settings = stjames.Settings(method=optimization_method)
-        fukui_settings = stjames.Settings(method=fukui_method, solvent_settings=solvent_settings)
+        fukui_settings = stjames.Settings(method=fukui_method, solvent_settings=parsed_solvent_settings)
         
         # Serialize to dicts
         opt_settings_dict = optimization_settings.model_dump(mode="json")
@@ -109,11 +97,11 @@ def submit_fukui_workflow(
         # Build the API request payload
         data = {
             "name": name,
-            "folder_uuid": folder_uuid,
+            "folder_uuid": folder_uuid if folder_uuid else None,
             "workflow_type": "fukui",
             "workflow_data": workflow_data,
             "initial_molecule": initial_molecule_dict,
-            "max_credits": max_credits,
+            "max_credits": max_credits if max_credits > 0 else None,
         }
         
         # Submit to API

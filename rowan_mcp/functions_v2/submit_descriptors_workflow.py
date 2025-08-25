@@ -3,31 +3,24 @@ Rowan v2 API: Descriptors Workflow
 Calculate molecular descriptors for QSAR and molecular analysis.
 """
 
-from typing import Optional, Annotated
-from pydantic import Field
+from typing import Annotated
 import rowan
 import stjames
 
 
 def submit_descriptors_workflow(
-    initial_molecule: Annotated[
-        str,
-        Field(description="SMILES string or molecule object for descriptor calculation")
-    ],
-    name: Annotated[
-        str,
-        Field(description="Workflow name for identification and tracking")
-    ] = "Descriptors Workflow",
-    folder_uuid: Annotated[
-        Optional[str],
-        Field(description="UUID of folder to organize this workflow. None uses default folder")
-    ] = None,
-    max_credits: Annotated[
-        Optional[int],
-        Field(description="Maximum credits to spend on this calculation. None for no limit")
-    ] = None
+    initial_molecule: Annotated[str, "SMILES string of the molecule to calculate descriptors for"],
+    name: Annotated[str, "Workflow name for identification and tracking"] = "Descriptors Workflow",
+    folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
+    max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
 ):
     """Submit a molecular descriptors calculation workflow using Rowan v2 API.
+    
+    Args:
+        initial_molecule: SMILES string or molecule object for descriptor calculation
+        name: Workflow name for identification and tracking
+        folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
+        max_credits: Maximum credits to spend on this calculation. 0 for no limit.
     
     Calculates a comprehensive set of molecular descriptors including:
     - Physical properties (MW, logP, TPSA, etc.)
@@ -54,6 +47,6 @@ def submit_descriptors_workflow(
     return rowan.submit_descriptors_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         name=name,
-        folder_uuid=folder_uuid,
-        max_credits=max_credits
+        folder_uuid=folder_uuid if folder_uuid else None,
+        max_credits=max_credits if max_credits > 0 else None
     )

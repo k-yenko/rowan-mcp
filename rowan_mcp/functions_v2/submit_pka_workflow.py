@@ -3,84 +3,59 @@ Rowan v2 API: pKa Workflow
 Predict acid dissociation constants for ionizable groups in molecules.
 """
 
-from typing import Optional, List, Annotated, Union, Dict, Any
-from pydantic import Field
+from typing import List, Dict, Any, Annotated
 import rowan
 import json
 import stjames
 
 def submit_pka_workflow(
-    initial_molecule: Annotated[
-        Union[str, Dict[str, Any], Any],
-        Field(description="The molecule to calculate the pKa of. Can be a SMILES string, dict, StJamesMolecule, or RdkitMol object")
-    ],
-    pka_range: Annotated[
-        List[float],
-        Field(description="pKa range [min, max] to search, e.g., [2, 12]")
-    ] = [2, 12],
-    deprotonate_elements: Annotated[
-        Optional[Union[str, List[int]]],
-        Field(description="Atomic numbers to consider for deprotonation, e.g., [7, 8, 16] for N, O, S. Can be a JSON string '[7, 8, 16]' or list. None uses defaults")
-    ] = None,
-    protonate_elements: Annotated[
-        Optional[Union[str, List[int]]],
-        Field(description="Atomic numbers to consider for protonation, e.g., [7, 8] for N, O. Can be a JSON string '[7, 8]' or list. None uses defaults")
-    ] = None,
-    mode: Annotated[
-        str,
-        Field(description="Calculation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)")
-    ] = "careful",
-    name: Annotated[
-        str,
-        Field(description="Workflow name for identification and tracking")
-    ] = "pKa Workflow",
-    folder_uuid: Annotated[
-        Optional[str],
-        Field(description="UUID of folder to organize this workflow. None uses default folder")
-    ] = None,
-    max_credits: Annotated[
-        Optional[int],
-        Field(description="Maximum credits to spend on this calculation. None for no limit")
-    ] = None
+    initial_molecule: Annotated[str, "SMILES string of the molecule to calculate pKa"],
+    pka_range: Annotated[List[float], "pKa range [min, max] to search (e.g., [2, 12])"] = [2, 12],
+    deprotonate_elements: Annotated[str, "Comma-separated elements for deprotonation (e.g., 'N,O,S'). Empty for auto-detect"] = "",
+    protonate_elements: Annotated[str, "Comma-separated elements for protonation (e.g., 'N,O'). Empty for auto-detect"] = "",
+    mode: Annotated[str, "Calculation mode: 'rapid', 'careful', or 'meticulous'"] = "careful",
+    name: Annotated[str, "Workflow name for identification and tracking"] = "pKa Workflow",
+    folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
+    max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
 ):
     """Submit a pKa prediction workflow using Rowan v2 API.
     
-    Predicts acid dissociation constants (pKa) for ionizable groups in a molecule
-    using quantum chemistry calculations.
+    Args:
+        initial_molecule: The molecule to calculate the pKa of. SMILES string.
+        pka_range: pKa range [min, max] to search, e.g., [2, 12]
+        deprotonate_elements: Atomic numbers to consider for deprotonation, e.g., "[7, 8, 16]" for N, O, S. Empty string uses defaults.
+        protonate_elements: Atomic numbers to consider for protonation, e.g., "[7, 8]" for N, O. Empty string uses defaults.
+        mode: Calculation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)
+        name: Workflow name for identification and tracking
+        folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
+        max_credits: Maximum credits to spend on this calculation. 0 for no limit.
     
     Returns:
         Workflow object representing the submitted workflow
         
     Examples:
-        # p-nitrophenol pKa (from test)
-        import stjames
-        
-        result = submit_pka_workflow(
-            initial_molecule=stjames.Molecule.from_smiles("Oc1ccc(N(=O)=O)cc1"),
-            name="pKa p-nitrophenol",
-            deprotonate_elements=[8]  # Only consider oxygen
-        )
-        
         # Phenol pKa
         result = submit_pka_workflow(
-            initial_molecule=stjames.Molecule.from_smiles("Oc1ccccc1"),
+            initial_molecule="Oc1ccccc1",
             name="pKa phenol",
-            deprotonate_elements=[8]  # Atomic number for oxygen
+            deprotonate_elements="[8]"  # Only consider oxygen
         )
     """
     
     # Handle JSON string inputs for element lists
-    if isinstance(deprotonate_elements, str):
+    parsed_deprotonate_elements = None
+    if deprotonate_elements:
         try:
-            deprotonate_elements = json.loads(deprotonate_elements)
+            parsed_deprotonate_elements = json.loads(deprotonate_elements)
         except json.JSONDecodeError:
-            pass  # Keep as string if not valid JSON
+            pass  # Keep as None if not valid JSON
             
-    if isinstance(protonate_elements, str):
+    parsed_protonate_elements = None
+    if protonate_elements:
         try:
-            protonate_elements = json.loads(protonate_elements)
+            parsed_protonate_elements = json.loads(protonate_elements)
         except json.JSONDecodeError:
-            pass  # Keep as string if not valid JSON
+            pass  # Keep as None if not valid JSON
 
     # Convert List[float] to Tuple[float, float] for Rowan SDK compatibility
     pka_range_tuple = tuple(pka_range) if len(pka_range) == 2 else (pka_range[0], pka_range[1] if len(pka_range) > 1 else pka_range[0])
@@ -88,10 +63,10 @@ def submit_pka_workflow(
     return rowan.submit_pka_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         pka_range=pka_range_tuple,
-        deprotonate_elements=deprotonate_elements,
-        protonate_elements=protonate_elements,
+        deprotonate_elements=parsed_deprotonate_elements,
+        protonate_elements=parsed_protonate_elements,
         mode=mode,
         name=name,
-        folder_uuid=folder_uuid,
-        max_credits=max_credits
+        folder_uuid=folder_uuid if folder_uuid else None,
+        max_credits=max_credits if max_credits > 0 else None
     )

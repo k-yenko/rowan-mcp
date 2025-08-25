@@ -3,48 +3,31 @@ Rowan v2 API: Conformer Search Workflow
 Search for low-energy molecular conformations using various methods.
 """
 
-from typing import Optional, Annotated, Any, Dict, Union
-from pydantic import Field
+from typing import Any, Dict, Annotated
 import rowan
 import stjames
 
 def submit_conformer_search_workflow(
-    initial_molecule: Annotated[
-        Union[str, Dict[str, Any]],
-        Field(description="SMILES string or molecule dict representing the initial structure")
-    ],
-    conf_gen_mode: Annotated[
-        str,
-        Field(description="Conformer generation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)")
-    ] = "rapid",
-    final_method: Annotated[
-        str,
-        Field(description="Final optimization method (e.g., 'aimnet2_wb97md3', 'r2scan_3c', 'wb97x-d3_def2-tzvp')")
-    ] = "aimnet2_wb97md3",
-    solvent: Annotated[
-        Optional[str],
-        Field(description="Solvent for implicit solvation (e.g., 'water', 'ethanol', 'dmso'). None for gas phase")
-    ] = None,
-    transition_state: Annotated[
-        bool,
-        Field(description="Whether to search for transition state conformers (default: False)")
-    ] = False,
-    name: Annotated[
-        str,
-        Field(description="Workflow name for identification and tracking")
-    ] = "Conformer Search Workflow",
-    folder_uuid: Annotated[
-        Optional[str],
-        Field(description="UUID of folder to organize this workflow. None uses default folder")
-    ] = None,
-    max_credits: Annotated[
-        Optional[int],
-        Field(description="Maximum credits to spend on this calculation. None for no limit")
-    ] = None
+    initial_molecule: Annotated[str, "SMILES string representing the initial structure"],
+    conf_gen_mode: Annotated[str, "Conformer generation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)"] = "rapid",
+    final_method: Annotated[str, "Final optimization method (e.g., 'aimnet2_wb97md3', 'r2scan_3c', 'wb97x-d3_def2-tzvp')"] = "aimnet2_wb97md3",
+    solvent: Annotated[str, "Solvent for implicit solvation (SMILES or name). Empty string for vacuum"] = "",
+    transition_state: Annotated[bool, "Whether to search for transition state conformers"] = False,
+    name: Annotated[str, "Workflow name for identification and tracking"] = "Conformer Search Workflow",
+    folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
+    max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
 ):
     """Submit a conformer search workflow using Rowan v2 API.
     
-    Explores the conformational space of a molecule to find low-energy structures.
+    Args:
+        initial_molecule: SMILES string representing the initial structure
+        conf_gen_mode: Conformer generation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)
+        final_method: Final optimization method (e.g., 'aimnet2_wb97md3', 'r2scan_3c', 'wb97x-d3_def2-tzvp')
+        solvent: Solvent for implicit solvation (e.g., 'water', 'ethanol', 'dmso'). Empty string for gas phase.
+        transition_state: Whether to search for transition state conformers
+        name: Workflow name for identification and tracking
+        folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
+        max_credits: Maximum credits to spend on this calculation. 0 for no limit.
     
     Conformer Generation Modes:
     - 'rapid': RDKit/MMFF, 300 conformers, 0.10 Å RMSD cutoff (recommended for most work)
@@ -147,21 +130,24 @@ def submit_conformer_search_workflow(
             "multistage_opt_settings": msos_dict,
             "conf_gen_mode": conf_gen_mode,
             "mso_mode": "manual",
-            "solvent": solvent,
+            "solvent": solvent if solvent else None,
             "transition_state": transition_state,
         }
         
         # Build the API request
         data = {
             "name": name,
-            "folder_uuid": folder_uuid,
+            "folder_uuid": folder_uuid if folder_uuid else None,
             "workflow_type": "conformer_search",
             "workflow_data": workflow_data,
             "initial_molecule": initial_molecule,
-            "max_credits": max_credits,
+            "max_credits": max_credits if max_credits > 0 else None,
         }
         
         # Submit to API
+        from rowan.utils import api_client
+        from rowan import Workflow
+        
         with api_client() as client:
             response = client.post("/workflow", json=data)
             response.raise_for_status()

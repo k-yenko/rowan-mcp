@@ -3,39 +3,28 @@ Rowan v2 API: Solubility Workflow
 Predict molecular solubility in various solvents at different temperatures.
 """
 
-from typing import Optional, List, Annotated, Union
-from pydantic import Field
+from typing import List, Annotated
 import rowan
 import json
 
 
 def submit_solubility_workflow(
-    initial_smiles: Annotated[
-        str,
-        Field(description="SMILES string of the molecule for solubility prediction")
-    ],
-    solvents: Annotated[
-        Optional[Union[str, List[str]]],
-        Field(description="List of solvents as SMILES or names (e.g., ['water', 'ethanol', 'CCO']). Can be a JSON string or list. None uses defaults")
-    ] = None,
-    temperatures: Annotated[
-        Optional[Union[str, List[float]]],
-        Field(description="List of temperatures in Kelvin (e.g., [298.15, 310.15]). Can be a JSON string or list. None uses default range")
-    ] = None,
-    name: Annotated[
-        str,
-        Field(description="Workflow name for identification and tracking")
-    ] = "Solubility Workflow",
-    folder_uuid: Annotated[
-        Optional[str],
-        Field(description="UUID of folder to organize this workflow. None uses default folder")
-    ] = None,
-    max_credits: Annotated[
-        Optional[int],
-        Field(description="Maximum credits to spend on this calculation. None for no limit")
-    ] = None
+    initial_smiles: Annotated[str, "SMILES string of the molecule for solubility prediction"],
+    solvents: Annotated[str, "JSON string list of solvents as SMILES or names (e.g., '[\"water\", \"ethanol\", \"CCO\"]'). Empty string uses defaults"] = "",
+    temperatures: Annotated[str, "JSON string list of temperatures in Kelvin (e.g., '[298.15, 310.15]'). Empty string uses default range"] = "",
+    name: Annotated[str, "Workflow name for identification and tracking"] = "Solubility Workflow",
+    folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
+    max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
 ):
     """Submit a solubility prediction workflow using Rowan v2 API.
+    
+    Args:
+        initial_smiles: SMILES string of the molecule for solubility prediction
+        solvents: JSON string list of solvents as SMILES or names (e.g., '["water", "ethanol", "CCO"]'). Empty string uses defaults
+        temperatures: JSON string list of temperatures in Kelvin (e.g., '[298.15, 310.15]'). Empty string uses default range
+        name: Workflow name for identification and tracking
+        folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
+        max_credits: Maximum credits to spend on this calculation. 0 for no limit.
     
     Predicts solubility (log S) of a molecule in multiple solvents at various temperatures
     using machine learning models.
@@ -47,37 +36,37 @@ def submit_solubility_workflow(
         # Basic solubility prediction
         result = submit_solubility_workflow(
             initial_smiles="CC(=O)Nc1ccc(O)cc1",
-            solvents=["water", "ethanol"],
-            temperatures=[298.15, 310.15]
+            solvents='["water", "ethanol"]',
+            temperatures='[298.15, 310.15]'
         )
         
         # With SMILES solvents
         result = submit_solubility_workflow(
             initial_smiles="CC(=O)O",
-            solvents=["O", "CCO", "CCCCCC"],
-            temperatures=[273.15, 298.15, 323.15]
+            solvents='["O", "CCO", "CCCCCC"]',
+            temperatures='[273.15, 298.15, 323.15]'
         )
     """
     
-    # Parse solvents parameter - handle string or list
-    if solvents is not None:
-        if isinstance(solvents, str):
-            # Handle various string formats
-            solvents = solvents.strip()
-            if solvents.startswith('[') and solvents.endswith(']'):
-                # JSON array format like '["water", "ethanol"]'
-                try:
-                    solvents = json.loads(solvents)
-                except (json.JSONDecodeError, ValueError):
-                    # Failed to parse as JSON, try as comma-separated
-                    solvents = solvents.strip('[]').replace('"', '').replace("'", "")
-                    solvents = [s.strip() for s in solvents.split(',') if s.strip()]
-            elif ',' in solvents:
-                # Comma-separated format like 'water, ethanol'
-                solvents = [s.strip() for s in solvents.split(',') if s.strip()]
-            else:
-                # Single solvent as string like 'water'
-                solvents = [solvents]
+    # Parse solvents parameter - handle string input
+    parsed_solvents = None
+    if solvents:
+        # Handle various string formats
+        solvents = solvents.strip()
+        if solvents.startswith('[') and solvents.endswith(']'):
+            # JSON array format like '["water", "ethanol"]'
+            try:
+                parsed_solvents = json.loads(solvents)
+            except (json.JSONDecodeError, ValueError):
+                # Failed to parse as JSON, try as comma-separated
+                solvents = solvents.strip('[]').replace('"', '').replace("'", "")
+                parsed_solvents = [s.strip() for s in solvents.split(',') if s.strip()]
+        elif ',' in solvents:
+            # Comma-separated format like 'water, ethanol'
+            parsed_solvents = [s.strip() for s in solvents.split(',') if s.strip()]
+        else:
+            # Single solvent as string like 'water'
+            parsed_solvents = [solvents]
         
         # Convert solvent names to SMILES if needed
         solvent_name_to_smiles = {
@@ -101,19 +90,19 @@ def submit_solubility_workflow(
         }
         
         converted_solvents = []
-        for solvent in solvents:
+        for solvent in parsed_solvents:
             solvent_lower = solvent.lower().strip()
             if solvent_lower in solvent_name_to_smiles:
                 converted_solvents.append(solvent_name_to_smiles[solvent_lower])
             else:
                 # Assume it's already a SMILES string or use as-is
                 converted_solvents.append(solvent)
-        solvents = converted_solvents
+        parsed_solvents = converted_solvents
         
         # Validate the final solvent SMILES to catch issues early
         try:
             from rdkit import Chem
-            for i, solvent_smiles in enumerate(solvents):
+            for i, solvent_smiles in enumerate(parsed_solvents):
                 mol = Chem.MolFromSmiles(solvent_smiles)
                 if mol is None:
                     raise ValueError(f"Invalid solvent SMILES: '{solvent_smiles}' at position {i}")
@@ -121,25 +110,25 @@ def submit_solubility_workflow(
             # RDKit not available for validation, proceed anyway
             pass
     
-    # Parse temperatures parameter - handle string or list
-    if temperatures is not None:
-        if isinstance(temperatures, str):
-            # Handle various string formats
-            temperatures = temperatures.strip()
-            if temperatures.startswith('[') and temperatures.endswith(']'):
-                # JSON array format like '[298.15, 310.15]'
-                try:
-                    temperatures = json.loads(temperatures)
-                except (json.JSONDecodeError, ValueError):
-                    # Failed to parse as JSON, try as comma-separated
-                    temperatures = temperatures.strip('[]').replace('"', '').replace("'", "")
-                    temperatures = [float(t.strip()) for t in temperatures.split(',') if t.strip()]
-            elif ',' in temperatures:
-                # Comma-separated format like '298.15, 310.15'
-                temperatures = [float(t.strip()) for t in temperatures.split(',') if t.strip()]
-            else:
-                # Single temperature as string like '298.15'
-                temperatures = [float(temperatures)]
+    # Parse temperatures parameter - handle string input
+    parsed_temperatures = None
+    if temperatures:
+        # Handle various string formats
+        temperatures = temperatures.strip()
+        if temperatures.startswith('[') and temperatures.endswith(']'):
+            # JSON array format like '[298.15, 310.15]'
+            try:
+                parsed_temperatures = json.loads(temperatures)
+            except (json.JSONDecodeError, ValueError):
+                # Failed to parse as JSON, try as comma-separated
+                temperatures = temperatures.strip('[]').replace('"', '').replace("'", "")
+                parsed_temperatures = [float(t.strip()) for t in temperatures.split(',') if t.strip()]
+        elif ',' in temperatures:
+            # Comma-separated format like '298.15, 310.15'
+            parsed_temperatures = [float(t.strip()) for t in temperatures.split(',') if t.strip()]
+        else:
+            # Single temperature as string like '298.15'
+            parsed_temperatures = [float(temperatures)]
     
     # Validate the main SMILES string early to catch issues
     try:
@@ -154,11 +143,11 @@ def submit_solubility_workflow(
     try:
         result = rowan.submit_solubility_workflow(
             initial_smiles=initial_smiles,
-            solvents=solvents,
-            temperatures=temperatures,
+            solvents=parsed_solvents,
+            temperatures=parsed_temperatures,
             name=name,
-            folder_uuid=folder_uuid,
-            max_credits=max_credits
+            folder_uuid=folder_uuid if folder_uuid else None,
+            max_credits=max_credits if max_credits > 0 else None
         )
         
         return result

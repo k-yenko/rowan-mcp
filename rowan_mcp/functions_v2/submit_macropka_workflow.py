@@ -3,49 +3,32 @@ Rowan v2 API: MacropKa Workflow
 Calculate macroscopic pKa values across a pH range.
 """
 
-from typing import Optional, Annotated
-from pydantic import Field
+from typing import Annotated
 import rowan
 
 def submit_macropka_workflow(
-    initial_smiles: Annotated[
-        str,
-        Field(description="SMILES string of the molecule for macropKa calculation")
-    ],
-    min_pH: Annotated[
-        int,
-        Field(description="Minimum pH value for the calculation range")
-    ] = 0,
-    max_pH: Annotated[
-        int,
-        Field(description="Maximum pH value for the calculation range")
-    ] = 14,
-    min_charge: Annotated[
-        int,
-        Field(description="Minimum molecular charge to consider")
-    ] = -2,
-    max_charge: Annotated[
-        int,
-        Field(description="Maximum molecular charge to consider")
-    ] = 2,
-    compute_solvation_energy: Annotated[
-        bool,
-        Field(description="Whether to compute solvation energy for each species")
-    ] = True,
-    name: Annotated[
-        str,
-        Field(description="Workflow name for identification and tracking")
-    ] = "Macropka Workflow",
-    folder_uuid: Annotated[
-        Optional[str],
-        Field(description="UUID of folder to organize this workflow. None uses default folder")
-    ] = None,
-    max_credits: Annotated[
-        Optional[int],
-        Field(description="Maximum credits to spend on this calculation. None for no limit")
-    ] = None
+    initial_smiles: Annotated[str, "SMILES string of the molecule for macropKa calculation"],
+    min_pH: Annotated[int, "Minimum pH value for the calculation range"] = 0,
+    max_pH: Annotated[int, "Maximum pH value for the calculation range"] = 14,
+    min_charge: Annotated[int, "Minimum molecular charge to consider"] = -2,
+    max_charge: Annotated[int, "Maximum molecular charge to consider"] = 2,
+    compute_solvation_energy: Annotated[bool, "Whether to compute solvation energy corrections"] = True,
+    name: Annotated[str, "Workflow name for identification and tracking"] = "Macropka Workflow",
+    folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
+    max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
 ):
     """Submit a MacropKa workflow using Rowan v2 API.
+    
+    Args:
+        initial_smiles: SMILES string of the molecule for macropKa calculation
+        min_pH: Minimum pH value for the calculation range
+        max_pH: Maximum pH value for the calculation range
+        min_charge: Minimum molecular charge to consider
+        max_charge: Maximum molecular charge to consider
+        compute_solvation_energy: Whether to compute solvation energy for each species
+        name: Workflow name for identification and tracking
+        folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
+        max_credits: Maximum credits to spend on this calculation. 0 for no limit.
     
     Calculates macroscopic pKa values across a pH range, determining the
     protonation states and their populations at different pH values.
@@ -75,15 +58,6 @@ def submit_macropka_workflow(
             min_charge=-3,
             max_charge=3,
             compute_solvation_energy=True
-        )
-        
-        # Drug-like molecule
-        result = submit_macropka_workflow(
-            initial_smiles="CN1C=NC2=C1C(=O)N(C(=O)N2C)C",  # Caffeine
-            min_pH=2,
-            max_pH=12,
-            min_charge=-1,
-            max_charge=1
         )
     """
     
@@ -116,8 +90,8 @@ def submit_macropka_workflow(
             max_charge=max_charge,
             compute_solvation_energy=compute_solvation_energy,
             name=name,
-            folder_uuid=folder_uuid,
-            max_credits=max_credits
+            folder_uuid=folder_uuid if folder_uuid else None,
+            max_credits=max_credits if max_credits > 0 else None
         )
             
     except Exception as e:

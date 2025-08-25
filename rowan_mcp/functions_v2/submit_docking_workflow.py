@@ -3,52 +3,35 @@ Rowan v2 API: Docking Workflow
 Perform molecular docking simulations for drug discovery.
 """
 
-from typing import Optional, Dict, Any, Union, Annotated, List, Tuple
-from pydantic import Field
+from typing import Dict, Any, Union, List, Annotated
 import rowan
 import stjames
 import json
 from stjames.pdb import PDB, read_pdb
 
 def submit_docking_workflow(
-    protein: Annotated[
-        Union[str, Dict[str, Any], Any],
-        Field(description="Protein for docking. Can be: 1) PDB ID string (e.g., '1HCK'), 2) Protein UUID string, 3) Dict with 'pdb_id' and optional 'name', or 4) Protein object")
-    ],
-    pocket: Annotated[
-        Union[str, List[List[float]]],
-        Field(description="Binding pocket as [[x1,y1,z1], [x2,y2,z2]] or JSON string. Defines box corners for docking site")
-    ],
-    initial_molecule: Annotated[
-        str,
-        Field(description="SMILES string or molecule object representing the ligand")
-    ],
-    do_csearch: Annotated[
-        bool,
-        Field(description="Whether to perform conformational search on the ligand before docking")
-    ] = True,
-    do_optimization: Annotated[
-        bool,
-        Field(description="Whether to optimize the ligand geometry before docking")
-    ] = True,
-    name: Annotated[
-        str,
-        Field(description="Workflow name for identification and tracking")
-    ] = "Docking Workflow",
-    folder_uuid: Annotated[
-        Optional[str],
-        Field(description="UUID of folder to organize this workflow. None uses default folder")
-    ] = None,
-    max_credits: Annotated[
-        Optional[int],
-        Field(description="Maximum credits to spend on this calculation. None for no limit")
-    ] = None,
-    blocking: Annotated[
-        bool,
-        Field(description="Whether to wait for workflow completion before returning")
-    ] = False
+    protein: Annotated[str, "Protein UUID or PDB content/path for docking target"],
+    pocket: Annotated[str, "JSON string defining binding pocket coordinates or 'auto' for automatic detection"],
+    initial_molecule: Annotated[str, "SMILES string of the ligand molecule to dock"],
+    do_csearch: Annotated[bool, "Whether to perform conformer search before docking"] = True,
+    do_optimization: Annotated[bool, "Whether to optimize docked poses"] = True,
+    name: Annotated[str, "Workflow name for identification and tracking"] = "Docking Workflow",
+    folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
+    max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0,
+    blocking: Annotated[bool, "Whether to wait for workflow completion before returning"] = False
 ):
     """Submits a Docking workflow to the API.
+    
+    Args:
+        protein: Protein for docking. Can be: 1) PDB ID string (e.g., '1HCK'), 2) Protein UUID string, 3) JSON string dict with 'pdb_id' and optional 'name'
+        pocket: Binding pocket as JSON string "[[x1,y1,z1], [x2,y2,z2]]" defining box corners for docking site
+        initial_molecule: SMILES string representing the ligand
+        do_csearch: Whether to perform conformational search on the ligand before docking
+        do_optimization: Whether to optimize the ligand geometry before docking
+        name: Workflow name for identification and tracking
+        folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
+        max_credits: Maximum credits to spend on this calculation. 0 for no limit.
+        blocking: Whether to wait for workflow completion before returning
     
     Automatically handles protein creation from PDB ID and sanitization if needed.
     
@@ -59,22 +42,22 @@ def submit_docking_workflow(
         # Example 1: Using PDB ID directly
         result = submit_docking_workflow(
             protein="1HCK",  # PDB ID
-            pocket=[[103.55, 100.59, 82.99], [27.76, 32.67, 48.79]],
+            pocket="[[103.55, 100.59, 82.99], [27.76, 32.67, 48.79]]",
             initial_molecule="CCC(C)(C)NC1=NCC2(CCC(=O)C2C)N1",
             name="CDK2 Docking"
         )
         
         # Example 2: Using dict with PDB ID and custom name
         result = submit_docking_workflow(
-            protein={"pdb_id": "1HCK", "name": "My CDK2 Protein"},
-            pocket=[[103.55, 100.59, 82.99], [27.76, 32.67, 48.79]],
+            protein='{"pdb_id": "1HCK", "name": "My CDK2 Protein"}',
+            pocket="[[103.55, 100.59, 82.99], [27.76, 32.67, 48.79]]",
             initial_molecule="CCC(C)(C)NC1=NCC2(CCC(=O)C2C)N1"
         )
         
         # Example 3: Using existing protein UUID
         result = submit_docking_workflow(
             protein="abc123-def456-...",  # Protein UUID
-            pocket=[[103.55, 100.59, 82.99], [27.76, 32.67, 48.79]],
+            pocket="[[103.55, 100.59, 82.99], [27.76, 32.67, 48.79]]",
             initial_molecule="CCC(C)(C)NC1=NCC2(CCC(=O)C2C)N1"
         )
     """
@@ -83,6 +66,15 @@ def submit_docking_workflow(
     
     # Handle protein parameter
     protein_obj = None
+    
+    # Try to parse protein as JSON first
+    try:
+        protein_dict = json.loads(protein)
+        if isinstance(protein_dict, dict):
+            protein = protein_dict
+    except (json.JSONDecodeError, ValueError):
+        # Not JSON, keep as string
+        pass
     
     # Check if protein is a PDB ID or dict with PDB ID
     if isinstance(protein, str):
@@ -217,12 +209,11 @@ def submit_docking_workflow(
         # Assume it's already a protein object
         protein_obj = protein
     
-    # Parse pocket parameter if it's a string
-    if isinstance(pocket, str):
-        try:
-            pocket = json.loads(pocket)
-        except (json.JSONDecodeError, ValueError) as e:
-            raise ValueError(f"Invalid pocket format: {pocket}. Expected [[x1,y1,z1], [x2,y2,z2]] or valid JSON string")
+    # Parse pocket parameter (always a string in simplified version)
+    try:
+        pocket = json.loads(pocket)
+    except (json.JSONDecodeError, ValueError) as e:
+        raise ValueError(f"Invalid pocket format: {pocket}. Expected JSON string like \"[[x1,y1,z1], [x2,y2,z2]]\"")
     
     # Ensure pocket is a list of lists
     if not isinstance(pocket, list) or len(pocket) != 2:
@@ -240,8 +231,8 @@ def submit_docking_workflow(
         do_csearch=do_csearch,
         do_optimization=do_optimization,
         name=name,
-        folder_uuid=folder_uuid,
-        max_credits=max_credits
+        folder_uuid=folder_uuid if folder_uuid else None,
+        max_credits=max_credits if max_credits > 0 else None
     )
     
     logger.info(f"Docking workflow submitted with UUID: {workflow.uuid}")

@@ -33,6 +33,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "pubchempy>=1.0.4",
     "rdkit>=2025.3.2",
+    "aiohttp>=3.12.15",
 ]
 
 [project.optional-dependencies]

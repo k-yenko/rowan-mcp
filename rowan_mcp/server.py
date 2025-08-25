@@ -1,291 +1,134 @@
 """
 Rowan MCP Server Implementation using FastMCP
-
-This module implements the Model Context Protocol server for Rowan's
-computational chemistry platform using the FastMCP framework.
-Supports both STDIO and HTTP transports.
 """
 
 import os
 import sys
-import time
-import traceback
-import logging
-import signal
-import atexit
-from typing import Any, Dict, List, Optional, Literal, Union
-from enum import Enum
-
 from fastmcp import FastMCP
-from pydantic import BaseModel, Field
-from stjames import Molecule
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,  # Changed from DEBUG to INFO
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(sys.stderr),  # Log to stderr so it doesn't interfere with stdio
-        logging.FileHandler('rowan_mcp_debug.log')  # Also log to file
-    ]
-)
-logger = logging.getLogger(__name__)
-
-# Suppress SSE ping debug messages
-logging.getLogger('sse_starlette').setLevel(logging.WARNING)
-logging.getLogger('sse_starlette.sse').setLevel(logging.WARNING)
-
-# Import functions from functions module
-# from .functions.scan import rowan_scan as scan_function
-# from .functions.scan_analyzer import rowan_scan_analyzer as scan_analyzer_function
-# from .functions.admet import rowan_admet as admet_function
-# 
-# from .functions.multistage_opt import rowan_multistage_opt as multistage_opt_function
-# from .functions.descriptors import rowan_descriptors as descriptors_function
-# from .functions.tautomers import rowan_tautomers as tautomers_function
-# 
-# from .functions.redox_potential import rowan_redox_potential as redox_potential_function
-# from .functions.conformers import rowan_conformers as conformers_function
-# from .functions.electronic_properties import rowan_electronic_properties as electronic_properties_function
-# from .functions.fukui import rowan_fukui as fukui_function
-# from .functions.spin_states import rowan_spin_states as spin_states_function
-# from .functions.solubility import rowan_solubility as solubility_function
-# from .functions.molecular_dynamics import rowan_molecular_dynamics as molecular_dynamics_function
-# from .functions.irc import rowan_irc as irc_function
-# from .functions.docking import rowan_docking as docking_function, rowan_docking_pdb_id as docking_pdb_id_function
-# from .functions.docking_enhanced import rowan_docking_enhanced as docking_enhanced_function
-# from .functions.workflow_management import rowan_workflow_management as workflow_management_function
-# # from .functions.calculation_retrieve import rowan_calculation_retrieve as calculation_retrieve_function
-# from .functions.pka import rowan_pka as pka_function
-# from .functions.macropka import rowan_macropka as macropka_function
-# from .functions.hydrogen_bond_basicity import rowan_hydrogen_bond_basicity as hydrogen_bond_basicity_function
-# from .functions.bde import rowan_bde as bde_function
-# from .functions.folder_management import rowan_folder_management as folder_management_function
-# from .functions.system_management import rowan_system_management as system_management_function
-# 
-# # Import molecule lookup from functions
-# from .functions.molecule_lookup import rowan_molecule_lookup as molecule_lookup_function
 
 # Import v2 API functions
-from .functions_v2.submit_basic_calculation_workflow import submit_basic_calculation_workflow as basic_calculation_v2_function
-from .functions_v2.submit_conformer_search_workflow import submit_conformer_search_workflow as conformer_search_v2_function
-from .functions_v2.submit_solubility_workflow import submit_solubility_workflow as solubility_v2_function
-from .functions_v2.submit_pka_workflow import submit_pka_workflow as pka_v2_function
-from .functions_v2.submit_redox_potential_workflow import submit_redox_potential_workflow as redox_potential_v2_function
-from .functions_v2.submit_fukui_workflow import submit_fukui_workflow as fukui_v2_function
-from .functions_v2.submit_tautomer_search_workflow import submit_tautomer_search_workflow as tautomer_search_v2_function
-from .functions_v2.submit_descriptors_workflow import submit_descriptors_workflow as descriptors_v2_function
-from .functions_v2.submit_scan_workflow import submit_scan_workflow as scan_v2_function
-from .functions_v2.submit_irc_workflow import submit_irc_workflow as irc_v2_function
-from .functions_v2.submit_protein_cofolding_workflow import submit_protein_cofolding_workflow as protein_cofolding_v2_function
-from .functions_v2.submit_docking_workflow import submit_docking_workflow as docking_v2_function
+from .functions_v2.submit_basic_calculation_workflow import submit_basic_calculation_workflow
+from .functions_v2.submit_conformer_search_workflow import submit_conformer_search_workflow
+from .functions_v2.submit_solubility_workflow import submit_solubility_workflow
+from .functions_v2.submit_pka_workflow import submit_pka_workflow
+from .functions_v2.submit_redox_potential_workflow import submit_redox_potential_workflow
+from .functions_v2.submit_fukui_workflow import submit_fukui_workflow
+from .functions_v2.submit_tautomer_search_workflow import submit_tautomer_search_workflow
+from .functions_v2.submit_descriptors_workflow import submit_descriptors_workflow
+from .functions_v2.submit_scan_workflow import submit_scan_workflow
+from .functions_v2.submit_irc_workflow import submit_irc_workflow
+from .functions_v2.submit_protein_cofolding_workflow import submit_protein_cofolding_workflow
+from .functions_v2.submit_docking_workflow import submit_docking_workflow
+from .functions_v2.submit_macropka_workflow import submit_macropka_workflow
 
 # Import molecule lookup functions
 from .functions_v2.molecule_lookup import (
-    molecule_lookup as molecule_lookup_function,
-    batch_molecule_lookup as batch_molecule_lookup_function,
-    validate_smiles as validate_smiles_function
+    molecule_lookup,
+    batch_molecule_lookup,
+    validate_smiles
 )
 
-# Import v2 workflow management functions
+# Import workflow management functions
 from .functions_v2.workflow_management_v2 import (
-    workflow_fetch_latest as workflow_fetch_latest_function,
-    workflow_wait_for_result as workflow_wait_for_result_function,
-    workflow_get_status as workflow_get_status_function,
-    workflow_stop as workflow_stop_function,
-    workflow_delete as workflow_delete_function,
-    retrieve_workflow as retrieve_workflow_function,
-    retrieve_calculation_molecules as retrieve_calculation_molecules_function,
-    list_workflows as list_workflows_function,
-    workflow_update as workflow_update_function,
-    workflow_is_finished as workflow_is_finished_function,
-    workflow_delete_data as workflow_delete_data_function
+    workflow_fetch_latest,
+    workflow_wait_for_result,
+    workflow_get_status,
+    workflow_stop,
+    workflow_delete,
+    retrieve_workflow,
+    retrieve_calculation_molecules,
+    list_workflows,
+    workflow_update,
+    workflow_is_finished,
+    workflow_delete_data
 )
 
 # Import protein management functions
 from .functions_v2.protein_management import (
-    create_protein_from_pdb_id as create_protein_from_pdb_id_function,
-    retrieve_protein as retrieve_protein_function,
-    list_proteins as list_proteins_function,
-    upload_protein as upload_protein_function,
-    delete_protein as delete_protein_function,
-    sanitize_protein as sanitize_protein_function
+    create_protein_from_pdb_id,
+    retrieve_protein,
+    list_proteins,
+    upload_protein,
+    delete_protein,
+    sanitize_protein
 )
 
 try:
-    import rowan
-except ImportError:
-    rowan = None
-
-try:
     from dotenv import load_dotenv
-    load_dotenv()  # Load .env file if available
+    load_dotenv()
 except ImportError:
-    pass  # dotenv not required, but helpful if available
+    pass
 
 # Initialize FastMCP server
 mcp = FastMCP("Rowan MCP Server")
 
-# Register imported functions as MCP tools
-# # rowan_scan = mcp.tool()(scan_function)  # Using v2 version instead
-# rowan_scan_analyzer = mcp.tool()(scan_analyzer_function)
-# rowan_admet = mcp.tool()(admet_function)
-# 
-# rowan_multistage_opt = mcp.tool()(multistage_opt_function)
-# # rowan_descriptors = mcp.tool()(descriptors_function)  # Using v2 version instead
-# # rowan_tautomers = mcp.tool()(tautomers_function)  # Using v2 version instead
-# 
-# # rowan_redox_potential = mcp.tool()(redox_potential_function)  # Using v2 version instead
-# rowan_conformers = mcp.tool()(conformers_function)
-# rowan_electronic_properties = mcp.tool()(electronic_properties_function)
-# # rowan_fukui = mcp.tool()(fukui_function)  # Using v2 version instead
-# rowan_spin_states = mcp.tool()(spin_states_function)
-# # rowan_solubility = mcp.tool()(solubility_function)  # Using v2 version instead
-# rowan_molecular_dynamics = mcp.tool()(molecular_dynamics_function)
-# # rowan_irc = mcp.tool()(irc_function)  # Using v2 version instead
-# # rowan_docking = mcp.tool()(docking_function)  # Using v2 version instead
-# rowan_docking_pdb_id = mcp.tool()(docking_pdb_id_function)
-# rowan_docking_enhanced = mcp.tool()(docking_enhanced_function)
-# rowan_workflow_management = mcp.tool()(workflow_management_function)
-# # rowan_calculation_retrieve = mcp.tool()(calculation_retrieve_function)
-# rowan_molecule_lookup = mcp.tool()(molecule_lookup_function)
-# # rowan_pka = mcp.tool()(pka_function)  # Using v2 version instead
-# rowan_macropka = mcp.tool()(macropka_function)
-# rowan_hydrogen_bond_basicity = mcp.tool()(hydrogen_bond_basicity_function)
-# rowan_bde = mcp.tool()(bde_function)
-# rowan_folder_management = mcp.tool()(folder_management_function)
-# rowan_system_management = mcp.tool()(system_management_function)
-
-# Register v2 API functions as MCP tools
-submit_basic_calculation_workflow = mcp.tool()(basic_calculation_v2_function)
-submit_conformer_search_workflow = mcp.tool()(conformer_search_v2_function)
-submit_solubility_workflow = mcp.tool()(solubility_v2_function)
-submit_pka_workflow = mcp.tool()(pka_v2_function)
-submit_redox_potential_workflow = mcp.tool()(redox_potential_v2_function)
-submit_fukui_workflow = mcp.tool()(fukui_v2_function)
-submit_tautomer_search_workflow = mcp.tool()(tautomer_search_v2_function)
-submit_descriptors_workflow = mcp.tool()(descriptors_v2_function)
-submit_scan_workflow = mcp.tool()(scan_v2_function)
-submit_irc_workflow = mcp.tool()(irc_v2_function)
-submit_protein_cofolding_workflow = mcp.tool()(protein_cofolding_v2_function)
-submit_docking_workflow = mcp.tool()(docking_v2_function)
+# Register v2 API tools
+mcp.tool()(submit_basic_calculation_workflow)
+mcp.tool()(submit_conformer_search_workflow)
+mcp.tool()(submit_solubility_workflow)
+mcp.tool()(submit_pka_workflow)
+mcp.tool()(submit_redox_potential_workflow)
+mcp.tool()(submit_fukui_workflow)
+mcp.tool()(submit_tautomer_search_workflow)
+mcp.tool()(submit_descriptors_workflow)
+mcp.tool()(submit_scan_workflow)
+mcp.tool()(submit_irc_workflow)
+mcp.tool()(submit_protein_cofolding_workflow)
+mcp.tool()(submit_docking_workflow)
+mcp.tool()(submit_macropka_workflow)
 
 # Register molecule lookup tools
-molecule_lookup = mcp.tool()(molecule_lookup_function)
-batch_molecule_lookup = mcp.tool()(batch_molecule_lookup_function)
-validate_smiles = mcp.tool()(validate_smiles_function)
+mcp.tool()(molecule_lookup)
+mcp.tool()(batch_molecule_lookup)
+mcp.tool()(validate_smiles)
 
-# Register v2 workflow management functions as MCP tools
-workflow_fetch_latest = mcp.tool()(workflow_fetch_latest_function)
-workflow_wait_for_result = mcp.tool()(workflow_wait_for_result_function)
-workflow_get_status = mcp.tool()(workflow_get_status_function)
-workflow_stop = mcp.tool()(workflow_stop_function)
-workflow_delete = mcp.tool()(workflow_delete_function)
-retrieve_workflow = mcp.tool()(retrieve_workflow_function)
-retrieve_calculation_molecules = mcp.tool()(retrieve_calculation_molecules_function)
-list_workflows = mcp.tool()(list_workflows_function)
-workflow_update = mcp.tool()(workflow_update_function)
-workflow_is_finished = mcp.tool()(workflow_is_finished_function)
-workflow_delete_data = mcp.tool()(workflow_delete_data_function)
+# Register workflow management tools
+mcp.tool()(workflow_fetch_latest)
+mcp.tool()(workflow_wait_for_result)
+mcp.tool()(workflow_get_status)
+mcp.tool()(workflow_stop)
+mcp.tool()(workflow_delete)
+mcp.tool()(retrieve_workflow)
+mcp.tool()(retrieve_calculation_molecules)
+mcp.tool()(list_workflows)
+mcp.tool()(workflow_update)
+mcp.tool()(workflow_is_finished)
+mcp.tool()(workflow_delete_data)
 
-# Register protein management functions as MCP tools
-create_protein_from_pdb_id = mcp.tool()(create_protein_from_pdb_id_function)
-retrieve_protein = mcp.tool()(retrieve_protein_function)
-list_proteins = mcp.tool()(list_proteins_function)
-upload_protein = mcp.tool()(upload_protein_function)
-delete_protein = mcp.tool()(delete_protein_function)
-sanitize_protein = mcp.tool()(sanitize_protein_function)
+# Register protein management tools
+mcp.tool()(create_protein_from_pdb_id)
+mcp.tool()(retrieve_protein)
+mcp.tool()(list_proteins)
+mcp.tool()(upload_protein)
+mcp.tool()(delete_protein)
+mcp.tool()(sanitize_protein)
 
-# Validate required dependencies and configuration
+# Validate required configuration
 if not os.getenv("ROWAN_API_KEY"):
     raise ValueError(
         "ROWAN_API_KEY environment variable is required. "
         "Get your API key from https://labs.rowansci.com"
     )
 
-if rowan is None:
-    raise ImportError(
-        "rowan-python package is required. Install with: pip install rowan-python"
-    )
-
-def cleanup():
-    """Cleanup function called on exit."""
-    logger.info("Performing cleanup...")
-    # Add any specific cleanup code here if needed
-    logger.info("Cleanup complete")
-
-def signal_handler(signum, frame):
-    """Handle shutdown signals gracefully."""
-    logger.info(f"Received signal {signum}, initiating shutdown...")
-    cleanup()
-    sys.exit(0)
 
 def main() -> None:
-    """Main entry point for the MCP server."""
-    # Register signal handlers for graceful shutdown
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
+    """Main entry point for the HTTP MCP server."""
+    if len(sys.argv) > 1 and sys.argv[1] == "--help":
+        print("Rowan MCP Server")
+        print("Usage: rowan-mcp")
+        print("Environment variables:")
+        print("  ROWAN_API_KEY    # Required: Your Rowan API key")
+        print("  ROWAN_MCP_HOST   # Optional: HTTP host (default: 127.0.0.1)")
+        print("  ROWAN_MCP_PORT   # Optional: HTTP port (default: 6276)")
+        return
     
-    # Register cleanup function
-    atexit.register(cleanup)
+    host = os.getenv("ROWAN_MCP_HOST", "127.0.0.1")
+    port = int(os.getenv("ROWAN_MCP_PORT", "6276"))
     
-    try:
-        # Check for transport mode from command line args or environment
-        transport_mode = os.getenv("ROWAN_MCP_TRANSPORT", "stdio").lower()
-        
-        # Allow override from command line
-        if len(sys.argv) > 1:
-            if sys.argv[1] == "--http":
-                transport_mode = "http"
-            elif sys.argv[1] == "--stdio":
-                transport_mode = "stdio"
-            elif sys.argv[1] == "--help":
-                print("Rowan MCP Server")
-                print("Usage:")
-                print("  rowan-mcp                      # Default STDIO transport")
-                print("  rowan-mcp --stdio              # STDIO transport")
-                print("  rowan-mcp --http               # HTTP/SSE transport")
-                print("")
-                print("Development usage:")
-                print("  python -m rowan_mcp            # Default STDIO transport")
-                print("  python -m rowan_mcp --stdio    # STDIO transport")
-                print("  python -m rowan_mcp --http     # HTTP/SSE transport")
-                print("")
-                print("Environment variables:")
-                print("  ROWAN_API_KEY                  # Required: Your Rowan API key")
-                print("  ROWAN_MCP_TRANSPORT            # Optional: 'stdio' or 'http' (default: stdio)")
-                print("  ROWAN_MCP_HOST                 # Optional: HTTP host (default: 127.0.0.1)")
-                print("  ROWAN_MCP_PORT                 # Optional: HTTP port (default: 6276)")
-                print("")
-                print("HTTP/SSE mode endpoint: http://host:port/sse")
-                return
-        
-        if transport_mode == "http":
-            host = os.getenv("ROWAN_MCP_HOST", "127.0.0.1")
-            port = int(os.getenv("ROWAN_MCP_PORT", "6276"))
-            
-            print("🚀 Starting Rowan MCP Server (HTTP/SSE mode)")
-            print(f"📡 Server will be available at: http://{host}:{port}/sse")
-            print(f"🔑 API Key loaded: {'✓' if os.getenv('ROWAN_API_KEY') else '✗'}")
-            print(f"🛠️  Available tools: {len([attr for attr in dir() if attr.startswith('submit_') or attr.startswith('workflow_') or attr.startswith('retrieve_') or attr.startswith('list_workflow')])}")
-            print("🔗 Connect your MCP client to this endpoint!")
-            print("\nPress Ctrl+C to stop the server")
-            
-            mcp.run(transport="sse", host=host, port=port)
-        else:
-            print("🚀 Starting Rowan MCP Server (STDIO mode)")
-            print(f"🔑 API Key loaded: {'✓' if os.getenv('ROWAN_API_KEY') else '✗'}")
-            print(f"🛠️  Available tools: {len([attr for attr in dir() if attr.startswith('submit_') or attr.startswith('workflow_') or attr.startswith('retrieve_') or attr.startswith('list_workflow')])}")
-            
-            mcp.run()  # Default STDIO transport
-            
-    except KeyboardInterrupt:
-        print("\n🛑 Server shutdown requested by user")
-        cleanup()
-    except Exception as e:
-        print(f"❌ Server error: {e}")
-        traceback.print_exc()
-        cleanup()
+    print(f"Starting Rowan MCP Server at http://{host}:{port}/sse")
+    
+    mcp.run(transport="sse", host=host, port=port)
 
 if __name__ == "__main__":
-    main() 
+    main()

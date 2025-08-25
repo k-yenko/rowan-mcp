@@ -24,34 +24,25 @@ That's it - no command line setup needed!
 
 Just add this to your MCP configuration and it will automatically install and run:
 
-**Using uvx (simplest):**
+**HTTP/SSE configuration:**
 ```json
 {
   "mcpServers": {
     "rowan": {
-      "command": "uvx",
-      "args": ["--from", "rowan-mcp", "rowan-mcp"],
-      "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
-      }
+      "type": "http",
+      "url": "http://127.0.0.1:6276/sse"
     }
   }
 }
 ```
 
-**Using uv run (alternative):**
-```json
-{
-  "mcpServers": {
-    "rowan": {
-      "command": "uv",
-      "args": ["run", "--with", "rowan-mcp", "-m", "rowan_mcp"],
-      "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
+Then start the server:
+```bash
+# Set your API key
+export ROWAN_API_KEY="your_api_key_here"
+
+# Start the HTTP server
+uvx --from rowan-mcp rowan-mcp
 ```
 
 ### **Option 2: Manual Installation**
@@ -68,18 +59,22 @@ uv add rowan-mcp
 pip install rowan-mcp
 ```
 
-Then use this configuration:
+Then configure and start:
 ```json
 {
   "mcpServers": {
     "rowan": {
-      "command": "rowan-mcp",
-      "env": {
-        "ROWAN_API_KEY": "your_api_key_here"
-      }
+      "type": "http", 
+      "url": "http://127.0.0.1:6276/sse"
     }
   }
 }
+```
+
+```bash
+# Set API key and start server
+export ROWAN_API_KEY="your_api_key_here"
+rowan-mcp
 ```
 
 ### **Get API Key**
@@ -110,7 +105,8 @@ Ask the LLM to:
 **Development commands** (if you cloned the repo):
 ```bash
 # Run from source
-uv run python -m rowan_mcp --http
+export ROWAN_API_KEY="your_api_key_here"
+uv run python -m rowan_mcp
 ```
 
 ---
@@ -204,4 +200,11 @@ To update the dxt file:
 dxt pack rowan-dxt
 ```
 ### MCP inspector
-npx @modelcontextprotocol/inspector uv run rowan-mcp        
+```bash
+# Start the server first
+export ROWAN_API_KEY="your_api_key_here" 
+uv run python -m rowan_mcp &
+
+# Then inspect
+npx @modelcontextprotocol/inspector http://127.0.0.1:6276/sse
+```        

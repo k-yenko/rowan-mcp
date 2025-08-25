@@ -3,46 +3,22 @@ Rowan v2 API: Basic Calculation Workflow
 Submit basic quantum chemistry calculations with various methods and tasks.
 """
 
-from typing import Optional, List, Dict, Any, Union, Annotated
-from pydantic import Field
+# Simplified imports - no complex typing needed
+from typing import Annotated
 import rowan
 import stjames
 import json
 
 
 def submit_basic_calculation_workflow(
-    initial_molecule: Annotated[
-        Union[str, Dict[str, Any], Any],
-        Field(description="The molecule to perform the calculation on. Can be a SMILES string, dict, StJamesMolecule, or RdkitMol object")
-    ],
-    method: Annotated[
-        str,
-        Field(description="The method to use for the calculation (e.g., 'uma_m_omol', 'gfn2-xtb', 'r2scan_3c')")
-    ] = "uma_m_omol",
-    tasks: Annotated[
-        Optional[Union[List[str], str]],
-        Field(description="Tasks to perform: list ['optimize'], string 'optimize', or comma-separated 'optimize,frequencies'. Defaults to None")
-    ] = None,
-    mode: Annotated[
-        str,
-        Field(description="The mode to run the calculation in ('auto', 'rapid', 'careful', 'meticulous')")
-    ] = "auto",
-    engine: Annotated[
-        str,
-        Field(description="The computational engine to use ('omol25', 'xtb', 'psi4')")
-    ] = "omol25",
-    name: Annotated[
-        str,
-        Field(description="The name of the workflow for identification")
-    ] = "Basic Calculation Workflow",
-    folder_uuid: Annotated[
-        Optional[str],
-        Field(description="UUID of the folder to place the workflow in (optional)")
-    ] = None,
-    max_credits: Annotated[
-        Optional[int],
-        Field(description="Maximum number of credits to use for the workflow (optional)")
-    ] = None
+    initial_molecule: Annotated[str, "SMILES string or molecule JSON for quantum chemistry calculation"],
+    method: Annotated[str, "Computational method (e.g., 'gfn2-xtb', 'uma_m_omol', 'b3lyp-d3bj')"] = "uma_m_omol",
+    tasks: Annotated[str, "JSON array or comma-separated list of tasks (e.g., '[\"optimize\"]', 'optimize, frequencies')"] = "",
+    mode: Annotated[str, "Calculation mode: 'rapid', 'careful', 'meticulous', or 'auto'"] = "auto", 
+    engine: Annotated[str, "Computational engine: 'omol25', 'xtb', 'psi4'"] = "omol25",
+    name: Annotated[str, "Workflow name for identification and tracking"] = "Basic Calculation Workflow",
+    folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
+    max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
 ):
     """Submit a basic calculation workflow using Rowan v2 API.
     
@@ -84,25 +60,24 @@ def submit_basic_calculation_workflow(
         )
     """
     
-    # Parse tasks parameter - handle string or list
-    if tasks is not None:
-        if isinstance(tasks, str):
-            # Handle various string formats
-            tasks = tasks.strip()
-            if tasks.startswith('[') and tasks.endswith(']'):
-                # JSON array format like '["optimize"]'
-                try:
-                    tasks = json.loads(tasks)
-                except (json.JSONDecodeError, ValueError):
-                    # Failed to parse as JSON, try as comma-separated
-                    tasks = tasks.strip('[]').replace('"', '').replace("'", "")
-                    tasks = [t.strip() for t in tasks.split(',') if t.strip()]
-            elif ',' in tasks:
-                # Comma-separated format like 'optimize, frequencies'
-                tasks = [t.strip() for t in tasks.split(',') if t.strip()]
-            else:
-                # Single task as string like 'optimize'
-                tasks = [tasks]
+    # Parse tasks parameter - handle string input
+    parsed_tasks = None
+    if tasks:  # If not empty string
+        tasks = tasks.strip()
+        if tasks.startswith('[') and tasks.endswith(']'):
+            # JSON array format like '["optimize"]'
+            try:
+                parsed_tasks = json.loads(tasks)
+            except (json.JSONDecodeError, ValueError):
+                # Failed to parse as JSON, try as comma-separated
+                tasks = tasks.strip('[]').replace('"', '').replace("'", "")
+                parsed_tasks = [t.strip() for t in tasks.split(',') if t.strip()]
+        elif ',' in tasks:
+            # Comma-separated format like 'optimize, frequencies'  
+            parsed_tasks = [t.strip() for t in tasks.split(',') if t.strip()]
+        else:
+            # Single task as string like 'optimize'
+            parsed_tasks = [tasks]
     
     
     try:
@@ -183,15 +158,14 @@ def submit_basic_calculation_workflow(
         else:
             method_name = method
         
-        # Default tasks if not provided
-        if not tasks:
-            tasks = ["optimize"]
+        # Use parsed tasks or default
+        final_tasks = parsed_tasks if parsed_tasks else ["optimize"]
         
         # Build workflow_data following the official API structure
         workflow_data = {
             "settings": {
                 "method": method_name,
-                "tasks": tasks,
+                "tasks": final_tasks,
                 "mode": mode,
             },
             "engine": engine,
@@ -200,11 +174,11 @@ def submit_basic_calculation_workflow(
         # Build the API request
         data = {
             "name": name,
-            "folder_uuid": folder_uuid,
-            "workflow_type": "basic_calculation",
+            "folder_uuid": folder_uuid if folder_uuid else None,
+            "workflow_type": "basic_calculation", 
             "workflow_data": workflow_data,
             "initial_molecule": initial_molecule_dict,
-            "max_credits": max_credits,
+            "max_credits": max_credits if max_credits > 0 else None,
         }
         
         # Submit directly to API
