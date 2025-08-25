@@ -97,7 +97,7 @@ Ask the LLM to:
 
 ## **System Requirements**
 
-- **Python 3.10+** (Python 3.11+ recommended)
+- **Python 3.11+** 
 - **Package manager**: [uv](https://docs.astral.sh/uv/) (recommended) or pip
 - **Rowan API key** (free at [labs.rowansci.com](https://labs.rowansci.com))
 - **MCP-compatible client** (Claude Desktop, etc.)
