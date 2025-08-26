@@ -1,6 +1,7 @@
 """
-Rowan v2 API: pKa Workflow
-Predict acid dissociation constants for ionizable groups in molecules.
+Rowan v2 API: Microscopic pKa Workflow
+Calculate microscopic pKa values - the pH at which specific ionizable sites lose their proton, 
+given the current protonation state of the rest of the molecule.
 """
 
 from typing import List, Dict, Any, Annotated
@@ -18,7 +19,11 @@ def submit_pka_workflow(
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
     max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
 ):
-    """Submit a pKa prediction workflow using Rowan v2 API.
+    """Submit a microscopic pKa prediction workflow using Rowan v2 API.
+    
+    Microscopic pKa: "At what pH does this site lose its proton, given the current 
+    protonation state of the rest of the molecule?" Calculates site-specific pKa values
+    for individual ionizable groups considering their local environment.
     
     Args:
         initial_molecule: The molecule to calculate the pKa of. SMILES string.

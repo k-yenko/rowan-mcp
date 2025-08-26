@@ -9,7 +9,7 @@ import stjames
 
 def submit_tautomer_search_workflow(
     initial_molecule: Annotated[str, "SMILES string to search for tautomers"],
-    mode: Annotated[str, "Search mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)"] = "careful",
+    mode: Annotated[str, "Search mode: 'reckless', 'rapid', or 'careful' (other workflows use different modes)"] = "careful",
     name: Annotated[str, "Workflow name for identification and tracking"] = "Tautomer Search Workflow",
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
     max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
@@ -18,7 +18,7 @@ def submit_tautomer_search_workflow(
     
     Args:
         initial_molecule: SMILES string to search for tautomers
-        mode: Search mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)
+        mode: Search mode: 'reckless', 'rapid', or 'careful' (tautomer-specific modes)
         name: Workflow name for identification and tracking
         folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
         max_credits: Maximum credits to spend on this calculation. 0 for no limit.
@@ -35,10 +35,10 @@ def submit_tautomer_search_workflow(
             initial_molecule="CC(=O)CC(=O)C"
         )
         
-        # Meticulous search for complex molecule
+        # Careful search for complex molecule
         result = submit_tautomer_search_workflow(
             initial_molecule="c1ccc2c(c1)ncc(=O)[nH]2",
-            mode="meticulous"
+            mode="careful"
         )
     """
     

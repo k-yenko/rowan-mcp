@@ -1,6 +1,7 @@
 """
-Rowan v2 API: MacropKa Workflow
-Calculate macroscopic pKa values across a pH range.
+Rowan v2 API: Macroscopic pKa Workflow
+Calculate macroscopic pKa values - the pH at which all molecules in solution 
+are evenly split between two charge states, considering overall protonation equilibria.
 """
 
 from typing import Annotated
@@ -17,7 +18,11 @@ def submit_macropka_workflow(
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
     max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
 ):
-    """Submit a MacropKa workflow using Rowan v2 API.
+    """Submit a Macroscopic pKa workflow using Rowan v2 API.
+    
+    Macroscopic pKa: "At what pH are all molecules in solution evenly split between 
+    two charge states?" Calculates overall protonation equilibria considering all 
+    ionizable sites simultaneously and their population distributions across pH range.
     
     Args:
         initial_smiles: SMILES string of the molecule for macropKa calculation
