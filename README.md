@@ -114,29 +114,50 @@ uv run python -m rowan_mcp
 ## **Available Tools**
 
 ### Chemistry Calculations
-- `rowan_basic_calculation` - Energy, optimization, frequencies
-- `rowan_multistage_opt` - geometry optimization  
-- `rowan_electronic_properties` - HOMO/LUMO, orbitals
-- `rowan_molecular_dynamics` - MD simulations
+- `submit_basic_calculation_workflow` - Energy, optimization, frequencies with multiple engines (omol25, xtb, psi4)
+- `submit_conformer_search_workflow` - Conformational search with multiple search modes (rapid/careful/meticulous)
+- `submit_scan_workflow` - Molecular scans (dihedral, bond, angle) with wavefront propagation
+- `submit_irc_workflow` - Intrinsic reaction coordinate calculations for transition states
 
 ### Molecular Properties
-- `rowan_pka` - Acid/base strength
-- `rowan_conformers` - Conformational search
-- `rowan_tautomers` - Tautomer enumeration
-- `rowan_descriptors` - ML-ready molecular features
-- `rowan_solubility` - Aqueous solubility
-- `rowan_redox_potential` - Electrochemical potentials
-
-### Drug Discovery
-- `rowan_admet` - ADME-Tox properties
+- `submit_pka_workflow` - Microscopic pKa calculations with customizable pH ranges and elements
+- `submit_macropka_workflow` - Macroscopic pKa calculations across pH and charge ranges
+- `submit_solubility_workflow` - Solubility predictions across multiple solvents and temperatures
+- `submit_redox_potential_workflow` - Electrochemical reduction/oxidation potentials
+- `submit_descriptors_workflow` - ML-ready molecular descriptors and features
+- `submit_tautomer_search_workflow` - Tautomer enumeration with reckless/rapid/careful modes
 
 ### Reactivity Analysis  
-- `rowan_fukui` - Reactivity sites
-- `rowan_spin_states` - Spin multiplicities
+- `submit_fukui_workflow` - Fukui indices for electrophilic/nucleophilic reactivity sites
 
-### Project Management
-- `rowan_folder_create/list/update/delete` - Organize calculations
-- `rowan_workflow_create/list/status/stop` - Manage workflows
+### Protein & Drug Discovery
+- `submit_docking_workflow` - Protein-ligand docking with conformer search and optimization
+- `submit_protein_cofolding_workflow` - Multi-protein and protein-ligand cofolding predictions
+
+### Molecule Management
+- `molecule_lookup` - Convert molecule names, CAS numbers, IUPAC names to SMILES
+- `batch_molecule_lookup` - Bulk molecule name to SMILES conversion
+- `validate_smiles` - Validate and standardize SMILES strings
+
+### Protein Management
+- `create_protein_from_pdb_id` - Create protein from PDB ID (e.g., '1HCK')
+- `retrieve_protein` - Get protein data by UUID
+- `list_proteins` - List all available proteins
+- `upload_protein` - Upload custom protein structures
+- `delete_protein` - Remove protein from workspace
+- `sanitize_protein` - Clean and validate protein structures
+
+### Workflow Management
+- `workflow_get_status` - Check workflow status with detailed progress information
+- `workflow_stop` - Stop running workflows
+- `workflow_delete` - Remove workflows from workspace
+- `retrieve_workflow` - Get complete workflow data and results
+- `retrieve_calculation_molecules` - Extract molecular structures from calculations
+- `list_workflows` - List all workflows with filtering options
+- `workflow_update` - Modify workflow parameters
+- `workflow_is_finished` - Check if workflow is complete
+- `workflow_delete_data` - Remove workflow data while keeping metadata
+- `workflow_fetch_latest` - Get most recent workflow results
 
 ## **Requirements**
 
