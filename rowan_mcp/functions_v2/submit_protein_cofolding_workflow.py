@@ -15,6 +15,8 @@ def submit_protein_cofolding_workflow(
     ligand_binding_affinity_index: Annotated[str, "JSON string mapping ligand indices to protein binding sites. Empty for automatic detection"] = "",
     use_msa_server: Annotated[bool, "Whether to use multiple sequence alignment server for better structure prediction"] = True,
     use_potentials: Annotated[bool, "Whether to include additional potentials in the calculation"] = False,
+    compute_strain: Annotated[bool, "Whether to compute the strain of the pose (if pose_refinement is enabled)"] = False,
+    do_pose_refinement: Annotated[bool, "Whether to optimize non-rotatable bonds in output poses"] = False,
     name: Annotated[str, "Workflow name for identification and tracking"] = "Cofolding Workflow",
     model: Annotated[str, "Structure prediction model to use (e.g., 'boltz_2', 'alphafold3')"] = "boltz_2",
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
@@ -44,6 +46,8 @@ def submit_protein_cofolding_workflow(
             ligand_binding_affinity_index="0",
             name="Cofolding CDK2 with ligand"
         )
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 30 minutes to complete.
     """
     # Parse initial_protein_sequences (always a string in simplified version)
     try:
@@ -75,14 +79,21 @@ def submit_protein_cofolding_workflow(
         except (ValueError, TypeError):
             raise ValueError(f"Invalid ligand_binding_affinity_index: '{ligand_binding_affinity_index}' must be an integer")
     
-    return rowan.submit_protein_cofolding_workflow(
+    result = rowan.submit_protein_cofolding_workflow(
         initial_protein_sequences=initial_protein_sequences,
         initial_smiles_list=parsed_initial_smiles_list,
         ligand_binding_affinity_index=parsed_ligand_index,
         use_msa_server=use_msa_server,
         use_potentials=use_potentials,
+        compute_strain=compute_strain,
+        do_pose_refinement=do_pose_refinement,
         name=name,
         model=model,
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None
     )
+
+    # Make workflow publicly viewable
+    result.update(public=True)
+
+    return result

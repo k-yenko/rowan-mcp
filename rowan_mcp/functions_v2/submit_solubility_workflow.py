@@ -46,6 +46,8 @@ def submit_solubility_workflow(
             solvents='["O", "CCO", "CCCCCC"]',
             temperatures='[273.15, 298.15, 323.15]'
         )
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 5 minutes to complete.
     """
     
     # Parse solvents parameter - handle string input
@@ -149,9 +151,12 @@ def submit_solubility_workflow(
             folder_uuid=folder_uuid if folder_uuid else None,
             max_credits=max_credits if max_credits > 0 else None
         )
-        
+
+        # Make workflow publicly viewable
+        result.update(public=True)
+
         return result
-        
+
     except Exception as e:
         # Re-raise the exception so MCP can handle it
         raise

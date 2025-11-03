@@ -56,6 +56,9 @@ def submit_conformer_search_workflow(
             solvent="water",
             final_method="r2scan_3c"
         )
+
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take up to 20 minutes to complete.
     """
 
     try:
@@ -143,15 +146,20 @@ def submit_conformer_search_workflow(
             "initial_molecule": initial_molecule,
             "max_credits": max_credits if max_credits > 0 else None,
         }
-        
+
         # Submit to API
         from rowan.utils import api_client
         from rowan import Workflow
-        
+
         with api_client() as client:
             response = client.post("/workflow", json=data)
             response.raise_for_status()
-            return Workflow(**response.json())
+            result = Workflow(**response.json())
+
+        # Make workflow publicly viewable
+        result.update(public=True)
+
+        return result
         
     except Exception as e:
         # Re-raise the exception so MCP can handle it

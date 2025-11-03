@@ -85,7 +85,7 @@ mcp.tool()(validate_smiles)
 
 # Register workflow management tools
 mcp.tool()(workflow_fetch_latest)
-mcp.tool()(workflow_wait_for_result)
+# mcp.tool()(workflow_wait_for_result)  # Removed - all tools should be non-blocking
 mcp.tool()(workflow_get_status)
 mcp.tool()(workflow_stop)
 mcp.tool()(workflow_delete)
@@ -113,22 +113,36 @@ if not os.getenv("ROWAN_API_KEY"):
 
 
 def main() -> None:
-    """Main entry point for the HTTP MCP server."""
+    """Main entry point for the MCP server."""
     if len(sys.argv) > 1 and sys.argv[1] == "--help":
-        print("Rowan MCP Server")
-        print("Usage: rowan-mcp")
-        print("Environment variables:")
-        print("  ROWAN_API_KEY    # Required: Your Rowan API key")
-        print("  ROWAN_MCP_HOST   # Optional: HTTP host (default: 127.0.0.1)")
-        print("  ROWAN_MCP_PORT   # Optional: HTTP port (default: 6276)")
+        print("Rowan MCP Server", file=sys.stderr)
+        print("Usage: rowan-mcp [--transport=stdio|http] [--port=6276]", file=sys.stderr)
+        print("Environment variables:", file=sys.stderr)
+        print("  ROWAN_API_KEY    # Required: Your Rowan API key", file=sys.stderr)
         return
-    
-    host = os.getenv("ROWAN_MCP_HOST", "127.0.0.1")
-    port = int(os.getenv("ROWAN_MCP_PORT", "6276"))
-    
-    print(f"Starting Rowan MCP Server at http://{host}:{port}/sse")
-    
-    mcp.run(transport="sse", host=host, port=port)
+
+    # Parse command line arguments
+    transport = "stdio"
+    port = 6276
+
+    for arg in sys.argv[1:]:
+        if arg.startswith("--transport="):
+            transport = arg.split("=")[1]
+        elif arg.startswith("--port="):
+            port = int(arg.split("=")[1])
+
+    # Check for environment variable override
+    if os.getenv("MCP_TRANSPORT"):
+        transport = os.getenv("MCP_TRANSPORT")
+    if os.getenv("MCP_PORT"):
+        port = int(os.getenv("MCP_PORT"))
+
+    if transport == "http":
+        print(f"Starting Rowan MCP Server with HTTP transport on port {port}", file=sys.stderr)
+        mcp.run(transport="http", host="localhost", port=port)
+    else:
+        print("Starting Rowan MCP Server with STDIO transport", file=sys.stderr)
+        mcp.run(transport="stdio")
 
 if __name__ == "__main__":
     main()

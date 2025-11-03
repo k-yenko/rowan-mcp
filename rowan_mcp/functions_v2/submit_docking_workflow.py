@@ -15,10 +15,10 @@ def submit_docking_workflow(
     initial_molecule: Annotated[str, "SMILES string of the ligand molecule to dock"],
     do_csearch: Annotated[bool, "Whether to perform conformer search before docking"] = True,
     do_optimization: Annotated[bool, "Whether to optimize docked poses"] = True,
+    do_pose_refinement: Annotated[bool, "Whether to optimize output poses"] = False,
     name: Annotated[str, "Workflow name for identification and tracking"] = "Docking Workflow",
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
     max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0,
-    blocking: Annotated[bool, "Whether to wait for workflow completion before returning"] = False
 ):
     """Submits a Docking workflow to the API.
     
@@ -31,7 +31,6 @@ def submit_docking_workflow(
         name: Workflow name for identification and tracking
         folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
         max_credits: Maximum credits to spend on this calculation. 0 for no limit.
-        blocking: Whether to wait for workflow completion before returning
     
     Automatically handles protein creation from PDB ID and sanitization if needed.
     
@@ -60,6 +59,9 @@ def submit_docking_workflow(
             pocket="[[103.55, 100.59, 82.99], [27.76, 32.67, 48.79]]",
             initial_molecule="CCC(C)(C)NC1=NCC2(CCC(=O)C2C)N1"
         )
+
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 30 minutes to complete. 
     """
     import logging
     logger = logging.getLogger(__name__)
@@ -230,15 +232,15 @@ def submit_docking_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         do_csearch=do_csearch,
         do_optimization=do_optimization,
+        do_pose_refinement=do_pose_refinement,
         name=name,
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None
     )
-    
+
+    # Make workflow publicly viewable
+    workflow.update(public=True)
+
     logger.info(f"Docking workflow submitted with UUID: {workflow.uuid}")
-    
-    # If blocking, wait for completion
-    if blocking:
-        workflow.wait_for_result()
-    
+
     return workflow

@@ -42,11 +42,19 @@ def submit_descriptors_workflow(
             initial_molecule="CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
             name="Caffeine Descriptors"
         )
+
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow typically takes 10-30 seconds to complete.
     """
     
-    return rowan.submit_descriptors_workflow(
+    result = rowan.submit_descriptors_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         name=name,
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None
     )
+
+    # Make workflow publicly viewable
+    result.update(public=True)
+
+    return result

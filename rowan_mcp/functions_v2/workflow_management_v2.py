@@ -45,6 +45,11 @@ def workflow_get_status(
     Args:
         workflow_uuid: UUID of the workflow to check status
     
+    IMPORTANT: Workflow duration varies widely - simple calculations finish in seconds,
+    complex workflows (conformer searches, large proteins, docking) can take 10-30 minutes.
+    For running workflows, use adaptive polling: check frequently at first (every 30s for 2 min),
+    then less frequently (every 2-5 min) to avoid excessive API calls.
+    
     Returns:
         Dictionary with detailed status information including:
         - status_code: Numeric status (0=QUEUED, 1=RUNNING, 2=COMPLETED_OK, 3=FAILED, 4=STOPPED, 5=AWAITING_QUEUE)
@@ -68,6 +73,7 @@ def workflow_get_status(
     }
 
 
+
 def workflow_wait_for_result(
     workflow_uuid: Annotated[str, "UUID of the workflow to wait for completion"],
     poll_interval: Annotated[int, "Seconds between status checks while waiting"] = 5
@@ -77,6 +83,11 @@ def workflow_wait_for_result(
     Args:
         workflow_uuid: UUID of the workflow to wait for completion
         poll_interval: Seconds between status checks while waiting
+    
+    WARNING: This function blocks and can cause MCP timeouts! Workflow duration varies 
+    widely - simple calculations finish in seconds, complex workflows (conformer searches, 
+    large proteins, docking) can take 10-30 minutes. Consider using workflow_get_status 
+    with adaptive polling instead.
     
     Essential for chaining dependent workflows where subsequent calculations 
     require results from previous ones. Blocks execution until the workflow 

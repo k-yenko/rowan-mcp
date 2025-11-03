@@ -58,6 +58,9 @@ def submit_basic_calculation_workflow(
             tasks=["optimize"],
             engine="xtb"
         )
+        After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+        then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max).
+        
     """
     
     # Parse tasks parameter - handle string input
@@ -175,20 +178,25 @@ def submit_basic_calculation_workflow(
         data = {
             "name": name,
             "folder_uuid": folder_uuid if folder_uuid else None,
-            "workflow_type": "basic_calculation", 
+            "workflow_type": "basic_calculation",
             "workflow_data": workflow_data,
             "initial_molecule": initial_molecule_dict,
             "max_credits": max_credits if max_credits > 0 else None,
         }
-        
+
         # Submit directly to API
         from rowan.utils import api_client
         from rowan import Workflow
-        
+
         with api_client() as client:
             response = client.post("/workflow", json=data)
             response.raise_for_status()
-            return Workflow(**response.json())
+            result = Workflow(**response.json())
+
+        # Make workflow publicly viewable
+        result.update(public=True)
+
+        return result
         
     except Exception as e:
         # Re-raise the exception so MCP can handle it

@@ -42,9 +42,11 @@ def submit_redox_potential_workflow(
             oxidization=True,
             name="Toluene Redox Potential"
         )
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 20 minutes to complete.
     """
     
-    return rowan.submit_redox_potential_workflow(
+    result = rowan.submit_redox_potential_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         reduction=reduction,
         oxidization=oxidization,
@@ -53,3 +55,8 @@ def submit_redox_potential_workflow(
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None
     )
+
+    # Make workflow publicly viewable
+    result.update(public=True)
+
+    return result

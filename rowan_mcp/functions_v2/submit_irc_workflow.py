@@ -43,9 +43,12 @@ def submit_irc_workflow(
             method="gfn2_xtb",
             engine="xtb"
         )
+    
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 10 minutes to complete.
     """
     
-    return rowan.submit_irc_workflow(
+    result = rowan.submit_irc_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         method=method,
         engine=engine,
@@ -56,3 +59,8 @@ def submit_irc_workflow(
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None
     )
+
+    # Make workflow publicly viewable
+    result.update(public=True)
+
+    return result

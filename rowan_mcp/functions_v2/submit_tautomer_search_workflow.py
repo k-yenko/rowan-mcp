@@ -40,12 +40,19 @@ def submit_tautomer_search_workflow(
             initial_molecule="c1ccc2c(c1)ncc(=O)[nH]2",
             mode="careful"
         )
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 5 minutes to complete.
     """
     
-    return rowan.submit_tautomer_search_workflow(
+    result = rowan.submit_tautomer_search_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         mode=mode,
         name=name,
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None
     )
+
+    # Make workflow publicly viewable
+    result.update(public=True)
+
+    return result

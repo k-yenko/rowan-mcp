@@ -45,6 +45,8 @@ def submit_scan_workflow(
             calculation_method="GFN2-xTB",
             calculation_engine="xtb"
         )
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 40 minutes to complete.
     """
     # Parse scan_settings if provided
     parsed_scan_settings = None
@@ -70,7 +72,7 @@ def submit_scan_workflow(
         if missing_fields:
             raise ValueError(f"Missing required fields in scan_settings: {missing_fields}")
     
-    return rowan.submit_scan_workflow(
+    result = rowan.submit_scan_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         scan_settings=parsed_scan_settings,
         calculation_engine=calculation_engine,
@@ -80,3 +82,8 @@ def submit_scan_workflow(
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None
     )
+
+    # Make workflow publicly viewable
+    result.update(public=True)
+
+    return result

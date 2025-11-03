@@ -47,6 +47,8 @@ def submit_fukui_workflow(
             fukui_method="gfn2_xtb",
             solvent_settings='{"solvent": "water", "model": "alpb"}'
         )
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). this workflow can take 10 minutes to complete.
     """
     # Parse solvent_settings if provided
     parsed_solvent_settings = None
@@ -103,12 +105,17 @@ def submit_fukui_workflow(
             "initial_molecule": initial_molecule_dict,
             "max_credits": max_credits if max_credits > 0 else None,
         }
-        
+
         # Submit to API
         with rowan.api_client() as client:
             response = client.post("/workflow", json=data)
             response.raise_for_status()
-            return rowan.Workflow(**response.json())
+            result = rowan.Workflow(**response.json())
+
+        # Make workflow publicly viewable
+        result.update(public=True)
+
+        return result
             
     except Exception as e:
         raise e

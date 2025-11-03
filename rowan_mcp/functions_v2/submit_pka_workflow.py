@@ -45,6 +45,8 @@ def submit_pka_workflow(
             name="pKa phenol",
             deprotonate_elements="[8]"  # Only consider oxygen
         )
+    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
+    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 5 minutes to complete.
     """
     
     # Handle JSON string inputs for element lists
@@ -64,8 +66,8 @@ def submit_pka_workflow(
 
     # Convert List[float] to Tuple[float, float] for Rowan SDK compatibility
     pka_range_tuple = tuple(pka_range) if len(pka_range) == 2 else (pka_range[0], pka_range[1] if len(pka_range) > 1 else pka_range[0])
-    
-    return rowan.submit_pka_workflow(
+
+    result = rowan.submit_pka_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         pka_range=pka_range_tuple,
         deprotonate_elements=parsed_deprotonate_elements,
@@ -75,3 +77,8 @@ def submit_pka_workflow(
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None
     )
+
+    # Make workflow publicly viewable
+    result.update(public=True)
+
+    return result
