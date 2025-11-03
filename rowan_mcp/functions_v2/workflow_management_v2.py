@@ -47,7 +47,7 @@ def workflow_get_status(
     
     IMPORTANT: Workflow duration varies widely - simple calculations finish in seconds,
     complex workflows (conformer searches, large proteins, docking) can take 10-30 minutes.
-    For running workflows, use adaptive polling: check frequently at first (every 30s for 2 min),
+    For running workflows, use exponential backoff: check frequently at first (every 30s for 2 min),
     then less frequently (every 2-5 min) to avoid excessive API calls.
     
     Returns:
@@ -190,6 +190,10 @@ def workflow_fetch_latest(
         in_place: Whether to update the workflow object in place
     
     Updates the workflow object with the most recent status and results.
+    IMPORTANT: Workflow duration varies widely - simple calculations finish in seconds,
+    complex workflows (conformer searches, large proteins, docking) can take 10-30 minutes.
+    For running workflows, use exponential backoff: check frequently at first (every 30s for 2 min),
+    then less frequently (every 2-5 min) to avoid excessive API calls.
     
     Returns:
         Dictionary containing the updated workflow data with explicit status information:
