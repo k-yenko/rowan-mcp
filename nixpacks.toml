@@ -1,0 +1,10 @@
+# Railway Nixpacks configuration for Rowan MCP
+# Python-based MCP server
+
+[phases.install]
+cmds = [
+  "pip install -e ."
+]
+
+[start]
+cmd = "python railway_start.py"
