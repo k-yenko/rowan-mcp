@@ -4,21 +4,7 @@ MCP server for making it easy to run Rowan's molecular design and simulation too
 
 ---
 
-## **Quick Install - Desktop Extension**
-
-**For Claude Desktop users - this is the easiest way:**
-
-1. **Download** the extension: [`rowan-dxt.dxt`](./rowan-dxt.dxt) 
-2. **Drag and drop** the file into **Claude Desktop > Settings > Extensions**
-3. **Enter your API key** from [labs.rowansci.com](https://labs.rowansci.com) 
-4. **Enable** the MCP tool in the extension settings
-5. **Start chatting** Try: *"Using the Rowan MCP tool, calculate the pKa of aspirin"*
-
-That's it - no command line setup needed!
-
----
-
-## **Package Installation**
+## **Installation**
 
 ### **Option 1: Auto-Install (No manual installation needed!)**
 
@@ -208,6 +194,16 @@ All workflow implementations now match the exact Rowan API specification from th
 
 ---
 
+## **Experimental: Desktop Extension (Work in Progress)**
+
+We're developing a one-click desktop extension (.dxt) for Claude Desktop that eliminates command-line setup. This feature is currently being refined for optimal compatibility with the MCP extension system.
+
+**Current status:** Installation workflow needs refinement for seamless user experience.
+
+For now, we recommend using the standard Package Installation method above, which is fully tested and reliable.
+
+---
+
 ## **Getting Help**
 
 - **Documentation**: [docs.rowansci.com](https://docs.rowansci.com/)
@@ -239,14 +235,6 @@ uv publish
 
 # Or publish to TestPyPI first
 uv publish --index-url https://test.pypi.org/simple/
-```
-
-To update the dxt file:
-```bash
-# After updating the PyPI package, update all changed tools/functions
-
-# Then update the desktop extension
-dxt pack rowan-dxt
 ```
 ### MCP inspector
 ```bash
