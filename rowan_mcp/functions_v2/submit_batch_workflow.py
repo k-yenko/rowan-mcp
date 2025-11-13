@@ -18,12 +18,10 @@ from .submit_strain_workflow import submit_strain_workflow
 from .submit_fukui_workflow import submit_fukui_workflow
 from .submit_ion_mobility_workflow import submit_ion_mobility_workflow
 from .submit_admet_workflow import submit_admet_workflow
-from .submit_electronic_properties_workflow import submit_electronic_properties_workflow
 from .submit_bde_workflow import submit_bde_workflow
 from .submit_hydrogen_bond_basicity_workflow import submit_hydrogen_bond_basicity_workflow
 from .submit_spin_states_workflow import submit_spin_states_workflow
 from .submit_multistage_opt_workflow import submit_multistage_opt_workflow
-from .submit_molecular_dynamics_workflow import submit_molecular_dynamics_workflow
 
 
 def batch_submit_workflow(
@@ -150,12 +148,10 @@ def batch_submit_workflow(
         'fukui': submit_fukui_workflow,
         'ion_mobility': submit_ion_mobility_workflow,
         'admet': submit_admet_workflow,
-        'electronic_properties': submit_electronic_properties_workflow,
         'bde': submit_bde_workflow,
         'hydrogen_bond_basicity': submit_hydrogen_bond_basicity_workflow,
         'spin_states': submit_spin_states_workflow,
         'multistage_opt': submit_multistage_opt_workflow,
-        'molecular_dynamics': submit_molecular_dynamics_workflow,
     }
 
     if workflow_type not in workflow_func_map:

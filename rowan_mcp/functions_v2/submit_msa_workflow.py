@@ -10,7 +10,7 @@ import json
 
 def submit_msa_workflow(
     initial_protein_sequences: Annotated[str, "JSON string list of protein sequences (e.g., '[\"MKLLV...\", \"MAHQR...\"]')"],
-    output_formats: Annotated[str, "JSON string list of output formats (e.g., '[\"a3m\", \"sto\"]')"],
+    output_formats: Annotated[str, "JSON string list of output formats - must be 'colabfold', 'chai', or 'boltz' (e.g., '[\"colabfold\", \"chai\"]')"],
     name: Annotated[str, "Workflow name for identification and tracking"] = "MSA Workflow",
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
     max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
@@ -19,47 +19,46 @@ def submit_msa_workflow(
 
     Args:
         initial_protein_sequences: JSON string list of protein sequences (amino acid strings)
-        output_formats: JSON string list of desired output formats (e.g., '["a3m", "sto", "fas"]')
+        output_formats: JSON string list of desired output formats. Valid options: 'colabfold', 'chai', 'boltz'
         name: Workflow name for identification and tracking
         folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
         max_credits: Maximum credits to spend on this calculation. 0 for no limit.
 
     Generates multiple sequence alignments for protein sequences using advanced
-    alignment algorithms. Useful for:
-    - Protein structure prediction
-    - Evolutionary analysis
-    - Homology modeling
-    - Coevolution studies
+    alignment algorithms optimized for structure prediction tools. Useful for:
+    - Protein structure prediction with AlphaFold2/ColabFold
+    - Structure prediction with Chai-1
+    - Structure prediction with Boltz-1
+    - Evolutionary analysis and homology modeling
 
-    Common output formats:
-    - 'a3m': A3M format (used by HHpred, HHblits)
-    - 'sto': Stockholm format (used by Pfam)
-    - 'fas': FASTA format
-    - 'a2m': A2M format
+    Valid output formats:
+    - 'colabfold': MSA format for ColabFold/AlphaFold2 structure prediction
+    - 'chai': MSA format optimized for Chai-1 structure prediction
+    - 'boltz': MSA format optimized for Boltz-1 structure prediction
 
     Returns:
         Workflow object representing the submitted workflow
 
     Examples:
-        # Single protein sequence alignment
+        # MSA for ColabFold structure prediction
         result = submit_msa_workflow(
             initial_protein_sequences='["MKLLVLGLLLAAAVPGTRAAQMSFKLIGTEYFTLQIRGRERFEMFRELN"]',
-            output_formats='["a3m", "sto"]',
-            name="Insulin MSA"
+            output_formats='["colabfold"]',
+            name="Insulin MSA for ColabFold"
         )
 
-        # Multiple protein sequences
+        # MSA for multiple prediction tools
         result = submit_msa_workflow(
-            initial_protein_sequences='["MKTAYIAKQRQISFVKSHFSRQ", "MKTAYIAKQRQISFVKSHF"]',
-            output_formats='["a3m", "fas"]',
-            name="Multi-protein MSA"
+            initial_protein_sequences='["MKTAYIAKQRQISFVKSHFSRQ"]',
+            output_formats='["colabfold", "chai", "boltz"]',
+            name="Multi-tool MSA"
         )
 
-        # Full format output
+        # MSA for Chai-1 structure prediction
         result = submit_msa_workflow(
             initial_protein_sequences='["GSTLGRIADRDLLELDTLAAKVPSDGAKDLVTDIVNRQIYDG"]',
-            output_formats='["a3m", "sto", "fas", "a2m"]',
-            name="Complete MSA Output"
+            output_formats='["chai"]',
+            name="Chai-1 MSA"
         )
 
     This workflow can take 10-30 minutes depending on sequence length.
