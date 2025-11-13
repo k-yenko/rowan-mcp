@@ -9,7 +9,6 @@ import stjames
 
 def submit_tautomer_search_workflow(
     initial_molecule: Annotated[str, "SMILES string to search for tautomers"],
-    mode: Annotated[str, "Search mode: 'reckless', 'rapid', or 'careful' (other workflows use different modes)"] = "careful",
     name: Annotated[str, "Workflow name for identification and tracking"] = "Tautomer Search Workflow",
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
     max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
@@ -18,7 +17,6 @@ def submit_tautomer_search_workflow(
     
     Args:
         initial_molecule: SMILES string to search for tautomers
-        mode: Search mode: 'reckless', 'rapid', or 'careful' (tautomer-specific modes)
         name: Workflow name for identification and tracking
         folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
         max_credits: Maximum credits to spend on this calculation. 0 for no limit.
@@ -30,23 +28,17 @@ def submit_tautomer_search_workflow(
         Workflow object representing the submitted workflow
         
     Example:
-        # Basic tautomer search
+        # 2-Pyridone tautomers
         result = submit_tautomer_search_workflow(
-            initial_molecule="CC(=O)CC(=O)C"
+            initial_molecule="O=C1C=CC=CN1",
+            name="2-Pyridone Tautomers"
         )
-        
-        # Careful search for complex molecule
-        result = submit_tautomer_search_workflow(
-            initial_molecule="c1ccc2c(c1)ncc(=O)[nH]2",
-            mode="careful"
-        )
-    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 5 minutes to complete.
+
     """
     
     result = rowan.submit_tautomer_search_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
-        mode=mode,
+        mode="rapid",
         name=name,
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None

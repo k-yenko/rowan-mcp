@@ -14,7 +14,6 @@ def submit_basic_calculation_workflow(
     initial_molecule: Annotated[str, "SMILES string or molecule JSON for quantum chemistry calculation"],
     method: Annotated[str, "Computational method (e.g., 'gfn2-xtb', 'uma_m_omol', 'b3lyp-d3bj')"] = "uma_m_omol",
     tasks: Annotated[str, "JSON array or comma-separated list of tasks (e.g., '[\"optimize\"]', 'optimize, frequencies')"] = "",
-    mode: Annotated[str, "Calculation mode: 'rapid', 'careful', 'meticulous', or 'auto'"] = "auto", 
     engine: Annotated[str, "Computational engine: 'omol25', 'xtb', 'psi4'"] = "omol25",
     name: Annotated[str, "Workflow name for identification and tracking"] = "Basic Calculation Workflow",
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
@@ -24,43 +23,35 @@ def submit_basic_calculation_workflow(
     
     Performs fundamental quantum chemistry calculations with configurable methods
     and computational tasks. Returns a workflow object for tracking progress.
-    
+
     Examples:
-        # Simple water optimization with GFN2-xTB
+        # Isoprene Energy
         result = submit_basic_calculation_workflow(
-            initial_molecule="O",
-            method="gfn2-xtb",
-            tasks=["optimize"],
-            engine="xtb",
-            name="Water Optimization"
+            initial_molecule="CC(=C)C=C",
+            method="uma_m_omol",
+            tasks='["energy"]',
+            engine="omol25",
+            name="Isoprene Energy"
         )
-        
-        # Butane optimization from SMILES
+
+        # Constrained Butane
         result = submit_basic_calculation_workflow(
             initial_molecule="CCCC",
-            method="gfn2-xtb",
-            tasks=["optimize"],
-            mode="rapid",
+            method="gfn2_xtb",
+            tasks='["optimize"]',
             engine="xtb",
-            name="Butane Optimization"
+            name="Constrained Butane"
         )
-        
-        # Using a molecule dict (from data.json)
-        molecule_dict = {
-            "smiles": "CCCC",
-            "charge": 0,
-            "multiplicity": 1,
-            "atoms": [...]  # atomic positions
-        }
+
+        # Aspirin optimization
         result = submit_basic_calculation_workflow(
-            initial_molecule=molecule_dict,
-            method="gfn2-xtb",
-            tasks=["optimize"],
-            engine="xtb"
+            initial_molecule="CC(=O)Oc1ccccc1C(=O)O",
+            method="uma_m_omol",
+            tasks='["optimize"]',
+            engine="omol25",
+            name="Aspirin Optimization"
         )
-        After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-        then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max).
-        
+
     """
     
     # Parse tasks parameter - handle string input
@@ -169,7 +160,7 @@ def submit_basic_calculation_workflow(
             "settings": {
                 "method": method_name,
                 "tasks": final_tasks,
-                "mode": mode,
+                "mode": "rapid",
             },
             "engine": engine,
         }

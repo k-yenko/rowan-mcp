@@ -14,7 +14,6 @@ def submit_pka_workflow(
     pka_range: Annotated[List[float], "pKa range [min, max] to search (e.g., [2, 12])"] = [2, 12],
     deprotonate_elements: Annotated[str, "Comma-separated elements for deprotonation (e.g., 'N,O,S'). Empty for auto-detect"] = "",
     protonate_elements: Annotated[str, "Comma-separated elements for protonation (e.g., 'N,O'). Empty for auto-detect"] = "",
-    mode: Annotated[str, "Calculation mode: 'rapid', 'careful', or 'meticulous'"] = "careful",
     name: Annotated[str, "Workflow name for identification and tracking"] = "pKa Workflow",
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
     max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
@@ -30,7 +29,6 @@ def submit_pka_workflow(
         pka_range: pKa range [min, max] to search, e.g., [2, 12]
         deprotonate_elements: Atomic numbers to consider for deprotonation, e.g., "[7, 8, 16]" for N, O, S. Empty string uses defaults.
         protonate_elements: Atomic numbers to consider for protonation, e.g., "[7, 8]" for N, O. Empty string uses defaults.
-        mode: Calculation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)
         name: Workflow name for identification and tracking
         folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
         max_credits: Maximum credits to spend on this calculation. 0 for no limit.
@@ -45,8 +43,7 @@ def submit_pka_workflow(
             name="pKa phenol",
             deprotonate_elements="[8]"  # Only consider oxygen
         )
-    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 5 minutes to complete.
+
     """
     
     # Handle JSON string inputs for element lists
@@ -72,7 +69,7 @@ def submit_pka_workflow(
         pka_range=pka_range_tuple,
         deprotonate_elements=parsed_deprotonate_elements,
         protonate_elements=parsed_protonate_elements,
-        mode=mode,
+        mode="rapid",
         name=name,
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None

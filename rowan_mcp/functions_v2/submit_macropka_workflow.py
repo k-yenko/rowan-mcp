@@ -14,7 +14,6 @@ def submit_macropka_workflow(
     min_charge: Annotated[int, "Minimum molecular charge to consider"] = -2,
     max_charge: Annotated[int, "Maximum molecular charge to consider"] = 2,
     compute_solvation_energy: Annotated[bool, "Whether to compute solvation energy corrections"] = False,
-    compute_aqueous_solubility: Annotated[bool, "Whether to compute aqueous solubility for each pH"] = False,
     name: Annotated[str, "Workflow name for identification and tracking"] = "Macropka Workflow",
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
     max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
@@ -49,47 +48,16 @@ def submit_macropka_workflow(
         Workflow object representing the submitted workflow
         
     Examples:
-        # Simple molecule macropKa
+        # Oseltamivir macropka with aqueous solubility
         result = submit_macropka_workflow(
-            initial_smiles="CC(=O)O",  # Acetic acid
-            min_pH=0,
-            max_pH=14
-        )
-        
-        # Complex molecule with custom charge range
-        result = submit_macropka_workflow(
-            initial_smiles="CC(C)CC(C(=O)O)N",  # Leucine
-            min_pH=0,
-            max_pH=14,
-            min_charge=-3,
-            max_charge=3,
-            compute_solvation_energy=True
+            initial_smiles="C1CCOC(=O)C1=C[C@@H](OC(CC)CC)[C@H](NC(C)=O)[C@@H]([NH3+])C1CCC1",
+            compute_aqueous_solubility=True,
+            name="Oseltamivir macropka"
         )
 
-    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 5 minutes to complete.
     """
     
     try:
-        # Build workflow_data
-        workflow_data = {
-            "min_pH": min_pH,
-            "max_pH": max_pH,
-            "min_charge": min_charge,
-            "max_charge": max_charge,
-            "compute_solvation_energy": compute_solvation_energy,
-        }
-        
-        # Build the API request
-        data = {
-            "name": name,
-            "folder_uuid": folder_uuid,
-            "workflow_type": "macropka",
-            "workflow_data": workflow_data,
-            "initial_smiles": initial_smiles,
-            "max_credits": max_credits,
-        }
-        
         # Submit to API using rowan module
         result = rowan.submit_macropka_workflow(
             initial_smiles=initial_smiles,
@@ -98,7 +66,6 @@ def submit_macropka_workflow(
             min_charge=min_charge,
             max_charge=max_charge,
             compute_solvation_energy=compute_solvation_energy,
-            compute_aqueous_solubility=compute_aqueous_solubility,
             name=name,
             folder_uuid=folder_uuid if folder_uuid else None,
             max_credits=max_credits if max_credits > 0 else None

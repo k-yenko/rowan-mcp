@@ -33,22 +33,16 @@ def submit_fukui_workflow(
     
     Returns:
         Workflow object representing the submitted workflow
-        
+
     Example:
-        # Basic Fukui indices
+        # Benzoic Acid Fukui
         result = submit_fukui_workflow(
-            initial_molecule="CC(=O)O"
+            initial_molecule="C1=CC=C(C=C1)C(=O)O",
+            optimization_method="gfn2_xtb",
+            fukui_method="gfn1_xtb",
+            name="Benzoic Acid Fukui"
         )
-        
-        # With solvent and advanced methods
-        result = submit_fukui_workflow(
-            initial_molecule="c1ccccc1N",
-            optimization_method="r2scan_3c",
-            fukui_method="gfn2_xtb",
-            solvent_settings='{"solvent": "water", "model": "alpb"}'
-        )
-    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). this workflow can take 10 minutes to complete.
+
     """
     # Parse solvent_settings if provided
     parsed_solvent_settings = None

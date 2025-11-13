@@ -14,6 +14,10 @@ CLAUDE.md
 # MCP configuration (may contain tokens)
 .mcp.json
 
+# Test and example files
+/tests/
+/example_docs/
+
 # Personal compatibility notes
 GEMINI_MCP_COMPATIBILITY.md
 MCP_CHATGPT_GEMINI_COMPATIBILITY_ANALYSIS.md

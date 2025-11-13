@@ -22,6 +22,26 @@ from .functions_v2.submit_protein_cofolding_workflow import submit_protein_cofol
 from .functions_v2.submit_docking_workflow import submit_docking_workflow
 from .functions_v2.submit_macropka_workflow import submit_macropka_workflow
 
+# Import new v2.1.9 workflow functions
+from .functions_v2.submit_strain_workflow import submit_strain_workflow
+# from .functions_v2.submit_nmr_workflow import submit_nmr_workflow  # Commented out - requires subscription upgrade
+from .functions_v2.submit_ion_mobility_workflow import submit_ion_mobility_workflow
+from .functions_v2.submit_double_ended_ts_search_workflow import submit_double_ended_ts_search_workflow
+from .functions_v2.submit_pose_analysis_md_workflow import submit_pose_analysis_md_workflow
+from .functions_v2.submit_batch_docking_workflow import submit_batch_docking_workflow
+from .functions_v2.submit_msa_workflow import submit_msa_workflow
+from .functions_v2.submit_batch_workflow import batch_submit_workflow
+
+# Import generic-access workflow functions
+from .functions_v2.submit_admet_workflow import submit_admet_workflow
+# from .functions_v2.submit_bde_workflow import submit_bde_workflow  # Commented out - tricky return structure
+from .functions_v2.submit_conformers_workflow import submit_conformers_workflow
+# from .functions_v2.submit_electronic_properties_workflow import submit_electronic_properties_workflow  # Commented out - returns ~100MB data, needs visualization
+from .functions_v2.submit_hydrogen_bond_basicity_workflow import submit_hydrogen_bond_basicity_workflow
+# from .functions_v2.submit_molecular_dynamics_workflow import submit_molecular_dynamics_workflow  # Commented out - workflow in beta
+from .functions_v2.submit_multistage_opt_workflow import submit_multistage_opt_workflow
+from .functions_v2.submit_spin_states_workflow import submit_spin_states_workflow
+
 # Import molecule lookup functions
 from .functions_v2.molecule_lookup import (
     molecule_lookup,
@@ -77,6 +97,26 @@ mcp.tool()(submit_irc_workflow)
 mcp.tool()(submit_protein_cofolding_workflow)
 mcp.tool()(submit_docking_workflow)
 mcp.tool()(submit_macropka_workflow)
+
+# Register new v2.1.9 workflow tools
+mcp.tool()(submit_strain_workflow)
+# mcp.tool()(submit_nmr_workflow)  # Commented out - requires subscription upgrade
+mcp.tool()(submit_ion_mobility_workflow)
+mcp.tool()(submit_double_ended_ts_search_workflow)
+mcp.tool()(submit_pose_analysis_md_workflow)
+mcp.tool()(submit_batch_docking_workflow)
+mcp.tool()(submit_msa_workflow)
+mcp.tool()(batch_submit_workflow)
+
+# Register generic-access workflow tools
+mcp.tool()(submit_admet_workflow)
+# mcp.tool()(submit_bde_workflow)  # Commented out - tricky return structure
+mcp.tool()(submit_conformers_workflow)
+# mcp.tool()(submit_electronic_properties_workflow)  # Commented out - returns ~100MB data, needs visualization
+mcp.tool()(submit_hydrogen_bond_basicity_workflow)
+# mcp.tool()(submit_molecular_dynamics_workflow)  # Commented out - workflow in beta
+mcp.tool()(submit_multistage_opt_workflow)
+mcp.tool()(submit_spin_states_workflow)
 
 # Register molecule lookup tools
 mcp.tool()(molecule_lookup)

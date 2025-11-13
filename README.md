@@ -113,9 +113,20 @@ uv run python -m rowan_mcp
 
 ## **Available Tools**
 
+**Total: 48 MCP Tools**
+- 28 Dedicated Workflow Functions (all workflows from Rowan v2.1.9)
+- 1 Batch Workflow Function
+- 3 Molecule Lookup Tools
+- 10 Workflow Management Tools
+- 6 Protein Management Tools
+
+---
+
 ### Chemistry Calculations
 - `submit_basic_calculation_workflow` - Energy, optimization, frequencies with multiple engines (omol25, xtb, psi4)
 - `submit_conformer_search_workflow` - Conformational search with multiple search modes (rapid/careful/meticulous)
+- `submit_conformers_workflow` - Conformer generation and enumeration (different from conformer_search)
+- `submit_multistage_opt_workflow` - Multi-stage geometry optimization with sequential accuracy levels
 - `submit_scan_workflow` - Molecular scans (dihedral, bond, angle) with wavefront propagation
 - `submit_irc_workflow` - Intrinsic reaction coordinate calculations for transition states
 
@@ -126,13 +137,34 @@ uv run python -m rowan_mcp
 - `submit_redox_potential_workflow` - Electrochemical reduction/oxidation potentials
 - `submit_descriptors_workflow` - ML-ready molecular descriptors and features
 - `submit_tautomer_search_workflow` - Tautomer enumeration with reckless/rapid/careful modes
+- `submit_admet_workflow` - ADME/Tox property predictions for drug discovery
+- `submit_hydrogen_bond_basicity_workflow` - Hydrogen bond basicity (pKBHX) predictions
 
-### Reactivity Analysis  
+### Reactivity Analysis
 - `submit_fukui_workflow` - Fukui indices for electrophilic/nucleophilic reactivity sites
 
+### Electronic Structure
+- `submit_spin_states_workflow` - Spin state energy calculations for different multiplicities
+
+### Spectroscopy & Analysis
+<!-- - `submit_nmr_workflow` - NMR chemical shift predictions (¹H and ¹³C NMR spectra) [Requires subscription upgrade] -->
+- `submit_ion_mobility_workflow` - Ion mobility mass spectrometry collision cross-section (CCS) predictions
+- `submit_strain_workflow` - Molecular strain energy calculations for rings and cages
+
+### Transition States & Reactions
+- `submit_double_ended_ts_search_workflow` - Transition state search from reactant and product structures
+- `submit_pose_analysis_md_workflow` - Molecular dynamics simulations on docked protein-ligand complexes
+
 ### Protein & Drug Discovery
-- `submit_docking_workflow` - Protein-ligand docking with conformer search and optimization
+- `submit_docking_workflow` - Protein-ligand docking with multiple executables (Vina, QVina2, Smina)
+- `submit_batch_docking_workflow` - High-throughput docking for virtual screening campaigns
 - `submit_protein_cofolding_workflow` - Multi-protein and protein-ligand cofolding predictions
+- `submit_msa_workflow` - Multiple sequence alignment for protein structure prediction
+
+### Batch Processing
+- `batch_submit_workflow` - Submit multiple molecules through any workflow type for high-throughput processing
+
+---
 
 ### Molecule Management
 - `molecule_lookup` - Convert molecule names, CAS numbers, IUPAC names to SMILES
@@ -164,6 +196,17 @@ uv run python -m rowan_mcp
 - Python 3.11+
 - Rowan API key
 - MCP-compatible AI assistant (Claude Desktop, etc.)
+
+## **Recent Updates**
+
+### Latest Fixes (November 2025)
+- ✅ **Fixed `double_ended_ts_search`**: Corrected Settings parameter structure (`basis_set` instead of `basis`)
+- ✅ **Fixed `spin_states`**: Now correctly extracts multiplicities from charge/multiplicity pairs
+- 🔧 **Streamlined workflows**: Removed workflows better suited for web interface (large data outputs, beta features)
+
+All workflow implementations now match the exact Rowan API specification from the stjames-public repository.
+
+---
 
 ## **Getting Help**
 

@@ -45,8 +45,8 @@ def submit_scan_workflow(
             calculation_method="GFN2-xTB",
             calculation_engine="xtb"
         )
-    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 40 minutes to complete.
+
+    This workflow can take 40 minutes to complete.
     """
     # Parse scan_settings if provided
     parsed_scan_settings = None

@@ -43,8 +43,7 @@ def submit_descriptors_workflow(
             name="Caffeine Descriptors"
         )
 
-    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow typically takes 10-30 seconds to complete.
+    This workflow typically takes 10-30 seconds to complete.
     """
     
     result = rowan.submit_descriptors_workflow(

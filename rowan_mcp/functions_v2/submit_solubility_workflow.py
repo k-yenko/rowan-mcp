@@ -46,8 +46,8 @@ def submit_solubility_workflow(
             solvents='["O", "CCO", "CCCCCC"]',
             temperatures='[273.15, 298.15, 323.15]'
         )
-    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 5 minutes to complete.
+
+    This workflow can take 5 minutes to complete.
     """
     
     # Parse solvents parameter - handle string input
