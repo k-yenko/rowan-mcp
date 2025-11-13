@@ -12,7 +12,6 @@ def submit_redox_potential_workflow(
     initial_molecule: Annotated[str, "SMILES string for redox potential calculation"],
     reduction: Annotated[bool, "Whether to calculate reduction potential (gaining electron)"] = False,
     oxidization: Annotated[bool, "Whether to calculate oxidation potential (losing electron)"] = True,
-    mode: Annotated[str, "Calculation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)"] = "rapid",
     name: Annotated[str, "Workflow name for identification and tracking"] = "Redox Potential Workflow",
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
     max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0
@@ -23,7 +22,6 @@ def submit_redox_potential_workflow(
         initial_molecule: SMILES string for redox potential calculation
         reduction: Whether to calculate reduction potential (gaining electron)
         oxidization: Whether to calculate oxidation potential (losing electron)
-        mode: Calculation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)
         name: Workflow name for identification and tracking
         folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
         max_credits: Maximum credits to spend on this calculation. 0 for no limit.
@@ -35,22 +33,21 @@ def submit_redox_potential_workflow(
         Workflow object representing the submitted workflow
         
     Example:
-        # Simple redox potential from SMILES
+        # Benzoic acid redox potential
         result = submit_redox_potential_workflow(
-            initial_molecule="Cc1ccccc1",  # Toluene
-            reduction=True,
+            initial_molecule="C1=CC=C(C=C1)C(=O)O",
             oxidization=True,
-            name="Toluene Redox Potential"
+            reduction=True,
+            name="Benzoic Acid Redox Potential"
         )
-    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 20 minutes to complete.
+
     """
     
     result = rowan.submit_redox_potential_workflow(
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
         reduction=reduction,
         oxidization=oxidization,
-        mode=mode,
+        mode="rapid",
         name=name,
         folder_uuid=folder_uuid if folder_uuid else None,
         max_credits=max_credits if max_credits > 0 else None

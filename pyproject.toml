@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rowan-mcp"
-version = "2.0.1"
+version = "2.3.0"
 description = "Model Context Protocol server for Rowan computational chemistry platform"
 authors = [
     {name = "Katherine Yenko", email = "katherineayenko@gmail.com"}
@@ -25,8 +25,8 @@ classifiers = [
 ]
 dependencies = [
     "fastmcp>=2.11.3",
-    "rowan-python>=2.1.2",
-    "stjames>=0.0.83",
+    "rowan-python>=2.1.9",
+    "stjames>=0.0.125",
     "pydantic>=2.0.0",
     "typing-extensions>=4.0.0",
     "uvicorn>=0.24.0",

@@ -9,7 +9,6 @@ import stjames
 
 def submit_conformer_search_workflow(
     initial_molecule: Annotated[str, "SMILES string representing the initial structure"],
-    conf_gen_mode: Annotated[str, "Conformer generation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)"] = "rapid",
     final_method: Annotated[str, "Final optimization method (e.g., 'aimnet2_wb97md3', 'r2scan_3c', 'wb97x-d3_def2-tzvp')"] = "aimnet2_wb97md3",
     solvent: Annotated[str, "Solvent for implicit solvation (SMILES or name). Empty string for vacuum"] = "",
     transition_state: Annotated[bool, "Whether to search for transition state conformers"] = False,
@@ -21,7 +20,6 @@ def submit_conformer_search_workflow(
     
     Args:
         initial_molecule: SMILES string representing the initial structure
-        conf_gen_mode: Conformer generation mode: 'rapid' (fast), 'careful' (balanced), or 'meticulous' (thorough)
         final_method: Final optimization method (e.g., 'aimnet2_wb97md3', 'r2scan_3c', 'wb97x-d3_def2-tzvp')
         solvent: Solvent for implicit solvation (e.g., 'water', 'ethanol', 'dmso'). Empty string for gas phase.
         transition_state: Whether to search for transition state conformers
@@ -29,36 +27,17 @@ def submit_conformer_search_workflow(
         folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
         max_credits: Maximum credits to spend on this calculation. 0 for no limit.
     
-    Conformer Generation Modes:
-    - 'rapid': RDKit/MMFF, 300 conformers, 0.10 Å RMSD cutoff (recommended for most work)
-    - 'careful': CREST/GFN-FF quick mode, 150 conformers max
-    - 'meticulous': CREST/GFN2-xTB normal mode, 500 conformers max
+    Uses rapid conformer generation mode (RDKit/MMFF, 300 conformers, 0.10 Å RMSD cutoff)
     
     Returns:
         Workflow object representing the submitted workflow
-        
-    Examples:
-        # Simple diethyl ether conformer search
+
+    Example:
+        # Diethyl ether conformer search
         result = submit_conformer_search_workflow(
             initial_molecule="CCOCC"
         )
-        
-        # Basic butane conformer search with rapid mode
-        result = submit_conformer_search_workflow(
-            initial_molecule="CCCC",
-            conf_gen_mode="rapid"
-        )
-        
-        # Careful search with solvent
-        result = submit_conformer_search_workflow(
-            initial_molecule="CC(C)CC(=O)O",
-            conf_gen_mode="careful",
-            solvent="water",
-            final_method="r2scan_3c"
-        )
 
-    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take up to 20 minutes to complete.
     """
 
     try:
@@ -131,7 +110,7 @@ def submit_conformer_search_workflow(
         # Build workflow_data
         workflow_data = {
             "multistage_opt_settings": msos_dict,
-            "conf_gen_mode": conf_gen_mode,
+            "conf_gen_mode": "rapid",
             "mso_mode": "manual",
             "solvent": solvent if solvent else None,
             "transition_state": transition_state,

@@ -1607,7 +1607,7 @@ wheels = [
 
 [[package]]
 name = "rowan-mcp"
-version = "2.0.1"
+version = "2.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
@@ -1650,8 +1650,8 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "rdkit", specifier = ">=2025.3.2" },
-    { name = "rowan-python", specifier = ">=2.1.2" },
-    { name = "stjames", specifier = ">=0.0.83" },
+    { name = "rowan-python", specifier = ">=2.1.9" },
+    { name = "stjames", specifier = ">=0.0.125" },
     { name = "typing-extensions", specifier = ">=4.0.0" },
     { name = "uvicorn", specifier = ">=0.24.0" },
 ]
@@ -1659,7 +1659,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "rowan-python"
-version = "2.1.2"
+version = "2.1.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
@@ -1668,9 +1668,9 @@ dependencies = [
     { name = "setuptools" },
     { name = "stjames" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9c/e2/d432aca774e02639fc209b79020addd1cf207c3ee9bfe694c9dd4164e9f5/rowan_python-2.1.2.tar.gz", hash = "sha256:360d905be66e8c8e22603b93068d6bbedd97815856c65a291ef93dcb27558734", size = 504188, upload-time = "2025-08-26T15:14:41.483Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e9/3d/baa817ee998d7c6f1a1672ccec1a68288e20176e49a0f78c77690c452a5d/rowan_python-2.1.9.tar.gz", hash = "sha256:abf43e9f5dc026dbce970aca5b6b08efcd389b51783c09e0508833cf0b5eff41", size = 512712, upload-time = "2025-11-10T21:01:02.665Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/26/70/b38323d8ac6b765132705a87911d139b67f8336511efa99f6030be10cdd3/rowan_python-2.1.2-py3-none-any.whl", hash = "sha256:fb75fb75f1c0e3de6fa3bfb4ecafe6068098222f7b6d9aa5adb0a73a6aff3a03", size = 21430, upload-time = "2025-08-26T15:14:40.174Z" },
+    { url = "https://files.pythonhosted.org/packages/cc/66/95fc3c3e1cf28c9646360ced226613a944f34080ec85e140284a072b3b47/rowan_python-2.1.9-py3-none-any.whl", hash = "sha256:f777a422bd23815409cf0c9e7f722e5cda62f0a667850dcfc213bb75bd77e338", size = 24575, upload-time = "2025-11-10T21:01:01.394Z" },
 ]
 
 [[package]]
@@ -1800,7 +1800,7 @@ wheels = [
 
 [[package]]
 name = "stjames"
-version = "0.0.102"
+version = "0.0.125"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "more-itertools" },
@@ -1809,9 +1809,9 @@ dependencies = [
     { name = "rdkit" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/04/da/2abdcbb15d6754a131152eeb3579684fddc48696e12b20e5215e4937686f/stjames-0.0.102.tar.gz", hash = "sha256:3394873cd5efab9fde62053c1394fd3a5960bc55873e2a8d1cb09834f55f3512", size = 83351, upload-time = "2025-08-22T21:03:39.579Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/4f/b88da3f352af7a820f2f039f3d3a0787db76331e87313258beb33c57b734/stjames-0.0.125.tar.gz", hash = "sha256:2564d4ed05b0a2d18bc8b89f005f31b6d0abfa1d7554553792cc8de43c2e966d", size = 92052, upload-time = "2025-11-04T19:29:27.528Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ed/96/f3b274b32a711fad65f317731411a6fefc65c6d738926dc9d1e607bddb81/stjames-0.0.102-py3-none-any.whl", hash = "sha256:234b3e9680d1eaaf613cb8cc9f2084f8fe4920d0ac566e1e503c9e8d4ff73a4e", size = 97027, upload-time = "2025-08-22T21:03:38.341Z" },
+    { url = "https://files.pythonhosted.org/packages/1c/d8/d1447946b6624114a6e997fd6b2b82def7cb3f8fb74a047dd960ffca8a04/stjames-0.0.125-py3-none-any.whl", hash = "sha256:4e4a3f61d435dd9bd77be1ec47b23495fb923558f03d35f66282271556228abd", size = 108503, upload-time = "2025-11-04T19:29:26.229Z" },
 ]
 
 [[package]]

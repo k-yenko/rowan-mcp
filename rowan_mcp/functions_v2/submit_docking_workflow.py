@@ -11,23 +11,30 @@ from stjames.pdb import PDB, read_pdb
 
 def submit_docking_workflow(
     protein: Annotated[str, "Protein UUID or PDB content/path for docking target"],
-    pocket: Annotated[str, "JSON string defining binding pocket coordinates or 'auto' for automatic detection"],
+    pocket: Annotated[str, "JSON string defining binding pocket as [[x1,y1,z1], [x2,y2,z2]] corner coordinates"],
     initial_molecule: Annotated[str, "SMILES string of the ligand molecule to dock"],
-    do_csearch: Annotated[bool, "Whether to perform conformer search before docking"] = True,
-    do_optimization: Annotated[bool, "Whether to optimize docked poses"] = True,
-    do_pose_refinement: Annotated[bool, "Whether to optimize output poses"] = False,
+    executable: Annotated[str, "Docking software to use: 'vina', 'qvina2', 'smina'"] = "vina",
+    scoring_function: Annotated[str, "Scoring function: 'vina', 'vinardo', 'ad4'"] = "vinardo",
+    exhaustiveness: Annotated[float, "Search exhaustiveness parameter (higher = more thorough, slower)"] = 8,
+    do_csearch: Annotated[bool, "Whether to perform conformer search before docking"] = False,
+    do_optimization: Annotated[bool, "Whether to optimize docked poses"] = False,
+    do_pose_refinement: Annotated[bool, "Whether to optimize output poses with non-rotatable bond refinement"] = False,
     name: Annotated[str, "Workflow name for identification and tracking"] = "Docking Workflow",
     folder_uuid: Annotated[str, "UUID of folder to organize this workflow. Empty string uses default folder"] = "",
     max_credits: Annotated[int, "Maximum credits to spend on this calculation. 0 for no limit"] = 0,
 ):
     """Submits a Docking workflow to the API.
-    
+
     Args:
         protein: Protein for docking. Can be: 1) PDB ID string (e.g., '1HCK'), 2) Protein UUID string, 3) JSON string dict with 'pdb_id' and optional 'name'
-        pocket: Binding pocket as JSON string "[[x1,y1,z1], [x2,y2,z2]]" defining box corners for docking site
+        pocket: Binding pocket as JSON string "[[x1,y1,z1], [x2,y2,z2]]" defining two opposite corners of the docking box
         initial_molecule: SMILES string representing the ligand
-        do_csearch: Whether to perform conformational search on the ligand before docking
-        do_optimization: Whether to optimize the ligand geometry before docking
+        executable: Docking software (default: 'vina'). Options: 'vina', 'qvina2', 'smina'
+        scoring_function: Scoring function (default: 'vinardo'). Options: 'vina', 'vinardo', 'ad4'
+        exhaustiveness: Search exhaustiveness (default: 8). Higher values = more thorough but slower
+        do_csearch: Whether to perform conformational search on the ligand before docking (default: False)
+        do_optimization: Whether to optimize the ligand geometry before docking (default: False)
+        do_pose_refinement: Whether to optimize non-rotatable bonds in output poses (default: False)
         name: Workflow name for identification and tracking
         folder_uuid: UUID of folder to organize this workflow. Empty string uses default folder.
         max_credits: Maximum credits to spend on this calculation. 0 for no limit.
@@ -45,14 +52,14 @@ def submit_docking_workflow(
             initial_molecule="CCC(C)(C)NC1=NCC2(CCC(=O)C2C)N1",
             name="CDK2 Docking"
         )
-        
+
         # Example 2: Using dict with PDB ID and custom name
         result = submit_docking_workflow(
             protein='{"pdb_id": "1HCK", "name": "My CDK2 Protein"}',
             pocket="[[103.55, 100.59, 82.99], [27.76, 32.67, 48.79]]",
             initial_molecule="CCC(C)(C)NC1=NCC2(CCC(=O)C2C)N1"
         )
-        
+
         # Example 3: Using existing protein UUID
         result = submit_docking_workflow(
             protein="abc123-def456-...",  # Protein UUID
@@ -60,8 +67,6 @@ def submit_docking_workflow(
             initial_molecule="CCC(C)(C)NC1=NCC2(CCC(=O)C2C)N1"
         )
 
-    After submitting a workflow, use exponential backoff when checking status. Wait at least 10 seconds before the first check, 
-    then double the wait time between subsequent checks (10s → 20s → 40s → 60s → 120s max). This workflow can take 30 minutes to complete. 
     """
     import logging
     logger = logging.getLogger(__name__)
@@ -216,11 +221,11 @@ def submit_docking_workflow(
         pocket = json.loads(pocket)
     except (json.JSONDecodeError, ValueError) as e:
         raise ValueError(f"Invalid pocket format: {pocket}. Expected JSON string like \"[[x1,y1,z1], [x2,y2,z2]]\"")
-    
+
     # Ensure pocket is a list of lists
     if not isinstance(pocket, list) or len(pocket) != 2:
         raise ValueError(f"Pocket must be a list with exactly 2 coordinate lists")
-    
+
     # Ensure each element is a list of floats
     pocket = [list(coord) for coord in pocket]
     
@@ -230,6 +235,9 @@ def submit_docking_workflow(
         protein=protein_obj,
         pocket=pocket,
         initial_molecule=stjames.Molecule.from_smiles(initial_molecule),
+        executable=executable,
+        scoring_function=scoring_function,
+        exhaustiveness=exhaustiveness,
         do_csearch=do_csearch,
         do_optimization=do_optimization,
         do_pose_refinement=do_pose_refinement,
