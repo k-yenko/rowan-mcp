@@ -196,7 +196,7 @@ All workflow implementations now match the exact Rowan API specification from th
 
 ## **Experimental: Desktop Extension (Work in Progress)**
 
-We're developing a one-click desktop extension (.dxt) for Claude Desktop that eliminates command-line setup. This feature is currently being refined for optimal compatibility with the MCP extension system.
+I'm developing a one-click desktop extension (.dxt) for Claude Desktop that eliminates command-line setup. This feature is currently being refined for optimal compatibility with the MCP extension system.
 
 **Current status:** Installation workflow needs refinement for seamless user experience.
 
