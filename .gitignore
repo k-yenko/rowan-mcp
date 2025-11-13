@@ -17,6 +17,15 @@ CLAUDE.md
 # Test and example files
 /tests/
 /example_docs/
+test_*.py
+*_test.py
+test_*.txt
+debug_*.py
+*_debug.py
+
+# Log files
+*.log
+logs/
 
 # Personal compatibility notes
 GEMINI_MCP_COMPATIBILITY.md
