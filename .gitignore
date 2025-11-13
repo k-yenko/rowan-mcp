@@ -32,3 +32,13 @@ GEMINI_MCP_COMPATIBILITY.md
 MCP_CHATGPT_GEMINI_COMPATIBILITY_ANALYSIS.md
 ROWAN_MCP_TEST_QUERIES.md
 ROWAN_MCP_TOOLS.md
+TOOLS_DOCUMENTATION.md
+
+# Large archive/data files
+*.dxt
+*.dxz
+
+# OpenRouter experimental clients (not part of core MCP server)
+openrouter_client.py
+openrouter_stdio_client.py
+setup_openrouter.py
