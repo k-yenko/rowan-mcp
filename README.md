@@ -122,7 +122,7 @@ uv run python -m rowan_mcp
 - `submit_solubility_workflow` - Solubility predictions across multiple solvents and temperatures
 - `submit_redox_potential_workflow` - Electrochemical reduction/oxidation potentials
 - `submit_descriptors_workflow` - ML-ready molecular descriptors and features
-- `submit_tautomer_search_workflow` - Tautomer enumeration with reckless/rapid/careful modes
+- `submit_tautomer_search_workflow` - Tautomer enumeration
 - `submit_admet_workflow` - ADME/Tox property predictions for drug discovery
 - `submit_hydrogen_bond_basicity_workflow` - Hydrogen bond basicity (pKBHX) predictions
 
@@ -133,7 +133,6 @@ uv run python -m rowan_mcp
 - `submit_spin_states_workflow` - Spin state energy calculations for different multiplicities
 
 ### Spectroscopy & Analysis
-<!-- - `submit_nmr_workflow` - NMR chemical shift predictions (¹H and ¹³C NMR spectra) [Requires subscription upgrade] -->
 - `submit_ion_mobility_workflow` - Ion mobility mass spectrometry collision cross-section (CCS) predictions
 - `submit_strain_workflow` - Molecular strain energy calculations for rings and cages
 
@@ -196,11 +195,9 @@ All workflow implementations now match the exact Rowan API specification from th
 
 ## **Experimental: Desktop Extension (Work in Progress)**
 
-I'm developing a one-click desktop extension (.dxt) for Claude Desktop that eliminates command-line setup. This feature is currently being refined for optimal compatibility with the MCP extension system.
+Working on a one-click desktop extension (.dxt) for Claude Desktop that eliminates command-line setup! This feature is currently being refined for compatibility with the MCP extension system.
 
-**Current status:** Installation workflow needs refinement for seamless user experience.
-
-For now, we recommend using the standard Package Installation method above, which is fully tested and reliable.
+For now, use the standard Package Installation method above, which is fully tested and reliable.
 
 ---
 
