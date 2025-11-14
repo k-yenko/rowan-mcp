@@ -182,15 +182,6 @@ uv run python -m rowan_mcp
 - Rowan API key
 - MCP-compatible AI assistant (Claude Desktop, etc.)
 
-## **Recent Updates**
-
-### Latest Fixes (November 2025)
-- ✅ **Fixed `double_ended_ts_search`**: Corrected Settings parameter structure (`basis_set` instead of `basis`)
-- ✅ **Fixed `spin_states`**: Now correctly extracts multiplicities from charge/multiplicity pairs
-- 🔧 **Streamlined workflows**: Removed workflows better suited for web interface (large data outputs, beta features)
-
-All workflow implementations now match the exact Rowan API specification from the stjames-public repository.
-
 ---
 
 ## **Experimental: Desktop Extension (Work in Progress)**
