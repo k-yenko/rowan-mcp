@@ -182,11 +182,14 @@ def workflow_fetch_latest(
     in_place: Annotated[bool, "Whether to update the workflow object in place"] = False
 ) -> Dict[str, Any]:
     """Fetch the latest workflow data from the database with explicit status information.
-    
+
+    POLLING GUIDANCE: Do NOT call repeatedly in tight loops. Workflows take time (5-40+ min).
+    Poll at most once per minute. Wait 1+ minute before first check to avoid loop detection.
+
     Args:
         workflow_uuid: UUID of the workflow to fetch latest data
         in_place: Whether to update the workflow object in place
-    
+
     Updates the workflow object with the most recent status and results.
     IMPORTANT: Workflow duration varies widely - simple calculations finish in seconds,
     complex workflows (conformer searches, large proteins, docking) can take 10-30 minutes.
@@ -417,10 +420,13 @@ def workflow_is_finished(
     workflow_uuid: Annotated[str, "UUID of the workflow to check completion status"]
 ) -> Dict[str, Any]:
     """Check if a workflow is finished with explicit status information.
-    
+
+    POLLING GUIDANCE: Workflows take time (5-40+ min). Do NOT poll more than once per
+    minute to avoid loop detection. Wait at least 5 minutes before first check.
+
     Args:
         workflow_uuid: UUID of the workflow to check completion status
-    
+
     Returns:
         Dictionary with detailed workflow completion status:
         - is_finished: True if workflow has completed (successful OR failed)
@@ -428,7 +434,7 @@ def workflow_is_finished(
         - is_failed: True if status is FAILED (3)
         - status_code: Numeric status code
         - status_description: Human-readable status description
-        
+
     IMPORTANT: is_finished=True does not mean success! Check is_successful and is_failed.
     """
     workflow = rowan.retrieve_workflow(workflow_uuid)
