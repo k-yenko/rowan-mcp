@@ -5,7 +5,7 @@ This package provides MCP (Model Context Protocol) server functionality
 for integrating with Rowan's computational chemistry platform.
 """
 
-__version__ = "2.3.1"
+__version__ = "2.3.2"
 __author__ = "Kat Yenko"
 __description__ = "MCP server for Rowan computational chemistry platform"
 
