@@ -99,11 +99,11 @@ uv run python -m rowan_mcp
 
 ## **Available Tools**
 
-**Total: 48 MCP Tools**
+**Total: 45 MCP Tools**
 - 28 Dedicated Workflow Functions (all workflows from Rowan v2.1.9)
 - 1 Batch Workflow Function
 - 3 Molecule Lookup Tools
-- 10 Workflow Management Tools
+- 7 Workflow Management Tools
 - 6 Protein Management Tools
 
 ---
@@ -165,16 +165,13 @@ uv run python -m rowan_mcp
 - `sanitize_protein` - Clean and validate protein structures
 
 ### Workflow Management
-- `workflow_get_status` - Check workflow status with detailed progress information
+- `retrieve_workflow` - Get complete workflow data, status, and results (single source of truth)
 - `workflow_stop` - Stop running workflows
 - `workflow_delete` - Remove workflows from workspace
-- `retrieve_workflow` - Get complete workflow data and results
 - `retrieve_calculation_molecules` - Extract molecular structures from calculations
 - `list_workflows` - List all workflows with filtering options
 - `workflow_update` - Modify workflow parameters
-- `workflow_is_finished` - Check if workflow is complete
 - `workflow_delete_data` - Remove workflow data while keeping metadata
-- `workflow_fetch_latest` - Get most recent workflow results
 
 ## **Requirements**
 
