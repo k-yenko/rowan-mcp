@@ -19,55 +19,69 @@ STATUS_DESCRIPTIONS = {
 }
 
 
-def _get_status_info(status_code: int) -> Dict[str, Any]:
-    """Convert numeric status code to explicit status information.
-    
+def _workflow_to_dict(workflow: rowan.Workflow) -> Dict[str, Any]:
+    """Convert Workflow object to dictionary with all fields.
+
+    This is the single source of truth for workflow serialization.
+    Uses direct attribute access to avoid redundant API calls.
+
     Args:
-        status_code: Numeric status code from workflow
-        
+        workflow: Rowan Workflow object (already fetched from API)
+
     Returns:
-        Dictionary with status code, description, and success flag
+        Dictionary with all workflow fields including computed status flags
+
+    Example:
+        >>> workflow = rowan.retrieve_workflow("uuid-here")
+        >>> data = _workflow_to_dict(workflow)
+        >>> if data["is_finished"] and data["is_successful"]:
+        ...     results = data["data"]
     """
-    return {
-        "status_code": status_code,
-        "status_description": STATUS_DESCRIPTIONS.get(status_code, f"UNKNOWN_STATUS_{status_code}"),
-        "is_successful": status_code == 2,  # Only COMPLETED_OK is successful
-        "is_failed": status_code == 3,      # Explicitly flag failures
-        "is_running": status_code == 1       # Explicitly flag running jobs
+    # Direct attribute access - NO API calls
+    status_code = workflow.status
+
+    # Compute is_finished locally instead of calling workflow.is_finished()
+    # which would make another API call
+    is_finished = status_code in {
+        2,  # COMPLETED_OK
+        3,  # FAILED
+        4,  # STOPPED
     }
 
-
-def workflow_get_status(
-    workflow_uuid: Annotated[str, "UUID of the workflow to check status"]
-) -> Dict[str, Any]:
-    """Get the current status of a workflow with explicit status information.
-    
-    Args:
-        workflow_uuid: UUID of the workflow to check status
-
-    IMPORTANT: Workflow duration varies widely - simple calculations finish in seconds,
-    complex workflows (conformer searches, large proteins, docking) can take 10-30 minutes.
-
-    Returns:
-        Dictionary with detailed status information including:
-        - status_code: Numeric status (0=QUEUED, 1=RUNNING, 2=COMPLETED_OK, 3=FAILED, 4=STOPPED, 5=AWAITING_QUEUE)
-        - status_description: Human-readable status description
-        - is_successful: True only if status is COMPLETED_OK (2)
-        - is_failed: True if status is FAILED (3)
-        - is_finished: True if workflow has completed (successful OR failed)
-        
-    Note: A workflow can be "is_finished=true" but still "is_failed=true" - 
-          check both flags to determine actual outcome.
-    """
-    workflow = rowan.retrieve_workflow(workflow_uuid)
-    status_code = workflow.get_status()
-    status_info = _get_status_info(status_code)
-    
     return {
-        "uuid": workflow_uuid,
+        # Identifiers
+        "uuid": workflow.uuid,
         "name": workflow.name,
-        "is_finished": workflow.is_finished(),
-        **status_info
+        "workflow_type": workflow.workflow_type,
+        "parent_uuid": workflow.parent_uuid,
+
+        # Status information (computed from direct attribute access)
+        "status_code": status_code,
+        "status_description": STATUS_DESCRIPTIONS.get(status_code, f"UNKNOWN_STATUS_{status_code}"),
+        "is_finished": is_finished,
+        "is_successful": status_code == 2,  # COMPLETED_OK
+        "is_failed": status_code == 3,      # FAILED
+        "is_running": status_code == 1,     # RUNNING
+
+        # Timestamps
+        "created_at": workflow.created_at,
+        "updated_at": workflow.updated_at,
+        "started_at": workflow.started_at,
+        "completed_at": workflow.completed_at,
+
+        # Results and data
+        "data": workflow.data,
+
+        # Metadata
+        "notes": workflow.notes,
+        "starred": workflow.starred,
+        "public": workflow.public,
+        "email_when_complete": workflow.email_when_complete,
+        "max_credits": workflow.max_credits,
+
+        # Resource usage
+        "elapsed": workflow.elapsed,
+        "credits_charged": workflow.credits_charged,
     }
 
 
@@ -76,63 +90,60 @@ def workflow_wait_for_result(
     workflow_uuid: Annotated[str, "UUID of the workflow to wait for completion"],
     poll_interval: Annotated[int, "Seconds between status checks while waiting"] = 5
 ) -> Dict[str, Any]:
-    """Wait for a workflow to complete and return the result with explicit status.
-    
+    """Wait for a workflow to complete and return the result.
+
+    WARNING: This function BLOCKS and can cause MCP timeouts!
+
+    Workflow duration varies widely:
+    - Simple calculations: seconds
+    - Complex workflows (conformer searches, docking): 10-30+ minutes
+
+    Consider using retrieve_workflow() with manual polling instead of this blocking function.
+
     Args:
         workflow_uuid: UUID of the workflow to wait for completion
-        poll_interval: Seconds between status checks while waiting
-    
-    WARNING: This function blocks and can cause MCP timeouts! Workflow duration varies 
-    widely - simple calculations finish in seconds, complex workflows (conformer searches, 
-    large proteins, docking) can take 10-30 minutes. Consider using workflow_get_status 
-    with adaptive polling instead.
-    
-    Essential for chaining dependent workflows where subsequent calculations 
-    require results from previous ones. Blocks execution until the workflow 
-    completes, then returns the full results.
-    
-    IMPORTANT: This function waits until the workflow is "finished" but that 
-    includes FAILED workflows. Always check "is_successful" and "is_failed" 
-    flags in the response to determine if the workflow actually succeeded.
-    
-    Common use cases:
-    - Conformer search → Redox potential for each conformer
-    - Optimization → Frequency calculation on optimized geometry
-    - Multiple sequential optimizations with different methods
-    - Any workflow chain where results feed into next calculation
-    
-    Example workflow chain:
-        1. Submit conformer search
-        2. Wait for conformer search to complete (using this function)
-        3. Check if is_successful=True before proceeding
-        4. Extract conformer geometries from results
-        5. Submit new workflows using those geometries
-    
+        poll_interval: Seconds between status checks while waiting (default: 5)
+
     Returns:
-        Dictionary containing the completed workflow data with explicit status information
+        Dictionary with complete workflow data including results
+
+    Important:
+        - This function waits until workflow is "finished" (includes FAILED workflows!)
+        - Always check "is_successful" and "is_failed" flags in the response
+        - Essential for chaining dependent workflows
+
+    Common Use Cases:
+        - Conformer search → Redox potential for each conformer
+        - Optimization → Frequency calculation on optimized geometry
+        - Sequential optimizations with different methods
+        - Any workflow chain where results feed into next calculation
+
+    Example:
+        >>> # Wait for workflow and check success
+        >>> result = workflow_wait_for_result("uuid-here", poll_interval=10)
+        >>>
+        >>> if result["is_successful"]:
+        ...     conformers = result["data"]["conformers"]
+        ...     # Submit new workflows using conformer data
+        >>> elif result["is_failed"]:
+        ...     print(f"Workflow failed: {result['status_description']}")
+
+    Raises:
+        RuntimeError: If wait fails or API errors occur
     """
-    workflow = rowan.retrieve_workflow(workflow_uuid)
-    
-    # Use the built-in wait_for_result method
-    workflow.wait_for_result(poll_interval=poll_interval)
-    
-    # Get explicit status information
-    status_info = _get_status_info(workflow.status)
-    
-    # Return complete workflow data with explicit status
-    return {
-        "uuid": workflow.uuid,
-        "name": workflow.name,
-        "created_at": workflow.created_at,
-        "updated_at": workflow.updated_at,
-        "completed_at": workflow.completed_at,
-        "parent_uuid": workflow.parent_uuid,
-        "workflow_type": workflow.workflow_type,
-        "data": workflow.data,
-        "credits_charged": workflow.credits_charged,
-        "elapsed": workflow.elapsed,
-        **status_info
-    }
+    try:
+        workflow = rowan.retrieve_workflow(workflow_uuid)
+
+        # Use the built-in wait_for_result method (blocks until complete)
+        workflow.wait_for_result(poll_interval=poll_interval)
+
+        # Use helper function for consistent conversion
+        return _workflow_to_dict(workflow)
+
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to wait for workflow '{workflow_uuid}' completion: {str(e)}"
+        ) from e
 
 
 def workflow_stop(
@@ -177,103 +188,81 @@ def workflow_delete(
     }
 
 
-def workflow_fetch_latest(
-    workflow_uuid: Annotated[str, "UUID of the workflow to fetch latest data"],
-    in_place: Annotated[bool, "Whether to update the workflow object in place"] = False
-) -> Dict[str, Any]:
-    """Fetch the latest workflow data from the database with explicit status information.
-
-    POLLING GUIDANCE: Do NOT call repeatedly in tight loops. Workflows take time (5-40+ min).
-    Poll at most once per minute. Wait 1+ minute before first check to avoid loop detection.
-
-    Args:
-        workflow_uuid: UUID of the workflow to fetch latest data
-        in_place: Whether to update the workflow object in place
-
-    Updates the workflow object with the most recent status and results.
-    IMPORTANT: Workflow duration varies widely - simple calculations finish in seconds,
-    complex workflows (conformer searches, large proteins, docking) can take 10-30 minutes.
-
-    Returns:
-        Dictionary containing the updated workflow data with explicit status information:
-        - status_code: Numeric status (0=QUEUED, 1=RUNNING, 2=COMPLETED_OK, 3=FAILED, 4=STOPPED, 5=AWAITING_QUEUE)
-        - status_description: Human-readable status description
-        - is_successful: True only if status is COMPLETED_OK (2)
-        - is_failed: True if status is FAILED (3)
-    """
-    workflow = rowan.retrieve_workflow(workflow_uuid)
-    
-    # Fetch latest updates
-    workflow.fetch_latest(in_place=in_place)
-    
-    # Get explicit status information
-    status_info = _get_status_info(workflow.status)
-    
-    # Return workflow data as dict with explicit status
-    return {
-        "uuid": workflow.uuid,
-        "name": workflow.name,
-        "created_at": workflow.created_at,
-        "updated_at": workflow.updated_at,
-        "started_at": workflow.started_at,
-        "completed_at": workflow.completed_at,
-        "parent_uuid": workflow.parent_uuid,
-        "workflow_type": workflow.workflow_type,
-        "data": workflow.data,
-        "notes": workflow.notes,
-        "starred": workflow.starred,
-        "public": workflow.public,
-        "credits_charged": workflow.credits_charged,
-        "elapsed": workflow.elapsed,
-        "is_finished": workflow.is_finished(),
-        **status_info
-    }
-
-
 def retrieve_workflow(
     uuid: Annotated[str, "UUID of the workflow to retrieve"]
 ) -> Dict[str, Any]:
-    """Retrieve a workflow from the API with explicit status information.
-    
+    """Retrieve complete workflow data including status, results, and metadata.
+
+    This is THE primary function for getting workflow information in a single API call.
+    Returns all available workflow data including:
+    - Status information (status_code, is_finished, is_successful, is_failed, is_running)
+    - Results data (in 'data' field when workflow is complete)
+    - Metadata (name, timestamps, credits, notes, etc.)
+
     Args:
         uuid: UUID of the workflow to retrieve
-    
+
     Returns:
-        Dictionary containing the complete workflow data with explicit status information:
-        - status_code: Numeric status (0=QUEUED, 1=RUNNING, 2=COMPLETED_OK, 3=FAILED, 4=STOPPED, 5=AWAITING_QUEUE)
-        - status_description: Human-readable status description
-        - is_successful: True only if status is COMPLETED_OK (2)
-        - is_failed: True if status is FAILED (3)
-        
+        Dictionary with complete workflow data
+
+    Example:
+        >>> # Check status and get results in one call
+        >>> workflow = retrieve_workflow("workflow-uuid-here")
+        >>>
+        >>> if workflow["is_finished"]:
+        ...     if workflow["is_successful"]:
+        ...         results = workflow["data"]
+        ...         print(f"Success! Results: {results}")
+        ...         print(f"Credits used: {workflow['credits_charged']}")
+        ...     elif workflow["is_failed"]:
+        ...         print(f"Failed: {workflow['status_description']}")
+        >>> else:
+        ...     print(f"Still running: {workflow['status_description']}")
+        >>>
+        >>> # Poll for completion
+        >>> import time
+        >>> while not workflow["is_finished"]:
+        ...     time.sleep(60)  # Wait 1 minute
+        ...     workflow = retrieve_workflow(uuid)
+
     Raises:
-        HTTPError: If the API request fails
+        ValueError: If workflow UUID is invalid or workflow not found
+        RuntimeError: If API authentication fails or other API errors occur
     """
-    workflow = rowan.retrieve_workflow(uuid)
-    
-    # Get explicit status information
-    status_info = _get_status_info(workflow.status)
-    
-    # Convert workflow object to dict with explicit status
-    return {
-        "uuid": workflow.uuid,
-        "name": workflow.name,
-        "created_at": workflow.created_at,
-        "updated_at": workflow.updated_at,
-        "started_at": workflow.started_at,
-        "completed_at": workflow.completed_at,
-        "parent_uuid": workflow.parent_uuid,
-        "workflow_type": workflow.workflow_type,
-        "data": workflow.data,
-        "notes": workflow.notes,
-        "starred": workflow.starred,
-        "public": workflow.public,
-        "email_when_complete": workflow.email_when_complete,
-        "max_credits": workflow.max_credits,
-        "elapsed": workflow.elapsed,
-        "credits_charged": workflow.credits_charged,
-        "is_finished": workflow.is_finished(),
-        **status_info
-    }
+    try:
+        # Single API call gets all data
+        workflow = rowan.retrieve_workflow(uuid)
+
+        # Use helper function for consistent conversion with direct attribute access
+        return _workflow_to_dict(workflow)
+
+    except Exception as e:
+        # Check if it's an HTTP error with a response
+        if hasattr(e, 'response') and e.response is not None:
+            status_code = e.response.status_code
+
+            if status_code == 404:
+                raise ValueError(
+                    f"Workflow '{uuid}' not found. "
+                    f"Verify the UUID is correct and the workflow hasn't been deleted."
+                ) from e
+            elif status_code == 401:
+                raise RuntimeError(
+                    "Authentication failed. Check your ROWAN_API_KEY environment variable."
+                ) from e
+            elif status_code == 429:
+                raise RuntimeError(
+                    "Rate limit exceeded. Wait before making more requests."
+                ) from e
+            else:
+                raise RuntimeError(
+                    f"Failed to retrieve workflow '{uuid}': HTTP {status_code}"
+                ) from e
+        else:
+            # Not an HTTP error - could be network issue, invalid data, etc.
+            raise RuntimeError(
+                f"Failed to retrieve workflow '{uuid}': {str(e)}"
+            ) from e
 
 
 def list_workflows(
@@ -413,38 +402,6 @@ def workflow_update(
         "starred": workflow.starred,
         "public": workflow.public,
         "message": "Workflow updated successfully"
-    }
-
-
-def workflow_is_finished(
-    workflow_uuid: Annotated[str, "UUID of the workflow to check completion status"]
-) -> Dict[str, Any]:
-    """Check if a workflow is finished with explicit status information.
-
-    POLLING GUIDANCE: Workflows take time (5-40+ min). Do NOT poll more than once per
-    minute to avoid loop detection. Wait at least 5 minutes before first check.
-
-    Args:
-        workflow_uuid: UUID of the workflow to check completion status
-
-    Returns:
-        Dictionary with detailed workflow completion status:
-        - is_finished: True if workflow has completed (successful OR failed)
-        - is_successful: True only if status is COMPLETED_OK (2)
-        - is_failed: True if status is FAILED (3)
-        - status_code: Numeric status code
-        - status_description: Human-readable status description
-
-    IMPORTANT: is_finished=True does not mean success! Check is_successful and is_failed.
-    """
-    workflow = rowan.retrieve_workflow(workflow_uuid)
-    status_info = _get_status_info(workflow.status)
-    
-    return {
-        "uuid": workflow_uuid,
-        "name": workflow.name,
-        "is_finished": workflow.is_finished(),
-        **status_info
     }
 
 

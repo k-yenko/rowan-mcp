@@ -51,16 +51,13 @@ from .functions_v2.molecule_lookup import (
 
 # Import workflow management functions
 from .functions_v2.workflow_management_v2 import (
-    workflow_fetch_latest,
     workflow_wait_for_result,
-    workflow_get_status,
     workflow_stop,
     workflow_delete,
     retrieve_workflow,
     retrieve_calculation_molecules,
     list_workflows,
     workflow_update,
-    workflow_is_finished,
     workflow_delete_data
 )
 
@@ -124,16 +121,13 @@ mcp.tool()(batch_molecule_lookup)
 mcp.tool()(validate_smiles)
 
 # Register workflow management tools
-mcp.tool()(workflow_fetch_latest)
 # mcp.tool()(workflow_wait_for_result)  # Removed - all tools should be non-blocking
-mcp.tool()(workflow_get_status)
 mcp.tool()(workflow_stop)
 mcp.tool()(workflow_delete)
-mcp.tool()(retrieve_workflow)
+mcp.tool()(retrieve_workflow)  # THE single source of truth for workflow status & data
 mcp.tool()(retrieve_calculation_molecules)
 mcp.tool()(list_workflows)
 mcp.tool()(workflow_update)
-mcp.tool()(workflow_is_finished)
 mcp.tool()(workflow_delete_data)
 
 # Register protein management tools
