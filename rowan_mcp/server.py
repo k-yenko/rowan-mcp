@@ -79,6 +79,16 @@ from .functions_v2.folder_management_v2 import (
     update_folder
 )
 
+# Import project management functions
+from .functions_v2.project_management_v2 import (
+    create_project,
+    retrieve_project,
+    list_projects,
+    update_project,
+    delete_project,
+    get_default_project
+)
+
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -151,6 +161,14 @@ mcp.tool()(create_folder)
 mcp.tool()(retrieve_folder)
 mcp.tool()(list_folders)
 mcp.tool()(update_folder)
+
+# Register project management tools
+mcp.tool()(create_project)
+mcp.tool()(retrieve_project)
+mcp.tool()(list_projects)
+mcp.tool()(update_project)
+mcp.tool()(delete_project)
+mcp.tool()(get_default_project)
 
 # Validate required configuration
 if not os.getenv("ROWAN_API_KEY"):
