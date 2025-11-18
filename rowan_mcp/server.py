@@ -71,6 +71,14 @@ from .functions_v2.protein_management import (
     sanitize_protein
 )
 
+# Import folder management functions
+from .functions_v2.folder_management_v2 import (
+    create_folder,
+    retrieve_folder,
+    list_folders,
+    update_folder
+)
+
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -137,6 +145,12 @@ mcp.tool()(list_proteins)
 mcp.tool()(upload_protein)
 mcp.tool()(delete_protein)
 mcp.tool()(sanitize_protein)
+
+# Register folder management tools
+mcp.tool()(create_folder)
+mcp.tool()(retrieve_folder)
+mcp.tool()(list_folders)
+mcp.tool()(update_folder)
 
 # Validate required configuration
 if not os.getenv("ROWAN_API_KEY"):
