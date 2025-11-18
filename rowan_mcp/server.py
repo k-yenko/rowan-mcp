@@ -76,7 +76,8 @@ from .functions_v2.folder_management_v2 import (
     create_folder,
     retrieve_folder,
     list_folders,
-    update_folder
+    update_folder,
+    delete_folder
 )
 
 # Import project management functions
@@ -161,6 +162,7 @@ mcp.tool()(create_folder)
 mcp.tool()(retrieve_folder)
 mcp.tool()(list_folders)
 mcp.tool()(update_folder)
+mcp.tool()(delete_folder)
 
 # Register project management tools
 mcp.tool()(create_project)

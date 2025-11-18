@@ -179,3 +179,36 @@ def update_folder(
         "url": f"https://labs.rowansci.com/folder/{folder.uuid}",
         "message": "Folder updated successfully"
     }
+
+
+def delete_folder(
+    uuid: Annotated[str, "UUID of the folder to permanently delete"]
+) -> Dict[str, str]:
+    """Delete a folder and all its contents.
+
+    WARNING: This is a DESTRUCTIVE action that will delete:
+    - All workflows within the folder
+    - All subfolders and their contents
+    - All data cannot be recovered
+
+    Use this to clean up empty scientist folders when challenges are cancelled or abandoned.
+
+    Args:
+        uuid: UUID of the folder to permanently delete
+
+    Returns:
+        Dictionary with confirmation message
+
+    Example:
+        >>> result = delete_folder("abc-123")
+        >>> print(result['message'])
+        Folder abc-123 and all its contents deleted successfully
+    """
+    folder = rowan.retrieve_folder(uuid)
+    folder.delete()
+
+    return {
+        "message": f"Folder {uuid} and all its contents deleted successfully",
+        "uuid": uuid,
+        "warning": "All workflows and subfolders have been permanently deleted"
+    }
